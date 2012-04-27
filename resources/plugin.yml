@@ -1,0 +1,66 @@
+name: VirtualPack
+main: net.drgnome.virtualpack.VPlugin
+version: 1.0.3
+author: Siguza
+depend: [Vault]
+commands:
+    v:
+        description: VirtualPack
+        permissions: vpack.use
+        usage: /v
+    virtual:
+        description: VirtualPack
+        permissions: vpack.use
+        usage: /v
+    virtualpack:
+        description: VirtualPack
+        permissions: vpack.use
+        usage: /v
+permissions:
+    vpack.use:
+        description: Allows the basic use of VirtualPack
+        default: true
+    vpack.use.*:
+        description: Allows the use of all VirtualPack features
+        children:
+            vpack.use: true
+            vpack.use.workbench: true
+            vpack.use.enchanttable: true
+            vpack.use.chest: true
+            vpack.use.furnace: true
+            vpack.use.brewingstand: true
+            vpack.use.uncrafter: true
+    vpack.use.workbench:
+        description: Allows the use of the VirtualPack workbench
+    vpack.use.enchanttable:
+        description: Allows the use of the VirtualPack enchantment table
+    vpack.use.chest:
+        description: Allows the use of the VirtualPack chests
+    vpack.use.furnace:
+        description: Allows the use of the VirtualPack furnaces
+    vpack.use.brewingstand:
+        description: Allows the use of the VirtualPack brewing stands
+    vpack.use.uncrafter:
+        description: Allows the use of the VirtualPack uncrafter
+    vpack.stats:
+        description: Allows you to see other user's stats
+        default: op
+    vpack.admin:
+        description: Allows the use of Admin-features & doing a config reload
+    vpack.admin.*:
+        description: Admin-Permissions for VirtualPack
+        default: op
+        children:
+            vpack.admin: true
+            vpack.admin.use: true
+            vpack.admin.give: true
+            vpack.admin.take: true
+            vpack.admin.delete: true
+    vpack.admin.use:
+        description: Allows you to access any user's VirtualPack
+    vpack.admin.give:
+        description: Allows you to give users stuff
+    vpack.admin.take:
+        description: Allows you to take stuff away from users
+    vpack.admin.delete:
+        description: Allows you to completely delete a user's VirtualPack-account
