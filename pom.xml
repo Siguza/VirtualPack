@@ -5,7 +5,7 @@
 	<artifactId>VirtualPack</artifactId>
 	<version>1.1</version>
 	<name>VirtualPack</name>
-	<description>Bukkit Plugin "VirtualPack"</description>
+	<description>Bukkit Plugin "VirtualPack".</description>
 	<url>http://dev.bukkit.org/server-mods/virtualpack/</url>
 	<scm>
 		<url>https://github.com/Siguza/VirtualPack</url>
@@ -17,10 +17,6 @@
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
 		</repository>
-        <repository>
-			<id>vault-repo</id>
-			<url>https://github.com/MilkBowl/Vault/tree/master/src/</url>
-		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -31,17 +27,17 @@
 			<scope>compile</scope>
 		</dependency>
         <dependency>
-			<groupId>net.milkbowl.vault</groupId>
-			<artifactId>Vault</artifactId>
-			<version>1.2.15</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/zPermissions.jar</systemPath>
-		</dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>Vault</artifactId>
+            <version>1.2.15</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/deps/Vault.jar</systemPath>
+        </dependency>
 	</dependencies>
 	<build>
 		<resources>
 			<resource>
-				<directory>${project.basedir}/src/resources</directory>
+				<directory>${project.basedir}/resources</directory>
 			</resource>
 		</resources>
 		<plugins>
