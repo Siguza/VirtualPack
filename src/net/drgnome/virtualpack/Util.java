@@ -4,15 +4,127 @@
 
 package net.drgnome.virtualpack;
 
+import java.util.*;
+import java.lang.reflect.*;
+import java.util.logging.Logger;
+
 import net.minecraft.server.*;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.command.CommandSender;
+
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
+
+import static net.drgnome.virtualpack.Lang.*;
 
 public class Util
 {
     public static final String LS = System.getProperty("line.separator");
     public static final String separator[] = {":", new String(new char[]{(char)17}), new String(new char[]{(char)18}), new String(new char[]{(char)19}), new String(new char[]{(char)20})};
+    public static Logger log = Logger.getLogger("Minecraft");
+    public static boolean economyDisabled = false;
+    private static Economy economy;
+    private static Permission perms;
+    
+    public static boolean initPerms()
+    {
+        RegisteredServiceProvider perm = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
+        if(perm == null)
+        {
+            log.warning(lang("vpack.missperm"));
+            return false;
+        }
+        perms = (Permission)perm.getProvider();
+        return true;
+    }
+    
+    public static boolean hasPermission(String username, String permission)
+    {
+        return perms == null ? false : perms.has((String)null, username, permission);
+    }
+    
+    public static String[] getPlayerGroups(String username)
+    {
+        try
+        {
+            return perms == null ? new String[0] : perms.getPlayerGroups((String)null, username);
+        }
+        catch(Exception e)
+        {
+            warn();
+            e.printStackTrace();
+        }
+        return new String[0];
+    }
+    
+    public static String[] getPlayerGroups(CommandSender sender)
+    {
+        try
+        {
+            return perms == null ? new String[0] : perms.getPlayerGroups((CraftPlayer)sender);
+        }
+        catch(Exception e)
+        {
+            warn();
+            e.printStackTrace();
+        }
+        return new String[0];
+    }
+    
+    public static boolean initEconomy()
+    {
+        if(economyDisabled)
+        {
+            return true;
+        }
+        RegisteredServiceProvider eco = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
+        if(eco == null)
+        {
+            log.warning(lang("vpack.misseco"));
+            return false;
+        }
+        economy = (Economy)eco.getProvider();
+        return true;
+    }
+    
+    public static boolean moneyHas(String username, double amount)
+    {
+        // Don't use more RAM than necessary
+        if(economyDisabled || (amount == 0.0D))
+        {
+            return true;
+        }
+        if(economy == null)
+        {
+            return false;
+        }
+        return economy.has(username, amount);
+    }
+    
+    public static void moneyTake(String username, double amount)
+    {
+        // Don't use more RAM than necessary
+        if(economyDisabled || (amount == 0.0D) || (economy == null))
+        {
+            return;
+        }
+        economy.withdrawPlayer(username, amount);
+    }
+    
+    public static boolean moneyHasTake(String username, double amount)
+    {
+        if(moneyHas(username, amount))
+        {
+            moneyTake(username, amount);
+            return true;
+        }
+        return false;
+    }
     
     // Get the smallest value out of a bunch of integers
     public static int min(int... params)
@@ -131,6 +243,8 @@ public class Util
         return it;
     }
     
+    // These 3 methods split up strings into multiple lines so that the message doesn't get messed up by the minecraft chat.
+    // You can also give a prefix that is set before every line.
     public static void sendMessage(CommandSender sender, String message)
     {
         sendMessage(sender, message, "");
@@ -143,6 +257,14 @@ public class Util
     
     public static void sendMessage(CommandSender sender, String message, String prefix)
     {
+        if((sender == null) || (message == null))
+        {
+            return;
+        }
+        if(prefix == null)
+        {
+            prefix = "";
+        }
         int offset = 0;
         int xpos = 0;
         int pos = 0;
@@ -163,7 +285,13 @@ public class Util
         }
     }
     
-    // Those two functions save a lot of code
+    // Before e.printStackTrace:
+    public static void warn()
+    {
+        log.warning("[VirtualPack] AN ERROR OCCURED! PLEASE SEND THE MESSAGE BELOW TO THE DEVELOPER!");
+    }
+    
+    // Those two methods save a lot of code
     public static int tryParse(String s, int i)
     {
         try

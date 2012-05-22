@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.drgnome.virtualpack</groupId>
 	<artifactId>VirtualPack</artifactId>
-	<version>1.1</version>
+	<version>1.0.4</version>
 	<name>VirtualPack</name>
 	<description>Bukkit Plugin "VirtualPack".</description>
 	<url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.2.5-R1.0</version>
+			<version>1.2.5-R2.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

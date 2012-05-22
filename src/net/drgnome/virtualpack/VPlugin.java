@@ -27,6 +27,8 @@ import org.bukkit.configuration.file.*;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import static net.drgnome.virtualpack.Config.*;
+import static net.drgnome.virtualpack.Lang.*;
 import static net.drgnome.virtualpack.Util.*;
 
 public class VPlugin extends VPluginBase
@@ -62,6 +64,10 @@ public class VPlugin extends VPluginBase
         if(((sender instanceof Player) && (sender.hasPermission("vpack.admin"))) || !(sender instanceof Player))
         {
             sendMessage(sender, lang("help.admin"), ChatColor.RED);
+        }
+        if(((sender instanceof Player) && (sender.hasPermission("vpack.debug"))) || !(sender instanceof Player))
+        {
+            sendMessage(sender, lang("help.debug"), ChatColor.YELLOW);
         }
         sendMessage(sender, lang("help.args"), ChatColor.YELLOW);
         switch(page)
@@ -144,6 +150,13 @@ public class VPlugin extends VPluginBase
             reloadConfig();
             loadUserData();
             sendMessage(sender, lang("admin.reloaded"), ChatColor.YELLOW);
+            return;
+        }
+        else if(args[1].equals("save"))
+        {
+            saveUserData();
+            loadUserData();
+            sendMessage(sender, lang("admin.saved"), ChatColor.YELLOW);
             return;
         }
         else if(args[1].equals("give"))
@@ -985,5 +998,40 @@ public class VPlugin extends VPluginBase
             }
         }
         getPack(player.name).openBrewingstand(sender, nr);
+    }
+    
+    protected void cmdDebug(CommandSender sender, String[] args)
+    {
+        if(!sender.hasPermission("vpack.debug"))
+        {
+            sendMessage(sender, lang("debug.perm"), ChatColor.RED);
+            return;
+        }
+        if(args.length < 2)
+        {
+            sendMessage(sender, lang("debug.help.groups1"), ChatColor.AQUA);
+            sendMessage(sender, lang("debug.help.groups2"), ChatColor.AQUA);
+            return;
+        }
+        if(args[1].equalsIgnoreCase("groups"))
+        {
+            String groups[] = (args.length > 2) ? getPlayerGroups(args[2]) : getPlayerGroups(sender);
+            if(groups == null)
+            {
+                sendMessage(sender, lang("debug.groups", "null"), ChatColor.GREEN);
+            }
+            else
+            {
+                sendMessage(sender, lang("debug.groups", "" + groups.length), ChatColor.GREEN);
+                for(int i = 0; i < groups.length; i++)
+                {
+                    sendMessage(sender, groups[i] == null ? "<null>" : groups[i], ChatColor.GREEN);
+                }
+            }
+        }
+        else
+        {
+            sendMessage(sender, lang("argument.unknown"), ChatColor.RED);
+        }
     }
 }
