@@ -30,7 +30,7 @@ public class Lang
             File file = new File(dir, "lang.yml");
             if(!file.exists())
             {
-                file.mkdirs();
+                file.getParentFile().mkdirs();
                 PrintStream writer = new PrintStream(new FileOutputStream(file));
                 writer.close();
             }
@@ -55,6 +55,8 @@ public class Lang
     private static void setDefs()
     {
         setDef("langv", langv);
+        setDef("update.msg", "There is an update for VirtualPack available! Click here:");
+        setDef("update.link", "http://dev.bukkit.org/server-mods/virtualpack/files/");
         setDef("vpack.ecodisabled", "Economy is disabled, you don't need to buy anything.");
         setDef("vpack.misseco", "VirtualPack: Cannot find any vault-hooked economy plugin, disabling.");
         setDef("vpack.missperm", "VirtualPack: Cannot find any vault-hooked permissions plugin, disabling.");
@@ -203,6 +205,7 @@ public class Lang
         setDef("debug.help.groups2", "/v d groups [name] - List the groups the player [name] is in.");
         setDef("debug.perm", "You're not allowed to use debug commands.");
         setDef("debug.groups", "Groups (%1):");
+        setDef("trash.name", "V Trash");
     }
     
     // Set a default value

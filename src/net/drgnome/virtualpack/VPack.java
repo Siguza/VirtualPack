@@ -892,4 +892,19 @@ public class VPack
         brew.link = 0;
         sendMessage(sender, lang("brewingstand.unlinked", "" + brewNR), ChatColor.GREEN);
     }
+    
+    public void openTrash(CommandSender sender)
+    {
+        EntityPlayer player = ((CraftPlayer)sender).getHandle();
+        VTrash container = new VTrash(player);
+        String name = lang("trash.name");
+        if(name.length() > 32)
+        {
+            name = name.substring(0, 32);
+        }
+        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 0, name, 6 * 9));
+        player.activeContainer = container;
+        container.windowId = 1;
+        container.addSlotListener((ICrafting)player);
+    }
 }

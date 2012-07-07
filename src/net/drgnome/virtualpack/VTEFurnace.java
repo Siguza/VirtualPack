@@ -7,6 +7,7 @@ package net.drgnome.virtualpack;
 import java.util.*;
 
 import net.minecraft.server.*;
+import org.bukkit.inventory.InventoryHolder;
 
 import static net.drgnome.virtualpack.Util.*;
 
@@ -446,5 +447,11 @@ public class VTEFurnace extends TileEntityFurnace
                 contents[0] = null;
             }
         }
+    }
+    
+    // Bugfix
+    public InventoryHolder getOwner()
+    {
+        return null;
     }
 }

@@ -1000,6 +1000,11 @@ public class VPlugin extends VPluginBase
         getPack(player.name).openBrewingstand(sender, nr);
     }
     
+    protected void cmdTrash(CommandSender sender, String[] args)
+    {
+        getPack(((CraftPlayer)sender).getHandle().name).openTrash(sender);
+    }
+    
     protected void cmdDebug(CommandSender sender, String[] args)
     {
         if(!sender.hasPermission("vpack.debug"))

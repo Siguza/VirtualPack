@@ -7,6 +7,8 @@ package net.drgnome.virtualpack;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
+import java.sql.*;
+import java.net.*;
 
 import net.minecraft.server.*;
 
@@ -33,14 +35,21 @@ import static net.drgnome.virtualpack.Util.*;
 
 public abstract class VPluginBase extends JavaPlugin
 {
-    public static final String version = "1.0.4";
+    public static final String version = "1.0.5";
     protected HashMap<String, VPack> packs;
     private int saveTick;
+    private int upTick;
+    private boolean update;
+    private VThreadSave saveThread;
+    private boolean loadRequested;
 
     public void onEnable()
     {
         log.info("Enabling VirtualPack " + version);
         saveTick = 0;
+        update = false;
+        upTick = 60 * 60 * 20;
+        loadRequested = false;
         packs = new HashMap<String, VPack>();
         checkFiles();
         initLang(getDataFolder());
@@ -71,7 +80,7 @@ public abstract class VPluginBase extends JavaPlugin
         log.info(lang("vpack.disable", new String[]{version}));
     }
     
-    public void tick()
+    public synchronized void tick()
     {
         Object values[] = packs.values().toArray();
         for(int i = 0; i < values.length; i++)
@@ -82,14 +91,71 @@ public abstract class VPluginBase extends JavaPlugin
             }
             ((VPack)values[i]).tick();
         }
+        if(!update)
+        {
+            upTick++;
+            if(upTick >= 60 * 60 * 20)
+            {
+                try
+                {
+                    HttpURLConnection con = (HttpURLConnection)(new URL("http://dev.drgnome.net/version.php?t=vpack")).openConnection();            
+                    con.setRequestMethod("GET");
+                    con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; JVM)");                        
+                    con.setRequestProperty("Pragma", "no-cache");
+                    con.connect();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String line = null;
+                    StringBuilder stringb = new StringBuilder();
+                    if((line = reader.readLine()) != null)
+                    {
+                        stringb.append(line);
+                    }
+                    String vdigits[] = version.toLowerCase().split(".");
+                    String cdigits[] = stringb.toString().toLowerCase().split(".");
+                    int max = vdigits.length > cdigits.length ? cdigits.length : vdigits.length;
+                    for(int i = 0; i < max; i++)
+                    {
+                        try
+                        {
+                            if(Integer.parseInt(cdigits[i]) > Integer.parseInt(vdigits[i]))
+                            {
+                                update = true;
+                                break;
+                            }
+                            else if(Integer.parseInt(cdigits[i]) < Integer.parseInt(vdigits[i]))
+                            {
+                                update = false;
+                                break;
+                            }
+                            else if((i == max - 1) && (cdigits.length > vdigits.length))
+                            {
+                                update = true;
+                                break;
+                            }
+                        }
+                        catch(Exception e1)
+                        {
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                }
+                upTick = 0;
+            }
+        }
+        if(loadRequested)
+        {
+            loadUserData();
+        }
         if(getConfigInt("save-interval") > 0)
         {
             saveTick++;
             if(saveTick >= getConfigInt("save-interval") * 20)
             {
+                log.info("[VirtualPack] Saving user data...");
                 saveUserData();
                 loadUserData();
-                log.info("[VirtualPack] Saving user data...");
                 saveTick = 0;
             }
         }
@@ -112,17 +178,11 @@ public abstract class VPluginBase extends JavaPlugin
             {
                 file.mkdirs();
             }
-            PrintStream writer;
-            File data;
-            String files[] = new String[]{"config.yml", "data.db"};
-            for(int i = 0; i < files.length; i++)
+            File data = new File(file, "config.yml");
+            if(!data.exists())
             {
-                data = new File(file, files[i]);
-                if(!data.exists())
-                {
-                    writer = new PrintStream(new FileOutputStream(data));
-                    writer.close();
-                }
+                PrintStream writer = new PrintStream(new FileOutputStream(data));
+                writer.close();
             }
         }
         catch(Exception e)
@@ -130,67 +190,56 @@ public abstract class VPluginBase extends JavaPlugin
         }
     }
     
-    protected void loadUserData()
+    protected synchronized void loadUserData()
     {
+        if((saveThread != null) && !(saveThread.done()))
+        {
+            loadRequested = true;
+            return;
+        }
         try
 		{
-			BufferedReader file = new BufferedReader(new FileReader(new File(getDataFolder(), "data.db")));
-			String line;
-            String data[];
-			while((line = file.readLine()) != null)
-			{
-                data = line.split(separator[0]);
-                if(data.length >= 2)
+            /*if(getConfigString("db.use").equalsIgnoreCase("true"))
+            {
+                Connection = DriverManager.getConnection(getConfigString("db.url"), getConfigString("db.user"), getConfigString("db.pw"));
+            }
+            else
+            {*/
+                BufferedReader file = new BufferedReader(new FileReader(new File(getDataFolder(), "data.db")));
+                String line;
+                String data[];
+                while((line = file.readLine()) != null)
                 {
-                    putPack(data[0], new VPack(data[0].toLowerCase(), data, 1));
+                    data = line.split(separator[0]);
+                    if(data.length >= 2)
+                    {
+                        putPack(data[0], new VPack(data[0].toLowerCase(), data, 1));
+                    }
                 }
-			}
-			file.close();
+                file.close();
+            //}
 		}
 		catch(Exception e)
 		{
             warn();
             e.printStackTrace();
 		}
+        loadRequested = false;
     }
     
-    protected void saveUserData()
+    protected synchronized void saveUserData()
     {
-        try
-		{
-			BufferedWriter writer = new BufferedWriter(new FileWriter(new File(getDataFolder(), "data.db")));
-			Object key[] = packs.keySet().toArray();
-            String name;
-            VPack vpack;
-            String contents;
-            String data[];
-            for(int i = 0; i < key.length; i++)
-            {
-                name = (String)key[i];
-                vpack = getPack(name);
-                if(vpack != null)
-                {
-                    contents = name;
-                    data = vpack.save();
-                    for(int j = 0; j < data.length; j++)
-                    {
-                        contents += separator[0] + data[j];
-                    }
-                    writer.write(contents);
-                    writer.newLine();
-                }
-            }
-			writer.close();
-		}
-		catch(Exception e)
-		{
-            warn();
-            e.printStackTrace();
-        }
+        saveThread = new VThreadSave(new File(getDataFolder(), "data.db"), packs);
+        saveThread.run();
     }
     
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
+        if(update && (!(sender instanceof Player) || (sender.hasPermission("vpack.update"))))
+        {
+            sendMessage(sender, lang("update.msg"), ChatColor.GREEN);
+            sendMessage(sender, lang("update.link"), ChatColor.RED);
+        }
         if((args.length <= 0) || ((args.length >= 1) && (args[0].equals("help"))))
         {
             cmdHelp(sender, args);
@@ -263,6 +312,10 @@ public abstract class VPluginBase extends JavaPlugin
             {
                 cmdBrewingstand(sender, args);
             }
+            else if(args[0].equals("trash"))
+            {
+                cmdTrash(sender, args);
+            }
             else if(args[0].equals("debug"))
             {
                 cmdDebug(sender, args);
@@ -293,6 +346,7 @@ public abstract class VPluginBase extends JavaPlugin
     protected abstract void cmdChest(CommandSender sender, String[] args);
     protected abstract void cmdFurnace(CommandSender sender, String[] args);
     protected abstract void cmdBrewingstand(CommandSender sender, String[] args);
+    protected abstract void cmdTrash(CommandSender sender, String[] args);
     protected abstract void cmdDebug(CommandSender sender, String[] args);
     
     public String longname(String s)
@@ -337,6 +391,10 @@ public abstract class VPluginBase extends JavaPlugin
         if(s.equals("u"))
         {
             return "unlink";
+        }
+        if(s.equals("t"))
+        {
+            return "trash";
         }
         if(s.equals("v"))
         {

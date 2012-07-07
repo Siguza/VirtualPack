@@ -32,6 +32,10 @@ public class Config
     // Set all default values
     private static void setDefs()
     {
+        setDef("db.use", "false");
+        setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
+        setDef("db.user", "herp");
+        setDef("db.pw", "derp");
         setDef("save-interval", "300");
         setDef("economy-disabled", "false");
         setDef("workbench.buy", "20000");
@@ -85,20 +89,27 @@ public class Config
     {
         if(groups == null)
         {
-            System.out.println("[VirtualPack] Config : getInt : groups[] == null");
+            System.out.println("[VirtualPack] Config.getInt.groups[] = null (This is not good)");
         }
         int value = getConfigInt(prefix + "." + suffix);
         int tmp;
         for(int i = 0; i < groups.length; i++)
         {
-            if(!config.isSet(prefix + "." + groups[i] + "." + suffix))
+            if(config.isSet(groups[i] + "." + prefix + "." + suffix))
             {
-                continue;
+                tmp = getConfigInt(groups[i] + "." + prefix + "." + suffix);
+                if(max == (tmp > value))
+                {
+                    value = tmp;
+                }
             }
-            tmp = getConfigInt(prefix + "." + groups[i] + "." + suffix);
-            if(((max) && (tmp > value)) || ((!max) && (tmp < value)))
+            if(config.isSet(prefix + "." + groups[i] + "." + suffix))
             {
-                value = tmp;
+                tmp = getConfigInt(prefix + "." + groups[i] + "." + suffix);
+                if(max == (tmp > value))
+                {
+                    value = tmp;
+                }
             }
         }
         return value;
@@ -149,14 +160,21 @@ public class Config
         double tmp;
         for(int i = 0; i < groups.length; i++)
         {
-            if(!config.isSet(prefix + "." + groups[i] + "." + suffix))
+            if(config.isSet(groups[i] + "." + prefix + "." + suffix))
             {
-                continue;
+                tmp = getConfigDouble(groups[i] + "." + prefix + "." + suffix, digits);
+                if(max == (tmp > value))
+                {
+                    value = tmp;
+                }
             }
-            tmp = getConfigDouble(prefix + "." + groups[i] + "." + suffix, digits);
-            if(((max) && (tmp > value)) || ((!max) && (tmp < value)))
+            if(config.isSet(prefix + "." + groups[i] + "." + suffix))
             {
-                value = tmp;
+                tmp = getConfigDouble(prefix + "." + groups[i] + "." + suffix, digits);
+                if(max == (tmp > value))
+                {
+                    value = tmp;
+                }
             }
         }
         return value;

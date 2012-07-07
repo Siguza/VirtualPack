@@ -1,6 +1,6 @@
 name: VirtualPack
 main: net.drgnome.virtualpack.VPlugin
-version: 1.0.4
+version: 1.0.5
 author: Siguza
 depend: [Vault]
 commands:
@@ -53,6 +53,7 @@ permissions:
             vpack.admin.give: true
             vpack.admin.take: true
             vpack.admin.delete: true
+            vpack.update: true
     vpack.admin.use:
         description: Allows you to access any user's VirtualPack
     vpack.admin.give:
@@ -63,3 +64,5 @@ permissions:
         description: Allows you to completely delete a user's VirtualPack-account
     vpack.debug:
         description: Allows the use of debug commands
+    vpack.update:
+        decsription: Notifies you of new VirtualPack versions
