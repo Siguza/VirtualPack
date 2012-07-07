@@ -96,51 +96,7 @@ public abstract class VPluginBase extends JavaPlugin
             upTick++;
             if(upTick >= 60 * 60 * 20)
             {
-                try
-                {
-                    HttpURLConnection con = (HttpURLConnection)(new URL("http://dev.drgnome.net/version.php?t=vpack")).openConnection();            
-                    con.setRequestMethod("GET");
-                    con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; JVM)");                        
-                    con.setRequestProperty("Pragma", "no-cache");
-                    con.connect();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    String line = null;
-                    StringBuilder stringb = new StringBuilder();
-                    if((line = reader.readLine()) != null)
-                    {
-                        stringb.append(line);
-                    }
-                    String vdigits[] = version.toLowerCase().split(".");
-                    String cdigits[] = stringb.toString().toLowerCase().split(".");
-                    int max = vdigits.length > cdigits.length ? cdigits.length : vdigits.length;
-                    for(int i = 0; i < max; i++)
-                    {
-                        try
-                        {
-                            if(Integer.parseInt(cdigits[i]) > Integer.parseInt(vdigits[i]))
-                            {
-                                update = true;
-                                break;
-                            }
-                            else if(Integer.parseInt(cdigits[i]) < Integer.parseInt(vdigits[i]))
-                            {
-                                update = false;
-                                break;
-                            }
-                            else if((i == max - 1) && (cdigits.length > vdigits.length))
-                            {
-                                update = true;
-                                break;
-                            }
-                        }
-                        catch(Exception e1)
-                        {
-                        }
-                    }
-                }
-                catch(Exception e)
-                {
-                }
+                checkForUpdate();
                 upTick = 0;
             }
         }
@@ -158,6 +114,57 @@ public abstract class VPluginBase extends JavaPlugin
                 loadUserData();
                 saveTick = 0;
             }
+        }
+    }
+    
+    private void checkForUpdate()
+    {
+        try
+        {
+            HttpURLConnection con = (HttpURLConnection)(new URL("http://dev.drgnome.net/version.php?t=vpack")).openConnection();            
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; JVM)");                        
+            con.setRequestProperty("Pragma", "no-cache");
+            con.connect();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String line = null;
+            StringBuilder stringb = new StringBuilder();
+            if((line = reader.readLine()) != null)
+            {
+                stringb.append(line);
+            }
+            String vdigits[] = this.version.toLowerCase().split("\\.");
+            String cdigits[] = stringb.toString().toLowerCase().split("\\.");
+            int max = vdigits.length > cdigits.length ? cdigits.length : vdigits.length;
+            for(int i = 0; i < max; i++)
+            {
+                try
+                {
+                    if(Integer.parseInt(cdigits[i]) > Integer.parseInt(vdigits[i]))
+                    {
+                        update = true;
+                        break;
+                    }
+                    else if(Integer.parseInt(cdigits[i]) < Integer.parseInt(vdigits[i]))
+                    {
+                        update = false;
+                        break;
+                    }
+                    else if((i == max - 1) && (cdigits.length > vdigits.length))
+                    {
+                        update = true;
+                        break;
+                    }
+                }
+                catch(Exception e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
         }
     }
     
@@ -251,6 +258,25 @@ public abstract class VPluginBase extends JavaPlugin
             sendMessage(sender, lang("version", new String[]{version}), ChatColor.BLUE);
             return true;
         }
+        else if(args[0].equals("update"))
+        {
+            if(!sender.hasPermission("vpack.update"))
+            {
+                sendMessage(sender, lang("update.perm"), ChatColor.RED);
+                return true;
+            }
+            checkForUpdate();
+            if(update)
+            {
+                sendMessage(sender, lang("update.msg"), ChatColor.GREEN);
+                sendMessage(sender, lang("update.link"), ChatColor.RED);
+            }
+            else
+            {
+                sendMessage(sender, lang("update.no"), ChatColor.GREEN);
+            }
+            return true;
+        }
         else if((args[0].equals("stats")) && !(sender instanceof Player))
         {
             cmdConsoleStats(sender, args);
@@ -259,7 +285,7 @@ public abstract class VPluginBase extends JavaPlugin
         else if(args[0].equals("admin"))
         {
             cmdAdmin(sender, args);
-            if((args.length > 1) && (!args[1].equals("use")))
+            if((args.length < 2) || (!args[1].equals("use")))
             {
                 return true;
             }
@@ -411,6 +437,10 @@ public abstract class VPluginBase extends JavaPlugin
         if(s.equals("d"))
         {
             return "debug";
+        }
+        if(s.equals("up"))
+        {
+            return "update";
         }
         return s;
     }

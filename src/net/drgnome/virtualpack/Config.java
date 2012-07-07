@@ -36,7 +36,7 @@ public class Config
         setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
         setDef("db.user", "herp");
         setDef("db.pw", "derp");
-        setDef("save-interval", "300");
+        setDef("save-interval", "0");
         setDef("economy-disabled", "false");
         setDef("workbench.buy", "20000");
         setDef("workbench.use", "0");

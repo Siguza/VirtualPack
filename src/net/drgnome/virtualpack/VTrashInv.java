@@ -10,7 +10,6 @@ import static net.drgnome.virtualpack.Util.*;
 
 public class VTrashInv extends VInv
 {
-    
     public VTrashInv()
     {
         super(9);

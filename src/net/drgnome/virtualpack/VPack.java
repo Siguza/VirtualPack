@@ -902,7 +902,7 @@ public class VPack
         {
             name = name.substring(0, 32);
         }
-        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 0, name, 6 * 9));
+        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 0, name, 9));
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);

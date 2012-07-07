@@ -55,6 +55,8 @@ public class Lang
     private static void setDefs()
     {
         setDef("langv", langv);
+        setDef("update.no", "VirtualPack is up to date! :)");
+        setDef("update.perm", "You're not allowed to use this feature.");
         setDef("update.msg", "There is an update for VirtualPack available! Click here:");
         setDef("update.link", "http://dev.bukkit.org/server-mods/virtualpack/files/");
         setDef("vpack.ecodisabled", "Economy is disabled, you don't need to buy anything.");
