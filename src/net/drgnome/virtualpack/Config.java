@@ -87,28 +87,27 @@ public class Config
     
     public static int getConfigInt(String prefix, String suffix, String groups[], boolean max)
     {
-        if(groups == null)
-        {
-            System.out.println("[VirtualPack] Config.getInt.groups[] = null (This is not good)");
-        }
         int value = getConfigInt(prefix + "." + suffix);
-        int tmp;
-        for(int i = 0; i < groups.length; i++)
+        if(groups != null)
         {
-            if(config.isSet(groups[i] + "." + prefix + "." + suffix))
+            int tmp;
+            for(int i = 0; i < groups.length; i++)
             {
-                tmp = getConfigInt(groups[i] + "." + prefix + "." + suffix);
-                if(max == (tmp > value))
+                if(config.isSet(groups[i] + "." + prefix + "." + suffix))
                 {
-                    value = tmp;
+                    tmp = getConfigInt(groups[i] + "." + prefix + "." + suffix);
+                    if(max == (tmp > value))
+                    {
+                        value = tmp;
+                    }
                 }
-            }
-            if(config.isSet(prefix + "." + groups[i] + "." + suffix))
-            {
-                tmp = getConfigInt(prefix + "." + groups[i] + "." + suffix);
-                if(max == (tmp > value))
+                if(config.isSet(prefix + "." + groups[i] + "." + suffix))
                 {
-                    value = tmp;
+                    tmp = getConfigInt(prefix + "." + groups[i] + "." + suffix);
+                    if(max == (tmp > value))
+                    {
+                        value = tmp;
+                    }
                 }
             }
         }
@@ -152,28 +151,27 @@ public class Config
     
     public static double getConfigDouble(String prefix, String suffix, String groups[], boolean max, int digits)
     {
-        if(groups == null)
-        {
-            System.out.println("[VirtualPack] Config : getInt : groups[] == null");
-        }
         double value = getConfigDouble(prefix + "." + suffix, digits);
-        double tmp;
-        for(int i = 0; i < groups.length; i++)
+        if(groups != null)
         {
-            if(config.isSet(groups[i] + "." + prefix + "." + suffix))
+            double tmp;
+            for(int i = 0; i < groups.length; i++)
             {
-                tmp = getConfigDouble(groups[i] + "." + prefix + "." + suffix, digits);
-                if(max == (tmp > value))
+                if(config.isSet(groups[i] + "." + prefix + "." + suffix))
                 {
-                    value = tmp;
+                    tmp = getConfigDouble(groups[i] + "." + prefix + "." + suffix, digits);
+                    if(max == (tmp > value))
+                    {
+                        value = tmp;
+                    }
                 }
-            }
-            if(config.isSet(prefix + "." + groups[i] + "." + suffix))
-            {
-                tmp = getConfigDouble(prefix + "." + groups[i] + "." + suffix, digits);
-                if(max == (tmp > value))
+                if(config.isSet(prefix + "." + groups[i] + "." + suffix))
                 {
-                    value = tmp;
+                    tmp = getConfigDouble(prefix + "." + groups[i] + "." + suffix, digits);
+                    if(max == (tmp > value))
+                    {
+                        value = tmp;
+                    }
                 }
             }
         }
@@ -188,7 +186,7 @@ public class Config
         }
         catch(Exception e)
         {
-            return 0;
+            return 0D;
         }
     }
     

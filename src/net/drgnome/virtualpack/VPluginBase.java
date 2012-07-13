@@ -35,17 +35,40 @@ import static net.drgnome.virtualpack.Util.*;
 
 public abstract class VPluginBase extends JavaPlugin
 {
-    public static final String version = "1.0.5";
+    public static final String version = "1.0.5.1";
     protected HashMap<String, VPack> packs;
     private int saveTick;
     private int upTick;
     private boolean update;
     private VThreadSave saveThread;
     private boolean loadRequested;
+    private boolean waitForPlugin;
 
     public void onEnable()
     {
+        waitForPlugin = false;
+        try
+        {
+            if(!org.anjocaido.groupmanager.GroupManager.isLoaded())
+            {
+                waitForPlugin = true;
+            }
+            else
+            {
+                init();
+            }
+        }
+        catch(java.lang.NoClassDefFoundError e)
+        {
+            init();
+        }
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThread(this), 0L, 1L);
+    }
+    
+    private void init()
+    {
         log.info("Enabling VirtualPack " + version);
+        waitForPlugin = false;
         saveTick = 0;
         update = false;
         upTick = 60 * 60 * 20;
@@ -68,20 +91,40 @@ public abstract class VPluginBase extends JavaPlugin
             return;
         }
         loadUserData();
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThread(this), 0L, 1L);
         log.info(lang("vpack.enable", new String[]{version}));
     }
 
     public void onDisable()
     {
-        log.info(lang("vpack.startdisable", new String[]{version}));
         getServer().getScheduler().cancelTasks(this);
-        saveUserData();
-        log.info(lang("vpack.disable", new String[]{version}));
+        if(!waitForPlugin)
+        {
+            log.info(lang("vpack.startdisable", new String[]{version}));
+            saveUserData();
+            log.info(lang("vpack.disable", new String[]{version}));
+        }
     }
     
     public synchronized void tick()
     {
+        if(waitForPlugin)
+        {
+            try
+            {
+                if(org.anjocaido.groupmanager.GroupManager.isLoaded())
+                {
+                    init();
+                }
+                else
+                {
+                    return;
+                }
+            }
+            catch(Exception e)
+            {
+                init();
+            }
+        }
         Object values[] = packs.values().toArray();
         for(int i = 0; i < values.length; i++)
         {
@@ -185,11 +228,15 @@ public abstract class VPluginBase extends JavaPlugin
             {
                 file.mkdirs();
             }
-            File data = new File(file, "config.yml");
-            if(!data.exists())
+            String files[] = {"config.yml", "data.db"};
+            for(int i = 0; i < files.length; i++)
             {
-                PrintStream writer = new PrintStream(new FileOutputStream(data));
-                writer.close();
+                File data = new File(file, files[i]);
+                if(!data.exists())
+                {
+                    PrintStream writer = new PrintStream(new FileOutputStream(data));
+                    writer.close();
+                }
             }
         }
         catch(Exception e)
@@ -242,6 +289,11 @@ public abstract class VPluginBase extends JavaPlugin
     
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
+        if(waitForPlugin)
+        {
+            sender.sendMessage("VirtualPack is waiting for GroupManager.");
+            return true;
+        }
         if(update && (!(sender instanceof Player) || (sender.hasPermission("vpack.update"))))
         {
             sendMessage(sender, lang("update.msg"), ChatColor.GREEN);

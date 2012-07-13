@@ -28,18 +28,22 @@ public class Lang
         try
         {
             File file = new File(dir, "lang.yml");
-            if(!file.exists())
+            boolean create = !file.exists();
+            if(create)
             {
                 file.getParentFile().mkdirs();
                 PrintStream writer = new PrintStream(new FileOutputStream(file));
                 writer.close();
             }
             config.load(file);
-            String lv = config.getString("langv");
-            if((lv == null) || (!lv.equalsIgnoreCase(langv)))
+            if(!create)
             {
-                config.save(new File(dir, "lang" + langv + ".yml"));
-                config = new YamlConfiguration();
+                String lv = config.getString("langv");
+                if((lv == null) || (!lv.equalsIgnoreCase(langv)))
+                {
+                    config.save(new File(dir, "lang" + langv + ".yml"));
+                    config = new YamlConfiguration();
+                }
             }
             setDefs();
             config.save(file);
