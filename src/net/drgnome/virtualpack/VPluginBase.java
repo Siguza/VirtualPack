@@ -35,7 +35,7 @@ import static net.drgnome.virtualpack.Util.*;
 
 public abstract class VPluginBase extends JavaPlugin
 {
-    public static final String version = "1.0.5.1";
+    public static final String version = "1.0.5.2";
     protected HashMap<String, VPack> packs;
     private int saveTick;
     private int upTick;
@@ -58,7 +58,7 @@ public abstract class VPluginBase extends JavaPlugin
                 init();
             }
         }
-        catch(java.lang.NoClassDefFoundError e)
+        catch(NoClassDefFoundError e)
         {
             init();
         }
@@ -120,7 +120,7 @@ public abstract class VPluginBase extends JavaPlugin
                     return;
                 }
             }
-            catch(Exception e)
+            catch(NoClassDefFoundError e)
             {
                 init();
             }
@@ -199,15 +199,15 @@ public abstract class VPluginBase extends JavaPlugin
                         break;
                     }
                 }
-                catch(Exception e1)
+                catch(Throwable t1)
                 {
-                    e1.printStackTrace();
+                    t1.printStackTrace();
                 }
             }
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
-            e.printStackTrace();
+            t.printStackTrace();
         }
     }
     
