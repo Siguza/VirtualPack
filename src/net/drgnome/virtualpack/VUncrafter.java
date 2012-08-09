@@ -16,8 +16,8 @@ public class VUncrafter extends ContainerChest
     {
         super(player.inventory, new VUncrafterInv());
         this.player = player;
-        d = new ArrayList();
-        e = new ArrayList();
+        a = new ArrayList();
+        b = new ArrayList();
         for(int i = 0; i < 2; i++)
         {
             for(int j = 0; j < 9; j++)
@@ -86,12 +86,12 @@ public class VUncrafter extends ContainerChest
             }
             else if(flag)
             {
-                ItemStack itemstack1 = a(i);
+                ItemStack itemstack1 = b(i);
                 if(itemstack1 != null)
                 {
                     int k = itemstack1.id;
                     itemstack = itemstack1.cloneItemStack();
-                    Slot slot = (Slot)this.e.get(i);
+                    Slot slot = (Slot)this.b.get(i);
                     if((slot != null) && (slot.getItem() != null) && (slot.getItem().id == k))
                     {
                         b(i, j, flag, entityhuman);
@@ -104,7 +104,7 @@ public class VUncrafter extends ContainerChest
                 {
                     return null;
                 }
-                Slot slot1 = (Slot)this.e.get(i);
+                Slot slot1 = (Slot)this.b.get(i);
                 if(slot1 != null)
                 {
                     slot1.d();
@@ -144,7 +144,7 @@ public class VUncrafter extends ContainerChest
                         {
                             slot1.set((ItemStack)null);
                         }
-                        slot1.c(playerinventory.getCarried());
+                        slot1.b(playerinventory.getCarried());
                     }
                     else if(slot1.isAllowed(itemstack3))
                     {
@@ -186,7 +186,7 @@ public class VUncrafter extends ContainerChest
                             {
                                 slot1.set((ItemStack)null);
                             }
-                            slot1.c(playerinventory.getCarried());
+                            slot1.b(playerinventory.getCarried());
                         }
                     }
                 }

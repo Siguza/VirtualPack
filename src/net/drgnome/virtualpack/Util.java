@@ -54,6 +54,9 @@ public class Util
         {
             return perms == null ? new String[0] : perms.getPlayerGroups((String)null, username);
         }
+        catch(NullPointerException n)
+        {
+        }
         catch(Exception e)
         {
             warn();

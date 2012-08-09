@@ -23,19 +23,19 @@ public class VUncrafterInv extends VInv
     {
         if((item != null) && (slot < 9))
         {
-            List list = CraftingManager.getInstance().getRecipies();
+            List list = CraftingManager.getInstance().getRecipes();
             Object tmp;
             Object tmp2;
-            CraftingRecipe recipe;
+            IRecipe recipe;
             ItemStack result;
             for(int i = 0; i < list.size(); i++)
             {
                 tmp = list.get(i);
-                if(!(tmp instanceof CraftingRecipe))
+                if(!(tmp instanceof IRecipe))
                 {
                     continue;
                 }
-                recipe = (CraftingRecipe)tmp;
+                recipe = (IRecipe)tmp;
                 if(recipe == null)
                 {
                     continue;

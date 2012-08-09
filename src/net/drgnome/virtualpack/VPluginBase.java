@@ -35,7 +35,7 @@ import static net.drgnome.virtualpack.Util.*;
 
 public abstract class VPluginBase extends JavaPlugin
 {
-    public static final String version = "1.0.5.2";
+    public static final String version = "1.0.6";
     protected HashMap<String, VPack> packs;
     private int saveTick;
     private int upTick;
@@ -43,6 +43,8 @@ public abstract class VPluginBase extends JavaPlugin
     private VThreadSave saveThread;
     private boolean loadRequested;
     private boolean waitForPlugin;
+    private Connection db;
+    private boolean portMysql;
 
     public void onEnable()
     {
@@ -68,16 +70,31 @@ public abstract class VPluginBase extends JavaPlugin
     private void init()
     {
         log.info("Enabling VirtualPack " + version);
-        waitForPlugin = false;
         saveTick = 0;
         update = false;
         upTick = 60 * 60 * 20;
         loadRequested = false;
+        waitForPlugin = false;
+        portMysql = false;
         packs = new HashMap<String, VPack>();
         checkFiles();
         initLang(getDataFolder());
         reloadConf(getConfig());
         saveConfig();
+        if(getConfigString("db.use").equalsIgnoreCase("true"))
+        {
+            try
+            {
+                db = DriverManager.getConnection(getConfigString("db.url"), getConfigString("db.user"), getConfigString("db.pw"));
+                db.prepareStatement("CREATE TABLE IF NOT EXISTS `vpack` (`data` longtext NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;").execute();
+                ResultSet row = db.prepareStatement("SELECT * FROM `vpack`").executeQuery();
+                portMysql = !row.next();
+            }
+            catch(Throwable t)
+            {
+                t.printStackTrace();
+            }
+        }
         reloadLang();
         if(!initPerms())
         {
@@ -179,31 +196,53 @@ public abstract class VPluginBase extends JavaPlugin
             String vdigits[] = this.version.toLowerCase().split("\\.");
             String cdigits[] = stringb.toString().toLowerCase().split("\\.");
             int max = vdigits.length > cdigits.length ? cdigits.length : vdigits.length;
+            int a = 0;
+            int b = 0;
             for(int i = 0; i < max; i++)
             {
                 try
                 {
-                    if(Integer.parseInt(cdigits[i]) > Integer.parseInt(vdigits[i]))
-                    {
-                        update = true;
-                        break;
-                    }
-                    else if(Integer.parseInt(cdigits[i]) < Integer.parseInt(vdigits[i]))
-                    {
-                        update = false;
-                        break;
-                    }
-                    else if((i == max - 1) && (cdigits.length > vdigits.length))
-                    {
-                        update = true;
-                        break;
-                    }
+                    a = Integer.parseInt(cdigits[i]);
                 }
                 catch(Throwable t1)
                 {
-                    t1.printStackTrace();
+                    char c[] = cdigits[i].toCharArray();
+                    for(int j = 0; j < c.length; j++)
+                    {
+                        a += (c[j] << ((c.length - (j + 1)) * 8));
+                    }
+                }
+                try
+                {
+                    b = Integer.parseInt(vdigits[i]);
+                }
+                catch(Throwable t1)
+                {
+                    char c[] = vdigits[i].toCharArray();
+                    for(int j = 0; j < c.length; j++)
+                    {
+                        b += (c[j] << ((c.length - (j + 1)) * 8));
+                    }
+                }
+                if(a > b)
+                {
+                    update = true;
+                    break;
+                }
+                else if(a < b)
+                {
+                    update = false;
+                    break;
+                }
+                else if((i == max - 1) && (cdigits.length > vdigits.length))
+                {
+                    update = true;
+                    break;
                 }
             }
+        }
+        catch(UnknownHostException e)
+        {
         }
         catch(Throwable t)
         {
@@ -239,7 +278,7 @@ public abstract class VPluginBase extends JavaPlugin
                 }
             }
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
         }
     }
@@ -253,37 +292,79 @@ public abstract class VPluginBase extends JavaPlugin
         }
         try
 		{
-            /*if(getConfigString("db.use").equalsIgnoreCase("true"))
+            if(portMysql)
             {
-                Connection = DriverManager.getConnection(getConfigString("db.url"), getConfigString("db.user"), getConfigString("db.pw"));
+                loadFlatfile();
+                saveUserData();
+                portMysql = false;
+            }
+            else if(getConfigString("db.use").equalsIgnoreCase("true"))
+            {
+                loadMysql();
             }
             else
-            {*/
-                BufferedReader file = new BufferedReader(new FileReader(new File(getDataFolder(), "data.db")));
-                String line;
-                String data[];
-                while((line = file.readLine()) != null)
-                {
-                    data = line.split(separator[0]);
-                    if(data.length >= 2)
-                    {
-                        putPack(data[0], new VPack(data[0].toLowerCase(), data, 1));
-                    }
-                }
-                file.close();
-            //}
+            {
+                loadFlatfile();
+            }
 		}
-		catch(Exception e)
+		catch(Throwable t)
 		{
             warn();
-            e.printStackTrace();
+            t.printStackTrace();
 		}
         loadRequested = false;
     }
     
+    private void loadMysql() throws Throwable
+    {
+        if(db == null)
+        {
+            db = DriverManager.getConnection(getConfigString("db.url"), getConfigString("db.user"), getConfigString("db.pw"));
+        }
+        ArrayList<String[]> list = new ArrayList<String[]>();
+        ResultSet row = db.prepareStatement("SELECT * FROM `vpack`").executeQuery();
+        while(row.next())
+        {
+            list.add(row.getString("data").split(separator[0]));
+        }
+        load(list);
+    }
+    
+    private void loadFlatfile() throws Throwable
+    {
+        BufferedReader file = new BufferedReader(new FileReader(new File(getDataFolder(), "data.db")));
+        String line;
+        ArrayList<String[]> list = new ArrayList<String[]>();
+        while((line = file.readLine()) != null)
+        {
+            list.add(line.split(separator[0]));
+        }
+        file.close();
+        load(list);
+    }
+    
+    private void load(ArrayList<String[]> list)
+    {
+        for(String[] data : list.toArray(new String[0][]))
+        {
+            if(data.length >= 2)
+            {
+                putPack(data[0], new VPack(data[0].toLowerCase(), data, 1));
+            }
+        }
+    }
+    
     protected synchronized void saveUserData()
     {
-        saveThread = new VThreadSave(new File(getDataFolder(), "data.db"), packs);
+        VThreadSave saveThread;
+        if(getConfigString("db.use").equalsIgnoreCase("true"))
+        {
+            saveThread = new VThreadSave(db, packs);
+        }
+        else
+        {
+            saveThread = new VThreadSave(new File(getDataFolder(), "data.db"), packs);
+        }
         saveThread.run();
     }
     
@@ -403,11 +484,11 @@ public abstract class VPluginBase extends JavaPlugin
                 sendMessage(sender, lang("argument.unknown"), ChatColor.RED);
             }
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             sendMessage(sender, lang("argument.error"), ChatColor.RED);
             warn();
-            e.printStackTrace();
+            t.printStackTrace();
         }
         return true;
     }

@@ -5,20 +5,33 @@
 package net.drgnome.virtualpack;
 
 import java.io.*;
+import java.sql.*;
 import java.util.*;
 
 import static net.drgnome.virtualpack.Util.*;
 
 public class VThreadSave extends Thread
 {
+    private boolean mysql;
     private File file;
+    private Connection db;
     private HashMap<String, VPack> packs;
     private boolean done;
     
     public VThreadSave(File file, HashMap<String, VPack> packs)
     {
         super();
+        this.mysql = false;
         this.file = file;
+        this.packs = packs;
+        this.done = false;
+    }
+    
+    public VThreadSave(Connection db, HashMap<String, VPack> packs)
+    {
+        super();
+        this.mysql = true;
+        this.db = db;
         this.packs = packs;
         this.done = false;
     }
@@ -32,7 +45,7 @@ public class VThreadSave extends Thread
             VPack vpack;
             String contents;
             String data[];
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            ArrayList<String> list = new ArrayList<String>();
             for(int i = 0; i < key.length; i++)
             {
                 name = (String)key[i];
@@ -45,16 +58,34 @@ public class VThreadSave extends Thread
                     {
                         contents += separator[0] + data[j];
                     }
-                    writer.write(contents);
-                    writer.newLine();
+                    list.add(contents);
                 }
             }
-            writer.close();
+            if(mysql)
+            {
+                db.prepareStatement("DELETE FROM `vpack`").execute();
+                for(String con : list.toArray(new String[0]))
+                {
+                    PreparedStatement query = db.prepareStatement("INSERT INTO `vpack` (`data`) VALUES(?)");
+                    query.setString(1, con);
+                    query.execute();
+                }
+            }
+            else
+            {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                for(String con : list.toArray(new String[0]))
+                {
+                    writer.write(con);
+                    writer.newLine();
+                }
+                writer.close();
+            }
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             warn();
-            e.printStackTrace();
+            t.printStackTrace();
         }
         this.done = true;
         return;

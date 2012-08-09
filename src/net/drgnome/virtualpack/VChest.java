@@ -13,10 +13,6 @@ public class VChest extends ContainerChest
     public VChest(EntityPlayer player, IInventory data)
     {
         super(player.inventory, data);
-    }
-    
-    public boolean b(EntityHuman entityhuman)
-    {
-        return true;
+        this.checkReachable = false;
     }
 }

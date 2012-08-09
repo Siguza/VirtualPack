@@ -16,6 +16,7 @@ public class VEnchantTable extends ContainerEnchantTable
     public VEnchantTable(EntityPlayer player, int bookshelves)
     {
         super(player.inventory, null, 0, 0, 0);
+        this.checkReachable = false;
         this.bookshelves = bookshelves;
     }
     
@@ -24,9 +25,9 @@ public class VEnchantTable extends ContainerEnchantTable
         if(iinventory == enchantSlots)
         {
             ItemStack itemstack = iinventory.getItem(0);
-            if((itemstack != null) && (itemstack.q()))
+            if((itemstack != null) && (itemstack.u()))
             {
-                b = rand.nextLong();
+                f = rand.nextLong();
                 for(int i = 0; i < 3; i++)
                 {
                     costs[i] = EnchantmentManager.a(rand, i, bookshelves, itemstack);
@@ -41,11 +42,6 @@ public class VEnchantTable extends ContainerEnchantTable
                 }
             }
         }
-    }
-    
-    public boolean b(EntityHuman entityhuman)
-    {
-        return true;
     }
     
     public boolean a(EntityHuman entityhuman, int i)

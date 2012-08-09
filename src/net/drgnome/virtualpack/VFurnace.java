@@ -13,10 +13,6 @@ public class VFurnace extends ContainerFurnace
     public VFurnace(EntityPlayer player, TileEntityFurnace data)
     {
         super(player.inventory, data);
-    }
-    
-    public boolean b(EntityHuman entityhuman)
-    {
-        return true;
+        this.checkReachable = false;
     }
 }

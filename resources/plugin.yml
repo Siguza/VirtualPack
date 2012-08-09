@@ -1,6 +1,6 @@
 name: VirtualPack
 main: net.drgnome.virtualpack.VPlugin
-version: 1.0.5.2
+version: 1.0.6
 author: Siguza
 depend: [Vault]
 softdepend: [PermissionsEx, GroupManager, iConomy]

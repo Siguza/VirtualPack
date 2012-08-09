@@ -140,7 +140,7 @@ public class VInv implements IInventory
     {
     }
     
-    public void g()
+    public void startOpen()
     {
     }
     

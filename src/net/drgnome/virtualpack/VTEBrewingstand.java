@@ -66,7 +66,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     }
     
     // For compatibility
-    public void q_()
+    public void g()
     {
         tick();
     }
@@ -279,13 +279,13 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                 int meta = items[i].getData();
                 int result = getPotionMeta(meta, items[3]);
                 // I have no idea what this does
-                if((!ItemPotion.c(meta)) && (ItemPotion.c(result)))
+                if((!ItemPotion.g(meta)) && (ItemPotion.g(result)))
                 {
                     return true;
                 }
                 // Lists of effects
-                List list = Item.POTION.b(meta);
-                List list1 = Item.POTION.b(result);
+                List list = Item.POTION.f(meta);
+                List list1 = Item.POTION.f(result);
                 // Just copied this part from TileEntityBrewingStand.o()
                 if(((meta <= 0) || (list != list1)) && ((list == null) || ((!list.equals(list1)) && (list1 != null))) && (meta != result))
                 {
@@ -324,14 +324,14 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                 int meta = items[i].getData() < 0 ? 0 : items[i].getData();
                 int result = getPotionMeta(meta, items[3]) < 0 ? 0 : getPotionMeta(meta, items[3]);
                 // Dafuq is this good for?
-                if((!ItemPotion.c(meta)) && (ItemPotion.c(result)))
+                if((!ItemPotion.g(meta)) && (ItemPotion.g(result)))
                 {
                     items[i].setData(result);
                     continue;
                 }
                 // Lists of effects
-                List list = Item.POTION.b(meta);
-                List list1 = Item.POTION.b(result);
+                List list = Item.POTION.f(meta);
+                List list1 = Item.POTION.f(result);
                 if(((meta <= 0) || (list != list1)) && ((list == null) || ((!list.equals(list1)) && (list1 != null))) && (meta != result))
                 {
                     items[i].setData(result);
@@ -345,9 +345,9 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             }
         }
         // Is the ingredient a container?
-        if(Item.byId[items[3].id].k())
+        if(Item.byId[items[3].id].r())
         {
-            items[3] = new ItemStack(Item.byId[items[3].id].j());
+            items[3] = new ItemStack(Item.byId[items[3].id].q());
         }
         // Or not?
         else
@@ -368,7 +368,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             return false;
         }
         // CUSTOM INGREDIENTS HERE
-        return Item.byId[item.id].n();
+        return Item.byId[item.id].u();
     }
     
     private boolean isBrewable(ItemStack item, ItemStack ingredient)
@@ -393,9 +393,9 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             return potion;
         }
         // CUSTOM RESULTS HERE
-        if((Item.byId[ingredient.id].n()) && (potion.id == Item.POTION.id))
+        if((Item.byId[ingredient.id].u()) && (potion.id == Item.POTION.id))
         {
-            return new ItemStack(potion.id, potion.count, PotionBrewer.a(potion.getData(), Item.byId[ingredient.id].m()));
+            return new ItemStack(potion.id, potion.count, PotionBrewer.a(potion.getData(), Item.byId[ingredient.id].t()));
         }
         return potion;
     }
@@ -407,9 +407,9 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             return i;
         }
         // Cryptic names, Y U NO MAKE SENSE?
-        if(Item.byId[item.id].n())
+        if(Item.byId[item.id].u())
         {
-            return PotionBrewer.a(i, Item.byId[item.id].m());
+            return PotionBrewer.a(i, Item.byId[item.id].t());
         }
         return i;
     }
@@ -418,5 +418,11 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     public InventoryHolder getOwner()
     {
         return null;
+    }
+    
+    // Another one
+    public boolean a(EntityHuman entityhuman)
+    {
+        return true;
     }
 }

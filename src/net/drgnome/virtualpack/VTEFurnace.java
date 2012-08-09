@@ -86,7 +86,7 @@ public class VTEFurnace extends TileEntityFurnace
     }
     
     // For compatibility
-    public void q_()
+    public void g()
     {
         tick();
     }
@@ -212,10 +212,10 @@ public class VTEFurnace extends TileEntityFurnace
                 // Before we remove the item: how fast does it burn?
                 burnSpeed = getBurnSpeed(contents[1]);
                 // If it's a container item (lava bucket), we only consume its contents (not like evil Notch!)
-                if(Item.byId[contents[1].id].k())
+                if(Item.byId[contents[1].id].r())
                 {
-                    // j(), k(), I hate those method names -.-
-                    contents[1] = new ItemStack(Item.byId[contents[1].id].j()); 
+                    // r(), q(), I hate those method names -.-
+                    contents[1] = new ItemStack(Item.byId[contents[1].id].q()); 
                 }
                 // If it's not a container, consume it! Om nom nom nom!
                 else
@@ -267,7 +267,7 @@ public class VTEFurnace extends TileEntityFurnace
         }
         int i = item.id;
         // CUSTOM RECIPE HERE
-        return FurnaceRecipes.getInstance().getResult(i);
+        return RecipesFurnace.getInstance().getResult(i);
     }
     
     private double getMeltSpeed(ItemStack item)
@@ -287,10 +287,19 @@ public class VTEFurnace extends TileEntityFurnace
             return 0;
         }
         int i = item.id;
+        Item it = item.getItem();
         // CUSTOM FUEL HERE
         if((i == Item.STICK.id) || (i == Block.SAPLING.id))
         {
             return 100;
+        }
+        else if(i == Block.WOOD_STEP.id)
+        {
+            return 150;
+        }
+        else if(((it instanceof ItemHoe) && (((ItemHoe)it).f().equals("WOOD"))) || ((it instanceof ItemSword) && (((ItemSword)it).f().equals("WOOD"))) || ((it instanceof ItemTool) && (((ItemTool)it).e().equals("WOOD"))))
+        {
+            return 200;
         }
         else if((i < 256) && (Block.byId[i].material == Material.WOOD))
         {
@@ -434,9 +443,9 @@ public class VTEFurnace extends TileEntityFurnace
         }
         // And consume the ingredient item
         // Goddamn, you have container functions, use them! Notch!
-        if(Item.byId[contents[0].id].k())
+        if(Item.byId[contents[0].id].r())
         {
-            contents[0] = new ItemStack(Item.byId[contents[0].id].j());
+            contents[0] = new ItemStack(Item.byId[contents[0].id].q());
         }
         else
         {
@@ -453,5 +462,11 @@ public class VTEFurnace extends TileEntityFurnace
     public InventoryHolder getOwner()
     {
         return null;
+    }
+    
+    // Another one
+    public boolean a(EntityHuman entityhuman)
+    {
+        return true;
     }
 }

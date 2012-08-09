@@ -13,10 +13,6 @@ public class VBrewingstand extends ContainerBrewingStand
     public VBrewingstand(EntityPlayer player, TileEntityBrewingStand data)
     {
         super(player.inventory, data);
-    }
-    
-    public boolean b(EntityHuman entityhuman)
-    {
-        return true;
+        this.checkReachable = false;
     }
 }
