@@ -68,7 +68,7 @@ public class VInv implements IInventory
                 contents[slot] = null;
                 return item;
             }
-            ItemStack item = contents[slot].a(size);
+            ItemStack item = contents[slot].a(size); // Derpnote
             if(contents[slot].count <= 0)
             {
                 contents[slot] = null;
@@ -112,7 +112,7 @@ public class VInv implements IInventory
     {
     }
     
-    public boolean a(EntityHuman entityhuman)
+    public boolean a(EntityHuman entityhuman) // Derpnote
     {
         return true;
     }
@@ -136,7 +136,7 @@ public class VInv implements IInventory
     {
     }
     
-    public void f()
+    public void f() // Derpnote
     {
     }
     

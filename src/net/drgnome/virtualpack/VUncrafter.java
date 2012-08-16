@@ -8,6 +8,8 @@ import java.util.*;
 
 import net.minecraft.server.*;
 
+import static net.drgnome.virtualpack.Util.*;
+
 public class VUncrafter extends ContainerChest
 {
     EntityPlayer player;
@@ -15,30 +17,31 @@ public class VUncrafter extends ContainerChest
     public VUncrafter(EntityPlayer player)
     {
         super(player.inventory, new VUncrafterInv());
+        this.checkReachable = false;
         this.player = player;
-        a = new ArrayList();
-        b = new ArrayList();
+        a = new ArrayList(); // Derpnote
+        b = new ArrayList(); // Derpnote
         for(int i = 0; i < 2; i++)
         {
             for(int j = 0; j < 9; j++)
             {
-                a(new Slot(container, j + 9 * i, 8 + j * 18, 18));
+                a(new Slot(container, j + 9 * i, 8 + j * 18, 18)); // Derpnote
             }
         }
         for(int i = 0; i < 3; i++)
         {
             for(int j = 0; j < 9; j++)
             {
-                a(new Slot(player.inventory, j + i * 9 + 9, 8 + j * 18, 67 + i * 18));
+                a(new Slot(player.inventory, j + i * 9 + 9, 8 + j * 18, 67 + i * 18)); // Derpnote
             }
         }
         for(int i = 0; i < 9; i++)
         {
-            a(new Slot(player.inventory, i, 8 + i * 18, 125));
+            a(new Slot(player.inventory, i, 8 + i * 18, 125)); // Derpnote
         }
     }
     
-    public void a(EntityHuman entityhuman)
+    public void a(EntityHuman entityhuman) // Derpnote
     {
         for(int i = 0; i < 18; i++)
         {
@@ -48,11 +51,6 @@ public class VUncrafter extends ContainerChest
                 entityhuman.drop(itemstack);
             }
         }
-    }
-    
-    public boolean b(EntityHuman entityhuman)
-    {
-        return true;
     }
     
     public ItemStack clickItem(int i, int j, boolean flag, EntityHuman entityhuman)
@@ -76,7 +74,7 @@ public class VUncrafter extends ContainerChest
                     }
                     if(j == 1)
                     {
-                        entityhuman.drop(playerinventory.getCarried().a(1));
+                        entityhuman.drop(playerinventory.getCarried().a(1)); // Derpnote
                         if(playerinventory.getCarried().count == 0)
                         {
                             playerinventory.setCarried((ItemStack)null);
@@ -86,15 +84,15 @@ public class VUncrafter extends ContainerChest
             }
             else if(flag)
             {
-                ItemStack itemstack1 = b(i);
+                ItemStack itemstack1 = b(i); // Derpnote
                 if(itemstack1 != null)
                 {
                     int k = itemstack1.id;
-                    itemstack = itemstack1.cloneItemStack();
-                    Slot slot = (Slot)this.b.get(i);
+                    itemstack = copy(itemstack1);
+                    Slot slot = (Slot)this.b.get(i); // Derpnote
                     if((slot != null) && (slot.getItem() != null) && (slot.getItem().id == k))
                     {
-                        b(i, j, flag, entityhuman);
+                        b(i, j, flag, entityhuman); // Derpnote
                     }
                 }
             }
@@ -104,10 +102,10 @@ public class VUncrafter extends ContainerChest
                 {
                     return null;
                 }
-                Slot slot1 = (Slot)this.b.get(i);
+                Slot slot1 = (Slot)this.b.get(i); // Derpnote
                 if(slot1 != null)
                 {
-                    slot1.d();
+                    slot1.d(); // Derpnote
                     ItemStack itemstack2 = slot1.getItem();
                     ItemStack itemstack3 = playerinventory.getCarried();
                     if((i > 8) && (i < 18) && (itemstack3 != null))
@@ -117,16 +115,16 @@ public class VUncrafter extends ContainerChest
                     }
                     if(itemstack2 != null)
                     {
-                        itemstack = itemstack2.cloneItemStack();
+                        itemstack = copy(itemstack2);
                     }
                     if(itemstack2 == null)
                     {
                         if((itemstack3 != null) && (slot1.isAllowed(itemstack3)))
                         {
                             int l = j == 0 ? itemstack3.count : 1;
-                            if(l > slot1.a())
+                            if(l > slot1.a()) // Derpnote
                             {
-                                l = slot1.a();
+                                l = slot1.a(); // Derpnote
                             }
                             slot1.set(itemstack3.a(l));
                             if(itemstack3.count == 0)
@@ -138,35 +136,35 @@ public class VUncrafter extends ContainerChest
                     else if(itemstack3 == null)
                     {
                         int l = j == 0 ? itemstack2.count : (itemstack2.count + 1) / 2;
-                        ItemStack itemstack4 = slot1.a(l);
+                        ItemStack itemstack4 = slot1.a(l); // Derpnote
                         playerinventory.setCarried(itemstack4);
                         if(itemstack2.count == 0)
                         {
                             slot1.set((ItemStack)null);
                         }
-                        slot1.b(playerinventory.getCarried());
+                        slot1.b(playerinventory.getCarried()); // Derpnote
                     }
                     else if(slot1.isAllowed(itemstack3))
                     {
                         if((itemstack2.id == itemstack3.id) && ((!itemstack2.usesData()) || (itemstack2.getData() == itemstack3.getData())) && (ItemStack.equals(itemstack2, itemstack3)))
                         {
                             int l = j == 0 ? itemstack3.count : 1;
-                            if(l > slot1.a() - itemstack2.count)
+                            if(l > slot1.a() - itemstack2.count) // Derpnote
                             {
-                                l = slot1.a() - itemstack2.count;
+                                l = slot1.a() - itemstack2.count; // Derpnote
                             }
                             if(l > itemstack3.getMaxStackSize() - itemstack2.count)
                             {
                                 l = itemstack3.getMaxStackSize() - itemstack2.count;
                             }
-                            itemstack3.a(l);
+                            itemstack3.a(l); // Derpnote
                             if(itemstack3.count == 0)
                             {
                                 playerinventory.setCarried((ItemStack)null);
                             }
                             itemstack2.count += l;
                         }
-                        else if(itemstack3.count <= slot1.a())
+                        else if(itemstack3.count <= slot1.a()) // Derpnote
                         {
                             slot1.set(itemstack3);
                             playerinventory.setCarried(itemstack2);
@@ -181,12 +179,12 @@ public class VUncrafter extends ContainerChest
                         if((l > 0) && (l + itemstack3.count <= itemstack3.getMaxStackSize()))
                         {
                             itemstack3.count += l;
-                            itemstack2 = slot1.a(l);
+                            itemstack2 = slot1.a(l); // Derpnote
                             if(itemstack2.count == 0)
                             {
                                 slot1.set((ItemStack)null);
                             }
-                            slot1.b(playerinventory.getCarried());
+                            slot1.b(playerinventory.getCarried()); // Derpnote
                         }
                     }
                 }

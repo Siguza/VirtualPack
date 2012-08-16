@@ -99,6 +99,8 @@ public class Lang
         setDef("help.enchanttable.buy", "/v e buy - Buy an enchantmant table");
         setDef("help.enchanttable.use", "/v e - Open your enchantment table");
         setDef("help.enchanttable.book", "/v e buy b [x] - Buy [x] bookshelves");
+        setDef("help.invguard.buy", "/v i buy - Buy the InvGuard");
+        setDef("help.invguard.info", "/v i - InvGuard info");
         setDef("help.more", "More: %1");
         setDef("help.debug", "/v d - Debug Help");
         setDef("version", "VirtualPack %1");
@@ -107,6 +109,7 @@ public class Lang
         setDef("stats.allow", "You're no allowed to do that.");
         setDef("stats.workbench", "Workbench: %1%2");
         setDef("stats.uncrafter", "Uncrafter: %1%2");
+        setDef("stats.invguard", "InvGuard: %1%2");
         setDef("stats.enchanttable", "Enchantment Table: %1%2");
         setDef("stats.books", ", with %1 bookshelves");
         setDef("stats.chest", "Chests: %1%2");
@@ -118,6 +121,7 @@ public class Lang
         setDef("price.title", "----- ----- ----- Prices ----- ----- -----");
         setDef("price.workbench", "Workbench: %1Buy: %2%3 %1Use: %2%4");
         setDef("price.uncrafter", "Uncrafter: %1Buy: %2%3 %1Use: %2%4");
+        setDef("price.invguard", "InvGuard: %1Buy: %2%3 %1Use: %2%4");
         setDef("price.chest", "Chest: %1Buy: %2%3 %1Use: %2%4");
         setDef("price.furnace", "Furnace: %1Buy: %2%3 %1Use: %2%4 %1Link: %2%5");
         setDef("price.brewingstand", "Brewing Stand: %1Buy: %2%3 %1Use: %2%4 %1Link: %2%5");
@@ -139,6 +143,12 @@ public class Lang
         setDef("uncrafter.none", "You don't have an uncrafter.");
         setDef("uncrafter.max", "You already have an uncrafter.");
         setDef("uncrafter.bought", "You bought an uncrafter.");
+        setDef("invguard.name", "Invguard");
+        setDef("invguard.use", "InvGuard (inventoty guard) protects and restores your inventory when you die.");
+        setDef("invguard.perm", "You're not allowed to use the invguard.");
+        setDef("invguard.none", "You don't have an invguard.");
+        setDef("invguard.max", "You already have an invguard.");
+        setDef("invguard.bought", "You bought an invguard.");
         setDef("chest.name", "V Chest %1");
         setDef("chest.perm", "You're not allowed to use chests.");
         setDef("chest.none", "This chest doesn't exist.");
@@ -182,6 +192,8 @@ public class Lang
         setDef("admin.give.workbench.done", "Gave %1 a workbench.");
         setDef("admin.give.uncrafter.have", "This user already has an uncrafter.");
         setDef("admin.give.uncrafter.done", "Gave %1 an uncrafter.");
+        setDef("admin.give.invguard.have", "This user already has an invguard.");
+        setDef("admin.give.invguard.done", "Gave %1 an invguard.");
         setDef("admin.give.enchanttable.have", "This user already has an enchantment table.");
         setDef("admin.give.enchanttable.done", "Gave %1 an enchantment table.");
         setDef("admin.give.chest.one", "Gave %1 a chest.");
@@ -196,6 +208,8 @@ public class Lang
         setDef("admin.take.workbench.done", "Took the workbench away from %1.");
         setDef("admin.take.uncrafter.none", "This user doesn't have an uncrafter.");
         setDef("admin.take.uncrafter.done", "Took the uncrafter away from %1.");
+        setDef("admin.take.invguard.none", "This user doesn't have an invguard.");
+        setDef("admin.take.invguard.done", "Took the invguard away from %1.");
         setDef("admin.take.enchanttable.none", "This user doesn't have an enchantment table.");
         setDef("admin.take.enchanttable.done", "Tool the enchantment table away from %1.");
         setDef("admin.take.chest.one", "Took a chest away from %1.");

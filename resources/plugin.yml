@@ -1,9 +1,9 @@
 name: VirtualPack
 main: net.drgnome.virtualpack.VPlugin
-version: 1.0.6
+version: 1.1.0
 author: Siguza
 depend: [Vault]
-softdepend: [PermissionsEx, GroupManager, iConomy]
+softdepend: [PermissionsEx, GroupManager, PermissionsBukkit, iConomy]
 commands:
     v:
         description: VirtualPack
@@ -30,6 +30,7 @@ permissions:
             vpack.use.furnace: true
             vpack.use.brewingstand: true
             vpack.use.uncrafter: true
+            vpack.use.invguard: true
     vpack.use.workbench:
         description: Allows the use of the VirtualPack workbench
     vpack.use.enchanttable:
@@ -42,6 +43,29 @@ permissions:
         description: Allows the use of the VirtualPack brewing stands
     vpack.use.uncrafter:
         description: Allows the use of the VirtualPack uncrafter
+    vpack.use.invguard:
+        description: Allows the use of the VirtualPack invguard
+    vpack.keep.*:
+        decsription: Everything is kept upon death
+        children:
+            vpack.keep.workbench: true
+            vpack.keep.enchanttable: true
+            vpack.keep.chest: true
+            vpack.keep.furnace: true
+            vpack.keep.brewingstand: true
+            vpack.keep.uncrafter: true
+    vpack.keep.workbench:
+        description: Keep the workbench on death
+    vpack.keep.enchanttable:
+        description: Keep the enchantment table on death
+    vpack.keep.chest:
+        description: Keep all chests on death
+    vpack.keep.furnace:
+        description: Keep all furnaces on death
+    vpack.keep.brewingstand:
+        description: Keep all brewing stands on death
+    vpack.keep.uncrafter:
+        description: Keep the uncrafter on death
     vpack.stats:
         description: Allows you to see other user's stats
     vpack.admin:

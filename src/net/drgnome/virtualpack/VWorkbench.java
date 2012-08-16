@@ -11,10 +11,6 @@ public class VWorkbench extends ContainerWorkbench
     public VWorkbench(EntityPlayer player)
     {
         super(player.inventory, player.world, 0, 0, 0);
-    }
-    
-    public boolean b(EntityHuman entityhuman)
-    {
-        return true;
+        this.checkReachable = false;
     }
 }

@@ -25,6 +25,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.configuration.file.*;
+import org.bukkit.event.Listener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -33,14 +38,15 @@ import static net.drgnome.virtualpack.Config.*;
 import static net.drgnome.virtualpack.Lang.*;
 import static net.drgnome.virtualpack.Util.*;
 
-public abstract class VPluginBase extends JavaPlugin
+public abstract class VPluginBase extends JavaPlugin implements Listener
 {
-    public static final String version = "1.0.6";
+    public static final String version = "1.1.0";
     protected HashMap<String, VPack> packs;
     private int saveTick;
     private int upTick;
     private boolean update;
     private VThreadSave saveThread;
+    private boolean saveRequested;
     private boolean loadRequested;
     private boolean waitForPlugin;
     private Connection db;
@@ -51,13 +57,13 @@ public abstract class VPluginBase extends JavaPlugin
         waitForPlugin = false;
         try
         {
-            if(!org.anjocaido.groupmanager.GroupManager.isLoaded())
+            if(org.anjocaido.groupmanager.GroupManager.isLoaded())
             {
-                waitForPlugin = true;
+                init();
             }
             else
             {
-                init();
+                waitForPlugin = true;
             }
         }
         catch(NoClassDefFoundError e)
@@ -73,6 +79,7 @@ public abstract class VPluginBase extends JavaPlugin
         saveTick = 0;
         update = false;
         upTick = 60 * 60 * 20;
+        saveRequested = false;
         loadRequested = false;
         waitForPlugin = false;
         portMysql = false;
@@ -108,6 +115,7 @@ public abstract class VPluginBase extends JavaPlugin
             return;
         }
         loadUserData();
+        getServer().getPluginManager().registerEvents(this, this);
         log.info(lang("vpack.enable", new String[]{version}));
     }
 
@@ -160,6 +168,10 @@ public abstract class VPluginBase extends JavaPlugin
                 upTick = 0;
             }
         }
+        if(saveRequested)
+        {
+            saveUserData();
+        }
         if(loadRequested)
         {
             loadUserData();
@@ -171,7 +183,6 @@ public abstract class VPluginBase extends JavaPlugin
             {
                 log.info("[VirtualPack] Saving user data...");
                 saveUserData();
-                loadUserData();
                 saveTick = 0;
             }
         }
@@ -356,7 +367,11 @@ public abstract class VPluginBase extends JavaPlugin
     
     protected synchronized void saveUserData()
     {
-        VThreadSave saveThread;
+        if((saveThread != null) && !(saveThread.done()))
+        {
+            saveRequested = true;
+            return;
+        }
         if(getConfigString("db.use").equalsIgnoreCase("true"))
         {
             saveThread = new VThreadSave(db, packs);
@@ -366,6 +381,7 @@ public abstract class VPluginBase extends JavaPlugin
             saveThread = new VThreadSave(new File(getDataFolder(), "data.db"), packs);
         }
         saveThread.run();
+        saveRequested = false;
     }
     
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
@@ -374,6 +390,10 @@ public abstract class VPluginBase extends JavaPlugin
         {
             sender.sendMessage("VirtualPack is waiting for GroupManager.");
             return true;
+        }
+        if((sender instanceof CraftPlayer) && hasPack(sender.getName()) && (getPack(sender.getName()).inv != null))
+        {
+            restoreInv(((CraftPlayer)sender).getHandle());
         }
         if(update && (!(sender instanceof Player) || (sender.hasPermission("vpack.update"))))
         {
@@ -417,6 +437,11 @@ public abstract class VPluginBase extends JavaPlugin
         }
         else if(args[0].equals("admin"))
         {
+            if(!sender.hasPermission("vpack.admin"))
+            {
+                sendMessage(sender, lang("admin.perm"), ChatColor.RED);
+                return true;
+            }
             cmdAdmin(sender, args);
             if((args.length < 2) || (!args[1].equals("use")))
             {
@@ -454,6 +479,10 @@ public abstract class VPluginBase extends JavaPlugin
             else if(args[0].equals("uncrafter"))
             {
                 cmdUncrafter(sender, args);
+            }
+            else if(args[0].equals("invguard"))
+            {
+                cmdInvGuard(sender, args);
             }
             else if(args[0].equals("enchanttable"))
             {
@@ -493,6 +522,12 @@ public abstract class VPluginBase extends JavaPlugin
         return true;
     }
     
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public abstract void handleEntityDamage(EntityDamageEvent event);
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public abstract void handleRespawn(PlayerRespawnEvent event);
+    
     protected abstract void cmdHelp(CommandSender sender, String[] args);
     protected abstract void cmdConsoleStats(CommandSender sender, String[] args);
     protected abstract void cmdAdmin(CommandSender sender, String[] args);
@@ -500,8 +535,9 @@ public abstract class VPluginBase extends JavaPlugin
     protected abstract void cmdStats(CommandSender sender, String[] args);
     protected abstract void cmdPrices(CommandSender sender, String[] args);
     protected abstract void cmdWorkbench(CommandSender sender, String[] args);
-    protected abstract void cmdEnchanttable(CommandSender sender, String[] args);
     protected abstract void cmdUncrafter(CommandSender sender, String[] args);
+    protected abstract void cmdInvGuard(CommandSender sender, String[] args);
+    protected abstract void cmdEnchanttable(CommandSender sender, String[] args);
     protected abstract void cmdChest(CommandSender sender, String[] args);
     protected abstract void cmdFurnace(CommandSender sender, String[] args);
     protected abstract void cmdBrewingstand(CommandSender sender, String[] args);
@@ -526,6 +562,10 @@ public abstract class VPluginBase extends JavaPlugin
         if(s.equals("uc"))
         {
             return "uncrafter";
+        }
+        if(s.equals(""))
+        {
+            return "invguard";
         }
         if(s.equals("e"))
         {
@@ -576,6 +616,42 @@ public abstract class VPluginBase extends JavaPlugin
             return "update";
         }
         return s;
+    }
+    
+    protected void handleDeath(CraftPlayer cp)
+    {
+        String death = getConfigString("on-death").toLowerCase();
+        if(death.equals("harddrop") || death.equals("drop"))
+        {
+            getPack(cp.getName()).drop(cp);
+        }
+        if(death.equals("wipe") || death.equals("drop"))
+        {
+            getPack(cp.getName()).wipe(cp);
+        }
+        if(death.equals("hardwipe") || death.equals("harddrop"))
+        {
+            getPack(cp.getName()).reset(cp);
+        }
+        if((getPack(cp.getName()).inv == null) && (death.equals("hardkeep") || getPack(cp.getName()).useInvGuard(cp)))
+        {
+            EntityPlayer player = cp.getHandle();
+            getPack(cp.getName()).inv = new PlayerInventory((EntityPlayer)null);
+            getPack(cp.getName()).inv.items = copy(player.inventory.items);
+            getPack(cp.getName()).inv.armor = copy(player.inventory.armor);
+            player.inventory.items = new ItemStack[player.inventory.items.length];
+            player.inventory.armor = new ItemStack[player.inventory.armor.length];
+            player.inventory.update();
+        }
+    }
+    
+    protected void restoreInv(EntityPlayer player)
+    {
+        player.inventory.m();
+        player.inventory.items = copy(getPack(player.name).inv.items);
+        player.inventory.armor = copy(getPack(player.name).inv.armor);
+        getPack(player.name).inv = null;
+        player.inventory.update();
     }
     
     public boolean hasPack(String name)

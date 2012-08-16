@@ -109,6 +109,15 @@ public class Util
         return economy.has(username, amount);
     }
     
+    public static double moneyGet(String username)
+    {
+        if(economyDisabled || (economy == null))
+        {
+            return 0.0D;
+        }
+        return economy.getBalance(username);
+    }
+    
     public static void moneyTake(String username, double amount)
     {
         // Don't use more RAM than necessary

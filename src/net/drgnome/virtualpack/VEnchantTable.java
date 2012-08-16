@@ -20,19 +20,19 @@ public class VEnchantTable extends ContainerEnchantTable
         this.bookshelves = bookshelves;
     }
     
-    public void a(IInventory iinventory)
+    public void a(IInventory iinventory) // Derpnote
     {
         if(iinventory == enchantSlots)
         {
             ItemStack itemstack = iinventory.getItem(0);
-            if((itemstack != null) && (itemstack.u()))
+            if((itemstack != null) && (itemstack.u())) // Derpnote
             {
                 f = rand.nextLong();
                 for(int i = 0; i < 3; i++)
                 {
-                    costs[i] = EnchantmentManager.a(rand, i, bookshelves, itemstack);
+                    costs[i] = EnchantmentManager.a(rand, i, bookshelves, itemstack); // Derpnote
                 }
-                a();
+                a(); // Derpnote
             }
             else
             {
@@ -44,12 +44,12 @@ public class VEnchantTable extends ContainerEnchantTable
         }
     }
     
-    public boolean a(EntityHuman entityhuman, int i)
+    public boolean a(EntityHuman entityhuman, int i) // Derpnote
     {
         ItemStack itemstack = enchantSlots.getItem(0);
         if(costs[i] > 0 && itemstack != null && entityhuman.expLevel >= costs[i])
         {
-            List list = EnchantmentManager.b(rand, itemstack, costs[i]);
+            List list = EnchantmentManager.b(rand, itemstack, costs[i]); // Derpnote
             if(list != null)
             {
                 entityhuman.levelDown(costs[i]);
@@ -59,14 +59,14 @@ public class VEnchantTable extends ContainerEnchantTable
                     EnchantmentInstance enchantmentinstance = (EnchantmentInstance)iterator.next();
                     itemstack.addEnchantment(enchantmentinstance.enchantment, enchantmentinstance.level);
                 }
-                this.a(this.enchantSlots);
+                a(enchantSlots); // Derpnote
             }
             return true;
         }
         return false;
     }
     
-    public void a(EntityHuman entityhuman)
+    public void a(EntityHuman entityhuman) // Derpnote
     {
         PlayerInventory playerinventory = entityhuman.inventory;
         if(playerinventory.getCarried() != null)
@@ -74,7 +74,7 @@ public class VEnchantTable extends ContainerEnchantTable
             entityhuman.drop(playerinventory.getCarried());
             playerinventory.setCarried((ItemStack) null);
         }
-        ItemStack itemstack = this.enchantSlots.splitWithoutUpdate(0);
+        ItemStack itemstack = enchantSlots.splitWithoutUpdate(0);
         if(itemstack != null)
         {
             entityhuman.drop(itemstack);

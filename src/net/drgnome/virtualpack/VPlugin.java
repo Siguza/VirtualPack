@@ -23,6 +23,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.configuration.file.*;
+import org.bukkit.event.Listener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -31,8 +36,48 @@ import static net.drgnome.virtualpack.Config.*;
 import static net.drgnome.virtualpack.Lang.*;
 import static net.drgnome.virtualpack.Util.*;
 
-public class VPlugin extends VPluginBase
-{    
+public class VPlugin extends VPluginBase implements Listener
+{
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void handleEntityDamage(EntityDamageEvent event)
+    {
+        if((event == null) || (event.getEntity() == null) || !(event.getEntity() instanceof CraftPlayer))
+        {
+            return;
+        }
+        CraftPlayer cp = (CraftPlayer)event.getEntity();
+        EntityPlayer player = cp.getHandle();
+        if(player.noDamageTicks > player.maxNoDamageTicks / 2.0F)
+        {
+            if(player.getHealth() - (event.getDamage() - player.lastDamage) > 0)
+            {
+                return;
+            }
+        }
+        else
+        {
+            if((player.getHealth() - event.getDamage()) > 0)
+            {
+                return;
+            }
+        }
+        handleDeath(cp);
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void handleRespawn(PlayerRespawnEvent event)
+    {
+        if((event == null) || (event.getPlayer() == null) || !(event.getPlayer() instanceof CraftPlayer))
+        {
+            return;
+        }
+        CraftPlayer cp = (CraftPlayer)event.getPlayer();
+        if(hasPack(cp.getName()) && (getPack(cp.getName()).inv != null))
+        {
+            restoreInv(cp.getHandle());
+        }
+    }
+    
     protected void cmdHelp(CommandSender sender, String[] args)
     {
         int page = 1;
@@ -100,6 +145,8 @@ public class VPlugin extends VPluginBase
                 sendMessage(sender, lang("help.enchanttable.buy"));
                 sendMessage(sender, lang("help.enchanttable.use"));
                 sendMessage(sender, lang("help.enchanttable.book"));
+                sendMessage(sender, lang("help.invguard.buy"));
+                sendMessage(sender, lang("help.invguard.info"));
                 break;
             default:
                 break;
@@ -128,11 +175,6 @@ public class VPlugin extends VPluginBase
     
     protected void cmdAdmin(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.admin"))
-        {
-            sendMessage(sender, lang("admin.perm"), ChatColor.RED);
-            return;
-        }
         if(args.length < 2)
         {
             sendMessage(sender, lang("admin.help.title"), ChatColor.AQUA);
@@ -146,7 +188,6 @@ public class VPlugin extends VPluginBase
         args[1] = longname(args[1]);
         if(args[1].equals("reload"))
         {
-            saveUserData();
             reloadConfig();
             loadUserData();
             sendMessage(sender, lang("admin.reloaded"), ChatColor.YELLOW);
@@ -155,7 +196,6 @@ public class VPlugin extends VPluginBase
         else if(args[1].equals("save"))
         {
             saveUserData();
-            loadUserData();
             sendMessage(sender, lang("admin.saved"), ChatColor.YELLOW);
             return;
         }
@@ -232,7 +272,7 @@ public class VPlugin extends VPluginBase
                 sendMessage(sender, lang("admin.give.workbench.done"), ChatColor.GREEN);
             }
         }
-        if(args[3].equals("uncrafter"))
+        else if(args[3].equals("uncrafter"))
         {
             if(getPack(args[2]).hasUncrafter)
             {
@@ -242,6 +282,18 @@ public class VPlugin extends VPluginBase
             {
                 getPack(args[2]).hasUncrafter = true;
                 sendMessage(sender, lang("admin.give.uncrafter.done"), ChatColor.GREEN);
+            }
+        }
+        else if(args[3].equals("invguard"))
+        {
+            if(getPack(args[2]).hasInvGuard)
+            {
+                sendMessage(sender, lang("admin.give.invguard.have"), ChatColor.RED);
+            }
+            else
+            {
+                getPack(args[2]).hasInvGuard = true;
+                sendMessage(sender, lang("admin.give.invguard.done"), ChatColor.GREEN);
             }
         }
         else if(args[3].equals("enchanttable"))
@@ -361,7 +413,7 @@ public class VPlugin extends VPluginBase
                 sendMessage(sender, lang("admin.take.workbench.done"), ChatColor.GREEN);
             }
         }
-        if(args[3].equals("uncrafter"))
+        else if(args[3].equals("uncrafter"))
         {
             if(!getPack(args[2]).hasUncrafter)
             {
@@ -371,6 +423,18 @@ public class VPlugin extends VPluginBase
             {
                 getPack(args[2]).hasUncrafter = false;
                 sendMessage(sender, lang("admin.take.uncrafter.done"), ChatColor.GREEN);
+            }
+        }
+        else if(args[3].equals("invguard"))
+        {
+            if(!getPack(args[2]).hasInvGuard)
+            {
+                sendMessage(sender, lang("admin.take.invguard.none"), ChatColor.RED);
+            }
+            else
+            {
+                getPack(args[2]).hasInvGuard = false;
+                sendMessage(sender, lang("admin.take.invguard.done"), ChatColor.GREEN);
             }
         }
         else if(args[3].equals("enchanttable"))
@@ -460,6 +524,11 @@ public class VPlugin extends VPluginBase
     
     protected void cmdAdminUse(CommandSender sender, String[] args)
     {
+        if(!sender.hasPermission("vpack.admin.use"))
+        {
+            sendMessage(sender, lang("admin.perm"), ChatColor.RED);
+            return;
+        }
         if(args.length < 4)
         {
             sendMessage(sender, lang("argument.few"), ChatColor.RED);
@@ -662,7 +731,6 @@ public class VPlugin extends VPluginBase
                                          "" + getConfigDouble("workbench", "buy", sender, false, 2),
                                          "" + getConfigDouble("workbench", "use", sender, false, 2)
                                      }));
-            
             sendMessage(sender, lang("price.uncrafter", new String[]
                                      {
                                          "" + ChatColor.YELLOW,
@@ -670,7 +738,13 @@ public class VPlugin extends VPluginBase
                                          "" + getConfigDouble("uncrafter", "buy", sender, false, 2),
                                          "" + getConfigDouble("uncrafter", "use", sender, false, 2)
                                      }));
-            
+            sendMessage(sender, lang("price.invguard", new String[]
+                                     {
+                                         "" + ChatColor.YELLOW,
+                                         "" + ChatColor.GREEN,
+                                         "" + getConfigDouble("invguard", "buy", sender, false, 2),
+                                         "" + getConfigDouble("invguard", "use", sender, false, 2)
+                                     }));
             sendMessage(sender, lang("price.enchanttable", new String[]
                                      {
                                          "" + ChatColor.YELLOW,
@@ -735,6 +809,22 @@ public class VPlugin extends VPluginBase
             return;
         }
         getPack(player.name).openUncrafter(sender);
+    }
+    
+    protected void cmdInvGuard(CommandSender sender, String[] args)
+    {
+        if(!sender.hasPermission("vpack.use.invguard"))
+        {
+            sendMessage(sender, lang("invguard.perm"), ChatColor.RED);
+            return;
+        }
+        EntityPlayer player = ((CraftPlayer)sender).getHandle();
+        if((args.length >= 2) && (args[1].trim().equalsIgnoreCase("buy")))
+        {
+            getPack(player.name).buyInvGuard(sender);
+            return;
+        }
+        sendMessage(sender, lang("invguard.use"), ChatColor.GREEN);
     }
     
     protected void cmdEnchanttable(CommandSender sender, String[] args)

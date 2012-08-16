@@ -37,11 +37,14 @@ public class Config
         setDef("db.user", "herp");
         setDef("db.pw", "derp");
         setDef("save-interval", "0");
+        setDef("on-death", "keep");
         setDef("economy-disabled", "false");
         setDef("workbench.buy", "20000");
         setDef("workbench.use", "0");
         setDef("uncrafter.buy", "30000");
         setDef("uncrafter.use", "0");
+        setDef("invguard.buy", "5000");
+        setDef("invguard.use", "5%");
         setDef("chest.max", "10");
         setDef("chest.start", "0");
         setDef("chest.multiply", "1");
@@ -120,7 +123,7 @@ public class Config
         {
             return Integer.parseInt(config.getString(string));
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             try
             {
@@ -141,17 +144,17 @@ public class Config
     public static double getConfigDouble(String prefix, String suffix, CommandSender sender, boolean max, int digits)
     {
         String groups[] = getPlayerGroups(sender);
-        return getConfigDouble(prefix, suffix, groups, max, digits);
+        return getConfigDouble(prefix, suffix, groups, max, digits, sender.getName());
     }
     
-    public static double getConfigDouble(String prefix, String suffix, String groups[], boolean max)
+    public static double getConfigDouble(String prefix, String suffix, String groups[], boolean max, String user)
     {
-        return getConfigDouble(prefix, suffix, groups, max, 0);
+        return getConfigDouble(prefix, suffix, groups, max, 0, user);
     }
     
-    public static double getConfigDouble(String prefix, String suffix, String groups[], boolean max, int digits)
+    public static double getConfigDouble(String prefix, String suffix, String groups[], boolean max, int digits, String user)
     {
-        double value = getConfigDouble(prefix + "." + suffix, digits);
+        double value = getConfigDouble(prefix + "." + suffix, digits, user);
         if(groups != null)
         {
             double tmp;
@@ -159,7 +162,7 @@ public class Config
             {
                 if(config.isSet(groups[i] + "." + prefix + "." + suffix))
                 {
-                    tmp = getConfigDouble(groups[i] + "." + prefix + "." + suffix, digits);
+                    tmp = getConfigDouble(groups[i] + "." + prefix + "." + suffix, digits, user);
                     if(max == (tmp > value))
                     {
                         value = tmp;
@@ -167,7 +170,7 @@ public class Config
                 }
                 if(config.isSet(prefix + "." + groups[i] + "." + suffix))
                 {
-                    tmp = getConfigDouble(prefix + "." + groups[i] + "." + suffix, digits);
+                    tmp = getConfigDouble(prefix + "." + groups[i] + "." + suffix, digits, user);
                     if(max == (tmp > value))
                     {
                         value = tmp;
@@ -178,13 +181,29 @@ public class Config
         return value;
     }
     
-    public static double getConfigDouble(String string, int digits)
+    public static double getConfigDouble(String string, int digits, String user)
     {
         try
         {
-            return Double.parseDouble(smoothDouble(Double.parseDouble(config.getString(string)), digits));
+            String value = config.getString(string);
+            boolean percent = false;
+            if(value.substring(value.length() - 1).equals("%"))
+            {
+                percent = true;
+                value = value.substring(0, value.length() - 1);
+            }
+            double d = Double.parseDouble(smoothDouble(Double.parseDouble(value), digits));
+            if(percent)
+            {
+                if(d < 0.0D)
+                {
+                    d = 0.0D;
+                }
+                d *= moneyGet(user) / 100.0D;
+            }
+            return d;
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             return 0D;
         }

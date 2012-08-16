@@ -7,7 +7,10 @@ package net.drgnome.virtualpack;
 import java.util.*;
 
 import net.minecraft.server.*;
+
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.entity.HumanEntity;
 
 import static net.drgnome.virtualpack.Util.*;
 
@@ -86,7 +89,7 @@ public class VTEFurnace extends TileEntityFurnace
     }
     
     // For compatibility
-    public void g()
+    public void g() // Derpnote
     {
         tick();
     }
@@ -212,10 +215,9 @@ public class VTEFurnace extends TileEntityFurnace
                 // Before we remove the item: how fast does it burn?
                 burnSpeed = getBurnSpeed(contents[1]);
                 // If it's a container item (lava bucket), we only consume its contents (not like evil Notch!)
-                if(Item.byId[contents[1].id].r())
+                if(Item.byId[contents[1].id].r()) // Derpnote
                 {
-                    // r(), q(), I hate those method names -.-
-                    contents[1] = new ItemStack(Item.byId[contents[1].id].q()); 
+                    contents[1] = new ItemStack(Item.byId[contents[1].id].q());  // Derpnote
                 }
                 // If it's not a container, consume it! Om nom nom nom!
                 else
@@ -297,7 +299,7 @@ public class VTEFurnace extends TileEntityFurnace
         {
             return 150;
         }
-        else if(((it instanceof ItemHoe) && (((ItemHoe)it).f().equals("WOOD"))) || ((it instanceof ItemSword) && (((ItemSword)it).f().equals("WOOD"))) || ((it instanceof ItemTool) && (((ItemTool)it).e().equals("WOOD"))))
+        else if(((it instanceof ItemHoe) && (((ItemHoe)it).f().equals("WOOD"))) || ((it instanceof ItemSword) && (((ItemSword)it).f().equals("WOOD"))) || ((it instanceof ItemTool) && (((ItemTool)it).e().equals("WOOD")))) // Derpnote
         {
             return 200;
         }
@@ -328,68 +330,6 @@ public class VTEFurnace extends TileEntityFurnace
         }
         // CUSTOM FUEL HERE
         return 1.0D;
-    }
-    
-    /***** The following methods are only here because they interact with the contents array, which is private *****/
-    
-    public int getSize()
-    {
-        return contents.length;
-    }
-    
-    public ItemStack getItem(int i)
-    {
-        return contents[i];
-    }
-    
-    public ItemStack splitStack(int i, int j)
-    {
-        if(contents[i] != null)
-        {
-            ItemStack itemstack;
-            if(contents[i].count <= j)
-            {
-                itemstack = contents[i];
-                contents[i] = null;
-                return itemstack;
-            }
-            else
-            {
-                itemstack = contents[i].a(j);
-                if(contents[i].count == 0)
-                {
-                    contents[i] = null;
-                }
-                return itemstack;
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-    
-    public ItemStack splitWithoutUpdate(int i)
-    {
-        if(contents[i] != null)
-        {
-            ItemStack itemstack = contents[i];
-            contents[i] = null;
-            return itemstack;
-        }
-        else
-        {
-            return null;
-        }
-    }
-    
-    public void setItem(int i, ItemStack itemstack)
-    {
-        contents[i] = itemstack;
-        if(itemstack != null && itemstack.count > getMaxStackSize())
-        {
-            itemstack.count = getMaxStackSize();
-        }
     }
     
     private boolean canBurn()
@@ -443,9 +383,9 @@ public class VTEFurnace extends TileEntityFurnace
         }
         // And consume the ingredient item
         // Goddamn, you have container functions, use them! Notch!
-        if(Item.byId[contents[0].id].r())
+        if(Item.byId[contents[0].id].r()) // Derpnote
         {
-            contents[0] = new ItemStack(Item.byId[contents[0].id].q());
+            contents[0] = new ItemStack(Item.byId[contents[0].id].q()); // Derpnote
         }
         else
         {
@@ -458,15 +398,94 @@ public class VTEFurnace extends TileEntityFurnace
         }
     }
     
-    // Bugfix
+    /***** The following methods are only here because they interact with the contents array, which is private *****/
+    
+    public ItemStack[] getContents()
+    {
+        return contents;
+    }
+    
+    public int getSize()
+    {
+        return contents.length;
+    }
+    
+    public ItemStack getItem(int i)
+    {
+        return contents[i];
+    }
+    
+    public ItemStack splitStack(int i, int j)
+    {
+        if(contents[i] != null)
+        {
+            ItemStack itemstack;
+            if(contents[i].count <= j)
+            {
+                itemstack = contents[i];
+                contents[i] = null;
+                return itemstack;
+            }
+            else
+            {
+                itemstack = contents[i].a(j); // Derpnote
+                if(contents[i].count == 0)
+                {
+                    contents[i] = null;
+                }
+                return itemstack;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    public ItemStack splitWithoutUpdate(int i)
+    {
+        if(contents[i] != null)
+        {
+            ItemStack itemstack = contents[i];
+            contents[i] = null;
+            return itemstack;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    public void setItem(int i, ItemStack itemstack)
+    {
+        contents[i] = itemstack;
+        if(itemstack != null && itemstack.count > getMaxStackSize())
+        {
+            itemstack.count = getMaxStackSize();
+        }
+    }
+    
+    // Compatibility
     public InventoryHolder getOwner()
     {
         return null;
     }
     
-    // Another one
-    public boolean a(EntityHuman entityhuman)
+    public boolean a(EntityHuman entityhuman) // Derpnote
     {
         return true;
+    }
+    
+    public void onOpen(CraftHumanEntity who)
+    {
+    }
+    
+    public void onClose(CraftHumanEntity who)
+    {
+    }
+    
+    public List<HumanEntity> getViewers()
+    {
+        return new ArrayList<HumanEntity>();
     }
 }

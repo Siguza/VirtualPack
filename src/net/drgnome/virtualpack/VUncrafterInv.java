@@ -40,7 +40,7 @@ public class VUncrafterInv extends VInv
                 {
                     continue;
                 }
-                result = recipe.b();
+                result = recipe.b(); // Derpnote
                 if((result == null) || (result.id != item.id) || (result.getData() != item.getData()))
                 {
                     continue;
@@ -101,10 +101,7 @@ public class VUncrafterInv extends VInv
                 for(int j = 0; j < test.length; j++)
                 {
                     abc = getItem(j + 9);
-                    if(abc != null)
-                    {
-                        test[j] = abc.cloneItemStack();
-                    }
+                    test[j] = copy(abc);
                 }
                 boolean success;
                 ItemStack test1[] = copy(test);
@@ -113,7 +110,7 @@ public class VUncrafterInv extends VInv
                     success = true;
                     for(int j = 0; j < back.length; j++)
                     {
-                        if((back[j] == null) || (Item.byId[back[j].id].k()))
+                        if((back[j] == null) || (Item.byId[back[j].id].r())) // Derpnote
                         {
                             continue;
                         }
@@ -123,7 +120,7 @@ public class VUncrafterInv extends VInv
                             
                             if(test1[k] == null)
                             {
-                                test1[k] = back[j].cloneItemStack();
+                                test1[k] = copy(back[j]);
                                 test1[k].count = 1;
                                 success = true;
                                 break;
@@ -146,6 +143,7 @@ public class VUncrafterInv extends VInv
                 {
                     super.setItem(j + 9, test[j]);
                 }
+                break;
             }
         }
         if((item != null) && (item.count <= 0))
@@ -158,7 +156,7 @@ public class VUncrafterInv extends VInv
         }
         else
         {
-            super.setItem(slot, item.cloneItemStack());
+            super.setItem(slot, copy(item));
         }
     }
 }
