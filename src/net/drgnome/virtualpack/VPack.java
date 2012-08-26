@@ -469,9 +469,9 @@ public class VPack
         {
             s = 6;
         }
-        else if(s > 12)
+        else if(s > 28)
         {
-            s = 12;
+            s = 28;
         }
         return s;
     }
