@@ -50,6 +50,7 @@ public class Config
         setDef("chest.multiply", "1");
         setDef("chest.buy", "40000");
         setDef("chest.use", "0");
+        setDef("chest.size", "6");
         setDef("furnace.max", "10");
         setDef("furnace.start", "0");
         setDef("furnace.multiply", "1");

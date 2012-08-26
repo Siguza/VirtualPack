@@ -16,7 +16,7 @@ public class VUncrafterInv extends VInv
     
     public VUncrafterInv()
     {
-        super(2 * 9);
+        super(2);
     }
     
     public void setItem(int slot, ItemStack item)

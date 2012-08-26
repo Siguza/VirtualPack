@@ -188,6 +188,7 @@ public class VPlugin extends VPluginBase implements Listener
         args[1] = longname(args[1]);
         if(args[1].equals("reload"))
         {
+            saveUserData();
             reloadConfig();
             loadUserData();
             sendMessage(sender, lang("admin.reloaded"), ChatColor.YELLOW);
@@ -196,6 +197,12 @@ public class VPlugin extends VPluginBase implements Listener
         else if(args[1].equals("save"))
         {
             saveUserData();
+            sendMessage(sender, lang("admin.saved"), ChatColor.YELLOW);
+            return;
+        }
+        else if(args[1].equals("savefile"))
+        {
+            saveUserData(true);
             sendMessage(sender, lang("admin.saved"), ChatColor.YELLOW);
             return;
         }
@@ -313,7 +320,7 @@ public class VPlugin extends VPluginBase implements Listener
             VPack vpack = getPack(args[2]);
             for(int i = 0; i < amount; i++)
             {
-                vpack.chests.put((Integer)(vpack.chests.size() + 1), new VInv(6 * 9));
+                vpack.chests.put((Integer)(vpack.chests.size() + 1), new VInv(vpack.getChestSize()));
             }
             if(amount == 1)
             {

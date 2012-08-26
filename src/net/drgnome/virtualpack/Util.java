@@ -7,6 +7,7 @@ package net.drgnome.virtualpack;
 import java.util.*;
 import java.lang.reflect.*;
 import java.util.logging.Logger;
+import javax.xml.bind.DatatypeConverter;
 
 import net.minecraft.server.*;
 
@@ -160,6 +161,31 @@ public class Util
     
     public static ItemStack stringToItemStack(String string)
     {
+        if((string == null) || (string.length() == 0))
+        {
+            return null;
+        }
+        if(VPluginBase.dbVersion == 1)
+        {
+            return ItemStack.a(NBTCompressedStreamTools.a((new String(DatatypeConverter.parseBase64Binary(string))).getBytes())); // Derpnote 2
+        }
+        else
+        {
+            return stringToItemStack_old(string);
+        }
+    }
+    
+    public static String itemStackToString(ItemStack item)
+    {
+        if(item == null)
+        {
+            return "";
+        }
+        return DatatypeConverter.printBase64Binary((new String(NBTCompressedStreamTools.a(item.save(new NBTTagCompound())))).getBytes()); // Derpnote
+    }
+    
+    public static ItemStack stringToItemStack_old(String string)
+    {
         String parts[] = string.split(separator[2]);
         if(parts.length < 3)
         {
@@ -198,7 +224,7 @@ public class Util
         }
     }
     
-    public static String itemStackToString(ItemStack item)
+    public static String itemStackToString_old(ItemStack item)
     {
         if(item == null)
         {

@@ -12,7 +12,7 @@ public class VTrashInv extends VInv
 {
     public VTrashInv()
     {
-        super(9);
+        super(1);
     }
     
     public void setItem(int slot, ItemStack item)

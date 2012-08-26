@@ -19,6 +19,8 @@ import static net.drgnome.virtualpack.Util.*;
 
 public class VPack
 {
+    private String groups[];
+    private String owner;
     public boolean hasWorkbench;
     public boolean hasUncrafter;
     public boolean hasInvGuard;
@@ -33,7 +35,8 @@ public class VPack
     
     public VPack(String username)
     {
-        String groups[] = getPlayerGroups(username);
+        owner = username;
+        groups = getPlayerGroups(username);
         flinks = 0;
         blinks = 0;
         chests = new HashMap<Integer, VInv>();
@@ -49,7 +52,7 @@ public class VPack
             bookshelves = 15;
             for(int i = 1; i <= getConfigInt("chest", "max", groups, true); i++)
             {
-                chests.put((Integer)i, new VInv(6 * 9));
+                chests.put((Integer)i, new VInv(getChestSize()));
             }
             for(int i = 1; i <= getConfigInt("furnace", "max", groups, true); i++)
             {
@@ -69,7 +72,7 @@ public class VPack
             bookshelves = getConfigDouble("enchanttable", "book", groups, false, username) == 0.0D ? 15 : 0;
             for(int i = 1; i <= getConfigInt("chest", "start", groups, true); i++)
             {
-                chests.put((Integer)i, new VInv(6 * 9));
+                chests.put((Integer)i, new VInv(getChestSize()));
             }
             for(int i = 1; i <= getConfigInt("furnace", "start", groups, true); i++)
             {
@@ -89,7 +92,8 @@ public class VPack
     
     public VPack(String username, String data[], int offset)
     {
-        String groups[] = getPlayerGroups(username);
+        owner = username;
+        groups = getPlayerGroups(username);
         if(economyDisabled)
         {
             hasWorkbench = true;
@@ -142,7 +146,7 @@ public class VPack
             }
             else if(a[0].equals("c"))
             {
-                chests.put((Integer)(chests.size() + 1), new VInv(6 * 9, a, 1));
+                chests.put((Integer)(chests.size() + 1), new VInv(getChestSize(), a, 1));
             }
             else if(a[0].equals("f"))
             {
@@ -194,7 +198,7 @@ public class VPack
             bookshelves = 15;
             for(int i = chests.size() + 1; i <= getConfigInt("chest", "max", groups, true); i++)
             {
-                chests.put((Integer)i, new VInv(6 * 9));
+                chests.put((Integer)i, new VInv(getChestSize()));
             }
             for(int i = furnaces.size() + 1; i <= getConfigInt("furnace", "max", groups, true); i++)
             {
@@ -211,7 +215,7 @@ public class VPack
             bookshelves = tmp > bookshelves ? tmp : bookshelves;
             for(int i = chests.size() + 1; i <= getConfigInt("chest", "start", groups, true); i++)
             {
-                chests.put((Integer)i, new VInv(6 * 9));
+                chests.put((Integer)i, new VInv(getChestSize()));
             }
             for(int i = furnaces.size() + 1; i <= getConfigInt("furnace", "start", groups, true); i++)
             {
@@ -274,7 +278,7 @@ public class VPack
             Integer keys[] = chests.keySet().toArray(new Integer[0]);
             for(Integer i : keys)
             {
-                chests.put(i, new VInv(6 * 9));
+                chests.put(i, new VInv(getChestSize()));
             }
         }
         int l;
@@ -444,13 +448,32 @@ public class VPack
             sendMessage(sender, lang("stats.uncrafter", "" + ChatColor.GREEN, hasUncrafter ? lang("yes") : lang("no")));
             sendMessage(sender, lang("stats.invguard", "" + ChatColor.GREEN, hasInvGuard ? lang("yes") : lang("no")));
             sendMessage(sender, lang("stats.enchanttable", "" + ChatColor.GREEN, hasEnchantTable ? lang("yes") : lang("no")) + (hasEnchantTable ? lang("stats.books", "" + bookshelves): ""));
-            int i = getConfigInt("chest", "max", sender, true);
+            int i = getConfigInt("chest", "max", groups, true);
             sendMessage(sender, lang("stats.chest", "" + ChatColor.GREEN, "" + chests.size() + (i != -1 ? "/" + i : "")));
-            i = getConfigInt("furnace", "max", sender, true);
+            i = getConfigInt("furnace", "max", groups, true);
             sendMessage(sender, lang("stats.furnace", "" + ChatColor.GREEN, "" + furnaces.size() + (i != -1 ? "/" + i : "")) + (lang("stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + flinks)));
-            i = getConfigInt("brewingstand", "max", sender, true);
+            i = getConfigInt("brewingstand", "max", groups, true);
             sendMessage(sender, lang("stats.brewingstand", "" + ChatColor.GREEN, "" + brewingstands.size() + (i != -1 ? "/" + i : "")) + (lang("stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + blinks)));
         }
+    }
+    
+    public void alphaChest(VInv inv)
+    {
+        chests.put((Integer)(chests.size() + 1), inv);
+    }
+    
+    public int getChestSize()
+    {
+        int s = getConfigInt("chest", "size", groups, true);
+        if(s < 1)
+        {
+            s = 6;
+        }
+        else if(s > 12)
+        {
+            s = 12;
+        }
+        return s;
     }
     
     public VInv getInv(int nr)
@@ -515,7 +538,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!forfree && !moneyHasTake(player.name, getConfigDouble("workbench", "use", sender, false)))
+        if(!forfree && !moneyHasTake(player.name, getConfigDouble("workbench", "use", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -540,7 +563,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!moneyHasTake(player.name, getConfigDouble("workbench", "buy", sender, false)))
+        if(!moneyHasTake(player.name, getConfigDouble("workbench", "buy", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -562,7 +585,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!forfree && !moneyHasTake(player.name, getConfigDouble("uncrafter", "use", sender, false)))
+        if(!forfree && !moneyHasTake(player.name, getConfigDouble("uncrafter", "use", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -592,7 +615,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!moneyHasTake(player.name, getConfigDouble("uncrafter", "buy", sender, false)))
+        if(!moneyHasTake(player.name, getConfigDouble("uncrafter", "buy", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -614,7 +637,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!moneyHasTake(player.name, getConfigDouble("invguard", "buy", sender, false)))
+        if(!moneyHasTake(player.name, getConfigDouble("invguard", "buy", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -629,7 +652,7 @@ public class VPack
         {
             return false;
         }
-        return moneyHasTake(sender.getName(), getConfigDouble("invguard", "use", sender, false));
+        return moneyHasTake(sender.getName(), getConfigDouble("invguard", "use", groups, false, owner));
     }
     
     public void openEnchantTable(CommandSender sender)
@@ -645,7 +668,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!forfree && !moneyHasTake(player.name, getConfigDouble("enchanttable", "use", sender, false)))
+        if(!forfree && !moneyHasTake(player.name, getConfigDouble("enchanttable", "use", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -670,7 +693,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!moneyHasTake(player.name, getConfigDouble("enchanttable", "buy", sender, false)))
+        if(!moneyHasTake(player.name, getConfigDouble("enchanttable", "buy", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -699,7 +722,7 @@ public class VPack
         double price = 0.0D;
         for(int i = 0; i < amount; i++)
         {
-            price += getConfigDouble("enchanttable", "book", sender, false) * Math.pow(getConfigDouble("enchanttable", "multiply", sender, false), bookshelves + i);
+            price += getConfigDouble("enchanttable", "book", groups, false, owner) * Math.pow(getConfigDouble("enchanttable", "multiply", groups, false, owner), bookshelves + i);
         }
         if(!moneyHasTake(player.name, price))
         {
@@ -731,7 +754,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!forfree && !moneyHasTake(player.name, getConfigDouble("chest", "use", sender, false)))
+        if(!forfree && !moneyHasTake(player.name, getConfigDouble("chest", "use", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -742,7 +765,7 @@ public class VPack
         {
             chestname = chestname.substring(0, 32);
         }
-        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 0, chestname, 6 * 9));
+        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 0, chestname, getChestSize() * 9));
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);
@@ -755,7 +778,7 @@ public class VPack
             sendMessage(sender, lang("vpack.ecodisabled"), ChatColor.YELLOW);
             return;
         }
-        int max = getConfigInt("chest", "max", sender, true);
+        int max = getConfigInt("chest", "max", groups, true);
         if((chests.size() + amount > max) && (max != -1))
         {
             sendMessage(sender, lang("chest.max", "" + max), ChatColor.RED);
@@ -765,7 +788,7 @@ public class VPack
         double price = 0.0D;
         for(int i = chests.size(); i < chests.size() + amount; i++)
         {
-            price += getConfigDouble("chest", "buy", sender, false) * Math.pow(getConfigDouble("chest", "multiply", sender, false), i);
+            price += getConfigDouble("chest", "buy", groups, false, owner) * Math.pow(getConfigDouble("chest", "multiply", groups, false, owner), i);
         }
         if(!moneyHasTake(player.name, price))
         {
@@ -775,7 +798,7 @@ public class VPack
         int end = chests.size();
         for(int i = end; i < amount + end; i++)
         {
-            chests.put((Integer)(i + 1), new VInv(6 * 9));
+            chests.put((Integer)(i + 1), new VInv(getChestSize()));
         }
         if(chests.size() == 1)
         {
@@ -817,7 +840,7 @@ public class VPack
             sendMessage(sender, lang("chest.none"), ChatColor.RED);
             return;
         }
-        chests.put((Integer)nr, new VInv(6 * 9));
+        chests.put((Integer)nr, new VInv(getChestSize()));
         sendMessage(sender, lang("chest.trashed", "" + nr), ChatColor.GREEN);
     }
     
@@ -835,7 +858,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!forfree && !moneyHasTake(player.name, getConfigDouble("furnace", "use", sender, false)))
+        if(!forfree && !moneyHasTake(player.name, getConfigDouble("furnace", "use", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -854,7 +877,7 @@ public class VPack
             sendMessage(sender, lang("vpack.ecodisabled"), ChatColor.YELLOW);
             return;
         }
-        int max = getConfigInt("furnace", "max", sender, true);
+        int max = getConfigInt("furnace", "max", groups, true);
         if((furnaces.size() + amount > max) && (max != -1))
         {
             sendMessage(sender, lang("furnace.max", "" + max), ChatColor.RED);
@@ -864,7 +887,7 @@ public class VPack
         double price = 0.0D;
         for(int i = furnaces.size(); i < furnaces.size() + amount; i++)
         {
-            price += getConfigDouble("furnace", "buy", sender, false) * Math.pow(getConfigDouble("furnace", "multiply", sender, false), i);
+            price += getConfigDouble("furnace", "buy", groups, false, owner) * Math.pow(getConfigDouble("furnace", "multiply", groups, false, owner), i);
         }
         if(!moneyHasTake(player.name, price))
         {
@@ -909,7 +932,7 @@ public class VPack
             if(flinks <= 0)
             {
                 EntityPlayer player = ((CraftPlayer)sender).getHandle();
-                if(!moneyHasTake(player.name, getConfigDouble("furnace", "link", sender, false)))
+                if(!moneyHasTake(player.name, getConfigDouble("furnace", "link", groups, false, owner)))
                 {
                     sendMessage(sender, lang("money.toofew"), ChatColor.RED);
                     return;
@@ -964,7 +987,7 @@ public class VPack
             return;
         }
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
-        if(!forfree && !moneyHasTake(player.name, getConfigDouble("brewingstand", "use", sender, false)))
+        if(!forfree && !moneyHasTake(player.name, getConfigDouble("brewingstand", "use", groups, false, owner)))
         {
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
@@ -983,7 +1006,7 @@ public class VPack
             sendMessage(sender, lang("vpack.ecodisabled"), ChatColor.YELLOW);
             return;
         }
-        int max = getConfigInt("brewingstand", "max", sender, true);
+        int max = getConfigInt("brewingstand", "max", groups, true);
         if((brewingstands.size() + amount > max) && (max != -1))
         {
             sendMessage(sender, lang("brewingstand.max", "" + max), ChatColor.RED);
@@ -993,7 +1016,7 @@ public class VPack
         double price = 0.0D;
         for(int i = brewingstands.size(); i < brewingstands.size() + amount; i++)
         {
-            price += getConfigDouble("brewingstand", "buy", sender, false) * Math.pow(getConfigDouble("brewingstand", "multiply", sender, false), i);
+            price += getConfigDouble("brewingstand", "buy", groups, false, owner) * Math.pow(getConfigDouble("brewingstand", "multiply", groups, false, owner), i);
         }
         if(!moneyHasTake(player.name, price))
         {
@@ -1038,7 +1061,7 @@ public class VPack
             if(blinks <= 0)
             {
                 EntityPlayer player = ((CraftPlayer)sender).getHandle();
-                if(!moneyHasTake(player.name, getConfigDouble("brewingstand", "link", sender, false)))
+                if(!moneyHasTake(player.name, getConfigDouble("brewingstand", "link", groups, false, owner)))
                 {
                     sendMessage(sender, lang("money.toofew"), ChatColor.RED);
                     return;

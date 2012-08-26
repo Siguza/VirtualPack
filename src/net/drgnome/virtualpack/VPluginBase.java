@@ -40,7 +40,9 @@ import static net.drgnome.virtualpack.Util.*;
 
 public abstract class VPluginBase extends JavaPlugin implements Listener
 {
-    public static final String version = "1.1.0";
+    public static final String version = "1.1.2";
+    public static final String dbVer = "1";
+    public static int dbVersion;
     protected HashMap<String, VPack> packs;
     private int saveTick;
     private int upTick;
@@ -126,6 +128,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             log.info(lang("vpack.startdisable", new String[]{version}));
             saveUserData();
+            while(!saveThread.done()) {}
             log.info(lang("vpack.disable", new String[]{version}));
         }
     }
@@ -303,6 +306,11 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         }
         try
 		{
+            File alphaChest = new File(getDataFolder(), "chests");
+            if(alphaChest.exists() && alphaChest.isDirectory())
+            {
+                AlphaChestHelper.load(this, alphaChest);
+            }
             if(portMysql)
             {
                 loadFlatfile();
@@ -356,8 +364,21 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     
     private void load(ArrayList<String[]> list)
     {
+        boolean first = true;
         for(String[] data : list.toArray(new String[0][]))
         {
+            if(first)
+            {
+                first = false;
+                if(data.length == 1)
+                {
+                    this.dbVersion = tryParse(data[0], 0);
+                }
+                else
+                {
+                    this.dbVersion = 0;
+                }
+            }
             if(data.length >= 2)
             {
                 putPack(data[0], new VPack(data[0].toLowerCase(), data, 1));
@@ -367,12 +388,17 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     
     protected synchronized void saveUserData()
     {
+        saveUserData(false);
+    }
+    
+    protected synchronized void saveUserData(boolean forcefile)
+    {
         if((saveThread != null) && !(saveThread.done()))
         {
             saveRequested = true;
             return;
         }
-        if(getConfigString("db.use").equalsIgnoreCase("true"))
+        if(getConfigString("db.use").equalsIgnoreCase("true") && !forcefile)
         {
             saveThread = new VThreadSave(db, packs);
         }

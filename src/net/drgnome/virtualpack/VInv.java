@@ -18,20 +18,20 @@ public class VInv implements IInventory
 {
     private ItemStack[] contents = new ItemStack[0];
     
-    public VInv(int size)
+    public VInv(int rows)
     {
-        contents = new ItemStack[size];
+        contents = new ItemStack[rows * 9];
     }
     
-    public VInv(int size, String data[])
+    public VInv(int rows, String data[])
     {
-        this(size, data, 0);
+        this(rows, data, 0);
     }
     
-    public VInv(int size, String data[], int offset)
+    public VInv(int rows, String data[], int offset)
     {
-        contents = new ItemStack[size];
-        int max = data.length - offset < size ? data.length - offset : size;
+        this(rows);
+        int max = data.length - offset < (rows * 9) ? data.length - offset : (rows * 9);
         for(int i = 0; i < max; i++)
         {
             contents[i] = stringToItemStack(data[i + offset]);

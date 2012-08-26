@@ -46,6 +46,7 @@ public class VThreadSave extends Thread
             String contents;
             String data[];
             ArrayList<String> list = new ArrayList<String>();
+            list.add(VPluginBase.dbVer);
             for(int i = 0; i < key.length; i++)
             {
                 name = (String)key[i];
