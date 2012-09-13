@@ -40,7 +40,7 @@ public class VUncrafterInv extends VInv
                 {
                     continue;
                 }
-                result = recipe.b(); // Derpnote
+                result = copy(recipe.b()); // Derpnote
                 if((result == null) || (result.id != item.id) || (result.getData() != item.getData()))
                 {
                     continue;
@@ -57,7 +57,12 @@ public class VUncrafterInv extends VInv
                         {
                             break;
                         }
-                        back = (ItemStack[])tmp2;
+                        ItemStack[] tmp3 = (ItemStack[])tmp2;
+                        back = new ItemStack[tmp3.length];
+                        for(int j = 0; j < tmp3.length; j++)
+                        {
+                            back[j] = copy(tmp3[j]);
+                        }
                     }
                     catch(Exception e)
                     {
@@ -80,7 +85,7 @@ public class VUncrafterInv extends VInv
                         back = new ItemStack[obj.length];
                         for(int j = 0; j < obj.length; j++)
                         {
-                            back[j] = (ItemStack)obj[j];
+                            back[j] = copy((ItemStack)obj[j]);
                         }
                     }
                     catch(Exception e)

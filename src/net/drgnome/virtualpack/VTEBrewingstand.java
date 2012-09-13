@@ -33,13 +33,13 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     }
     
     // Read from save
-    public VTEBrewingstand(VPack vpack, String data[])
+    public VTEBrewingstand(VPack vpack, String data[]) throws Throwable
     {
         this(vpack, data, 0);
     }
     
     // Read from save
-    public VTEBrewingstand(VPack vpack, String data[], int offset)
+    public VTEBrewingstand(VPack vpack, String data[], int offset) throws Throwable
     {
         this(vpack);
         // Where to stop?

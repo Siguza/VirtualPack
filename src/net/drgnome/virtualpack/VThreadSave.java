@@ -8,6 +8,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
+import static net.drgnome.virtualpack.Config.*;
 import static net.drgnome.virtualpack.Util.*;
 
 public class VThreadSave extends Thread
@@ -60,6 +61,13 @@ public class VThreadSave extends Thread
                         contents += separator[0] + data[j];
                     }
                     list.add(contents);
+                }
+            }
+            if(!getConfigString("debug").equalsIgnoreCase("true"))
+            {
+                for(String con : list.toArray(new String[0]))
+                {
+                    Debug.log("save: " + con);
                 }
             }
             if(mysql)

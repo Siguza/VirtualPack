@@ -44,13 +44,13 @@ public class VTEFurnace extends TileEntityFurnace
     }
     
     // Read from save
-    public VTEFurnace(VPack vpack, String data[])
+    public VTEFurnace(VPack vpack, String data[]) throws Throwable
     {
         this(vpack, data, 0);
     }
     
     // Read from save
-    public VTEFurnace(VPack vpack, String data[], int offset)
+    public VTEFurnace(VPack vpack, String data[], int offset) throws Throwable
     {
         this(vpack);
         // Where to stop?

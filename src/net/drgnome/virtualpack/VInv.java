@@ -23,12 +23,12 @@ public class VInv implements IInventory
         contents = new ItemStack[rows * 9];
     }
     
-    public VInv(int rows, String data[])
+    public VInv(int rows, String data[]) throws Throwable
     {
         this(rows, data, 0);
     }
     
-    public VInv(int rows, String data[], int offset)
+    public VInv(int rows, String data[], int offset) throws Throwable
     {
         this(rows);
         int max = data.length - offset < (rows * 9) ? data.length - offset : (rows * 9);

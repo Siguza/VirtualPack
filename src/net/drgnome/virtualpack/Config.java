@@ -32,6 +32,8 @@ public class Config
     // Set all default values
     private static void setDefs()
     {
+        setDef("debug", "false");
+        setDef("forceload", "false");
         setDef("db.use", "false");
         setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
         setDef("db.user", "herp");

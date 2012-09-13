@@ -85,12 +85,12 @@ public class VPack
         }
     }
     
-    public VPack(String username, String data[])
+    public VPack(String username, String data[]) throws Throwable
     {
         this(username, data, 0);
     }
     
-    public VPack(String username, String data[], int offset)
+    public VPack(String username, String data[], int offset) throws Throwable
     {
         owner = username;
         groups = getPlayerGroups(username);

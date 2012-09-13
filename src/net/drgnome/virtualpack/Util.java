@@ -21,6 +21,7 @@ import org.bukkit.command.CommandSender;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import static net.drgnome.virtualpack.Config.*;
 import static net.drgnome.virtualpack.Lang.*;
 
 public class Util
@@ -159,19 +160,34 @@ public class Util
         return min;
     }
     
-    public static ItemStack stringToItemStack(String string)
+    public static ItemStack stringToItemStack(String string) throws Throwable
     {
         if((string == null) || (string.length() == 0))
         {
             return null;
         }
-        if(VPluginBase.dbVersion == 1)
+        try
         {
-            return ItemStack.a(NBTCompressedStreamTools.a((new String(DatatypeConverter.parseBase64Binary(string))).getBytes())); // Derpnote 2
+            if(VPluginBase.dbVersion == 1)
+            {
+                return ItemStack.a(NBTCompressedStreamTools.a(DatatypeConverter.parseBase64Binary(string))); // Derpnote 2
+            }
+            else
+            {
+                return stringToItemStack_old(string);
+            }
         }
-        else
+        catch(Throwable t)
         {
-            return stringToItemStack_old(string);
+            Debug.log("StIS failed on (" + string.length() + "): \"" + string + "\"");
+            if(getConfigString("forceload").equalsIgnoreCase("true"))
+            {
+                return null;
+            }
+            else
+            {
+                throw t;
+            }
         }
     }
     
@@ -181,7 +197,7 @@ public class Util
         {
             return "";
         }
-        return DatatypeConverter.printBase64Binary((new String(NBTCompressedStreamTools.a(item.save(new NBTTagCompound())))).getBytes()); // Derpnote
+        return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.a(item.save(new NBTTagCompound()))); // Derpnote
     }
     
     public static ItemStack stringToItemStack_old(String string)

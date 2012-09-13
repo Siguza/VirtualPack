@@ -40,7 +40,7 @@ import static net.drgnome.virtualpack.Util.*;
 
 public abstract class VPluginBase extends JavaPlugin implements Listener
 {
-    public static final String version = "1.1.2";
+    public static final String version = "1.1.3";
     public static final String dbVer = "1";
     public static int dbVersion;
     protected HashMap<String, VPack> packs;
@@ -53,6 +53,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     private boolean waitForPlugin;
     private Connection db;
     private boolean portMysql;
+    private boolean loadSuccess;
 
     public void onEnable()
     {
@@ -85,11 +86,16 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         loadRequested = false;
         waitForPlugin = false;
         portMysql = false;
+        loadSuccess = false;
         packs = new HashMap<String, VPack>();
         checkFiles();
         initLang(getDataFolder());
         reloadConf(getConfig());
         saveConfig();
+        if(getConfigString("debug").equalsIgnoreCase("true"))
+        {
+            Debug.init(new File(getDataFolder(), "debug.log"));
+        }
         if(getConfigString("db.use").equalsIgnoreCase("true"))
         {
             try
@@ -130,6 +136,11 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             saveUserData();
             while(!saveThread.done()) {}
             log.info(lang("vpack.disable", new String[]{version}));
+        }
+        if(getConfigString("forceload").equalsIgnoreCase("true"))
+        {
+            getConfig().set("forceload", "false");
+            saveConfig();
         }
     }
     
@@ -336,33 +347,61 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     
     private void loadMysql() throws Throwable
     {
-        if(db == null)
+        try
         {
-            db = DriverManager.getConnection(getConfigString("db.url"), getConfigString("db.user"), getConfigString("db.pw"));
+            if(db == null)
+            {
+                db = DriverManager.getConnection(getConfigString("db.url"), getConfigString("db.user"), getConfigString("db.pw"));
+            }
+            ArrayList<String[]> list = new ArrayList<String[]>();
+            ResultSet row = db.prepareStatement("SELECT * FROM `vpack`").executeQuery();
+            while(row.next())
+            {
+                Debug.log("load: " + row.getString("data"));
+                list.add(row.getString("data").split(separator[0]));
+            }
+            load(list);
         }
-        ArrayList<String[]> list = new ArrayList<String[]>();
-        ResultSet row = db.prepareStatement("SELECT * FROM `vpack`").executeQuery();
-        while(row.next())
+        catch(Throwable t)
         {
-            list.add(row.getString("data").split(separator[0]));
+            log.warning("[VirtualPack] COULD NOT LOAD USER DATA!");
+            t.printStackTrace();
+            for(StackTraceElement st : t.getStackTrace())
+            {
+                Debug.log(st.toString());
+            }
+            loadSuccess = false;
         }
-        load(list);
     }
     
     private void loadFlatfile() throws Throwable
     {
-        BufferedReader file = new BufferedReader(new FileReader(new File(getDataFolder(), "data.db")));
-        String line;
-        ArrayList<String[]> list = new ArrayList<String[]>();
-        while((line = file.readLine()) != null)
+        try
         {
-            list.add(line.split(separator[0]));
+            BufferedReader file = new BufferedReader(new FileReader(new File(getDataFolder(), "data.db")));
+            String line;
+            ArrayList<String[]> list = new ArrayList<String[]>();
+            while((line = file.readLine()) != null)
+            {
+                Debug.log("load: " + line);
+                list.add(line.split(separator[0]));
+            }
+            file.close();
+            load(list);
         }
-        file.close();
-        load(list);
+        catch(Throwable t)
+        {
+            log.warning("[VirtualPack] COULD NOT LOAD USER DATA!");
+            t.printStackTrace();
+            for(StackTraceElement st : t.getStackTrace())
+            {
+                Debug.log(st.toString());
+            }
+            loadSuccess = false;
+        }
     }
     
-    private void load(ArrayList<String[]> list)
+    private void load(ArrayList<String[]> list) throws Throwable
     {
         boolean first = true;
         for(String[] data : list.toArray(new String[0][]))
@@ -370,6 +409,13 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             if(first)
             {
                 first = false;
+                if(getConfigString("debug").equalsIgnoreCase("true"))
+                {
+                    for(int i = 0; i < data.length; i++)
+                    {
+                        Debug.log("first " + i + ": " + data[i]);
+                    }
+                }
                 if(data.length == 1)
                 {
                     this.dbVersion = tryParse(data[0], 0);
@@ -378,12 +424,14 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
                 {
                     this.dbVersion = 0;
                 }
+                Debug.log("decision: " + this.dbVersion);
             }
-            if(data.length >= 2)
+            else if(data.length >= 2)
             {
                 putPack(data[0], new VPack(data[0].toLowerCase(), data, 1));
             }
         }
+        loadSuccess = true;
     }
     
     protected synchronized void saveUserData()
@@ -393,6 +441,11 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     
     protected synchronized void saveUserData(boolean forcefile)
     {
+        if(!loadSuccess)
+        {
+            log.warning("[VirtualPack] CANNOT SAVE USER DATA, LOADING ALREADY FAILED!");
+            return;
+        }
         if((saveThread != null) && !(saveThread.done()))
         {
             saveRequested = true;
@@ -415,6 +468,11 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         if(waitForPlugin)
         {
             sender.sendMessage("VirtualPack is waiting for GroupManager.");
+            return true;
+        }
+        if(!loadSuccess && (((sender instanceof Player) && !(sender.hasPermission("vpack.admin"))) || (args.length < 2) || !(longname(args[0]).equals("admin") && args[1].equalsIgnoreCase("reload"))))
+        {
+            sender.sendMessage("Data loading failed, tell an admin to do a reload.");
             return true;
         }
         if((sender instanceof CraftPlayer) && hasPack(sender.getName()) && (getPack(sender.getName()).inv != null))
