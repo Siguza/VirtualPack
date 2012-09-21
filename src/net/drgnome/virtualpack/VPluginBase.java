@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.sql.*;
 import java.net.*;
+import java.util.logging.Level;
 
 import net.minecraft.server.*;
 
@@ -134,7 +135,15 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             log.info(lang("vpack.startdisable", new String[]{version}));
             saveUserData();
-            while(!saveThread.done()) {}
+            try 
+            {
+                //while(!saveThread.done()) {}
+                saveThread.join();
+            } 
+            catch (InterruptedException ex) 
+            {
+                log.log(Level.WARNING, "[VirtualPack] Save interrupted: {0}", ex.getMessage());
+            }
             log.info(lang("vpack.disable", new String[]{version}));
         }
         if(getConfigString("forceload").equalsIgnoreCase("true"))
@@ -459,7 +468,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             saveThread = new VThreadSave(new File(getDataFolder(), "data.db"), packs);
         }
-        saveThread.run();
+        saveThread.start();
         saveRequested = false;
     }
     
