@@ -17,7 +17,6 @@ public class VThreadSave extends Thread
     private File file;
     private Connection db;
     private HashMap<String, VPack> packs;
-    private boolean done;
     
     public VThreadSave(File file, HashMap<String, VPack> packs)
     {
@@ -25,7 +24,6 @@ public class VThreadSave extends Thread
         this.mysql = false;
         this.file = file;
         this.packs = packs;
-        this.done = false;
     }
     
     public VThreadSave(Connection db, HashMap<String, VPack> packs)
@@ -34,7 +32,6 @@ public class VThreadSave extends Thread
         this.mysql = true;
         this.db = db;
         this.packs = packs;
-        this.done = false;
     }
     
     public void run()
@@ -96,12 +93,10 @@ public class VThreadSave extends Thread
             warn();
             t.printStackTrace();
         }
-        this.done = true;
-        return;
     }
     
     public boolean done()
     {
-        return this.done;
+        return this.getState() == State.TERMINATED;
     }
 }
