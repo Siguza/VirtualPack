@@ -2,11 +2,13 @@
 // This software is distributed under the following license:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
+// Thanks to theodik for a bugfix :)
+
 package net.drgnome.virtualpack;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import java.sql.*;
 import java.net.*;
 
@@ -40,7 +42,7 @@ import static net.drgnome.virtualpack.Util.*;
 
 public abstract class VPluginBase extends JavaPlugin implements Listener
 {
-    public static final String version = "1.1.3";
+    public static final String version = "1.1.4";
     public static final String dbVer = "1";
     public static int dbVersion;
     protected HashMap<String, VPack> packs;
@@ -134,7 +136,14 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             log.info(lang("vpack.startdisable", new String[]{version}));
             saveUserData();
-            while(!saveThread.done()) {}
+            try 
+            {
+                saveThread.join();
+            } 
+            catch (InterruptedException ex) 
+            {
+                log.log(Level.WARNING, "[VirtualPack] Save interrupted: {0}", ex.getMessage());
+            }
             log.info(lang("vpack.disable", new String[]{version}));
         }
         if(getConfigString("forceload").equalsIgnoreCase("true"))
@@ -173,7 +182,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             }
             ((VPack)values[i]).tick();
         }
-        if(!update)
+        if(!update && getConfigString("check-update").equalsIgnoreCase("true"))
         {
             upTick++;
             if(upTick >= 60 * 60 * 20)
@@ -459,7 +468,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             saveThread = new VThreadSave(new File(getDataFolder(), "data.db"), packs);
         }
-        saveThread.run();
+        saveThread.start();
         saveRequested = false;
     }
     

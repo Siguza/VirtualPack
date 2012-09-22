@@ -28,6 +28,8 @@ public class VTEFurnace extends TileEntityFurnace
     private double myCookTime;
     // Call me paranoid, but this has to be checked
     private int lastID;
+    // Increases performance (or should at least)
+    private long lastCheck;
     
     // New VTE
     public VTEFurnace(VPack vpack)
@@ -41,6 +43,7 @@ public class VTEFurnace extends TileEntityFurnace
         burnTime = 0;
         ticksForCurrentFuel = 0;
         lastID = 0;
+        lastCheck = 0;
     }
     
     // Read from save
@@ -96,104 +99,7 @@ public class VTEFurnace extends TileEntityFurnace
     
     public void tick()
     {
-        // If this furnace is linked, then we should see if there's a reason to interact
-        if((link != 0) && (vpack != null) && (vpack.getInv(link) != null))
-        {
-            VInv inv = vpack.getInv(link);
-            // If we can't burn at the moment, we need different stuff
-            if(!canBurn())
-            {
-                // Do we need a different ingredient?
-                boolean get0 = false;
-                // If there is none, then of course
-                if(contents[0] == null)
-                {
-                    get0 = true;
-                }
-                else
-                {
-                    // Or if it can't be molten
-                    if(getBurnResult(contents[0]) == null)
-                    {
-                        get0 = true;
-                    }
-                }
-                // So do we need a different ingredient?
-                if(get0)
-                {
-                    // Lets search for a meltable item
-                    ItemStack item;
-                    for(int i = 0; i < inv.getSize(); i++)
-                    {
-                        item = inv.getItem(i);
-                        if(getBurnResult(item) != null)
-                        {
-                            // We have to exchange the items, but we can't do it directly without messing everything up
-                            item = copy(item);
-                            ItemStack item1 = copy(contents[0]);
-                            contents[0] = item;
-                            inv.setItem(i, item1);
-                            // And leave the loop
-                            break;
-                        }
-                    }
-                }
-                // Now, if there is any reason we can't burn, we're done and put the output item away (if there is any)
-                if(!canBurn() && (contents[2] != null))
-                {
-                    // Lets search for a place we can put our stuff
-                    ItemStack item;
-                    for(int i = 0; i < inv.getSize(); i++)
-                    {
-                        item = inv.getItem(i);
-                        // If there's no item: Lol, too easy ^^
-                        if(item == null)
-                        {
-                            inv.setItem(i, copy(contents[2]));
-                            contents[2] = null;
-                            // And we can leave the loop
-                            break;
-                        }
-                        // If there an item, then the materials have to match
-                        else if(contents[2].doMaterialsMatch(item))
-                        {
-                            // Put away as much as possible
-                            int max = min(contents[2].count, min(Item.byId[item.id].getMaxStackSize(), getMaxStackSize()) - item.count);
-                            item.count += max;
-                            contents[2].count -= max;
-                            // If we've put everything away
-                            if(contents[2].count <= 0)
-                            {
-                                contents[2] = null;
-                                // Then let's go away from here
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            // Now, if we finally can burn, but we don't have fuel, then go and get some!
-            if(canBurn() && !isBurning() && (getFuelTime(contents[1]) <= 0))
-            {
-                // Search for fuel
-                ItemStack item;
-                for(int i = 0; i < inv.getSize(); i++)
-                {
-                    item = inv.getItem(i);
-                    // Is it fuel?
-                    if(getFuelTime(item) > 0)
-                    {
-                        // Then take it!
-                        item = copy(item);
-                        ItemStack item1 = copy(contents[1]);
-                        contents[1] = item;
-                        inv.setItem(i, item1);
-                        // And goodbye
-                        break;
-                    }
-                }
-            }
-        }
+        checkLink();
         int newID = contents[0] == null ? 0 : contents[0].id;
         // Has the item been changed?
         if(newID != lastID)
@@ -205,29 +111,25 @@ public class VTEFurnace extends TileEntityFurnace
             meltSpeed = getMeltSpeed(contents[0]);
         }
         // So, can we now finally burn?
-        if(canBurn())
+        if(canBurn() && !isBurning() && (getFuelTime(contents[1]) > 0))
         {
-            // Do we have to consume some more fuel? Can we even?
-            if(!isBurning() && (getFuelTime(contents[1]) > 0))
+            // I have no idea what "ticksForCurrentFuel" is good for, but it works fine like this
+            burnTime = ticksForCurrentFuel = getFuelTime(contents[1]);
+            // Before we remove the item: how fast does it burn?
+            burnSpeed = getBurnSpeed(contents[1]);
+            // If it's a container item (lava bucket), we only consume its contents (not like evil Notch!)
+            if(Item.byId[contents[1].id].r()) // Derpnote
             {
-                // I have no idea what "ticksForCurrentFuel" is good for, but it works fine with it
-                burnTime = ticksForCurrentFuel = getFuelTime(contents[1]);
-                // Before we remove the item: how fast does it burn?
-                burnSpeed = getBurnSpeed(contents[1]);
-                // If it's a container item (lava bucket), we only consume its contents (not like evil Notch!)
-                if(Item.byId[contents[1].id].r()) // Derpnote
+                contents[1] = new ItemStack(Item.byId[contents[1].id].q());  // Derpnote
+            }
+            // If it's not a container, consume it! Om nom nom nom!
+            else
+            {
+                contents[1].count--;
+                // Let 0 be null
+                if(contents[1].count <= 0)
                 {
-                    contents[1] = new ItemStack(Item.byId[contents[1].id].q());  // Derpnote
-                }
-                // If it's not a container, consume it! Om nom nom nom!
-                else
-                {
-                    contents[1].count--;
-                    // Let 0 be null
-                    if(contents[1].count <= 0)
-                    {
-                        contents[1] = null;
-                    }
+                    contents[1] = null;
                 }
             }
         }
@@ -253,6 +155,123 @@ public class VTEFurnace extends TileEntityFurnace
         }
         // And for the display (I'm using floor rather than round to not cause the client to do shit when we not really reached 200):
         cookTime = (int)Math.floor(myCookTime);
+    }
+    
+    protected void checkLink()
+    {
+        // If this furnace is linked, then we should see if there's a reason to interact
+        if(isFine() || (link == 0) || (vpack == null) || (vpack.getInv(link) == null) || (lastCheck >= vpack.getInv(link).getLastUpdate()))
+        {
+            return;
+        }
+        VInv inv = vpack.getInv(link);
+        // If we can't burn at the moment, we need different stuff
+        if(!canBurn())
+        {
+            // Do we need a different ingredient?
+            boolean get0 = false;
+            // If there is none, then of course
+            if(contents[0] == null)
+            {
+                get0 = true;
+            }
+            else
+            {
+                // Or if it can't be molten
+                if(getBurnResult(contents[0]) == null)
+                {
+                    get0 = true;
+                }
+            }
+            // So do we need a different ingredient?
+            if(get0)
+            {
+                // Lets search for a meltable item
+                ItemStack item;
+                for(int i = 0; i < inv.getSize(); i++)
+                {
+                    item = inv.getItem(i);
+                    if(getBurnResult(item) != null)
+                    {
+                        // We have to exchange the items, but we can't do it directly without messing everything up
+                        item = copy(item);
+                        ItemStack item1 = copy(contents[0]);
+                        contents[0] = item;
+                        inv.setItem(i, item1);
+                        // And leave the loop
+                        break;
+                    }
+                }
+            }
+            // Now, if there is any reason we can't burn, we're done and put the output item away (if there is any)
+            if(!canBurn() && (contents[2] != null))
+            {
+                // Lets search for a place we can put our stuff
+                ItemStack item;
+                for(int i = 0; i < inv.getSize(); i++)
+                {
+                    item = inv.getItem(i);
+                    // If there's no item: Lol, too easy ^^
+                    if(item == null)
+                    {
+                        inv.setItem(i, copy(contents[2]));
+                        contents[2] = null;
+                        // And we can leave the loop
+                        break;
+                    }
+                    // If there an item, then the materials have to match
+                    else if(contents[2].doMaterialsMatch(item))
+                    {
+                        // Put away as much as possible
+                        int max = min(contents[2].count, min(Item.byId[item.id].getMaxStackSize(), getMaxStackSize()) - item.count);
+                        item.count += max;
+                        contents[2].count -= max;
+                        // If we've put everything away
+                        if(contents[2].count <= 0)
+                        {
+                            contents[2] = null;
+                            // Then let's go away from here
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        // Now, if we finally can burn, but we don't have fuel, then go and get some!
+        if(canBurn() && !isBurning() && (getFuelTime(contents[1]) <= 0))
+        {
+            // Search for fuel
+            ItemStack item;
+            for(int i = 0; i < inv.getSize(); i++)
+            {
+                item = inv.getItem(i);
+                // Is it fuel?
+                if(getFuelTime(item) > 0)
+                {
+                    // Then take it!
+                    item = copy(item);
+                    ItemStack item1 = copy(contents[1]);
+                    contents[1] = item;
+                    inv.setItem(i, item1);
+                    // And goodbye
+                    break;
+                }
+            }
+        }
+        // If we couldn't do anything, don't check again until the chest contents are changed
+        if(isFine())
+        {
+            lastCheck = 0;
+        }
+        else
+        {
+            lastCheck = inv.getLastUpdate();
+        }
+    }
+    
+    public boolean isFine()
+    {
+        return ((myCookTime > 0.0D) || (getFuelTime(contents[1]) > 0)) && canBurn();
     }
     
     // This needs a little addition

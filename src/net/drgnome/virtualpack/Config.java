@@ -34,6 +34,7 @@ public class Config
     {
         setDef("debug", "false");
         setDef("forceload", "false");
+        setDef("check-update", "true");
         setDef("db.use", "false");
         setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
         setDef("db.user", "herp");

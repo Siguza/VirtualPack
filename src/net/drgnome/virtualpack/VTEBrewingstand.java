@@ -22,6 +22,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     private double myBrewTime;
     private double brewSpeed;
     private int lastID;
+    private long lastCheck;
     
     public VTEBrewingstand(VPack vpack)
     {
@@ -30,6 +31,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         myBrewTime = 0.0D;
         brewTime = 0;
         brewSpeed = 1.0D;
+        lastCheck = 0;
     }
     
     // Read from save
@@ -76,146 +78,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     
     public void tick()
     {
-        // If there's a link, check what's to do
-        if((link != 0) && (vpack != null) && (vpack.getInv(link) != null))
-        {
-            VInv inv = vpack.getInv(link);
-            // If there is a breeing ingredient, let's check all the potions
-            if(isIngredient(items[3]))
-            {
-                for(int i = 0; i < 3; i++)
-                {
-                    // If one of them is not brewable, we might find one that is
-                    if(!isBrewable(items[i], items[3]))
-                    {
-                        ItemStack item;
-                        for(int j = 0; j < inv.getSize(); j++)
-                        {
-                            item = inv.getItem(j);
-                            // Did we find something brewable?
-                            if(isBrewable(item, items[3]))
-                            {
-                                // Then exchange the items
-                                item = copy(item);
-                                ItemStack item1 = copy(items[i]);
-                                items[i] = item;
-                                inv.setItem(j, item1);
-                                // And leave the loop
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            // If the current item is not an ingredient, then we'll try to get one
-            else
-            {
-                // First we'll try to get an ingredient that matches with as many potions as possible
-                int[] match = new int[inv.getSize()];
-                int max = -1;
-                ItemStack item;
-                // Go through all the items
-                for(int i = 0; i < inv.getSize(); i++)
-                {
-                    item = inv.getItem(i);
-                    // If it's not even an ingredient, forget it
-                    if(!isIngredient(item))
-                    {
-                        continue;
-                    }
-                    // Now, is it compatible with our potions?
-                    for(int j = 0; j < 3; j++)
-                    {
-                        match[i] += isBrewable(items[j], item) ? 1 : 0;
-                    }
-                    // If all potions match, we don't need to go further
-                    if(match[i] >= 3)
-                    {
-                        break;
-                    }
-                    // If at least one potion matches, we may have a new temporary maximum
-                    else if((match[i] > 0) && ((max == -1) || (match[i] > match[max])))
-                    {
-                        max = i;
-                    }
-                }
-                // If we found anything matching, let's exchange
-                if(max != -1)
-                {
-                    item = copy(inv.getItem(max));
-                    ItemStack item1 = copy(items[3]);
-                    items[3] = item;
-                    inv.setItem(max, item1);
-                }
-                // If we did not find anything matching, we'll have to grab whatever we can get
-                else
-                {
-                    int[][] matching = new int[inv.getSize()][];
-                    // Of course, more potions, higher priority
-                    for(int i = 0; i < inv.getSize(); i++)
-                    {
-                        matching[i] = new int[]{-1, -1, -1, 0}; // Amount + 3 indices
-                        item = inv.getItem(i);
-                        // Go away if you're not an ingredient!
-                        if(isIngredient(item))
-                        {
-                            continue; 
-                        }
-                        for(int j = 0; j < inv.getSize(); j++)
-                        {
-                            // One does not simply brew itself
-                            if(i == j)
-                            {
-                                continue;
-                            }
-                            // Is it brewable?
-                            if(isBrewable(inv.getItem(j), item))
-                            {
-                                // Count one up
-                                matching[i][0]++;
-                                // And add mapping
-                                matching[i][matching[i][0]] = j;
-                                // All potions?
-                                if(matching[i][0] >= 3)
-                                {
-                                    // Then goodbye
-                                    break;
-                                }
-                            }
-                        }
-                        // All potions? Then also break here
-                        if(matching[i][0] >= 3)
-                        {
-                            break;
-                        }
-                        // New highscore?
-                        else if((matching[i][0] > 0) && ((max == -1) || (matching[i][0] > matching[max][0])))
-                        {
-                            max = i;
-                        }
-                    }
-                    // So, do we now have anything matching?
-                    if(max != -1)
-                    {
-                        int mapping;
-                        ItemStack item1;
-                        for(int i = 0; i < 4; i++)
-                        {
-                            // 3 = ingredient, other = potion indices
-                            mapping = i == 3 ? max : matching[max][i + 1];
-                            // Nothing to do if we have no mapping
-                            if(mapping == -1)
-                            {
-                                item = copy(inv.getItem(mapping));
-                                item1 = copy(items[i]);
-                                items[i] = item;
-                                inv.setItem(mapping, item1);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        checkLink();
         int newID = items[3] == null ? 0 : items[3].id;
         // Item changed?
         if(newID != lastID)
@@ -253,6 +116,160 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         }
         // And here we set the display variable.
         brewTime = (int)Math.floor(myBrewTime);
+    }
+    
+    protected void checkLink()
+    {
+        // If there's a link, check what's to do
+        if(canBrew() || (link == 0) || (vpack == null) && (vpack.getInv(link) == null) || (lastCheck >= vpack.getInv(link).getLastUpdate()))
+        {
+            return;
+        }
+        VInv inv = vpack.getInv(link);
+        // If there is a breeing ingredient, let's check all the potions
+        if(isIngredient(items[3]))
+        {
+            for(int i = 0; i < 3; i++)
+            {
+                // If one of them is not brewable, we might find one that is
+                if(!isBrewable(items[i], items[3]))
+                {
+                    ItemStack item;
+                    for(int j = 0; j < inv.getSize(); j++)
+                    {
+                        item = inv.getItem(j);
+                        // Did we find something brewable?
+                        if(isBrewable(item, items[3]))
+                        {
+                            // Then exchange the items
+                            item = copy(item);
+                            ItemStack item1 = copy(items[i]);
+                            items[i] = item;
+                            inv.setItem(j, item1);
+                            // And leave the loop
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        // If the current item is not an ingredient, then we'll try to get one
+        else
+        {
+            // First we'll try to get an ingredient that matches with as many potions as possible
+            int[] match = new int[inv.getSize()];
+            int max = -1;
+            ItemStack item;
+            // Go through all the items
+            for(int i = 0; i < inv.getSize(); i++)
+            {
+                item = inv.getItem(i);
+                // If it's not even an ingredient, forget it
+                if(!isIngredient(item))
+                {
+                    continue;
+                }
+                // Now, is it compatible with our potions?
+                for(int j = 0; j < 3; j++)
+                {
+                    match[i] += isBrewable(items[j], item) ? 1 : 0;
+                }
+                // If all potions match, we don't need to go further
+                if(match[i] >= 3)
+                {
+                    break;
+                }
+                // If at least one potion matches, we may have a new temporary maximum
+                else if((match[i] > 0) && ((max == -1) || (match[i] > match[max])))
+                {
+                    max = i;
+                }
+            }
+            // If we found anything matching, let's exchange
+            if(max != -1)
+            {
+                item = copy(inv.getItem(max));
+                ItemStack item1 = copy(items[3]);
+                items[3] = item;
+                inv.setItem(max, item1);
+            }
+            // If we did not find anything matching, we'll have to grab whatever we can get
+            else
+            {
+                int[][] matching = new int[inv.getSize()][];
+                // Of course, more potions, higher priority
+                for(int i = 0; i < inv.getSize(); i++)
+                {
+                    matching[i] = new int[]{-1, -1, -1, 0}; // Amount + 3 indices
+                    item = inv.getItem(i);
+                    // Go away if you're not an ingredient!
+                    if(isIngredient(item))
+                    {
+                        continue; 
+                    }
+                    for(int j = 0; j < inv.getSize(); j++)
+                    {
+                        // One does not simply brew itself
+                        if(i == j)
+                        {
+                            continue;
+                        }
+                        // Is it brewable?
+                        if(isBrewable(inv.getItem(j), item))
+                        {
+                            // Count one up
+                            matching[i][0]++;
+                            // And add mapping
+                            matching[i][matching[i][0]] = j;
+                            // All potions?
+                            if(matching[i][0] >= 3)
+                            {
+                                // Then goodbye
+                                break;
+                            }
+                        }
+                    }
+                    // All potions? Then also break here
+                    if(matching[i][0] >= 3)
+                    {
+                        break;
+                    }
+                    // New highscore?
+                    else if((matching[i][0] > 0) && ((max == -1) || (matching[i][0] > matching[max][0])))
+                    {
+                        max = i;
+                    }
+                }
+                // So, do we now have anything matching?
+                if(max != -1)
+                {
+                    int mapping;
+                    ItemStack item1;
+                    for(int i = 0; i < 4; i++)
+                    {
+                        // 3 = ingredient, other = potion indices
+                        mapping = i == 3 ? max : matching[max][i + 1];
+                        // Nothing to do if we have no mapping
+                        if(mapping == -1)
+                        {
+                            item = copy(inv.getItem(mapping));
+                            item1 = copy(items[i]);
+                            items[i] = item;
+                            inv.setItem(mapping, item1);
+                        }
+                    }
+                }
+            }
+        }
+        // If we couldn't do anything, don't check again until the chest contents are changed
+        if(canBrew())
+        {
+            lastCheck = 0;
+        }
+        else
+        {
+            lastCheck = inv.getLastUpdate();
+        }
     }
     
     private boolean canBrew()

@@ -17,10 +17,12 @@ import static net.drgnome.virtualpack.Util.*;
 public class VInv implements IInventory
 {
     private ItemStack[] contents = new ItemStack[0];
+    private long lastUpdate;
     
     public VInv(int rows)
     {
         contents = new ItemStack[rows * 9];
+        lastUpdate = System.currentTimeMillis();
     }
     
     public VInv(int rows, String data[]) throws Throwable
@@ -64,14 +66,14 @@ public class VInv implements IInventory
         {
             if(contents[slot].count <= size)
             {
-                ItemStack item = contents[slot];
-                contents[slot] = null;
+                ItemStack item = copy(contents[slot]);
+                setItem(slot, null);
                 return item;
             }
             ItemStack item = contents[slot].a(size); // Derpnote
             if(contents[slot].count <= 0)
             {
-                contents[slot] = null;
+                setItem(slot, null);
             }
             return item;
         }
@@ -82,7 +84,7 @@ public class VInv implements IInventory
     {
         if((slot < contents.length) && (contents[slot] != null))
         {
-            ItemStack item = contents[slot];
+            ItemStack item = copy(contents[slot]);
             contents[slot] = null;
             return item;
         }
@@ -96,6 +98,12 @@ public class VInv implements IInventory
         {
             item.count = getMaxStackSize();
         }
+        lastUpdate = System.currentTimeMillis();
+    }
+    
+    public long getLastUpdate()
+    {
+        return lastUpdate;
     }
     
     public String getName()
