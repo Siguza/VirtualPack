@@ -42,7 +42,7 @@ import static net.drgnome.virtualpack.Util.*;
 
 public abstract class VPluginBase extends JavaPlugin implements Listener
 {
-    public static final String version = "1.1.4";
+    public static final String version = "1.1.5";
     public static final String dbVer = "1";
     public static int dbVersion;
     protected HashMap<String, VPack> packs;
@@ -740,7 +740,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     
     protected void restoreInv(EntityPlayer player)
     {
-        player.inventory.m();
+        player.inventory.k(); // Derpnote
         player.inventory.items = copy(getPack(player.name).inv.items);
         player.inventory.armor = copy(getPack(player.name).inv.armor);
         getPack(player.name).inv = null;

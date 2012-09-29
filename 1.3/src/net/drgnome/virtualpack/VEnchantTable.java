@@ -27,7 +27,7 @@ public class VEnchantTable extends ContainerEnchantTable
             ItemStack itemstack = iinventory.getItem(0);
             if((itemstack != null) && (itemstack.u())) // Derpnote
             {
-                f = rand.nextLong();
+                f = rand.nextLong(); // Derpnote
                 for(int i = 0; i < 3; i++)
                 {
                     costs[i] = EnchantmentManager.a(rand, i, bookshelves, itemstack); // Derpnote
