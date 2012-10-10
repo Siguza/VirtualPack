@@ -133,7 +133,7 @@ public class Config
             {
                 return (int)Math.round(Double.parseDouble(config.getString(string)));
             }
-            catch(Exception e2)
+            catch(Throwable t2)
             {
                 return 0;
             }

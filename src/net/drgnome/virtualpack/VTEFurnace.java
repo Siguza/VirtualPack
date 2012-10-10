@@ -92,7 +92,7 @@ public class VTEFurnace extends TileEntityFurnace
     }
     
     // For compatibility
-    public void q_() // Derpnote
+    public void #FIELD_TILEENTITY_1#() // Derpnote
     {
         tick();
     }
@@ -118,9 +118,9 @@ public class VTEFurnace extends TileEntityFurnace
             // Before we remove the item: how fast does it burn?
             burnSpeed = getBurnSpeed(contents[1]);
             // If it's a container item (lava bucket), we only consume its contents (not like evil Notch!)
-            if(Item.byId[contents[1].id].k()) // Derpnote
+            if(Item.byId[contents[1].id].#FIELD_ITEM_1#()) // Derpnote
             {
-                contents[1] = new ItemStack(Item.byId[contents[1].id].j());  // Derpnote
+                contents[1] = new ItemStack(Item.byId[contents[1].id].#FIELD_ITEM_2#());  // Derpnote
             }
             // If it's not a container, consume it! Om nom nom nom!
             else
@@ -288,7 +288,7 @@ public class VTEFurnace extends TileEntityFurnace
         }
         int i = item.id;
         // CUSTOM RECIPE HERE
-        return FurnaceRecipes.getInstance().getResult(i); // Derpnote "RecipesFurnace"
+        return #FIELD_RECIPESFURNACE_1#.getInstance().getResult(i); // Derpnote
     }
     
     private double getMeltSpeed(ItemStack item)
@@ -314,14 +314,16 @@ public class VTEFurnace extends TileEntityFurnace
         {
             return 100;
         }
-        /*else if(i == Block.WOOD_STEP.id)
+        #COMM_1A#else if(i == Block.WOOD_STEP.id)
         {
             return 150;
         }
-        else if(((it instanceof ItemHoe) && (((ItemHoe)it).f().equals("WOOD"))) || ((it instanceof ItemSword) && (((ItemSword)it).f().equals("WOOD"))) || ((it instanceof ItemTool) && (((ItemTool)it).e().equals("WOOD")))) // Derpnote
+        else if(((it instanceof ItemHoe) && (((ItemHoe)it).#FIELD_ITEMHOE_1#().equals("WOOD"))) || 
+                ((it instanceof ItemSword) && (((ItemSword)it).#FIELD_ITEMSWORD_1#().equals("WOOD"))) || 
+                ((it instanceof ItemTool) && (((ItemTool)it).#FIELD_ITEMTOOL_1#().equals("WOOD"))) ) // Derpnote
         {
             return 200;
-        }*/
+        }#COMM_1B#
         else if((i < 256) && (Block.byId[i].material == Material.WOOD))
         {
             return 300;
@@ -402,9 +404,9 @@ public class VTEFurnace extends TileEntityFurnace
         }
         // And consume the ingredient item
         // Goddamn, you have container functions, use them! Notch!
-        if(Item.byId[contents[0].id].k()) // Derpnote
+        if(Item.byId[contents[0].id].#FIELD_ITEM_1#()) // Derpnote
         {
-            contents[0] = new ItemStack(Item.byId[contents[0].id].j()); // Derpnote
+            contents[0] = new ItemStack(Item.byId[contents[0].id].#FIELD_ITEM_2#()); // Derpnote
         }
         else
         {
@@ -447,7 +449,7 @@ public class VTEFurnace extends TileEntityFurnace
             }
             else
             {
-                itemstack = contents[i].a(j); // Derpnote
+                itemstack = contents[i].#FIELD_ITEMSTACK_3#(j); // Derpnote
                 if(contents[i].count == 0)
                 {
                     contents[i] = null;
@@ -490,7 +492,7 @@ public class VTEFurnace extends TileEntityFurnace
         return null;
     }
     
-    public boolean a(EntityHuman entityhuman) // Derpnote
+    public boolean #FIELD_IINVENTORY_1#(EntityHuman entityhuman) // Derpnote
     {
         return true;
     }

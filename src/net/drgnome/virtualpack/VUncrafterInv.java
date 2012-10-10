@@ -23,24 +23,24 @@ public class VUncrafterInv extends VInv
     {
         if((item != null) && (slot < 9))
         {
-            List list = CraftingManager.getInstance().getRecipes();
+            List list = CraftingManager.getInstance().#FIELD_CRAFTINGMANAGER_1#(); // Derpnote
             Object tmp;
             Object tmp2;
-            IRecipe recipe;
+            #FIELD_IRECIPE_1# recipe; // Derpnote
             ItemStack result;
             for(int i = 0; i < list.size(); i++)
             {
                 tmp = list.get(i);
-                if(!(tmp instanceof IRecipe))
+                if(!(tmp instanceof #FIELD_IRECIPE_1#)) // Derpnote
                 {
                     continue;
                 }
-                recipe = (IRecipe)tmp;
+                recipe = (#FIELD_IRECIPE_1#)tmp; // Derpnote
                 if(recipe == null)
                 {
                     continue;
                 }
-                result = copy(recipe.b()); // Derpnote
+                result = copy(recipe.#FIELD_IRECIPE_2#()); // Derpnote
                 if((result == null) || (result.id != item.id) || (result.getData() != item.getData()))
                 {
                     continue;
@@ -64,9 +64,9 @@ public class VUncrafterInv extends VInv
                             back[j] = copy(tmp3[j]);
                         }
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
-                        e.printStackTrace();
+                        t.printStackTrace();
                         break;
                     }
                 }
@@ -88,9 +88,9 @@ public class VUncrafterInv extends VInv
                             back[j] = copy((ItemStack)obj[j]);
                         }
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
-                        e.printStackTrace();
+                        t.printStackTrace();
                         break;
                     }
                 }
@@ -115,7 +115,7 @@ public class VUncrafterInv extends VInv
                     success = true;
                     for(int j = 0; j < back.length; j++)
                     {
-                        if((back[j] == null) || (Item.byId[back[j].id].r())) // Derpnote
+                        if((back[j] == null) || (Item.byId[back[j].id].#FIELD_ITEM_1#())) // Derpnote
                         {
                             continue;
                         }

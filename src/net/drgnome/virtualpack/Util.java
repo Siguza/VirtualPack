@@ -59,10 +59,10 @@ public class Util
         catch(NullPointerException n)
         {
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             warn();
-            e.printStackTrace();
+            t.printStackTrace();
         }
         return new String[0];
     }
@@ -73,10 +73,10 @@ public class Util
         {
             return perms == null ? new String[0] : perms.getPlayerGroups((CraftPlayer)sender);
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             warn();
-            e.printStackTrace();
+            t.printStackTrace();
         }
         return new String[0];
     }
@@ -170,7 +170,7 @@ public class Util
         {
             if(VPluginBase.dbVersion == 1)
             {
-                return ItemStack.a(NBTCompressedStreamTools.a(DatatypeConverter.parseBase64Binary(string))); // Derpnote 2
+                return ItemStack.#FIELD_ITEMSTACK_1#(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string))); // Derpnote 2
             }
             else
             {
@@ -197,7 +197,7 @@ public class Util
         {
             return "";
         }
-        return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.a(item.save(new NBTTagCompound()))); // Derpnote
+        return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound()))); // Derpnote
     }
     
     public static ItemStack stringToItemStack_old(String string)
@@ -234,7 +234,7 @@ public class Util
             }
             return new ItemStack(id, amount, damage, list);
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             return null;
         }
@@ -281,7 +281,7 @@ public class Util
         return "" + d;
     }
     
-    // null.cloneItemStack doesn't throws a NullPointerException, therefore:
+    // null.cloneItemStack throws a NullPointerException, therefore:
     public static ItemStack copy(ItemStack item)
     {
         return item == null ? null : item.cloneItemStack();
@@ -352,7 +352,7 @@ public class Util
         {
             return Integer.parseInt(s);
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             return i;
         }
@@ -364,7 +364,7 @@ public class Util
         {
             return Double.parseDouble(s);
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             return d;
         }

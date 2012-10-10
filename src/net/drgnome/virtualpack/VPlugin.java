@@ -87,7 +87,7 @@ public class VPlugin extends VPluginBase implements Listener
             {
                 page = Integer.parseInt(args[1]);
             }
-            catch(Exception e)
+            catch(Throwable t)
             {
                 args[1] = longname(args[1]);
                 if(args[1].equals("uncrafter"))
@@ -261,7 +261,7 @@ public class VPlugin extends VPluginBase implements Listener
             {
                 amount = Integer.parseInt(args[4]);
             }
-            catch(Exception e)
+            catch(Throwable t)
             {
                 sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
             }
@@ -402,7 +402,7 @@ public class VPlugin extends VPluginBase implements Listener
             {
                 amount = Integer.parseInt(args[4]);
             }
-            catch(Exception e)
+            catch(Throwable t)
             {
                 sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
             }
@@ -553,7 +553,7 @@ public class VPlugin extends VPluginBase implements Listener
             {
                 amount = Integer.parseInt(args[4]);
             }
-            catch(Exception e)
+            catch(Throwable t)
             {
             }
         }
@@ -583,7 +583,7 @@ public class VPlugin extends VPluginBase implements Listener
                         {
                             amount = Integer.parseInt(args[5]);
                         }
-                        catch(Exception e)
+                        catch(Throwable t)
                         {
                         }
                     }
@@ -599,7 +599,7 @@ public class VPlugin extends VPluginBase implements Listener
                         {
                             amount = Integer.parseInt(args[5]);
                         }
-                        catch(Exception e)
+                        catch(Throwable t)
                         {
                         }
                     }
@@ -625,7 +625,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         getPack(args[2]).linkFurnace(sender, Integer.parseInt(args[5]), Integer.parseInt(args[6]), true);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                     }
@@ -642,7 +642,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         getPack(args[2]).unlinkFurnace(sender, Integer.parseInt(args[5]), true);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                     }
@@ -667,7 +667,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         getPack(args[2]).linkBrewingstand(sender, Integer.parseInt(args[5]), Integer.parseInt(args[6]), true);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                     }
@@ -684,7 +684,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         getPack(args[2]).unlinkBrewingstand(sender, Integer.parseInt(args[5]), true);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                     }
@@ -853,7 +853,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         amount = Integer.parseInt(args[3]);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                         return;
@@ -889,7 +889,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         amount = Integer.parseInt(args[2]);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                         return;
@@ -907,7 +907,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         nr = Integer.parseInt(args[2]);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                         return;
@@ -924,7 +924,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         nr = Integer.parseInt(args[2]);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                         return;
@@ -939,7 +939,7 @@ public class VPlugin extends VPluginBase implements Listener
                 {
                     nr = Integer.parseInt(args[1]);
                 }
-                catch(Exception e)
+                catch(Throwable t)
                 {
                     sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                     return;
@@ -970,7 +970,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         amount = Integer.parseInt(args[2]);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                         return;
@@ -988,7 +988,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         getPack(player.name).linkFurnace(sender, Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                     }
@@ -1003,7 +1003,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         getPack(player.name).unlinkFurnace(sender, Integer.parseInt(args[2]));
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                     }
@@ -1016,7 +1016,7 @@ public class VPlugin extends VPluginBase implements Listener
                 {
                     nr = Integer.parseInt(args[1]);
                 }
-                catch(Exception e)
+                catch(Throwable t)
                 {
                     sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                     return;
@@ -1047,7 +1047,7 @@ public class VPlugin extends VPluginBase implements Listener
                     {
                         amount = Integer.parseInt(args[2]);
                     }
-                    catch(Exception e)
+                    catch(Throwable t)
                     {
                         sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                         return;
@@ -1063,7 +1063,7 @@ public class VPlugin extends VPluginBase implements Listener
                 {
                     getPack(player.name).linkBrewingstand(sender, Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                 }
-                catch(Exception e)
+                catch(Throwable t)
                 {
                     sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                 }
@@ -1075,7 +1075,7 @@ public class VPlugin extends VPluginBase implements Listener
                 {
                     getPack(player.name).unlinkBrewingstand(sender, Integer.parseInt(args[2]));
                 }
-                catch(Exception e)
+                catch(Throwable t)
                 {
                     sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                 }
@@ -1087,7 +1087,7 @@ public class VPlugin extends VPluginBase implements Listener
                 {
                     nr = Integer.parseInt(args[1]);
                 }
-                catch(Exception e)
+                catch(Throwable t)
                 {
                     sendMessage(sender, lang("argument.invalid"), ChatColor.RED);
                     return;

@@ -76,6 +76,7 @@ public class VThreadSave extends Thread
                     query.setString(1, con);
                     query.execute();
                 }
+                db.close();
             }
             else
             {

@@ -48,10 +48,10 @@ public class Lang
             setDefs();
             config.save(file);
         }
-        catch(Exception e)
+        catch(Throwable t)
         {
             warn();
-            e.printStackTrace();
+            t.printStackTrace();
         }
     }
     

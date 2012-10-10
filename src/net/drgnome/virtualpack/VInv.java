@@ -70,7 +70,7 @@ public class VInv implements IInventory
                 setItem(slot, null);
                 return item;
             }
-            ItemStack item = contents[slot].a(size); // Derpnote
+            ItemStack item = contents[slot].#FIELD_ITEMSTACK_3#(size); // Derpnote
             if(contents[slot].count <= 0)
             {
                 setItem(slot, null);
@@ -120,7 +120,7 @@ public class VInv implements IInventory
     {
     }
     
-    public boolean a(EntityHuman entityhuman) // Derpnote
+    public boolean #FIELD_IINVENTORY_1#(EntityHuman entityhuman) // Derpnote
     {
         return true;
     }
@@ -144,11 +144,11 @@ public class VInv implements IInventory
     {
     }
     
-    public void f() // Derpnote
+    public void #FIELD_IINVENTORY_2#() // Derpnote
     {
     }
     
-    public void startOpen()
+    public void #FIELD_IINVENTORY_3#() // Derpnote
     {
     }
     

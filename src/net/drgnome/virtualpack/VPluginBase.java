@@ -42,7 +42,7 @@ import static net.drgnome.virtualpack.Util.*;
 
 public abstract class VPluginBase extends JavaPlugin implements Listener
 {
-    public static final String version = "1.1.5";
+    public static final String version = "#VERSION#";
     public static final String dbVer = "1";
     public static int dbVersion;
     protected HashMap<String, VPack> packs;
@@ -106,6 +106,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
                 db.prepareStatement("CREATE TABLE IF NOT EXISTS `vpack` (`data` longtext NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;").execute();
                 ResultSet row = db.prepareStatement("SELECT * FROM `vpack`").executeQuery();
                 portMysql = !row.next();
+                db.close();
             }
             catch(Throwable t)
             {
@@ -140,7 +141,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             {
                 saveThread.join();
             } 
-            catch (InterruptedException ex) 
+            catch(InterruptedException ex) 
             {
                 log.log(Level.WARNING, "[VirtualPack] Save interrupted: {0}", ex.getMessage());
             }
@@ -275,11 +276,20 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
                 }
             }
         }
-        catch(UnknownHostException e)
-        {
-        }
         catch(Throwable t)
         {
+            if(t.getClass().getPackage().getName().equalsIgnoreCase("java.net"))
+            {
+                if(!getConfigString("debug").equalsIgnoreCase("true"))
+                {
+                    return;
+                }
+                log.info("----- KEEP CALM! Nothing to worry about, just can't check for updates. -----");
+            }
+            else
+            {
+                warn();
+            }
             t.printStackTrace();
         }
     }
@@ -358,10 +368,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     {
         try
         {
-            if(db == null)
-            {
-                db = DriverManager.getConnection(getConfigString("db.url"), getConfigString("db.user"), getConfigString("db.pw"));
-            }
+            db = DriverManager.getConnection(getConfigString("db.url"), getConfigString("db.user"), getConfigString("db.pw"));
             ArrayList<String[]> list = new ArrayList<String[]>();
             ResultSet row = db.prepareStatement("SELECT * FROM `vpack`").executeQuery();
             while(row.next())
@@ -369,6 +376,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
                 Debug.log("load: " + row.getString("data"));
                 list.add(row.getString("data").split(separator[0]));
             }
+            db.close();
             load(list);
         }
         catch(Throwable t)
@@ -462,7 +470,17 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         }
         if(getConfigString("db.use").equalsIgnoreCase("true") && !forcefile)
         {
-            saveThread = new VThreadSave(db, packs);
+            try
+            {
+                db = DriverManager.getConnection(getConfigString("db.url"), getConfigString("db.user"), getConfigString("db.pw"));
+                saveThread = new VThreadSave(db, packs);
+            }
+            catch(Throwable t)
+            {
+                warn();
+                t.printStackTrace();
+                return;
+            }
         }
         else
         {
@@ -740,7 +758,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     
     protected void restoreInv(EntityPlayer player)
     {
-        player.inventory.k(); // Derpnote
+        player.inventory.#FIELD_PLAYERINVENTORY_1#(); // Derpnote
         player.inventory.items = copy(getPack(player.name).inv.items);
         player.inventory.armor = copy(getPack(player.name).inv.armor);
         getPack(player.name).inv = null;

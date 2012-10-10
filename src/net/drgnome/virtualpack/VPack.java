@@ -140,7 +140,7 @@ public class VPack
                 {
                     bookshelves = Integer.parseInt(a[2]);
                 }
-                catch(Exception e)
+                catch(Throwable t)
                 {
                 }
             }
@@ -162,7 +162,7 @@ public class VPack
                 {
                     flinks = Integer.parseInt(a[1]);
                 }
-                catch(Exception e)
+                catch(Throwable t)
                 {
                 }
             }
@@ -172,7 +172,7 @@ public class VPack
                 {
                     blinks = Integer.parseInt(a[1]);
                 }
-                catch(Exception e)
+                catch(Throwable t)
                 {
                 }
             }

@@ -99,7 +99,7 @@ public class AlphaChestHelper
     {
         VInv inv = new VInv(rows);
         DataInputStream in = new DataInputStream(new GZIPInputStream(new FileInputStream(chestFile)));
-        NBTTagCompound nbt = (NBTTagCompound)NBTBase.b(in); // Derpnote
+        NBTTagCompound nbt = (NBTTagCompound)NBTBase.#FIELD_NBTBASE_1#(in); // Derpnote
         in.close();
         NBTTagList items = nbt.getList("Items");
         for(int i = 0; i < items.size(); i++)
@@ -108,7 +108,7 @@ public class AlphaChestHelper
 			byte slot = item.getByte("Slot");
 			if(slot >= 0 && slot < (rows * 9))
             {
-                inv.setItem(slot, ItemStack.a(item)); // Derpnote
+                inv.setItem(slot, ItemStack.#FIELD_ITEMSTACK_1#(item)); // Derpnote
 			}
 		}
         return inv;

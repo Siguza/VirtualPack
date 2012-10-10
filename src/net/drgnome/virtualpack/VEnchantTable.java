@@ -20,19 +20,19 @@ public class VEnchantTable extends ContainerEnchantTable
         this.bookshelves = bookshelves;
     }
     
-    public void a(IInventory iinventory) // Derpnote
+    public void #FIELD_CONTAINERENCHANTTABLE_1#(IInventory iinventory) // Derpnote
     {
         if(iinventory == enchantSlots)
         {
             ItemStack itemstack = iinventory.getItem(0);
-            if((itemstack != null) && (itemstack.u())) // Derpnote
+            if((itemstack != null) && (itemstack.#FIELD_ITEMSTACK_2#())) // Derpnote
             {
-                f = rand.nextLong(); // Derpnote
+                #FIELD_CONTAINERENCHANTTABLE_4# = rand.nextLong(); // Derpnote
                 for(int i = 0; i < 3; i++)
                 {
-                    costs[i] = EnchantmentManager.a(rand, i, bookshelves, itemstack); // Derpnote
+                    costs[i] = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_1#(rand, i, bookshelves, itemstack); // Derpnote
                 }
-                a(); // Derpnote
+                #FIELD_CONTAINER_1#(); // Derpnote
             }
             else
             {
@@ -44,12 +44,12 @@ public class VEnchantTable extends ContainerEnchantTable
         }
     }
     
-    public boolean a(EntityHuman entityhuman, int i) // Derpnote
+    public boolean #FIELD_CONTAINERENCHANTTABLE_2#(EntityHuman entityhuman, int i) // Derpnote
     {
         ItemStack itemstack = enchantSlots.getItem(0);
         if(costs[i] > 0 && itemstack != null && entityhuman.expLevel >= costs[i])
         {
-            List list = EnchantmentManager.b(rand, itemstack, costs[i]); // Derpnote
+            List list = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_2#(rand, itemstack, costs[i]); // Derpnote
             if(list != null)
             {
                 entityhuman.levelDown(costs[i]);
@@ -59,14 +59,14 @@ public class VEnchantTable extends ContainerEnchantTable
                     EnchantmentInstance enchantmentinstance = (EnchantmentInstance)iterator.next();
                     itemstack.addEnchantment(enchantmentinstance.enchantment, enchantmentinstance.level);
                 }
-                a(enchantSlots); // Derpnote
+                #FIELD_CONTAINERENCHANTTABLE_5#(enchantSlots); // Derpnote
             }
             return true;
         }
         return false;
     }
     
-    public void a(EntityHuman entityhuman) // Derpnote
+    public void #FIELD_CONTAINERENCHANTTABLE_3#(EntityHuman entityhuman) // Derpnote
     {
         PlayerInventory playerinventory = entityhuman.inventory;
         if(playerinventory.getCarried() != null)
