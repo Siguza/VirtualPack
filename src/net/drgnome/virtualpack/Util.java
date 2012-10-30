@@ -297,6 +297,11 @@ public class Util
         return it;
     }
     
+    public static boolean areEqual(ItemStack item1, ItemStack item2)
+    {
+        return (item1.id == item2.id) && (item1.count == item2.count) && (item1.getData() == item2.getData());
+    }
+    
     // These 3 methods split up strings into multiple lines so that the message doesn't get messed up by the minecraft chat.
     // You can also give a prefix that is set before every line.
     public static void sendMessage(CommandSender sender, String message)
@@ -327,13 +332,13 @@ public class Util
         {
             if(offset + 60 >= message.length())
             {
-                sender.sendMessage(prefix + message.substring(offset, message.length()));
+                sender.sendMessage(prefix + message.substring(offset, message.length()).trim());
                 break;
             }
             part = message.substring(offset, offset + 60);
             xpos = part.lastIndexOf(" ");
             pos = xpos < 0 ? 60 : xpos;
-            part = message.substring(offset, offset + pos);
+            part = message.substring(offset, offset + pos).trim();
             sender.sendMessage(prefix + part);
             offset += pos + (xpos < 0 ? 0 : 1);
         }

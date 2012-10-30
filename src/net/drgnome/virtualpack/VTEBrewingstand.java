@@ -393,7 +393,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     
     private boolean isBrewable(ItemStack item, ItemStack ingredient)
     {
-        return (item != null) && !item.#FIELD_ITEMSTACK_4#(getBrewResult(item, ingredient)); // Derpnote
+        return (item != null) && !areEqual(item, getBrewResult(item, ingredient)); // Derpnote
     }
     
     private double getBrewSpeed(ItemStack item)

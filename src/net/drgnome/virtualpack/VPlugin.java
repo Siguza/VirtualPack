@@ -46,6 +46,10 @@ public class VPlugin extends VPluginBase implements Listener
             return;
         }
         CraftPlayer cp = (CraftPlayer)event.getEntity();
+        if(getConfigIsInList("disabled-worlds", cp.getWorld().getName()))
+        {
+            return;
+        }
         EntityPlayer player = cp.getHandle();
         if(player.noDamageTicks > player.maxNoDamageTicks / 2.0F)
         {
@@ -72,6 +76,10 @@ public class VPlugin extends VPluginBase implements Listener
             return;
         }
         CraftPlayer cp = (CraftPlayer)event.getPlayer();
+        if(getConfigIsInList("disabled-worlds", cp.getWorld().getName()))
+        {
+            return;
+        }
         if(hasPack(cp.getName()) && (getPack(cp.getName()).inv != null))
         {
             restoreInv(cp.getHandle());

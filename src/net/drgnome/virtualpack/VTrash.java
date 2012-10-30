@@ -18,9 +18,9 @@ public class VTrash extends VChest
         this.player = player;
     }
     
-    public ItemStack clickItem(int i, int j, boolean flag, EntityHuman entityhuman)
+    public ItemStack clickItem(int i, int j, #FIELD_CONTAINER_7#, EntityHuman entityhuman)
     {
-        ItemStack item = super.clickItem(i, j, flag, entityhuman);
+        ItemStack item = super.clickItem(i, j, #FIELD_CONTAINER_9#, entityhuman);
         player.updateInventory(player.activeContainer);
         return item;
     }

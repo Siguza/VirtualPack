@@ -53,7 +53,7 @@ public class VUncrafter extends ContainerChest
         }
     }
     
-    public ItemStack clickItem(int i, int j, boolean flag, EntityHuman entityhuman)
+    public ItemStack clickItem(int i, int j, #FIELD_CONTAINER_7#, EntityHuman entityhuman)
     {
         ItemStack itemstack = null;
         if(j > 1)
@@ -82,17 +82,17 @@ public class VUncrafter extends ContainerChest
                     }
                 }
             }
-            else if(flag)
+            else if(#FIELD_CONTAINER_8#)
             {
-                ItemStack itemstack1 = #FIELD_CONTAINERCHEST_1#(i); // Derpnote
+                ItemStack itemstack1 = #FIELD_CONTAINERCHEST_1#(#COMM_2A# entityhuman, #COMM_2B# i); // Derpnote
                 if(itemstack1 != null)
                 {
-                    int k = itemstack1.id;
+                    int oldid = itemstack1.id;
                     itemstack = copy(itemstack1);
                     Slot slot = (Slot)this.#FIELD_CONTAINER_3#.get(i); // Derpnote
-                    if((slot != null) && (slot.getItem() != null) && (slot.getItem().id == k))
+                    if((slot != null) && (slot.getItem() != null) && (slot.getItem().id == oldid))
                     {
-                        #FIELD_CONTAINER_6#(i, j, flag, entityhuman); // Derpnote
+                        #FIELD_CONTAINER_6#(i, j, #FIELD_CONTAINER_8#, entityhuman); // Derpnote
                     }
                 }
             }
@@ -142,7 +142,7 @@ public class VUncrafter extends ContainerChest
                         {
                             slot1.set((ItemStack)null);
                         }
-                        slot1.#FIELD_SLOT_4#(playerinventory.getCarried()); // Derpnote
+                        slot1.#FIELD_SLOT_4#(#COMM_3A# entityhuman, #COMM_3B# playerinventory.getCarried()); // Derpnote
                     }
                     else if(slot1.isAllowed(itemstack3))
                     {
@@ -184,7 +184,7 @@ public class VUncrafter extends ContainerChest
                             {
                                 slot1.set((ItemStack)null);
                             }
-                            slot1.#FIELD_SLOT_4#(playerinventory.getCarried()); // Derpnote
+                            slot1.#FIELD_SLOT_4#(#COMM_3A# entityhuman, #COMM_3B# playerinventory.getCarried()); // Derpnote
                         }
                     }
                 }

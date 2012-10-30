@@ -121,6 +121,22 @@
                                     <token>#COMM_1B#</token>
                                     <value></value>
                                 </replacement>
+                                <replacement>
+                                    <token>#COMM_2A#</token>
+                                    <value>/*</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#COMM_2B#</token>
+                                    <value>*/</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#COMM_3A#</token>
+                                    <value>/*</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#COMM_3B#</token>
+                                    <value>*/</value>
+                                </replacement>
                                 <!-- POTATO -->
                                 <replacement>
                                     <token>#FIELD_NBTBASE_1#</token> <!-- st (DataInput) -->
@@ -137,10 +153,6 @@
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_3#</token> <!-- (int) -->
                                     <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEMSTACK_4#</token> <!-- (ItemStack) -->
-                                    <value>c</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#</token> <!-- st (byte[]) -->
@@ -193,6 +205,18 @@
                                 <replacement>
                                     <token>#FIELD_CONTAINER_6#</token> <!-- (int, int, boolean, EntityHuman) -->
                                     <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_7#</token> <!-- clickItem() param n.3 -->
+                                    <value>boolean metaVar</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_8#</token> <!-- clickItem() param n.3 -->
+                                    <value>metaVar</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_9#</token> <!-- clickItem() param n.3 -->
+                                    <value>metaVar</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ENCHANTMENTMANAGER_1#</token> <!-- st (Random, int, int ,ItemStack) -->

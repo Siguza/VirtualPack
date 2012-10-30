@@ -494,12 +494,17 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     {
         if(waitForPlugin)
         {
-            sender.sendMessage("VirtualPack is waiting for GroupManager.");
+            sendMessage(sender, "VirtualPack is waiting for GroupManager.", ChatColor.YELLOW);
             return true;
         }
         if(!loadSuccess && (((sender instanceof Player) && !(sender.hasPermission("vpack.admin"))) || (args.length < 2) || !(longname(args[0]).equals("admin") && args[1].equalsIgnoreCase("reload"))))
         {
-            sender.sendMessage("Data loading failed, tell an admin to do a reload.");
+            sendMessage(sender, "Data loading failed, tell an admin to do a reload.", ChatColor.RED);
+            return true;
+        }
+        if((sender instanceof Player) && getConfigIsInList("disabled-worlds", ((Player)sender).getWorld().getName()))
+        {
+            sendMessage(sender, "VirtualPack is disabled on this world.", ChatColor.RED);
             return true;
         }
         if((sender instanceof CraftPlayer) && hasPack(sender.getName()) && (getPack(sender.getName()).inv != null))

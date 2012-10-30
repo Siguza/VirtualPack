@@ -35,6 +35,10 @@ public class Config
         setDef("debug", "false");
         setDef("forceload", "false");
         setDef("check-update", "true");
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("no_vpack_world");
+        list.add("potato_land");
+        setDef("disabled-worlds", list);
         setDef("db.use", "false");
         setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
         setDef("db.user", "herp");
@@ -73,7 +77,7 @@ public class Config
     }
     
     // Set a default value
-    private static void setDef(String path, String value)
+    private static void setDef(String path, Object value)
     {
         if(!config.isSet(path))
         {
@@ -244,5 +248,24 @@ public class Config
             meta = 0;
         }
         return new ItemStack(id, amount, meta);
+    }
+    
+    public static boolean getConfigIsInList(String key, String search)
+    {
+        try
+        {
+            for(Object o : config.getList(key).toArray())
+            {
+                if((o instanceof String) && ((String)o).equals(search))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        catch(Throwable t)
+        {
+            return false;
+        }
     }
 }
