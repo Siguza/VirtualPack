@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -12,6 +12,9 @@
         <connection>scm:git:git://github.com:Siguza/VirtualPack.git</connection>
         <developerConnection>scm:git:git@github.com:Siguza/VirtualPack.git</developerConnection>
     </scm>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <repositories>
         <repository>
             <id>bukkit-repo</id>
@@ -26,7 +29,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.4.2-R0.1-SNAPSHOT</version>
+            <version>1.3.2-R2.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -123,18 +126,22 @@
                                 </replacement>
                                 <replacement>
                                     <token>#COMM_2A#</token>
-                                    <value></value>
+                                    <value>/*</value>
                                 </replacement>
                                 <replacement>
                                     <token>#COMM_2B#</token>
-                                    <value></value>
+                                    <value>*/</value>
                                 </replacement>
                                 <replacement>
                                     <token>#COMM_3A#</token>
-                                    <value></value>
+                                    <value>/*</value>
                                 </replacement>
                                 <replacement>
                                     <token>#COMM_3B#</token>
+                                    <value>*/</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_BLUBB_1#</token>
                                     <value></value>
                                 </replacement>
                                 <!-- POTATO -->
@@ -148,7 +155,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_2#</token> <!-- () -->
-                                    <value>v</value>
+                                    <value>u</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_3#</token> <!-- (int) -->
@@ -204,22 +211,22 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_6#</token> <!-- (int, int, boolean, EntityHuman) -->
-                                    <value>a</value>
+                                    <value>b</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_7#</token> <!-- clickItem() param n.3 -->
-                                    <value>int metaVar</value>
+                                    <value>boolean metaVar</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_8#</token> <!-- clickItem() param n.3 -->
-                                    <value>metaVar == 1</value>
+                                    <value>metaVar</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_9#</token> <!-- clickItem() param n.3 -->
                                     <value>metaVar</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_ENCHANTMENTMANAGER_1#</token> <!-- st (Random, int, int, ItemStack) -->
+                                    <token>#FIELD_ENCHANTMENTMANAGER_1#</token> <!-- st (Random, int, int ,ItemStack) -->
                                     <value>a</value>
                                 </replacement>
                                 <replacement>
@@ -240,7 +247,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_PLAYERINVENTORY_1#</token> <!-- () -->
-                                    <value>l</value>
+                                    <value>m</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_TILEENTITY_1#</token> <!-- () -->
@@ -256,19 +263,19 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_1#</token> <!-- () -->
-                                    <value>s</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEM_2#</token> <!-- () -->
                                     <value>r</value>
                                 </replacement>
                                 <replacement>
+                                    <token>#FIELD_ITEM_2#</token> <!-- () -->
+                                    <value>q</value>
+                                </replacement>
+                                <replacement>
                                     <token>#FIELD_ITEM_3#</token> <!-- () -->
-                                    <value>v</value>
+                                    <value>u</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_4#</token> <!-- () -->
-                                    <value>u</value>
+                                    <value>t</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_POTIONBREWER_1#</token> <!-- st (int, String) -->
@@ -276,15 +283,15 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMHOE_1#</token> <!-- () -->
-                                    <value>g</value>
+                                    <value>f</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSWORD_1#</token> <!-- () -->
-                                    <value>h</value>
+                                    <value>f</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMTOOL_1#</token> <!-- () -->
-                                    <value>g</value>
+                                    <value>e</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_RECIPESFURNACE_1#</token> <!-- Class name -->
@@ -308,7 +315,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_SLOT_4#</token> <!-- (ItemStack) -->
-                                    <value>a</value>
+                                    <value>b</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CRAFTINGMANAGER_1#</token> <!-- () -->

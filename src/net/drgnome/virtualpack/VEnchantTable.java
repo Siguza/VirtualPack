@@ -8,6 +8,8 @@ import java.util.*;
 
 import net.minecraft.server.*;
 
+import static net.drgnome.virtualpack.Util.*;
+
 public class VEnchantTable extends ContainerEnchantTable
 {
     private Random rand = new Random();
@@ -47,12 +49,15 @@ public class VEnchantTable extends ContainerEnchantTable
     public boolean #FIELD_CONTAINERENCHANTTABLE_2#(EntityHuman entityhuman, int i) // Derpnote
     {
         ItemStack itemstack = enchantSlots.getItem(0);
-        if(costs[i] > 0 && itemstack != null && entityhuman.expLevel >= costs[i])
+        if(costs[i] > 0 && itemstack != null && ((entityhuman.expLevel >= costs[i]) || entityhuman.abilities.canInstantlyBuild || hasPermission(entityhuman.name, "vpack.use.enchanttable.free")))
         {
             List list = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_2#(rand, itemstack, costs[i]); // Derpnote
             if(list != null)
             {
-                entityhuman.levelDown(costs[i]);
+                if(!entityhuman.abilities.canInstantlyBuild && !hasPermission(entityhuman.name, "vpack.use.enchanttable.free"))
+                {
+                    entityhuman.levelDown(#FIELD_BLUBB_1#costs[i]);
+                }
                 Iterator iterator = list.iterator();
                 while(iterator.hasNext())
                 {
@@ -66,7 +71,7 @@ public class VEnchantTable extends ContainerEnchantTable
         return false;
     }
     
-    public void #FIELD_CONTAINERENCHANTTABLE_3#(EntityHuman entityhuman) // Derpnote
+    public void #FIELD_CONTAINER_5#(EntityHuman entityhuman) // Derpnote
     {
         PlayerInventory playerinventory = entityhuman.inventory;
         if(playerinventory.getCarried() != null)

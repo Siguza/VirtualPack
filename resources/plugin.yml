@@ -35,6 +35,8 @@ permissions:
         description: Allows the use of the VirtualPack workbench
     vpack.use.enchanttable:
         description: Allows the use of the VirtualPack enchantment table
+    vpack.use.enchanttable.free:
+        description: Leaves your XP where they are
     vpack.use.chest:
         description: Allows the use of the VirtualPack chests
     vpack.use.furnace:
