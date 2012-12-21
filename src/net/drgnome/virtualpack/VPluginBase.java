@@ -10,13 +10,14 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 import java.sql.*;
+import java.sql.Connection; // To fix 1.4.6 bug
 import java.net.*;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.scheduler.CraftScheduler;
+import #PACKAGE_CRAFTBUKKIT#.entity.CraftPlayer;
+import #PACKAGE_CRAFTBUKKIT#.scheduler.CraftScheduler;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

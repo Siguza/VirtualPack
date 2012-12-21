@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>1.1.7</version>
+    <version>1.1.7.3</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.4.4-R0.1-SNAPSHOT</version>
+            <version>1.4.6-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -114,6 +114,14 @@
                                 <replacement>
                                     <token>#VERSION#</token>
                                     <value>${project.version}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#PACKAGE_MINECRAFT#</token>
+                                    <value>net.minecraft.server.v1_4_6</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#PACKAGE_CRAFTBUKKIT#</token>
+                                    <value>org.bukkit.craftbukkit.v1_4_6</value>
                                 </replacement>
                                 <!-- REPLACEMENTS -->
                                 <replacement>
@@ -324,6 +332,10 @@
                                 <replacement>
                                     <token>#FIELD_IRECIPE_2#</token> <!-- () -->
                                     <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NETSERVERHANDLER_1#</token> <!-- Class & var name -->
+                                    <value>playerConnection</value>
                                 </replacement>
                             </replacements>
                         </configuration>

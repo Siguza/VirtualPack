@@ -6,7 +6,7 @@ package net.drgnome.virtualpack;
 
 import java.util.*;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 public class VBrewingstand extends ContainerBrewingStand
 {    

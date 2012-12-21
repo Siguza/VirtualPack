@@ -6,10 +6,10 @@ package net.drgnome.virtualpack;
 
 import java.util.*;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import #PACKAGE_CRAFTBUKKIT#.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.command.CommandSender;
 
@@ -543,7 +543,7 @@ public class VPack
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
         }
-        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 1, "", 9));
+        player.#FIELD_NETSERVERHANDLER_1#.sendPacket(new Packet100OpenWindow(1, 1, "", 9));
         VWorkbench container = new VWorkbench(player);
         player.activeContainer = container;
         container.windowId = 1;
@@ -595,7 +595,7 @@ public class VPack
         {
             guiname = guiname.substring(0, 32);
         }
-        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 0, guiname, 2 * 9));
+        player.#FIELD_NETSERVERHANDLER_1#.sendPacket(new Packet100OpenWindow(1, 0, guiname, 2 * 9));
         VUncrafter container = new VUncrafter(player);
         player.activeContainer = container;
         container.windowId = 1;
@@ -673,7 +673,7 @@ public class VPack
             sendMessage(sender, lang("money.toofew"), ChatColor.RED);
             return;
         }
-        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 4, "", 9));
+        player.#FIELD_NETSERVERHANDLER_1#.sendPacket(new Packet100OpenWindow(1, 4, "", 9));
         VEnchantTable container = new VEnchantTable(player, bookshelves);
         player.activeContainer = container;
         container.windowId = 1;
@@ -765,7 +765,7 @@ public class VPack
         {
             chestname = chestname.substring(0, 32);
         }
-        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 0, chestname, getChestSize() * 9));
+        player.#FIELD_NETSERVERHANDLER_1#.sendPacket(new Packet100OpenWindow(1, 0, chestname, getChestSize() * 9));
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);
@@ -864,7 +864,7 @@ public class VPack
             return;
         }
         VFurnace container = new VFurnace(player, fur);
-        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 2, "", 3));
+        player.#FIELD_NETSERVERHANDLER_1#.sendPacket(new Packet100OpenWindow(1, 2, "", 3));
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);
@@ -993,7 +993,7 @@ public class VPack
             return;
         }
         VBrewingstand container = new VBrewingstand(player, brew);
-        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 5, "", 4));
+        player.#FIELD_NETSERVERHANDLER_1#.sendPacket(new Packet100OpenWindow(1, 5, "", 4));
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);
@@ -1111,7 +1111,7 @@ public class VPack
         {
             name = name.substring(0, 32);
         }
-        player.netServerHandler.sendPacket(new Packet100OpenWindow(1, 0, name, 9));
+        player.#FIELD_NETSERVERHANDLER_1#.sendPacket(new Packet100OpenWindow(1, 0, name, 9));
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);

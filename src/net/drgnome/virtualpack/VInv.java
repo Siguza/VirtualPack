@@ -6,11 +6,11 @@ package net.drgnome.virtualpack;
 
 import java.util.*;
 
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import #PACKAGE_CRAFTBUKKIT#.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import static net.drgnome.virtualpack.Util.*;
 

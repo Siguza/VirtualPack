@@ -5,7 +5,7 @@ else
     DIR=$(dirname $0) ;
 fi;
 cd $DIR;
-VERSIONS=('1.2.5' '1.3.2' '1.4.4')
+VERSIONS=('1.2.5' '1.3.2' '1.4.5')
 for v in "${VERSIONS[@]}"
 do
     echo ''

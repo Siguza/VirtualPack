@@ -9,13 +9,13 @@ import java.lang.reflect.*;
 import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.entity.Player;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import #PACKAGE_CRAFTBUKKIT#.entity.CraftPlayer;
 import org.bukkit.command.CommandSender;
 
 import net.milkbowl.vault.economy.Economy;
@@ -232,7 +232,12 @@ public class Util
                 com.setShort("lvl", Short.parseShort(e[1]));
                 list.add(com);
             }
-            return new ItemStack(id, amount, damage, list);
+            //return new ItemStack(id, amount, damage, list);
+            NBTTagCompound tag = new NBTTagCompound("tag");
+            tag.set("ench", list);
+            ItemStack stack = new ItemStack(id, amount, damage);
+            stack.setTag(tag);
+            return stack;
         }
         catch(Throwable t)
         {

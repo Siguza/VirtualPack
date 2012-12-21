@@ -6,7 +6,7 @@ package net.drgnome.virtualpack;
 
 import java.util.*;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import static net.drgnome.virtualpack.Util.*;
 
@@ -17,7 +17,7 @@ public class VEnchantTable extends ContainerEnchantTable
     
     public VEnchantTable(EntityPlayer player, int bookshelves)
     {
-        super(player.inventory, null, 0, 0, 0);
+        super(player.inventory, player.world, 0, 0, 0);
         this.checkReachable = false;
         this.bookshelves = bookshelves;
     }
@@ -49,12 +49,12 @@ public class VEnchantTable extends ContainerEnchantTable
     public boolean #FIELD_CONTAINERENCHANTTABLE_2#(EntityHuman entityhuman, int i) // Derpnote
     {
         ItemStack itemstack = enchantSlots.getItem(0);
-        if(costs[i] > 0 && itemstack != null && ((entityhuman.expLevel >= costs[i]) || entityhuman.abilities.canInstantlyBuild || hasPermission(entityhuman.name, "vpack.use.enchanttable.free")))
+        if(costs[i] > 0 && itemstack != null && ((entityhuman.expLevel >= costs[i]) || hasPermission(entityhuman.name, "vpack.use.enchanttable.free")))
         {
             List list = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_2#(rand, itemstack, costs[i]); // Derpnote
             if(list != null)
             {
-                if(!entityhuman.abilities.canInstantlyBuild && !hasPermission(entityhuman.name, "vpack.use.enchanttable.free"))
+                if(!hasPermission(entityhuman.name, "vpack.use.enchanttable.free"))
                 {
                     entityhuman.levelDown(#FIELD_BLUBB_1#costs[i]);
                 }

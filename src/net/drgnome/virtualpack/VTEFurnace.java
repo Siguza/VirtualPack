@@ -6,10 +6,10 @@ package net.drgnome.virtualpack;
 
 import java.util.*;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import #PACKAGE_CRAFTBUKKIT#.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 
 import static net.drgnome.virtualpack.Util.*;
@@ -24,7 +24,7 @@ public class VTEFurnace extends TileEntityFurnace
     // For custom stuff
     private double burnSpeed;
     private double meltSpeed;
-    // I'm internally using "myCookTime" to not lose any precision, but for displaying the progress, I still have to use "cookTime"
+    // I'm internally using "myCookTime" to not lose any precision, but for displaying the progress I still have to use "cookTime"
     private double myCookTime;
     // Call me paranoid, but this has to be checked
     private int lastID;

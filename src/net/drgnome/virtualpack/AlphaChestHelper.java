@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import static net.drgnome.virtualpack.Lang.*;
 import static net.drgnome.virtualpack.Util.*;

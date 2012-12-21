@@ -7,7 +7,7 @@ package net.drgnome.virtualpack;
 import java.util.*;
 import java.lang.reflect.*;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import static net.drgnome.virtualpack.Util.*;
 
@@ -50,7 +50,7 @@ public class VUncrafterInv extends VInv
                 {
                     try
                     {
-                        Field field = net.minecraft.server.ShapedRecipes.class.getDeclaredField("items");
+                        Field field = #PACKAGE_MINECRAFT#.ShapedRecipes.class.getDeclaredField("items");
                         field.setAccessible(true);
                         tmp2 = field.get(recipe);
                         if(!(tmp2 instanceof ItemStack[]))
@@ -74,7 +74,7 @@ public class VUncrafterInv extends VInv
                 {
                     try
                     {
-                        Field field = net.minecraft.server.ShapelessRecipes.class.getDeclaredField("ingredients");
+                        Field field = #PACKAGE_MINECRAFT#.ShapelessRecipes.class.getDeclaredField("ingredients");
                         field.setAccessible(true);
                         tmp2 = field.get(recipe);
                         if(!(tmp2 instanceof List))

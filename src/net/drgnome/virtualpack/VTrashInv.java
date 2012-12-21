@@ -4,7 +4,7 @@
 
 package net.drgnome.virtualpack;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import static net.drgnome.virtualpack.Util.*;
 

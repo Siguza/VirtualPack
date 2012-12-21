@@ -7,12 +7,12 @@ package net.drgnome.virtualpack;
 import java.io.*;
 import java.util.*;
 
-import net.minecraft.server.*;
+import #PACKAGE_MINECRAFT#.*;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.*;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import #PACKAGE_CRAFTBUKKIT#.entity.CraftPlayer;
 
 import static net.drgnome.virtualpack.Lang.*;
 import static net.drgnome.virtualpack.Util.*;

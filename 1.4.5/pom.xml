@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>1.1.7</version>
+    <version>1.1.7.3</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.4.2-R0.3-SNAPSHOT</version>
+            <version>1.4.5-R1.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -115,6 +115,14 @@
                                     <token>#VERSION#</token>
                                     <value>${project.version}</value>
                                 </replacement>
+                                <replacement>
+                                    <token>#PACKAGE_MINECRAFT#</token>
+                                    <value>net.minecraft.server.v1_4_5</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#PACKAGE_CRAFTBUKKIT#</token>
+                                    <value>org.bukkit.craftbukkit.v1_4_5</value>
+                                </replacement>
                                 <!-- REPLACEMENTS -->
                                 <replacement>
                                     <token>#COMM_1A#</token>
@@ -178,10 +186,6 @@
                                     <value>a</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_CONTAINERENCHANTTABLE_3#</token> <!-- (EntityHuman) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
                                     <token>#FIELD_CONTAINERENCHANTTABLE_4#</token> <!-- long -->
                                     <value>f</value>
                                 </replacement>
@@ -195,11 +199,11 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_2#</token> <!-- List -->
-                                    <value>a</value>
+                                    <value>b</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_3#</token> <!-- List -->
-                                    <value>b</value>
+                                    <value>c</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_4#</token> <!-- (Slot) -->
@@ -207,7 +211,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_5#</token> <!-- (EntityHuman) -->
-                                    <value>a</value>
+                                    <value>b</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_6#</token> <!-- (int, int, boolean, EntityHuman) -->
@@ -235,7 +239,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IINVENTORY_1#</token> <!-- (EntityHuman) -->
-                                    <value>a</value>
+                                    <value>a_</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IINVENTORY_2#</token> <!-- () -->
@@ -328,6 +332,10 @@
                                 <replacement>
                                     <token>#FIELD_IRECIPE_2#</token> <!-- () -->
                                     <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NETSERVERHANDLER_1#</token> <!-- Class & var name -->
+                                    <value>netServerHandler</value>
                                 </replacement>
                             </replacements>
                         </configuration>
