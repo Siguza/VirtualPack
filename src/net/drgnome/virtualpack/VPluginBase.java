@@ -509,7 +509,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             sendMessage(sender, "VirtualPack is waiting for GroupManager.", ChatColor.YELLOW);
             return true;
         }
-        if(!loadSuccess && (((sender instanceof Player) && !(sender.hasPermission("vpack.admin"))) || (args.length < 2) || !(longname(args[0]).equals("admin") && args[1].equalsIgnoreCase("reload"))))
+        if(!loadSuccess && (((sender instanceof Player) && !(hasPermission(sender, "vpack.admin"))) || (args.length < 2) || !(longname(args[0]).equals("admin") && args[1].equalsIgnoreCase("reload"))))
         {
             sendMessage(sender, "Data loading failed, tell an admin to do a reload.", ChatColor.RED);
             return true;
@@ -523,7 +523,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             restoreInv(((CraftPlayer)sender).getHandle());
         }
-        if(update && (!(sender instanceof Player) || (sender.hasPermission("vpack.update"))))
+        if(update && (!(sender instanceof Player) || (hasPermission(sender, "vpack.update"))))
         {
             sendMessage(sender, lang("update.msg"), ChatColor.GREEN);
             sendMessage(sender, lang("update.link"), ChatColor.RED);
@@ -541,7 +541,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         }
         else if(args[0].equals("update"))
         {
-            if(!sender.hasPermission("vpack.update"))
+            if(!hasPermission(sender, "vpack.update"))
             {
                 sendMessage(sender, lang("update.perm"), ChatColor.RED);
                 return true;
@@ -565,7 +565,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         }
         else if(args[0].equals("admin"))
         {
-            if(!sender.hasPermission("vpack.admin"))
+            if(!hasPermission(sender, "vpack.admin"))
             {
                 sendMessage(sender, lang("admin.perm"), ChatColor.RED);
                 return true;
@@ -581,7 +581,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             sendMessage(sender, lang("use.player"), ChatColor.RED);
             return true;
         }
-        else if(!sender.hasPermission("vpack.use"))
+        else if(!hasPermission(sender, "vpack.use"))
         {
             sendMessage(sender, lang("use.perm"), ChatColor.RED);
             return true;

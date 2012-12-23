@@ -648,7 +648,7 @@ public class VPack
     
     public boolean useInvGuard(CommandSender sender)
     {
-        if(!sender.hasPermission("vpack.use.invguard") || !hasInvGuard)
+        if(!hasPermission(sender, "vpack.use.invguard") || !hasInvGuard)
         {
             return false;
         }

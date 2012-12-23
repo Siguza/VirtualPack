@@ -130,11 +130,11 @@ public class VPlugin extends VPluginBase implements Listener
             }
         }
         sendMessage(sender, lang("help.title", new String[]{"" + page, "4"}));
-        if(((sender instanceof Player) && (sender.hasPermission("vpack.admin"))) || !(sender instanceof Player))
+        if(((sender instanceof Player) && (hasPermission(sender, "vpack.admin"))) || !(sender instanceof Player))
         {
             sendMessage(sender, lang("help.admin"), ChatColor.RED);
         }
-        /*if(((sender instanceof Player) && (sender.hasPermission("vpack.debug"))) || !(sender instanceof Player))
+        /*if(((sender instanceof Player) && (hasPermission(sender, "vpack.debug"))) || !(sender instanceof Player))
         {
             sendMessage(sender, lang("help.debug"), ChatColor.YELLOW);
         }*/
@@ -242,7 +242,7 @@ public class VPlugin extends VPluginBase implements Listener
         }
         else if(args[1].equals("delete"))
         {
-            if(!sender.hasPermission("vpack.admin.delete"))
+            if(!hasPermission(sender, "vpack.admin.delete"))
             {
                 sendMessage(sender, lang("admin.perm"), ChatColor.RED);
                 return;
@@ -264,7 +264,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     private void cmdAdminGive(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.admin.give"))
+        if(!hasPermission(sender, "vpack.admin.give"))
         {
             sendMessage(sender, lang("admin.perm"), ChatColor.RED);
             return;
@@ -405,7 +405,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     private void cmdAdminTake(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.admin.take"))
+        if(!hasPermission(sender, "vpack.admin.take"))
         {
             sendMessage(sender, lang("admin.perm"), ChatColor.RED);
             return;
@@ -555,7 +555,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     protected void cmdAdminUse(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.admin.use"))
+        if(!hasPermission(sender, "vpack.admin.use"))
         {
             sendMessage(sender, lang("admin.perm"), ChatColor.RED);
             return;
@@ -724,7 +724,7 @@ public class VPlugin extends VPluginBase implements Listener
         EntityPlayer player = ((CraftPlayer)sender).getHandle();
         if(args.length >= 2)
         {
-            if(sender.hasPermission("vpack.stats"))
+            if(hasPermission(sender, "vpack.stats"))
             {
                 if(hasPack(args[1]))
                 {
@@ -812,7 +812,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     protected void cmdWorkbench(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.use.workbench"))
+        if(!hasPermission(sender, "vpack.use.workbench"))
         {
             sendMessage(sender, lang("workbench.perm"), ChatColor.RED);
             return;
@@ -828,7 +828,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     protected void cmdUncrafter(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.use.uncrafter"))
+        if(!hasPermission(sender, "vpack.use.uncrafter"))
         {
             sendMessage(sender, lang("uncrafter.perm"), ChatColor.RED);
             return;
@@ -844,7 +844,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     /*protected void cmdInvGuard(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.use.invguard"))
+        if(!hasPermission(sender, "vpack.use.invguard"))
         {
             sendMessage(sender, lang("invguard.perm"), ChatColor.RED);
             return;
@@ -860,7 +860,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     protected void cmdEnchanttable(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.use.enchanttable"))
+        if(!hasPermission(sender, "vpack.use.enchanttable"))
         {
             sendMessage(sender, lang("enchanttable.perm"), ChatColor.RED);
             return;
@@ -895,7 +895,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     protected void cmdChest(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.use.chest"))
+        if(!hasPermission(sender, "vpack.use.chest"))
         {
             sendMessage(sender, lang("chest.perm"), ChatColor.RED);
             return;
@@ -975,7 +975,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     protected void cmdFurnace(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.use.furnace"))
+        if(!hasPermission(sender, "vpack.use.furnace"))
         {
             sendMessage(sender, lang("furnace.perm"), ChatColor.RED);
             return;
@@ -1052,7 +1052,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     protected void cmdBrewingstand(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.use.brewingstand"))
+        if(!hasPermission(sender, "vpack.use.brewingstand"))
         {
             sendMessage(sender, lang("brewingstand.perm"), ChatColor.RED);
             return;
@@ -1128,7 +1128,7 @@ public class VPlugin extends VPluginBase implements Listener
     
     /*protected void cmdDebug(CommandSender sender, String[] args)
     {
-        if(!sender.hasPermission("vpack.debug"))
+        if(!hasPermission(sender, "vpack.debug"))
         {
             sendMessage(sender, lang("debug.perm"), ChatColor.RED);
             return;
