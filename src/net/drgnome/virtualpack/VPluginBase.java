@@ -73,7 +73,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
                 waitForPlugin = true;
             }
         }
-        catch(NoClassDefFoundError e)
+        catch(ClassNotFoundException e)
         {
             init();
         }
@@ -176,7 +176,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
                     return;
                 }
             }
-            catch(NoClassDefFoundError e)
+            catch(ClassNotFoundException e)
             {
                 init();
             }
