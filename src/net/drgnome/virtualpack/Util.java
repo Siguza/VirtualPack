@@ -45,6 +45,16 @@ public class Util
         return true;
     }
     
+    public static boolean hasPermission(CommandSender sender, String permission)
+    {
+        return hasPermission(sender.getName(), permission);
+    }
+    
+    public static boolean hasPermission(EntityPlayer player, String permission)
+    {
+        return hasPermission(player.name, permission);
+    }
+    
     public static boolean hasPermission(String username, String permission)
     {
         return perms == null ? false : perms.has((String)null, username, permission);
@@ -179,7 +189,7 @@ public class Util
         }
         catch(Throwable t)
         {
-            Debug.log("StIS failed on (" + string.length() + "): \"" + string + "\"");
+            /*Debug.log("StIS failed on (" + string.length() + "): \"" + string + "\"");
             if(getConfigString("forceload").equalsIgnoreCase("true"))
             {
                 return null;
@@ -187,7 +197,8 @@ public class Util
             else
             {
                 throw t;
-            }
+            }*/
+            throw t;
         }
     }
     

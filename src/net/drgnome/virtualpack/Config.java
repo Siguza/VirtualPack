@@ -19,39 +19,65 @@ import static net.drgnome.virtualpack.Util.*;
 
 // Thought for static import
 public class Config
-{    
-    private static FileConfiguration config;
+{
+    public static final String _configversion = "1";
+    private static FileConfiguration _global;
+    //private static HashMap<String, YamlConfiguration> _worlds;
     
     // Because reloadConfig is already used
-    public static void reloadConf(FileConfiguration file)
+    public static void reloadConf(FileConfiguration global, File dir)
     {
-        config = file;
+        _global = global;
+        //_worlds = HashMap<String, YamlConfiguration>();
         setDefs();
     }
     
     // Set all default values
     private static void setDefs()
     {
-        setDef("debug", "false");
-        setDef("forceload", "false");
-        setDef("check-update", "true");
+        //setDef("enable", "true");
         ArrayList<String> list = new ArrayList<String>();
         list.add("no_vpack_world");
         list.add("potato_land");
         setDef("disabled-worlds", list);
+        setDef("check-update", "true");
+        setDef("save-interval", "0");
+        setDef("on-death", "keep");
+        setDef("economy", "true");
         setDef("db.use", "false");
         setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
         setDef("db.user", "herp");
         setDef("db.pw", "derp");
-        setDef("save-interval", "0");
-        setDef("on-death", "keep");
-        setDef("economy-disabled", "false");
+        /*setDef("tools.workbench.buy", "20000");
+        setDef("tools.workbench.use", "0");
+        setDef("tools.uncrafter.buy", "30000");
+        setDef("tools.uncrafter.use", "0");
+        setDef("tools.chest.max", "10");
+        setDef("tools.chest.start", "0");
+        setDef("tools.chest.multiply", "1");
+        setDef("tools.chest.buy", "40000");
+        setDef("tools.chest.use", "0");
+        setDef("tools.chest.size", "6");
+        setDef("tools.furnace.max", "10");
+        setDef("tools.furnace.start", "0");
+        setDef("tools.furnace.multiply", "1");
+        setDef("tools.furnace.buy", "50000");
+        setDef("tools.furnace.use", "0");
+        setDef("tools.furnace.link", "100000");
+        setDef("tools.brewingstand.max", "10");
+        setDef("tools.brewingstand.start", "0");
+        setDef("tools.brewingstand.multiply", "1");
+        setDef("tools.brewingstand.buy", "75000");
+        setDef("tools.brewingstand.use", "0");
+        setDef("tools.brewingstand.link", "100000");
+        setDef("tools.enchanttable.multiply", "1");
+        setDef("tools.enchanttable.buy", "30000");
+        setDef("tools.enchanttable.use", "0");
+        setDef("tools.enchanttable.book", "5000");*/
         setDef("workbench.buy", "20000");
         setDef("workbench.use", "0");
         setDef("uncrafter.buy", "30000");
         setDef("uncrafter.use", "0");
-        setDef("invguard.buy", "5000");
-        setDef("invguard.use", "5%");
         setDef("chest.max", "10");
         setDef("chest.start", "0");
         setDef("chest.multiply", "1");
@@ -79,15 +105,15 @@ public class Config
     // Set a default value
     private static void setDef(String path, Object value)
     {
-        if(!config.isSet(path))
+        if(!_global.isSet(path))
         {
-            config.set(path, value);
+            _global.set(path, value);
         }
     }
     
     public static String getConfigString(String string)
     {
-        return config.getString(string);
+        return _global.getString(string);
     }
     
     public static int getConfigInt(String prefix, String suffix, CommandSender sender, boolean max)
@@ -104,7 +130,7 @@ public class Config
             int tmp;
             for(int i = 0; i < groups.length; i++)
             {
-                if(config.isSet(groups[i] + "." + prefix + "." + suffix))
+                if(_global.isSet(groups[i] + "." + prefix + "." + suffix))
                 {
                     tmp = getConfigInt(groups[i] + "." + prefix + "." + suffix);
                     if(max == (tmp > value))
@@ -112,7 +138,7 @@ public class Config
                         value = tmp;
                     }
                 }
-                if(config.isSet(prefix + "." + groups[i] + "." + suffix))
+                if(_global.isSet(prefix + "." + groups[i] + "." + suffix))
                 {
                     tmp = getConfigInt(prefix + "." + groups[i] + "." + suffix);
                     if(max == (tmp > value))
@@ -129,13 +155,13 @@ public class Config
     {
         try
         {
-            return Integer.parseInt(config.getString(string));
+            return Integer.parseInt(_global.getString(string));
         }
         catch(Throwable t)
         {
             try
             {
-                return (int)Math.round(Double.parseDouble(config.getString(string)));
+                return (int)Math.round(Double.parseDouble(_global.getString(string)));
             }
             catch(Throwable t2)
             {
@@ -168,7 +194,7 @@ public class Config
             double tmp;
             for(int i = 0; i < groups.length; i++)
             {
-                if(config.isSet(groups[i] + "." + prefix + "." + suffix))
+                if(_global.isSet(groups[i] + "." + prefix + "." + suffix))
                 {
                     tmp = getConfigDouble(groups[i] + "." + prefix + "." + suffix, digits, user);
                     if(max == (tmp > value))
@@ -176,7 +202,7 @@ public class Config
                         value = tmp;
                     }
                 }
-                if(config.isSet(prefix + "." + groups[i] + "." + suffix))
+                if(_global.isSet(prefix + "." + groups[i] + "." + suffix))
                 {
                     tmp = getConfigDouble(prefix + "." + groups[i] + "." + suffix, digits, user);
                     if(max == (tmp > value))
@@ -193,7 +219,7 @@ public class Config
     {
         try
         {
-            String value = config.getString(string);
+            String value = _global.getString(string);
             boolean percent = false;
             if(value.substring(value.length() - 1).equals("%"))
             {
@@ -217,13 +243,13 @@ public class Config
         }
     }
     
-    public static String getConfigItemValue(String string, int id, int damage)
+    /*public static String getConfigItemValue(String string, int id, int damage)
     {
-        if(config.isSet(string + "." + id + "-" + damage))
+        if(_global.isSet(string + "." + id + "-" + damage))
         {
-            return config.getString(string + "." + id + "-" + damage);
+            return _global.getString(string + "." + id + "-" + damage);
         }
-        return config.getString(string + "." + id);
+        return _global.getString(string + "." + id);
     }
     
     public static ItemStack getConfigItemStack(String string)
@@ -248,13 +274,13 @@ public class Config
             meta = 0;
         }
         return new ItemStack(id, amount, meta);
-    }
+    }*/
     
     public static boolean getConfigIsInList(String key, String search)
     {
         try
         {
-            for(Object o : config.getList(key).toArray())
+            for(Object o : _global.getList(key).toArray())
             {
                 if((o instanceof String) && ((String)o).equals(search))
                 {

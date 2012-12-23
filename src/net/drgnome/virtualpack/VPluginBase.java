@@ -31,8 +31,9 @@ import org.bukkit.configuration.file.*;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+/*import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;*/
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -63,7 +64,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         waitForPlugin = false;
         try
         {
-            if(org.anjocaido.groupmanager.GroupManager.isLoaded())
+            if(((Boolean)(Class.forName("org.anjocaido.groupmanager.GroupManager").getMethod("isLoaded").invoke(null))).booleanValue())
             {
                 init();
             }
@@ -75,6 +76,11 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         catch(NoClassDefFoundError e)
         {
             init();
+        }
+        catch(Throwable t)
+        {
+            warn();
+            t.printStackTrace();
         }
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThread(this), 0L, 1L);
     }
@@ -93,12 +99,12 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         packs = new HashMap<String, VPack>();
         checkFiles();
         initLang(getDataFolder());
-        reloadConf(getConfig());
+        reloadConf(getConfig(), getDataFolder());
         saveConfig();
-        if(getConfigString("debug").equalsIgnoreCase("true"))
+        /*if(getConfigString("debug").equalsIgnoreCase("true"))
         {
             Debug.init(new File(getDataFolder(), "debug.log"));
-        }
+        }*/
         if(getConfigString("db.use").equalsIgnoreCase("true"))
         {
             try
@@ -120,7 +126,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             getPluginLoader().disablePlugin(this);
             return;
         }
-        economyDisabled = getConfigString("economy-disabled").equalsIgnoreCase("true") ? true : false;
+        economyDisabled = getConfigString("economy").equalsIgnoreCase("false") ? true : false;
         if(!initEconomy())
         {
             getPluginLoader().disablePlugin(this);
@@ -148,11 +154,11 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             }
             log.info(lang("vpack.disable", new String[]{version}));
         }
-        if(getConfigString("forceload").equalsIgnoreCase("true"))
+        /*if(getConfigString("forceload").equalsIgnoreCase("true"))
         {
             getConfig().set("forceload", "false");
             saveConfig();
-        }
+        }*/
     }
     
     public synchronized void tick()
@@ -161,7 +167,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             try
             {
-                if(org.anjocaido.groupmanager.GroupManager.isLoaded())
+                if(((Boolean)(Class.forName("org.anjocaido.groupmanager.GroupManager").getMethod("isLoaded").invoke(null))).booleanValue())
                 {
                     init();
                 }
@@ -173,6 +179,11 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             catch(NoClassDefFoundError e)
             {
                 init();
+            }
+            catch(Throwable t)
+            {
+                warn();
+                t.printStackTrace();
             }
         }
         Object values[] = packs.values().toArray();
@@ -279,7 +290,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         }
         catch(Throwable t)
         {
-            if(t.getClass().getPackage().getName().equalsIgnoreCase("java.net"))
+            /*if(t.getClass().getPackage().getName().equalsIgnoreCase("java.net"))
             {
                 if(!getConfigString("debug").equalsIgnoreCase("true"))
                 {
@@ -291,14 +302,14 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             {
                 warn();
             }
-            t.printStackTrace();
+            t.printStackTrace();*/
         }
     }
     
     public void reloadConfig()
     {
         super.reloadConfig();
-        reloadConf(getConfig());
+        reloadConf(getConfig(), getDataFolder());
         saveConfig();
         reloadLang();
     }
@@ -374,7 +385,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             ResultSet row = db.prepareStatement("SELECT * FROM `vpack`").executeQuery();
             while(row.next())
             {
-                Debug.log("load: " + row.getString("data"));
+                //Debug.log("load: " + row.getString("data"));
                 list.add(row.getString("data").split(separator[0]));
             }
             db.close();
@@ -386,7 +397,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             t.printStackTrace();
             for(StackTraceElement st : t.getStackTrace())
             {
-                Debug.log(st.toString());
+                //Debug.log(st.toString());
             }
             loadSuccess = false;
         }
@@ -401,7 +412,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             ArrayList<String[]> list = new ArrayList<String[]>();
             while((line = file.readLine()) != null)
             {
-                Debug.log("load: " + line);
+                //Debug.log("load: " + line);
                 list.add(line.split(separator[0]));
             }
             file.close();
@@ -413,7 +424,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             t.printStackTrace();
             for(StackTraceElement st : t.getStackTrace())
             {
-                Debug.log(st.toString());
+                //Debug.log(st.toString());
             }
             loadSuccess = false;
         }
@@ -427,13 +438,13 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             if(first)
             {
                 first = false;
-                if(getConfigString("debug").equalsIgnoreCase("true"))
+                /*if(getConfigString("debug").equalsIgnoreCase("true"))
                 {
                     for(int i = 0; i < data.length; i++)
                     {
                         Debug.log("first " + i + ": " + data[i]);
                     }
-                }
+                }*/
                 if(data.length == 1)
                 {
                     this.dbVersion = tryParse(data[0], 0);
@@ -442,7 +453,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
                 {
                     this.dbVersion = 0;
                 }
-                Debug.log("decision: " + this.dbVersion);
+                //Debug.log("decision: " + this.dbVersion);
             }
             else if(data.length >= 2)
             {
@@ -597,10 +608,10 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             {
                 cmdUncrafter(sender, args);
             }
-            else if(args[0].equals("invguard"))
+            /*else if(args[0].equals("invguard"))
             {
                 cmdInvGuard(sender, args);
-            }
+            }*/
             else if(args[0].equals("enchanttable"))
             {
                 cmdEnchanttable(sender, args);
@@ -621,10 +632,10 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             {
                 cmdTrash(sender, args);
             }
-            else if(args[0].equals("debug"))
+            /*else if(args[0].equals("debug"))
             {
                 cmdDebug(sender, args);
-            }
+            }*/
             else
             {
                 sendMessage(sender, lang("argument.unknown"), ChatColor.RED);
@@ -640,10 +651,13 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public abstract void handleEntityDeath(EntityDeathEvent event);
+    
+    /*@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public abstract void handleEntityDamage(EntityDamageEvent event);
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public abstract void handleRespawn(PlayerRespawnEvent event);
+    public abstract void handleRespawn(PlayerRespawnEvent event);*/
     
     protected abstract void cmdHelp(CommandSender sender, String[] args);
     protected abstract void cmdConsoleStats(CommandSender sender, String[] args);
@@ -653,13 +667,13 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
     protected abstract void cmdPrices(CommandSender sender, String[] args);
     protected abstract void cmdWorkbench(CommandSender sender, String[] args);
     protected abstract void cmdUncrafter(CommandSender sender, String[] args);
-    protected abstract void cmdInvGuard(CommandSender sender, String[] args);
+    //protected abstract void cmdInvGuard(CommandSender sender, String[] args);
     protected abstract void cmdEnchanttable(CommandSender sender, String[] args);
     protected abstract void cmdChest(CommandSender sender, String[] args);
     protected abstract void cmdFurnace(CommandSender sender, String[] args);
     protected abstract void cmdBrewingstand(CommandSender sender, String[] args);
     protected abstract void cmdTrash(CommandSender sender, String[] args);
-    protected abstract void cmdDebug(CommandSender sender, String[] args);
+    //protected abstract void cmdDebug(CommandSender sender, String[] args);
     
     public String longname(String s)
     {
@@ -680,10 +694,10 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             return "uncrafter";
         }
-        if(s.equals(""))
+        /*if(s.equals("i"))
         {
             return "invguard";
-        }
+        }*/
         if(s.equals("e"))
         {
             return "enchanttable";
@@ -724,10 +738,10 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             return "price";
         }
-        if(s.equals("d"))
+        /*if(s.equals("d"))
         {
             return "debug";
-        }
+        }*/
         if(s.equals("up"))
         {
             return "update";
@@ -750,7 +764,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
         {
             getPack(cp.getName()).reset(cp);
         }
-        if((getPack(cp.getName()).inv == null) && (death.equals("hardkeep") || getPack(cp.getName()).useInvGuard(cp)))
+        /*if((getPack(cp.getName()).inv == null) && (death.equals("hardkeep") || getPack(cp.getName()).useInvGuard(cp)))
         {
             EntityPlayer player = cp.getHandle();
             getPack(cp.getName()).inv = new PlayerInventory((EntityPlayer)null);
@@ -759,7 +773,7 @@ public abstract class VPluginBase extends JavaPlugin implements Listener
             player.inventory.items = new ItemStack[player.inventory.items.length];
             player.inventory.armor = new ItemStack[player.inventory.armor.length];
             player.inventory.update();
-        }
+        }*/
     }
     
     protected void restoreInv(EntityPlayer player)

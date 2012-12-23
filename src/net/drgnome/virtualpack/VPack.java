@@ -23,7 +23,7 @@ public class VPack
     private String owner;
     public boolean hasWorkbench;
     public boolean hasUncrafter;
-    public boolean hasInvGuard;
+    //public boolean hasInvGuard;
     public boolean hasEnchantTable;
     public int bookshelves;
     private int flinks;
@@ -47,7 +47,7 @@ public class VPack
         {
             hasWorkbench = true;
             hasUncrafter = true;
-            hasInvGuard = true;
+            //hasInvGuard = true;
             hasEnchantTable = true;
             bookshelves = 15;
             for(int i = 1; i <= getConfigInt("chest", "max", groups, true); i++)
@@ -67,7 +67,7 @@ public class VPack
         {
             hasWorkbench = getConfigDouble("workbench", "buy", groups, false, username) == 0.0D;
             hasUncrafter = getConfigDouble("uncrafter", "buy", groups, false, username) == 0.0D;
-            hasInvGuard = getConfigDouble("invguard", "buy", groups, false, username) == 0.0D;
+            //hasInvGuard = getConfigDouble("invguard", "buy", groups, false, username) == 0.0D;
             hasEnchantTable = getConfigDouble("enchanttable", "buy", groups, false, username) == 0.0D;
             bookshelves = getConfigDouble("enchanttable", "book", groups, false, username) == 0.0D ? 15 : 0;
             for(int i = 1; i <= getConfigInt("chest", "start", groups, true); i++)
@@ -98,14 +98,14 @@ public class VPack
         {
             hasWorkbench = true;
             hasUncrafter = true;
-            hasInvGuard = true;
+            //hasInvGuard = true;
             hasEnchantTable = true;
         }
         else
         {
             hasWorkbench = getConfigDouble("workbench", "buy", groups, false, username) == 0.0D;
             hasUncrafter = getConfigDouble("uncrafter", "buy", groups, false, username) == 0.0D;
-            hasInvGuard = getConfigDouble("invguard", "buy", groups, false, username) == 0.0D;
+            //hasInvGuard = getConfigDouble("invguard", "buy", groups, false, username) == 0.0D;
             hasEnchantTable = getConfigDouble("enchanttable", "buy", groups, false, username) == 0.0D;
         }
         chests = new HashMap<Integer, VInv>();
@@ -129,10 +129,10 @@ public class VPack
             {
                 hasUncrafter = a[1].equals("1") || hasUncrafter;
             }
-            else if(a[0].equals("i") && (a.length >= 2))
+            /*else if(a[0].equals("i") && (a.length >= 2))
             {
                 hasInvGuard = a[1].equals("1") || hasInvGuard;
-            }
+            }*/
             else if(a[0].equals("e") && (a.length >= 3))
             {
                 hasEnchantTable = a[1].equals("1") || hasEnchantTable;
@@ -246,15 +246,15 @@ public class VPack
     {
         EntityPlayer p = player.getHandle();
         ArrayList<IInventory> list = new ArrayList<IInventory>();
-        if(!player.hasPermission("vpack.keep.chest"))
+        if(!hasPermission(player, "vpack.keep.chest"))
         {
             list.addAll(chests.values());
         }
-        if(!player.hasPermission("vpack.keep.furnace"))
+        if(!hasPermission(player, "vpack.keep.furnace"))
         {
             list.addAll(furnaces.values());
         }
-        if(!player.hasPermission("vpack.keep.brewingstand"))
+        if(!hasPermission(player, "vpack.keep.brewingstand"))
         {
             list.addAll(brewingstands.values());
         }
@@ -269,11 +269,11 @@ public class VPack
     
     public void wipe(CraftPlayer player)
     {
-        if(!player.hasPermission("vpack.keep.enchanttable"))
+        if(!hasPermission(player, "vpack.keep.enchanttable"))
         {
             bookshelves = 0;
         }
-        if(!player.hasPermission("vpack.keep.chest"))
+        if(!hasPermission(player, "vpack.keep.chest"))
         {
             Integer keys[] = chests.keySet().toArray(new Integer[0]);
             for(Integer i : keys)
@@ -283,7 +283,7 @@ public class VPack
         }
         int l;
         Integer keys[];
-        if(!player.hasPermission("vpack.keep.furnace"))
+        if(!hasPermission(player, "vpack.keep.furnace"))
         {
             keys = furnaces.keySet().toArray(new Integer[0]);
             VTEFurnace f;
@@ -295,7 +295,7 @@ public class VPack
                 furnaces.put(i, f);
             }
         }
-        if(!player.hasPermission("vpack.keep.brewingstand"))
+        if(!hasPermission(player, "vpack.keep.brewingstand"))
         {
             keys = brewingstands.keySet().toArray(new Integer[0]);
             VTEBrewingstand b;
@@ -311,23 +311,23 @@ public class VPack
     
     public void reset(CraftPlayer player)
     {
-        if(!player.hasPermission("vpack.keep.workbench"))
+        if(!hasPermission(player, "vpack.keep.workbench"))
         {
             hasWorkbench = false;
         }
-        if(!player.hasPermission("vpack.keep.uncrafter"))
+        if(!hasPermission(player, "vpack.keep.uncrafter"))
         {
             hasUncrafter = false;
         }
-        if(!player.hasPermission("vpack.keep.enchanttable"))
+        if(!hasPermission(player, "vpack.keep.enchanttable"))
         {
             hasEnchantTable = false;
             bookshelves = 0;
         }
-        if(!player.hasPermission("vpack.keep.chest"))
+        if(!hasPermission(player, "vpack.keep.chest"))
         {
             chests = new HashMap<Integer, VInv>();
-            if(player.hasPermission("vpack.keep.furnace"))
+            if(hasPermission(player, "vpack.keep.furnace"))
             {
                 VTEFurnace fs[] = furnaces.values().toArray(new VTEFurnace[0]);
                 for(VTEFurnace f : fs)
@@ -335,7 +335,7 @@ public class VPack
                     f.link = 0;
                 }
             }
-            if(player.hasPermission("vpack.keep.brewingstand"))
+            if(hasPermission(player, "vpack.keep.brewingstand"))
             {
                 VTEBrewingstand bs[] = brewingstands.values().toArray(new VTEBrewingstand[0]);
                 for(VTEBrewingstand b : bs)
@@ -344,12 +344,12 @@ public class VPack
                 }
             }
         }
-        if(!player.hasPermission("vpack.keep.furnace"))
+        if(!hasPermission(player, "vpack.keep.furnace"))
         {
             furnaces = new HashMap<Integer, VTEFurnace>();
             flinks = 0;
         }
-        if(!player.hasPermission("vpack.keep.brewingstand"))
+        if(!hasPermission(player, "vpack.keep.brewingstand"))
         {
             brewingstands = new HashMap<Integer, VTEBrewingstand>();
             blinks = 0;
@@ -361,7 +361,7 @@ public class VPack
         ArrayList<String> list = new ArrayList<String>();
         list.add("w" + separator[1] + (hasWorkbench ? "1" : "0"));
         list.add("u" + separator[1] + (hasUncrafter ? "1" : "0"));
-        list.add("i" + separator[1] + (hasInvGuard ? "1" : "0"));
+        //list.add("i" + separator[1] + (hasInvGuard ? "1" : "0"));
         list.add("e" + separator[1] + (hasEnchantTable ? "1" : "0") + separator[1] + bookshelves);
         list.add("fl" + separator[1] + flinks);
         list.add("bl" + separator[1] + blinks);
@@ -436,7 +436,7 @@ public class VPack
         {
             sendMessage(sender, lang("stats.workbench", "" + ChatColor.GREEN, lang("yes")));
             sendMessage(sender, lang("stats.uncrafter", "" + ChatColor.GREEN, lang("yes")));
-            sendMessage(sender, lang("stats.invguard", "" + ChatColor.GREEN, lang("yes")));
+            //sendMessage(sender, lang("stats.invguard", "" + ChatColor.GREEN, lang("yes")));
             sendMessage(sender, lang("stats.enchanttable", "" + ChatColor.GREEN, lang("yes")) + lang("stats.books", "15"));
             sendMessage(sender, lang("stats.chest", "" + ChatColor.GREEN, "" + chests.size()));
             sendMessage(sender, lang("stats.furnace", "" + ChatColor.GREEN, "" + furnaces.size()));
@@ -446,7 +446,7 @@ public class VPack
         {
             sendMessage(sender, lang("stats.workbench", "" + ChatColor.GREEN, hasWorkbench ? lang("yes") : lang("no")));
             sendMessage(sender, lang("stats.uncrafter", "" + ChatColor.GREEN, hasUncrafter ? lang("yes") : lang("no")));
-            sendMessage(sender, lang("stats.invguard", "" + ChatColor.GREEN, hasInvGuard ? lang("yes") : lang("no")));
+            //sendMessage(sender, lang("stats.invguard", "" + ChatColor.GREEN, hasInvGuard ? lang("yes") : lang("no")));
             sendMessage(sender, lang("stats.enchanttable", "" + ChatColor.GREEN, hasEnchantTable ? lang("yes") : lang("no")) + (hasEnchantTable ? lang("stats.books", "" + bookshelves): ""));
             int i = getConfigInt("chest", "max", groups, true);
             sendMessage(sender, lang("stats.chest", "" + ChatColor.GREEN, "" + chests.size() + (i != -1 ? "/" + i : "")));
@@ -624,7 +624,7 @@ public class VPack
         sendMessage(sender, lang("uncrafter.bought"), ChatColor.GREEN);
     }
     
-    public void buyInvGuard(CommandSender sender)
+    /*public void buyInvGuard(CommandSender sender)
     {
         if(economyDisabled)
         {
@@ -653,7 +653,7 @@ public class VPack
             return false;
         }
         return moneyHasTake(sender.getName(), getConfigDouble("invguard", "use", groups, false, owner));
-    }
+    }*/
     
     public void openEnchantTable(CommandSender sender)
     {

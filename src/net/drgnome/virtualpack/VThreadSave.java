@@ -60,13 +60,13 @@ public class VThreadSave extends Thread
                     list.add(contents);
                 }
             }
-            if(!getConfigString("debug").equalsIgnoreCase("true"))
+            /*if(!getConfigString("debug").equalsIgnoreCase("true"))
             {
                 for(String con : list.toArray(new String[0]))
                 {
                     Debug.log("save: " + con);
                 }
-            }
+            }*/
             if(mysql)
             {
                 db.prepareStatement("DELETE FROM `vpack`").execute();
