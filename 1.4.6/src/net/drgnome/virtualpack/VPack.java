@@ -72,25 +72,9 @@ public class VPack
         }
     }
     
-    public VPack(String world, String player, String data[])
-    {
-        this(world, player);
-        for(String line : data)
-        {
-            
-        }
-    }
-    
     public void tick()
     {
-        for(VTEFurnace fur : furnaces.values().toArray(new VTEFurnace[0]))
-        {
-            fur.tick();
-        }
-        for(VTEBrewingstand brew : brewingstands.values().toArray(new VTEBrewingstand[0]))
-        {
-            brew[i].tick();
-        }
+        
     }
     
     public double priceWorkbenchBuy()

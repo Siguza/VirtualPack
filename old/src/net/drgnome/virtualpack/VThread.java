@@ -6,9 +6,9 @@ package net.drgnome.virtualpack;
 
 public class VThread extends Thread
 {
-    private VPlugin plugin;
+    private VPluginBase plugin;
     
-    public VThread(VPlugin plugin)
+    public VThread(VPluginBase plugin)
     {
         super();
         this.plugin = plugin;

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>1.1.7.4</version>
+    <version>1.2</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -24,6 +24,10 @@
             <id>vault-repo</id>
             <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
         </repository>
+        <repository>
+            <id>sk89q-repo</id>
+            <url>http://maven.sk89q.com/repo/</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -37,6 +41,13 @@
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
             <version>1.2.23-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>5.4.6-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -109,226 +120,8 @@
                                     <value>${project.version}</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#PACKAGE_MINECRAFT#</token>
-                                    <value>net.minecraft.server.v1_4_6</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#PACKAGE_CRAFTBUKKIT#</token>
-                                    <value>org.bukkit.craftbukkit.v1_4_6</value>
-                                </replacement>
-                                <!-- REPLACEMENTS -->
-                                <replacement>
-                                    <token>#COMM_1A#</token>
-                                    <value></value>
-                                </replacement>
-                                <replacement>
-                                    <token>#COMM_1B#</token>
-                                    <value></value>
-                                </replacement>
-                                <replacement>
-                                    <token>#COMM_2A#</token>
-                                    <value></value>
-                                </replacement>
-                                <replacement>
-                                    <token>#COMM_2B#</token>
-                                    <value></value>
-                                </replacement>
-                                <replacement>
-                                    <token>#COMM_3A#</token>
-                                    <value></value>
-                                </replacement>
-                                <replacement>
-                                    <token>#COMM_3B#</token>
-                                    <value></value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_BLUBB_1#</token>
-                                    <value>-</value>
-                                </replacement>
-                                <!-- Old Mac Donald had a farm -->
-                                <replacement>
-                                    <token>#FIELD_NBTBASE_1#</token> <!-- st (DataInput) -->
-                                    <value>b</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEMSTACK_1#</token> <!-- st (NBTTagCompound) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEMSTACK_2#</token> <!-- () -->
-                                    <value>v</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEMSTACK_3#</token> <!-- (int) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#</token> <!-- st (byte[]) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#</token> <!-- st (NBTTagCompound) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINERENCHANTTABLE_1#</token> <!-- (IInventory) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINERENCHANTTABLE_2#</token> <!-- (EntityHuman, int) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINERENCHANTTABLE_4#</token> <!-- long -->
-                                    <value>f</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINERENCHANTTABLE_5#</token> <!-- (IInventory) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINER_1#</token> <!-- () -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINER_2#</token> <!-- List -->
-                                    <value>b</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINER_3#</token> <!-- List -->
-                                    <value>c</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINER_4#</token> <!-- (Slot) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINER_5#</token> <!-- (EntityHuman) -->
-                                    <value>b</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINER_6#</token> <!-- (int, int, boolean, EntityHuman) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINER_7#</token> <!-- clickItem() param n.3 -->
-                                    <value>int metaVar</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINER_8#</token> <!-- clickItem() param n.3 -->
-                                    <value>metaVar == 1</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINER_9#</token> <!-- clickItem() param n.3 -->
-                                    <value>metaVar</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ENCHANTMENTMANAGER_1#</token> <!-- st (Random, int, int, ItemStack) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ENCHANTMENTMANAGER_2#</token> <!-- st (Random, ItemStack, int) -->
-                                    <value>b</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_IINVENTORY_1#</token> <!-- (EntityHuman) -->
-                                    <value>a_</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_IINVENTORY_2#</token> <!-- () -->
-                                    <value>f</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_IINVENTORY_3#</token> <!-- () -->
-                                    <value>startOpen</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_PLAYERINVENTORY_1#</token> <!-- () -->
-                                    <value>l</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_TILEENTITY_1#</token> <!-- () -->
-                                    <value>g</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEMPOTION_1#</token> <!-- st (int) -->
-                                    <value>g</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEMPOTION_2#</token> <!-- (int) -->
-                                    <value>f</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEM_1#</token> <!-- () -->
-                                    <value>s</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEM_2#</token> <!-- () -->
-                                    <value>r</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEM_3#</token> <!-- () -->
-                                    <value>v</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEM_4#</token> <!-- () -->
-                                    <value>u</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_POTIONBREWER_1#</token> <!-- st (int, String) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEMHOE_1#</token> <!-- () -->
-                                    <value>g</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEMSWORD_1#</token> <!-- () -->
-                                    <value>h</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_ITEMTOOL_1#</token> <!-- () -->
-                                    <value>g</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_RECIPESFURNACE_1#</token> <!-- Class name -->
-                                    <value>RecipesFurnace</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CONTAINERCHEST_1#</token> <!-- (int) -->
-                                    <value>b</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_SLOT_1#</token> <!-- () -->
-                                    <value>d</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_SLOT_2#</token> <!-- () -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_SLOT_3#</token> <!-- (int) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_SLOT_4#</token> <!-- (ItemStack) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_CRAFTINGMANAGER_1#</token> <!-- () -->
-                                    <value>getRecipes</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_IRECIPE_1#</token> <!-- Class Name -->
-                                    <value>IRecipe</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_IRECIPE_2#</token> <!-- () -->
-                                    <value>b</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_NETSERVERHANDLER_1#</token> <!-- Class & var name -->
-                                    <value>playerConnection</value>
+                                    <token>#MC_VERSION#</token>
+                                    <value>1_4_6</value>
                                 </replacement>
                             </replacements>
                         </configuration>

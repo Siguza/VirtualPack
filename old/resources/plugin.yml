@@ -1,0 +1,95 @@
+name: VirtualPack
+main: net.drgnome.virtualpack.VPlugin
+version: #VERSION#
+author: Siguza
+depend: [Vault]
+softdepend: [PermissionsEx, GroupManager, PermissionsBukkit, iConomy]
+commands:
+    v:
+        description: VirtualPack
+        permissions: vpack.use
+        usage: /v
+    virtual:
+        description: VirtualPack
+        permissions: vpack.use
+        usage: /v
+    virtualpack:
+        description: VirtualPack
+        permissions: vpack.use
+        usage: /v
+permissions:
+    vpack.use:
+        description: Allows the basic use of VirtualPack
+    vpack.use.*:
+        description: Allows the use of all VirtualPack features
+        children:
+            vpack.use: true
+            vpack.use.workbench: true
+            vpack.use.enchanttable: true
+            vpack.use.chest: true
+            vpack.use.furnace: true
+            vpack.use.brewingstand: true
+            vpack.use.uncrafter: true
+            vpack.use.invguard: true
+    vpack.use.workbench:
+        description: Allows the use of the VirtualPack workbench
+    vpack.use.enchanttable:
+        description: Allows the use of the VirtualPack enchantment table
+    vpack.use.enchanttable.free:
+        description: Leaves your XP where they are
+    vpack.use.chest:
+        description: Allows the use of the VirtualPack chests
+    vpack.use.furnace:
+        description: Allows the use of the VirtualPack furnaces
+    vpack.use.brewingstand:
+        description: Allows the use of the VirtualPack brewing stands
+    vpack.use.uncrafter:
+        description: Allows the use of the VirtualPack uncrafter
+    vpack.use.invguard:
+        description: Allows the use of the VirtualPack invguard
+    vpack.keep.*:
+        decsription: Everything is kept upon death
+        children:
+            vpack.keep.workbench: true
+            vpack.keep.enchanttable: true
+            vpack.keep.chest: true
+            vpack.keep.furnace: true
+            vpack.keep.brewingstand: true
+            vpack.keep.uncrafter: true
+    vpack.keep.workbench:
+        description: Keep the workbench on death
+    vpack.keep.enchanttable:
+        description: Keep the enchantment table on death
+    vpack.keep.chest:
+        description: Keep all chests on death
+    vpack.keep.furnace:
+        description: Keep all furnaces on death
+    vpack.keep.brewingstand:
+        description: Keep all brewing stands on death
+    vpack.keep.uncrafter:
+        description: Keep the uncrafter on death
+    vpack.stats:
+        description: Allows you to see other user's stats
+    vpack.admin:
+        description: Allows the use of Admin-features & doing a config reload
+    vpack.admin.*:
+        description: Admin-Permissions for VirtualPack
+        children:
+            vpack.admin: true
+            vpack.admin.use: true
+            vpack.admin.give: true
+            vpack.admin.take: true
+            vpack.admin.delete: true
+            vpack.update: true
+    vpack.admin.use:
+        description: Allows you to access any user's VirtualPack
+    vpack.admin.give:
+        description: Allows you to give users stuff
+    vpack.admin.take:
+        description: Allows you to take stuff away from users
+    vpack.admin.delete:
+        description: Allows you to completely delete a user's VirtualPack-account
+    vpack.debug:
+        description: Allows the use of debug commands
+    vpack.update:
+        decsription: Notifies you of new VirtualPack versions

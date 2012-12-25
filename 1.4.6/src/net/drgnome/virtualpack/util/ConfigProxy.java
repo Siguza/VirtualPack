@@ -1,0 +1,213 @@
+// Bukkit Plugin "VirtualPack" by Siguza
+// This software is distributed under the following license:
+// http://creativecommons.org/licenses/by-nc-sa/3.0/
+
+package net.drgnome.virtualpack.util;
+
+import java.io.*;
+import java.util.*;
+import org.bukkit.configuration.file.*;
+
+import static net.drgnome.virtualpack.util.Global.*;
+
+public class ConfigProxy
+{
+    public static final String _configversion = "1";
+    private FileConfiguration _global;
+    private HashMap<String, YamlConfiguration> _worlds;
+    
+    public ConfigProxy(FileConfiguration global, File dir)
+    {
+        _global = global;
+        if(!_global.isSet("version") || !_global.getString("version").equalsIgnoreCase(_configversion))
+        {
+            try
+            {
+                _global.save(new File(dir, "config_" + _configversion + ".yml"));
+            }
+            catch(Throwable t)
+            {
+                t.printStackTrace();
+            }
+            for(String s : _global.getKeys(false).toArray(new String[0]))
+            {
+                _global.set(s, null);
+            }
+        }
+        _worlds = new HashMap<String, YamlConfiguration>();
+        for(File file : dir.listFiles())
+        {
+            if(!file.isFile())
+            {
+                continue;
+            }
+            String string = file.getName();
+            if(string.matches("world_(.*)\\.yml"))
+            {
+                String world = string.substring(6, string.length() - 4);
+                YamlConfiguration yaml = new YamlConfiguration();
+                try
+                {
+                    yaml.load(file);
+                }
+                catch(Throwable t)
+                {
+                    t.printStackTrace();
+                }
+                yaml.set("world", world);
+                _worlds.put(world, yaml);
+            }
+        }
+        for(String world : _worlds.keySet().toArray(new String[0]))
+        {
+            YamlConfiguration yaml = _worlds.get(world);
+            if(yaml.isSet("copy"))
+            {
+                if(_worlds.containsKey(yaml.getString("copy")))
+                {
+                    if(_worlds.get(yaml.getString("copy")) == yaml)
+                    {
+                        _log.severe(Lang.get("config.fail2", world, yaml.getString("copy")));
+                        _log.severe(Lang.get("config.fail3", world));
+                        yaml.set("enabled", "false");
+                    }
+                    else
+                    {
+                        _worlds.put(world, _worlds.get(yaml.getString("copy")));
+                    }
+                }
+                else
+                {
+                    _log.severe(Lang.get("config.fail1", world, yaml.getString("copy")));
+                    _log.severe(Lang.get("config.fail3", world));
+                    yaml.set("enabled", "false");
+                }
+            }
+        }
+        setDefs();
+    }
+    
+    private void setDefs()
+    {
+        setDef("version", _configversion);
+        setDef("enabled", "true");
+        setDef("check-update", "true");
+        setDef("save-interval", "0");
+        setDef("on-death", "keep");
+        setDef("economy", "true");
+        setDef("db.use", "false");
+        setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
+        setDef("db.user", "herp");
+        setDef("db.pw", "derp");
+        setDef("db.table", "vpack");
+        ArrayList<String> list1 = new ArrayList<String>();
+        list1.add("v");
+        list1.add("virtual");
+        list1.add("virtualpack");
+        setDef("commands.main", list1);
+        ArrayList<String> list2 = new ArrayList<String>();
+        list2.add("wb");
+        list2.add("workbench");
+        setDef("commands.workbench", list2);
+        ArrayList<String> list3 = new ArrayList<String>();
+        list3.add("uc");
+        list3.add("uncrafter");
+        setDef("commands.uncrafter", list3);
+        ArrayList<String> list4 = new ArrayList<String>();
+        list4.add("chest");
+        setDef("commands.chest", list4);
+        ArrayList<String> list5 = new ArrayList<String>();
+        list5.add("furnace");
+        setDef("commands.furnace", list5);
+        ArrayList<String> list6 = new ArrayList<String>();
+        list6.add("brew");
+        list6.add("brewingstand");
+        setDef("commands.brewingstand", list6);
+        ArrayList<String> list7 = new ArrayList<String>();
+        list7.add("ench");
+        list7.add("enchtable");
+        list7.add("enchanttable");
+        list7.add("enchantingtable");
+        ArrayList<String> list8 = new ArrayList<String>();
+        list8.add("trash");
+        setDef("commands.trash", list8);
+        setDef("tools.workbench.buy", "20000");
+        setDef("tools.workbench.use", "0");
+        setDef("tools.uncrafter.buy", "30000");
+        setDef("tools.uncrafter.use", "0");
+        setDef("tools.chest.max", "10");
+        setDef("tools.chest.start", "0");
+        setDef("tools.chest.multiply", "1");
+        setDef("tools.chest.buy", "40000");
+        setDef("tools.chest.use", "0");
+        setDef("tools.chest.size", "6");
+        setDef("tools.furnace.max", "10");
+        setDef("tools.furnace.start", "0");
+        setDef("tools.furnace.multiply", "1");
+        setDef("tools.furnace.buy", "50000");
+        setDef("tools.furnace.use", "0");
+        setDef("tools.furnace.link", "100000");
+        setDef("tools.brewingstand.max", "10");
+        setDef("tools.brewingstand.start", "0");
+        setDef("tools.brewingstand.multiply", "1");
+        setDef("tools.brewingstand.buy", "75000");
+        setDef("tools.brewingstand.use", "0");
+        setDef("tools.brewingstand.link", "100000");
+        setDef("tools.enchanttable.multiply", "1");
+        setDef("tools.enchanttable.buy", "30000");
+        setDef("tools.enchanttable.use", "0");
+        setDef("tools.enchanttable.book", "5000");
+    }
+    
+    private void setDef(String path, Object value)
+    {
+        if(!_global.isSet(path))
+        {
+            _global.set(path, value);
+        }
+    }
+    
+    public String get(String world, String string)
+    {
+        if(!world.equals("*") && _worlds.containsKey(world))
+        {
+            YamlConfiguration yaml = _worlds.get(world);
+            if(yaml.isSet(string))
+            {
+                return yaml.getString(string);
+            }
+        }
+        if(_global.isSet(string))
+        {
+            return _global.getString(string);
+        }
+        return "";
+    }
+    
+    public List<String> list(String world, String string)
+    {
+        if(!world.equals("*") && _worlds.containsKey(world))
+        {
+            YamlConfiguration yaml = _worlds.get(world);
+            if(yaml.isSet(string))
+            {
+                return yaml.getStringList(string);
+            }
+        }
+        if(_global.isSet(string))
+        {
+            return _global.getStringList(string);
+        }
+        return null;
+    }
+    
+    public String world(String world)
+    {
+        return _worlds.containsKey(world) ? _worlds.get(world).getString("world") : "*";
+    }
+    
+    public boolean isSet(String world, String string)
+    {
+        return ((!world.equals("*") && _worlds.containsKey(world)) || _global.isSet(string));
+    }
+}
