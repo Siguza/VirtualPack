@@ -20,7 +20,7 @@ public class VCommands implements CommandExecutor
     {
         commandMap.put(VPlugin._components[0], "");
         commandMap.put("h", "help");
-        commandMap.put("a", "admin");
+        commandMap.put("ad", "admin");
         commandMap.put("v", "version");
         commandMap.put("s", "stats");
         commandMap.put("p", "price");
