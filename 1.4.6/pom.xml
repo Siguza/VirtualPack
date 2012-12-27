@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>1.2</version>
+    <version>2.0</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -122,6 +122,127 @@
                                 <replacement>
                                     <token>#MC_VERSION#</token>
                                     <value>1_4_6</value>
+                                </replacement>
+                                <!-- Hello there -->
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_1#</token> <!-- () -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_2#</token> <!-- List -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_3#</token> <!-- List -->
+                                    <value>c</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_4#</token> <!-- (Slot) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_5#</token> <!-- (EntityHuman) -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_1#</token> <!-- (IInventory) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_2#</token> <!-- (EntityHuman, int) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_3#</token> <!-- long -->
+                                    <value>f</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_4#</token> <!-- () -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENTMANAGER_1#</token> <!-- st (Random, int, int, ItemStack) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENTMANAGER_2#</token> <!-- st (Random, ItemStack, int) -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_1#</token> <!-- (EntityHuman) -->
+                                    <value>a_</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_2#</token> <!-- () -->
+                                    <value>f</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IRECIPE_1#</token> <!-- () -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_1#</token> <!-- () -->
+                                    <value>s</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_2#</token> <!-- () -->
+                                    <value>r</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_3#</token> <!-- () -->
+                                    <value>v</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_4#</token> <!-- () -->
+                                    <value>u</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMENCHANTEDBOOK_1#</token> <!-- (ItemStack, EnchantmentInstance) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMPOTION_1#</token> <!-- st (int) -->
+                                    <value>g</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMPOTION_2#</token> <!-- (int) -->
+                                    <value>f</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_1#</token> <!-- st (NBTTagCompound) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_2#</token> <!-- () -->
+                                    <value>v</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_3#</token> <!-- (int) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NBTBASE_1#</token> <!-- st (DataInput) -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#</token> <!-- st (byte[]) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#</token> <!-- st (NBTTagCompound) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_POTIONBREWER_1#</token> <!-- st (int, String) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_RECIPESFURNACE_1#</token> <!-- Class name -->
+                                    <value>RecipesFurnace</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_TILEENTITY_1#</token> <!-- () -->
+                                    <value>g</value>
                                 </replacement>
                             </replacements>
                         </configuration>

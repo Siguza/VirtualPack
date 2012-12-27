@@ -186,9 +186,9 @@ public class Lang
         setDef("admin.give.enchanttable.done", "Gave %1 an enchantment table.");
         setDef("admin.give.chest.one", "Gave %1 a chest.");
         setDef("admin.give.chest.many", "Gave %1 %2 chests.");
-        setDef("admin.give.furnace.one", "Gave %1 a furnaces.");
+        setDef("admin.give.furnace.one", "Gave %1 a furnace.");
         setDef("admin.give.furnace.many", "Gave %1 %2 furnaces.");
-        setDef("admin.give.brewingstand.one", "Gave %1 a brewing stands.");
+        setDef("admin.give.brewingstand.one", "Gave %1 a brewing stand.");
         setDef("admin.give.brewingstand.many", "Gave %1 %2 brewing stands.");
         setDef("admin.give.book.one", "Gave %1 a bookshelf.");
         setDef("admin.give.book.many", "Gave %1 %1 bookshelves.");
@@ -213,6 +213,7 @@ public class Lang
         setDef("config.fail3", "[VirtualPack] Disabling VirtualPack on world \"%1\"!");
         setDef("worldedit", "[VirtualPack] Could not find WorldEdit!");
         setDef("world.disabled", "VirtualPack is not enabled on this world.");
+        setDef("command.error", "Internal error while executing command. See the console.");
     }
     
     // Set a default value

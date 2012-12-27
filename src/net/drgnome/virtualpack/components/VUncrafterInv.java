@@ -7,8 +7,7 @@ package net.drgnome.virtualpack.components;
 import java.util.*;
 import java.lang.reflect.*;
 import net.minecraft.server.v#MC_VERSION#.*;
-
-import static net.drgnome.virtualpack.Util.*;
+import net.drgnome.virtualpack.util.*;
 
 public class VUncrafterInv extends VInv
 {
@@ -22,24 +21,24 @@ public class VUncrafterInv extends VInv
     {
         if((item != null) && (slot < 9))
         {
-            List list = CraftingManager.getInstance().#FIELD_CRAFTINGMANAGER_1#(); // Derpnote
+            List list = CraftingManager.getInstance().getRecipes(); // Derpnote
             Object tmp;
             Object tmp2;
-            #FIELD_IRECIPE_1# recipe; // Derpnote
+            IRecipe recipe; // Derpnote
             ItemStack result;
             for(int i = 0; i < list.size(); i++)
             {
                 tmp = list.get(i);
-                if(!(tmp instanceof #FIELD_IRECIPE_1#)) // Derpnote
+                if(!(tmp instanceof IRecipe)) // Derpnote
                 {
                     continue;
                 }
-                recipe = (#FIELD_IRECIPE_1#)tmp; // Derpnote
+                recipe = (IRecipe)tmp; // Derpnote
                 if(recipe == null)
                 {
                     continue;
                 }
-                result = copy(recipe.#FIELD_IRECIPE_2#()); // Derpnote
+                result = Util.copy(recipe.#FIELD_IRECIPE_1#()); // Derpnote
                 if((result == null) || (result.id != item.id) || (result.getData() != item.getData()))
                 {
                     continue;
@@ -49,7 +48,7 @@ public class VUncrafterInv extends VInv
                 {
                     try
                     {
-                        Field field = #PACKAGE_MINECRAFT#.ShapedRecipes.class.getDeclaredField("items");
+                        Field field = ShapedRecipes.class.getDeclaredField("items");
                         field.setAccessible(true);
                         tmp2 = field.get(recipe);
                         if(!(tmp2 instanceof ItemStack[]))
@@ -60,7 +59,7 @@ public class VUncrafterInv extends VInv
                         back = new ItemStack[tmp3.length];
                         for(int j = 0; j < tmp3.length; j++)
                         {
-                            back[j] = copy(tmp3[j]);
+                            back[j] = Util.copy(tmp3[j]);
                         }
                     }
                     catch(Throwable t)
@@ -73,7 +72,7 @@ public class VUncrafterInv extends VInv
                 {
                     try
                     {
-                        Field field = #PACKAGE_MINECRAFT#.ShapelessRecipes.class.getDeclaredField("ingredients");
+                        Field field = ShapelessRecipes.class.getDeclaredField("ingredients");
                         field.setAccessible(true);
                         tmp2 = field.get(recipe);
                         if(!(tmp2 instanceof List))
@@ -84,7 +83,7 @@ public class VUncrafterInv extends VInv
                         back = new ItemStack[obj.length];
                         for(int j = 0; j < obj.length; j++)
                         {
-                            back[j] = copy((ItemStack)obj[j]);
+                            back[j] = Util.copy((ItemStack)obj[j]);
                         }
                     }
                     catch(Throwable t)
@@ -105,10 +104,10 @@ public class VUncrafterInv extends VInv
                 for(int j = 0; j < test.length; j++)
                 {
                     abc = getItem(j + 9);
-                    test[j] = copy(abc);
+                    test[j] = Util.copy(abc);
                 }
                 boolean success;
-                ItemStack test1[] = copy(test);
+                ItemStack test1[] = Util.copy(test);
                 for(; item.count >= result.count; item.count -= result.count)
                 {
                     success = true;
@@ -124,7 +123,7 @@ public class VUncrafterInv extends VInv
                             
                             if(test1[k] == null)
                             {
-                                test1[k] = copy(back[j]);
+                                test1[k] = Util.copy(back[j]);
                                 test1[k].count = 1;
                                 success = true;
                                 break;
@@ -141,7 +140,7 @@ public class VUncrafterInv extends VInv
                             break;
                         }
                     }
-                    test = copy(test1);
+                    test = Util.copy(test1);
                 }
                 for(int j = 0; j < test.length; j++)
                 {
@@ -160,7 +159,7 @@ public class VUncrafterInv extends VInv
         }
         else
         {
-            super.setItem(slot, copy(item));
+            super.setItem(slot, Util.copy(item));
         }
     }
 }

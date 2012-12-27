@@ -21,6 +21,7 @@ public class Config
         _proxy = new ConfigProxy(_plugin.getConfig(), _plugin.getDataFolder());
         List<World> list = Bukkit.getWorlds();
         _worlds = new ArrayList<String>();
+        _worlds.add("*");
         for(World world : list.toArray(new World[0]))
         {
             String name = world.getName();
@@ -101,41 +102,38 @@ public class Config
         }
     }
     
-    public static int getInt(Player player, String prefix, String suffix, String string, boolean max)
+    public static int getInt(Player player, String prefix, String string, String suffix, boolean max)
     {
-        return getInt(player.getWorld().getName(), player.getName(), prefix, suffix, string, max);
+        return getInt(player.getWorld().getName(), player.getName(), prefix, string, suffix, max);
     }
     
-    public static int getInt(String world, String player, String prefix, String suffix, String string, boolean max)
+    public static int getInt(String world, String player, String prefix, String string, String suffix, boolean max)
     {
-        return getInt(world, Perm.getGroups(world, player), prefix, suffix, string, max);
+        return getInt(world, Perm.getGroups(world, player), prefix, string, suffix, max);
     }
     
-    public static int getInt(String world, String[] groups, String prefix, String suffix, String string, boolean max)
+    public static int getInt(String world, String[] groups, String prefix, String string, String suffix, boolean max)
     {
         int value = getInt(world, Util.implode(".", prefix, string, suffix));
-        if(groups != null)
+        int tmp;
+        for(int i = 0; i < groups.length; i++)
         {
-            int tmp;
-            for(int i = 0; i < groups.length; i++)
+            String path1 = Util.implode(".", prefix, groups[i], string, suffix);
+            String path2 = Util.implode(".", prefix, string, groups[i], suffix);
+            if(isSet(world, path1))
             {
-                String path1 = Util.implode(".", prefix, groups[i], string, suffix);
-                String path2 = Util.implode(".", prefix, string, groups[i], suffix);
-                if(isSet(world, path1))
+                tmp = getInt(world, path1);
+                if((tmp > value) == max)
                 {
-                    tmp = getInt(world, path1);
-                    if((tmp > value) == max)
-                    {
-                        value = tmp;
-                    }
+                    value = tmp;
                 }
-                if(isSet(world, path2))
+            }
+            if(isSet(world, path2))
+            {
+                tmp = getInt(world, path2);
+                if((tmp > value) == max)
                 {
-                    tmp = getInt(world, path2);
-                    if((tmp > value) == max)
-                    {
-                        value = tmp;
-                    }
+                    value = tmp;
                 }
             }
         }
@@ -160,32 +158,32 @@ public class Config
         }
     }
     
-    public static double getDouble(Player player, String prefix, String suffix, String string, boolean max, int digits)
+    public static double getDouble(Player player, String prefix, String string, String suffix, boolean max, int digits)
     {
-        return Util.smooth(getDouble(player, prefix, suffix, string, max), digits);
+        return Util.smooth(getDouble(player, prefix, string, suffix, max), digits);
     }
     
-    public static double getDouble(String world, String player, String prefix, String suffix, String string, boolean max, int digits)
+    public static double getDouble(String world, String player, String prefix, String string, String suffix, boolean max, int digits)
     {
-        return Util.smooth(getDouble(world, player, prefix, suffix, string, max), digits);
+        return Util.smooth(getDouble(world, player, prefix, string, suffix, max), digits);
     }
     
-    public static double getDouble(String world, String[] groups, String prefix, String suffix, String string, boolean max, int digits)
+    public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, boolean max, int digits)
     {
-        return Util.smooth(getDouble(world, groups, prefix, suffix, string, max), digits);
+        return Util.smooth(getDouble(world, groups, prefix, string, suffix, max), digits);
     }
     
-    public static double getDouble(Player player, String prefix, String suffix, String string, boolean max)
+    public static double getDouble(Player player, String prefix, String string, String suffix, boolean max)
     {
-        return getDouble(player.getWorld().getName(), player.getName(), prefix, suffix, string, max);
+        return getDouble(player.getWorld().getName(), player.getName(), prefix, string, suffix, max);
     }
     
-    public static double getDouble(String world, String player, String prefix, String suffix, String string, boolean max)
+    public static double getDouble(String world, String player, String prefix, String string, String suffix, boolean max)
     {
-        return getDouble(world, Perm.getGroups(world, player), prefix, suffix, string, max);
+        return getDouble(world, Perm.getGroups(world, player), prefix, string, suffix, max);
     }
     
-    public static double getDouble(String world, String[] groups, String prefix, String suffix, String string, boolean max)
+    public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, boolean max)
     {
         double value = getDouble(world, Util.implode(".", prefix, string, suffix));
         if(groups != null)
@@ -216,192 +214,8 @@ public class Config
         return value;
     }
     
-    private boolean isSet(String world, String string)
+    private static boolean isSet(String world, String string)
     {
-        return _proxy.isSet(string);
+        return _proxy.isSet(world, string);
     }
-    
-    /*public static String getConfigString(String string)
-    {
-        return _global.getString(string);
-    }
-    
-    public static int getConfigInt(String prefix, String suffix, CommandSender sender, boolean max)
-    {
-        String groups[] = getPlayerGroups(sender);
-        return getConfigInt(prefix, suffix, groups, max);
-    }
-    
-    public static int getConfigInt(String prefix, String suffix, String groups[], boolean max)
-    {
-        int value = getConfigInt(prefix + "." + suffix);
-        if(groups != null)
-        {
-            int tmp;
-            for(int i = 0; i < groups.length; i++)
-            {
-                if(_global.isSet(groups[i] + "." + prefix + "." + suffix))
-                {
-                    tmp = getConfigInt(groups[i] + "." + prefix + "." + suffix);
-                    if(max == (tmp > value))
-                    {
-                        value = tmp;
-                    }
-                }
-                if(_global.isSet(prefix + "." + groups[i] + "." + suffix))
-                {
-                    tmp = getConfigInt(prefix + "." + groups[i] + "." + suffix);
-                    if(max == (tmp > value))
-                    {
-                        value = tmp;
-                    }
-                }
-            }
-        }
-        return value;
-    }
-    
-    public static int getConfigInt(String string)
-    {
-        try
-        {
-            return Integer.parseInt(_global.getString(string));
-        }
-        catch(Throwable t)
-        {
-            try
-            {
-                return (int)Math.round(Double.parseDouble(_global.getString(string)));
-            }
-            catch(Throwable t2)
-            {
-                return 0;
-            }
-        }
-    }
-    
-    public static double getConfigDouble(String prefix, String suffix, CommandSender sender, boolean max)
-    {
-        return getConfigDouble(prefix, suffix, sender, max, 0);
-    }
-    
-    public static double getConfigDouble(String prefix, String suffix, CommandSender sender, boolean max, int digits)
-    {
-        String groups[] = getPlayerGroups(sender);
-        return getConfigDouble(prefix, suffix, groups, max, digits, sender.getName());
-    }
-    
-    public static double getConfigDouble(String prefix, String suffix, String groups[], boolean max, String user)
-    {
-        return getConfigDouble(prefix, suffix, groups, max, 0, user);
-    }
-    
-    public static double getConfigDouble(String prefix, String suffix, String groups[], boolean max, int digits, String user)
-    {
-        double value = getConfigDouble(prefix + "." + suffix, digits, user);
-        if(groups != null)
-        {
-            double tmp;
-            for(int i = 0; i < groups.length; i++)
-            {
-                if(_global.isSet(groups[i] + "." + prefix + "." + suffix))
-                {
-                    tmp = getConfigDouble(groups[i] + "." + prefix + "." + suffix, digits, user);
-                    if(max == (tmp > value))
-                    {
-                        value = tmp;
-                    }
-                }
-                if(_global.isSet(prefix + "." + groups[i] + "." + suffix))
-                {
-                    tmp = getConfigDouble(prefix + "." + groups[i] + "." + suffix, digits, user);
-                    if(max == (tmp > value))
-                    {
-                        value = tmp;
-                    }
-                }
-            }
-        }
-        return value;
-    }
-    
-    public static double getConfigDouble(String string, int digits, String user)
-    {
-        try
-        {
-            String value = _global.getString(string);
-            boolean percent = false;
-            if(value.substring(value.length() - 1).equals("%"))
-            {
-                percent = true;
-                value = value.substring(0, value.length() - 1);
-            }
-            double d = Double.parseDouble(smoothDouble(Double.parseDouble(value), digits));
-            if(percent)
-            {
-                if(d < 0.0D)
-                {
-                    d = 0.0D;
-                }
-                d *= moneyGet(user) / 100.0D;
-            }
-            return d;
-        }
-        catch(Throwable t)
-        {
-            return 0D;
-        }
-    }
-    
-    public static String getConfigItemValue(String string, int id, int damage)
-    {
-        if(_global.isSet(string + "." + id + "-" + damage))
-        {
-            return _global.getString(string + "." + id + "-" + damage);
-        }
-        return _global.getString(string + "." + id);
-    }
-    
-    public static ItemStack getConfigItemStack(String string)
-    {
-        int id = getConfigInt(string + ".id");
-        int amount = getConfigInt(string + ".amount");
-        int meta = getConfigInt(string + ".meta");
-        if((id < 0) || (id > 32000) || (Item.byId[id] == null))
-        {
-            return null;
-        }
-        if(amount <= 0)
-        {
-            amount = 1;
-        }
-        else if(amount > 64)
-        {
-            amount = 64;
-        }
-        if(meta < 0)
-        {
-            meta = 0;
-        }
-        return new ItemStack(id, amount, meta);
-    }
-    
-    public static boolean getConfigIsInList(String key, String search)
-    {
-        try
-        {
-            for(Object o : _global.getList(key).toArray())
-            {
-                if((o instanceof String) && ((String)o).equals(search))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        catch(Throwable t)
-        {
-            return false;
-        }
-    }*/
 }

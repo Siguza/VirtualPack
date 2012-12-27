@@ -7,6 +7,7 @@ package net.drgnome.virtualpack.util;
 import java.io.*;
 import java.util.*;
 import org.bukkit.configuration.file.*;
+import net.drgnome.virtualpack.VPlugin;
 
 import static net.drgnome.virtualpack.util.Global.*;
 
@@ -91,10 +92,13 @@ public class ConfigProxy
     {
         setDef("version", _configversion);
         setDef("enabled", "true");
+        setDef("import-world", "");
         setDef("check-update", "true");
         setDef("save-interval", "0");
         setDef("on-death", "keep");
         setDef("economy", "true");
+        setDef("events.use", "true");
+        setDef("events.ignorecancelled", "false");
         setDef("db.use", "false");
         setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
         setDef("db.user", "herp");
@@ -104,33 +108,34 @@ public class ConfigProxy
         list1.add("v");
         list1.add("virtual");
         list1.add("virtualpack");
-        setDef("commands.main", list1);
+        setDef("commands." + VPlugin._components[0], list1);
         ArrayList<String> list2 = new ArrayList<String>();
         list2.add("wb");
         list2.add("workbench");
-        setDef("commands.workbench", list2);
+        setDef("commands." + VPlugin._components[1], list2);
         ArrayList<String> list3 = new ArrayList<String>();
         list3.add("uc");
         list3.add("uncrafter");
-        setDef("commands.uncrafter", list3);
+        setDef("commands." + VPlugin._components[2], list3);
         ArrayList<String> list4 = new ArrayList<String>();
         list4.add("chest");
-        setDef("commands.chest", list4);
+        setDef("commands." + VPlugin._components[3], list4);
         ArrayList<String> list5 = new ArrayList<String>();
         list5.add("furnace");
-        setDef("commands.furnace", list5);
+        setDef("commands." + VPlugin._components[4], list5);
         ArrayList<String> list6 = new ArrayList<String>();
         list6.add("brew");
         list6.add("brewingstand");
-        setDef("commands.brewingstand", list6);
+        setDef("commands." + VPlugin._components[5], list6);
         ArrayList<String> list7 = new ArrayList<String>();
         list7.add("ench");
         list7.add("enchtable");
         list7.add("enchanttable");
         list7.add("enchantingtable");
+        setDef("commands." + VPlugin._components[6], list7);
         ArrayList<String> list8 = new ArrayList<String>();
         list8.add("trash");
-        setDef("commands.trash", list8);
+        setDef("commands." + VPlugin._components[7], list8);
         setDef("tools.workbench.buy", "20000");
         setDef("tools.workbench.use", "0");
         setDef("tools.uncrafter.buy", "30000");
@@ -208,6 +213,6 @@ public class ConfigProxy
     
     public boolean isSet(String world, String string)
     {
-        return ((!world.equals("*") && _worlds.containsKey(world)) || _global.isSet(string));
+        return (!world.equals("*") && _worlds.containsKey(world)) ? _worlds.get(world).isSet(string) : _global.isSet(string);
     }
 }

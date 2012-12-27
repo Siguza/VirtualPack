@@ -5,14 +5,12 @@
 package net.drgnome.virtualpack.components;
 
 import java.util.*;
-
 import net.minecraft.server.v#MC_VERSION#.*;
-
 import org.bukkit.inventory.InventoryHolder;
-import #PACKAGE_CRAFTBUKKIT#.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
-
-import static net.drgnome.virtualpack.Util.*;
+import net.drgnome.virtualpack.VPack;
+import net.drgnome.virtualpack.util.*;
 
 public class VTEBrewingstand extends TileEntityBrewingStand
 {
@@ -35,26 +33,18 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     }
     
     // Read from save
-    public VTEBrewingstand(VPack vpack, String data[]) throws Throwable
-    {
-        this(vpack, data, 0);
-    }
-    
-    // Read from save
-    public VTEBrewingstand(VPack vpack, String data[], int offset) throws Throwable
+    public VTEBrewingstand(VPack vpack, String data[])
     {
         this(vpack);
-        // Where to stop?
-        int max = data.length - offset < items.length ? data.length - offset : items.length;
         // Get our items
-        for(int i = 0; i < max; i++)
+        for(int i = 0; i < Util.min(data.length, items.length); i++)
         {
-            items[i] = stringToItemStack(data[i + offset]);
+            items[i] = Util.stringToItemStack(data[i]);
         }
         // And the times
-        myBrewTime = (data.length - offset > 4) ? tryParse(data[offset + 4], myBrewTime) : myBrewTime;
-        brewTime = (int)Math.floor(myBrewTime);
-        link = (data.length - offset > 5) ? tryParse(data[offset + 5], link) : link;
+        myBrewTime = Util.tryParse(data[4], myBrewTime);
+        brewTime = Util.floor(myBrewTime);
+        link = Util.tryParse(data[5], link);
         brewSpeed = getBrewSpeed(items[3]);
     }
     
@@ -63,7 +53,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         ArrayList<String> list = new ArrayList<String>();
         for(int i = 0; i < 4; i++)
         {
-            list.add(itemStackToString(items[i]));
+            list.add(Util.itemStackToString(items[i]));
         }
         list.add(Double.toString(myBrewTime));
         list.add(Integer.toString(link));
@@ -115,7 +105,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             myBrewTime = 0.0D;
         }
         // And here we set the display variable.
-        brewTime = (int)Math.floor(myBrewTime);
+        brewTime = Util.floor(myBrewTime);
     }
     
     protected void checkLink()
@@ -142,8 +132,8 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                         if(isBrewable(item, items[3]))
                         {
                             // Then exchange the items
-                            item = copy(item);
-                            ItemStack item1 = copy(items[i]);
+                            item = Util.copy(item);
+                            ItemStack item1 = Util.copy(items[i]);
                             items[i] = item;
                             inv.setItem(j, item1);
                             // And leave the loop
@@ -188,8 +178,8 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             // If we found anything matching, let's exchange
             if(max != -1)
             {
-                item = copy(inv.getItem(max));
-                ItemStack item1 = copy(items[3]);
+                item = Util.copy(inv.getItem(max));
+                ItemStack item1 = Util.copy(items[3]);
                 items[3] = item;
                 inv.setItem(max, item1);
             }
@@ -252,8 +242,8 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                         // Nothing to do if we have no mapping
                         if(mapping == -1)
                         {
-                            item = copy(inv.getItem(mapping));
-                            item1 = copy(items[i]);
+                            item = Util.copy(inv.getItem(mapping));
+                            item1 = Util.copy(items[i]);
                             items[i] = item;
                             inv.setItem(mapping, item1);
                         }
@@ -393,7 +383,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     
     private boolean isBrewable(ItemStack item, ItemStack ingredient)
     {
-        return (item != null) && !areEqual(item, getBrewResult(item, ingredient)); // Derpnote
+        return (item != null) && !Util.areEqual(item, getBrewResult(item, ingredient)); // Derpnote
     }
     
     private double getBrewSpeed(ItemStack item)

@@ -19,7 +19,7 @@ public class Global
     // You can also give a prefix that is set before every line.
     public static void sendMessage(CommandSender sender, String message)
     {
-        sendMessage(sender, message, "");
+        sendMessage(sender, message, ChatColor.WHITE);
     }
     
     public static void sendMessage(CommandSender sender, String message, ChatColor prefix)
@@ -45,7 +45,7 @@ public class Global
         {
             if(offset + 60 >= message.length())
             {
-                sender.sendMessage(prefix + message.substring(offset, message.length()).trim());
+                sender.sendMessage(prefix + message.substring(offset).trim());
                 break;
             }
             part = message.substring(offset, offset + 60);

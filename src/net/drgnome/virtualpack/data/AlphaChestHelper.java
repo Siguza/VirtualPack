@@ -2,24 +2,33 @@
 // This software is distributed under the following license:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
-package net.drgnome.virtualpack;
+package net.drgnome.virtualpack.data;
 
 import java.io.*;
 import java.util.*;
 import java.lang.reflect.*;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-
-import #PACKAGE_MINECRAFT#.*;
-
-import static net.drgnome.virtualpack.Lang.*;
-import static net.drgnome.virtualpack.Util.*;
+import net.minecraft.server.v#MC_VERSION#.*;
+import net.drgnome.virtualpack.*;
+import net.drgnome.virtualpack.components.*;
+import net.drgnome.virtualpack.util.*;
+import static net.drgnome.virtualpack.util.Global.*;
 
 public class AlphaChestHelper
 {
-    public static void load(VPluginBase plugin, File dataFolder)
+    public static void check()
     {
-        log.info("[VirtualPack] Converting AlphaChest database...");
+        File chests = new File(_plugin.getDataFolder(), "chests");
+        if(chests.exists() && chests.isDirectory())
+        {
+            load(chests);
+        }
+    }
+    
+    private static void load(File dataFolder)
+    {
+        _log.info("[VirtualPack] Converting AlphaChest database...");
+        String world = Config.string("import-world").length() > 0 ? Config.string("import-world") : "*";
 		for(File chestFile : dataFolder.listFiles())
         {
 			String chestFileName = chestFile.getName();
@@ -30,23 +39,23 @@ public class AlphaChestHelper
 				if(chestFileName.endsWith(".chest.nbt"))
                 {
 					playerName = chestFileName.substring(0, chestFile.getName().length() - 10);
-                    inv = loadChestFromNBT(chestFile, plugin.getPack(playerName).getChestSize());
+                    inv = loadFromNBT(chestFile, _plugin.getPack(world, playerName).getChestSize());
 				}
                 else if(chestFileName.endsWith(".chest"))
                 {
 					playerName = chestFileName.substring(0, chestFile.getName().length() - 6);
-                    inv = loadChestFromTextfile(chestFile, plugin.getPack(playerName).getChestSize());
+                    inv = loadFromTextfile(chestFile, _plugin.getPack(world, playerName).getChestSize());
 				}
                 else
                 {
                     continue;
                 }
-                plugin.getPack(playerName).alphaChest(inv);
-                log.info("[VirtualPack] (AlphaChest) Loaded " + playerName + "'s chest");
+                _plugin.getPack(world, playerName).addInv(inv);
+                _log.info("[VirtualPack] (AlphaChest) Loaded " + playerName + "'s chest");
 			}
             catch(IOException e)
             {
-				log.warning("[VirtualPack] Couldn't load AlphaChest chest file: " + chestFileName);
+				_log.warning("[VirtualPack] Couldn't load AlphaChest chest file: " + chestFileName);
 			}
 		}
         try
@@ -55,12 +64,12 @@ public class AlphaChestHelper
         }
         catch(Throwable t)
         {
-            log.warning("[VirtualPack] Couldn't rename AlphaChest data folder!");
+            _log.warning("[VirtualPack] Couldn't rename AlphaChest data folder!");
         }
-        log.info("[VirtualPack] AlphaChest data loaded.");
+        _log.info("[VirtualPack] AlphaChest data loaded.");
 	}
     
-	private static VInv loadChestFromTextfile(File chestFile, int rows) throws IOException
+	private static VInv loadFromTextfile(File chestFile, int rows) throws IOException
     {
         VInv inv = new VInv(rows);
         BufferedReader in = new BufferedReader(new FileReader(chestFile));
@@ -95,11 +104,11 @@ public class AlphaChestHelper
         return inv;
 	}
     
-	private static VInv loadChestFromNBT(File chestFile, int rows) throws IOException
+	private static VInv loadFromNBT(File chestFile, int rows) throws IOException
     {
         VInv inv = new VInv(rows);
         DataInputStream in = new DataInputStream(new GZIPInputStream(new FileInputStream(chestFile)));
-        NBTTagCompound nbt = (NBTTagCompound)NBTBase.#FIELD_NBTBASE_1#(in); // Derpnote
+        NBTTagCompound nbt = (NBTTagCompound)NBTBase.#FIELD_NBTBASE_1#(in);
         in.close();
         NBTTagList items = nbt.getList("Items");
         for(int i = 0; i < items.size(); i++)
@@ -108,7 +117,7 @@ public class AlphaChestHelper
 			byte slot = item.getByte("Slot");
 			if(slot >= 0 && slot < (rows * 9))
             {
-                inv.setItem(slot, ItemStack.#FIELD_ITEMSTACK_1#(item)); // Derpnote
+                inv.setItem(slot, ItemStack.#FIELD_ITEMSTACK_1#(item));
 			}
 		}
         return inv;

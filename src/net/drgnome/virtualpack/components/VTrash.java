@@ -4,8 +4,6 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.util.*;
-
 import net.minecraft.server.v#MC_VERSION#.*;
 
 public class VTrash extends VChest
@@ -18,9 +16,9 @@ public class VTrash extends VChest
         this.player = player;
     }
     
-    public ItemStack clickItem(int i, int j, #FIELD_CONTAINER_7#, EntityHuman entityhuman)
+    public ItemStack clickItem(int i, int j, int meta, EntityHuman entityhuman)
     {
-        ItemStack item = super.clickItem(i, j, #FIELD_CONTAINER_9#, entityhuman);
+        ItemStack item = super.clickItem(i, j, meta, entityhuman);
         player.updateInventory(player.activeContainer);
         return item;
     }

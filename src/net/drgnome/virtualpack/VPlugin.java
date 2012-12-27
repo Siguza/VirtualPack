@@ -14,6 +14,7 @@ import java.sql.Connection; // Java compiler needs it
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.sk89q.bukkit.util.*;
+import net.drgnome.virtualpack.data.*;
 import net.drgnome.virtualpack.util.*;
 
 import static net.drgnome.virtualpack.util.Global.*;
@@ -152,12 +153,19 @@ public class VPlugin extends JavaPlugin
         ArrayList<CommandInfo> list = new ArrayList<CommandInfo>();
         for(String component : _components)
         {
-            String[] commands = Config.list("commands." + component).toArray(new String[0]);
-            if(commands.length <= 0)
+            try
             {
-                continue;
+                String[] commands = Config.list("commands." + component).toArray(new String[0]);
+                if(commands.length <= 0)
+                {
+                    continue;
+                }
+                list.add(new CommandInfo("/" + commands[0], "VirtualPack", commands, this, new String[]{"vpack.use"}));
             }
-            list.add(new CommandInfo("/" + commands[0], "VirtualPack", commands, this, new String[]{"vpack.use"}));
+            catch(NullPointerException e)
+            {
+                _log.info("[VirtualPack] Could not add commands for " + component);
+            }
         }
         try
         {
@@ -228,6 +236,22 @@ public class VPlugin extends JavaPlugin
         }
     }
     
+    public boolean hasPack(Player player)
+    {
+        return hasPack(player.getWorld().getName(), player.getName());
+    }
+    
+    public boolean hasPack(String world, String player)
+    {
+        world = Config.world(world);
+        HashMap<String, VPack> map = _packs.get(world);
+        if(map == null)
+        {
+            return false;
+        }
+        return map.containsKey(player.toLowerCase());
+    }
+    
     public VPack getPack(Player player)
     {
         return getPack(player.getWorld().getName(), player.getName());
@@ -277,19 +301,173 @@ public class VPlugin extends JavaPlugin
         map.put(player.toLowerCase(), pack);
     }
     
-    protected synchronized void loadUserData()
+    public synchronized void saveUserData()
     {
-        // TODO
+        saveUserData(false);
     }
     
-    protected synchronized void saveUserData()
+    public synchronized void saveUserData(boolean forcefile)
     {
-        // TODO
+        if(!_loadSuccess)
+        {
+            _log.warning("[VirtualPack] CANNOT SAVE USER DATA, LOADING ALREADY FAILED!");
+            return;
+        }
+        if((_saveThread != null) && !(_saveThread.done()))
+        {
+            _saveRequested = true;
+            return;
+        }
+        if(Config.bool("db.use") && !forcefile)
+        {
+            try
+            {
+                _saveThread = new VThreadSave(_packs);
+            }
+            catch(Throwable t)
+            {
+                warn();
+                t.printStackTrace();
+                return;
+            }
+        }
+        else
+        {
+            _saveThread = new VThreadSave(new File(getDataFolder(), "data.db"), _packs);
+        }
+        _saveThread.start();
+        _saveRequested = false;
     }
     
-    public void handleDeath(String player)
+    public synchronized void loadUserData()
     {
-        
+        if((_saveThread != null) && !(_saveThread.done()))
+        {
+            _loadRequested = true;
+            return;
+        }
+        try
+		{
+            if(_portMysql)
+            {
+                loadFlatfile();
+                saveUserData();
+                _portMysql = false;
+            }
+            else if(Config.bool("db.use"))
+            {
+                loadMysql();
+            }
+            else
+            {
+                loadFlatfile();
+            }
+            AlphaChestHelper.check();
+		}
+		catch(Throwable t)
+		{
+            _log.severe("[VirtualPack] COULD NOT LOAD USER DATA!");
+            t.printStackTrace();
+            _loadSuccess = false;
+		}
+        _loadRequested = false;
+    }
+    
+    private void loadMysql() throws Throwable
+    {
+        Connection db = DriverManager.getConnection(Config.string("db.url"), Config.string("db.user"), Config.string("db.pw"));
+        int version = 0;
+        String world = Config.string("import-world").length() > 0 ? Config.string("import-world") : "*";
+        ArrayList<String[]> list = new ArrayList<String[]>();
+        ResultSet row = db.prepareStatement("SELECT * FROM `" + Config.string("db.table") + "`").executeQuery();
+        while(row.next())
+        {
+            if(version == 0)
+            {
+                try
+                {
+                    row.getString("world");
+                    version = 2;
+                }
+                catch(SQLException e)
+                {
+                    version = 1;
+                }
+            }
+            switch(version)
+            {
+                case 1:
+                    String data = row.getString("data");
+                    if(!data.contains(_separator[0]))
+                    {
+                        continue;
+                    }
+                    list.add(new String[]{world, data.substring(0, data.indexOf(_separator[0])), data.substring(data.indexOf(_separator[0]) + 1)});
+                    break;
+                case 2:
+                    list.add(new String[]{row.getString("world"), row.getString("user"), row.getString("data")});
+                    break;
+            }
+        }
+        db.close();
+        load(list);
+    }
+    
+    private void loadFlatfile() throws Throwable
+    {
+        BufferedReader file = new BufferedReader(new FileReader(new File(getDataFolder(), "data.db")));
+        int version = 0;
+        String world = Config.string("import-world").length() > 0 ? Config.string("import-world") : "*";
+        String line;
+        ArrayList<String[]> list = new ArrayList<String[]>();
+        while((line = file.readLine()) != null)
+        {
+            if(version == 0)
+            {
+                version = line.contains(_separator[4]) ? 2 : 1;
+            }
+            switch(version)
+            {
+                case 1:
+                    if(!line.contains(_separator[0]))
+                    {
+                        continue;
+                    }
+                    list.add(new String[]{world, line.substring(0, line.indexOf(_separator[0])), line.substring(line.indexOf(_separator[0]) + 1)});
+                    break;
+                case 2:
+                    list.add(line.split(_separator[4]));
+                    break;
+            }
+        }
+        file.close();
+        load(list);
+    }
+    
+    private void load(ArrayList<String[]> list)
+    {
+        for(String[] data : list.toArray(new String[0][]))
+        {
+            setPack(data[0], data[1], new VPack(data[0], data[1], data[2].split(_separator[0])));
+        }
+        _loadSuccess = true;
+    }
+    
+    public void handleDeath(Player player)
+    {
+        String death = Config.string("on-death").toLowerCase();
+        if(death.equals("harddrop") || death.equals("drop"))
+        {
+            getPack(player).drop(player);
+        }
+        if(death.equals("wipe") || death.equals("drop"))
+        {
+            getPack(player).wipe();
+        }
+        if(death.equals("hardwipe") || death.equals("harddrop"))
+        {
+            getPack(player).reset();
+        }
     }
     
     public void reloadConfig()

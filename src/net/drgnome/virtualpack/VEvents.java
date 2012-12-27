@@ -25,7 +25,7 @@ public class VEvents implements Listener
         Player player = (Player)event.getEntity();
         if(Config.worldEnabled(player.getWorld().getName()))
         {
-            _plugin.handleDeath(player.getName());
+            _plugin.handleDeath(player);
         }
     }
 }

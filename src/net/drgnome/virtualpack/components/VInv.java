@@ -5,14 +5,11 @@
 package net.drgnome.virtualpack.components;
 
 import java.util.*;
-
-import #PACKAGE_CRAFTBUKKIT#.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
-
 import net.minecraft.server.v#MC_VERSION#.*;
-
-import static net.drgnome.virtualpack.Util.*;
+import net.drgnome.virtualpack.util.*;
 
 public class VInv implements IInventory
 {
@@ -25,18 +22,12 @@ public class VInv implements IInventory
         lastUpdate = System.currentTimeMillis();
     }
     
-    public VInv(int rows, String data[]) throws Throwable
-    {
-        this(rows, data, 0);
-    }
-    
-    public VInv(int rows, String data[], int offset) throws Throwable
+    public VInv(int rows, String data[])
     {
         this(rows);
-        int max = data.length - offset < (rows * 9) ? data.length - offset : (rows * 9);
-        for(int i = 0; i < max; i++)
+        for(int i = 0; i < Util.min(data.length, contents.length); i++)
         {
-            contents[i] = stringToItemStack(data[i + offset]);
+            contents[i] = Util.stringToItemStack(data[i]);
         }
     }
     
@@ -45,7 +36,7 @@ public class VInv implements IInventory
         String string[] = new String[contents.length];
         for(int i = 0; i < contents.length; i++)
         {
-            string[i] = itemStackToString(contents[i]);
+            string[i] = Util.itemStackToString(contents[i]);
         }
         return string;
     }
@@ -66,7 +57,7 @@ public class VInv implements IInventory
         {
             if(contents[slot].count <= size)
             {
-                ItemStack item = copy(contents[slot]);
+                ItemStack item = Util.copy(contents[slot]);
                 setItem(slot, null);
                 return item;
             }
@@ -84,7 +75,7 @@ public class VInv implements IInventory
     {
         if((slot < contents.length) && (contents[slot] != null))
         {
-            ItemStack item = copy(contents[slot]);
+            ItemStack item = Util.copy(contents[slot]);
             contents[slot] = null;
             return item;
         }
@@ -148,7 +139,7 @@ public class VInv implements IInventory
     {
     }
     
-    public void #FIELD_IINVENTORY_3#() // Derpnote
+    public void startOpen() // Derpnote
     {
     }
     

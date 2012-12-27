@@ -7,10 +7,10 @@ package net.drgnome.virtualpack.components;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.inventory.InventoryHolder;
-import #PACKAGE_CRAFTBUKKIT#.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
-
-import static net.drgnome.virtualpack.Util.*;
+import net.drgnome.virtualpack.VPack;
+import net.drgnome.virtualpack.util.*;
 
 // VirtualTileEntityFurnace is way too long, therefore VTE
 public class VTEFurnace extends TileEntityFurnace
@@ -45,32 +45,23 @@ public class VTEFurnace extends TileEntityFurnace
     }
     
     // Read from save
-    public VTEFurnace(VPack vpack, String data[]) throws Throwable
-    {
-        this(vpack, data, 0);
-    }
-    
-    // Read from save
-    public VTEFurnace(VPack vpack, String data[], int offset) throws Throwable
+    public VTEFurnace(VPack vpack, String data[])
     {
         this(vpack);
         // Where to stop?
-        int max = data.length - offset < contents.length ? data.length - offset : contents.length;
-        for(int i = 0; i < max; i++)
+        for(int i = 0; i < Util.min(data.length, contents.length); i++)
         {
-            contents[i] = stringToItemStack(data[i + offset]);
+            contents[i] = Util.stringToItemStack(data[i]);
         }
         lastID = contents[0] == null ? 0 : contents[0].id;
         // If the data array is long enough, we try to parse its entry, and if it's too short or the parsing fails, we'll leave it as it is.
-        burnTime = (data.length - offset > 3) ? tryParse(data[offset + 3], burnTime) : burnTime;
-        ticksForCurrentFuel = (data.length - offset > 4) ? tryParse(data[offset + 4], ticksForCurrentFuel) : ticksForCurrentFuel;
-        myCookTime = (data.length - offset > 5) ? tryParse(data[offset + 5], myCookTime) : myCookTime;
-        cookTime = (int)Math.round(myCookTime);
-        link = (data.length - offset > 6) ? tryParse(data[offset + 6], link) : link;
-        // This has to be read from the save file
-        burnSpeed = (data.length - offset > 7) ? tryParse(data[offset + 7], getBurnSpeed(contents[1])) : getBurnSpeed(contents[1]);
-        // While this doesn't (this item doesn't get consumed before the progress is done)
-        meltSpeed = getMeltSpeed(contents[0]);
+        burnTime = Util.tryParse(data[3], burnTime);
+        ticksForCurrentFuel = Util.tryParse(data[4], ticksForCurrentFuel);
+        myCookTime = Util.tryParse(data[5], myCookTime);
+        cookTime = Util.round(myCookTime);
+        link = Util.tryParse(data[6], link);
+        burnSpeed = Util.tryParse(data[7], getBurnSpeed(contents[1]));
+        meltSpeed = getMeltSpeed(contents[0]); // Note to self: No need to save this
     }
     
     public String[] save()
@@ -78,7 +69,7 @@ public class VTEFurnace extends TileEntityFurnace
         ArrayList<String> list = new ArrayList<String>();
         for(int i = 0; i < 3; i++)
         {
-            list.add(itemStackToString(contents[i]));
+            list.add(Util.itemStackToString(contents[i]));
         }
         list.add(Integer.toString(burnTime));
         list.add(Integer.toString(ticksForCurrentFuel));
@@ -152,7 +143,7 @@ public class VTEFurnace extends TileEntityFurnace
             myCookTime = 0.0D;
         }
         // And for the display (I'm using floor rather than round to not cause the client to do shit when we not really reached 200):
-        cookTime = (int)Math.floor(myCookTime);
+        cookTime = Util.floor(myCookTime);
     }
     
     protected void checkLink()
@@ -192,8 +183,8 @@ public class VTEFurnace extends TileEntityFurnace
                     if(getBurnResult(item) != null)
                     {
                         // We have to exchange the items, but we can't do it directly without messing everything up
-                        item = copy(item);
-                        ItemStack item1 = copy(contents[0]);
+                        item = Util.copy(item);
+                        ItemStack item1 = Util.copy(contents[0]);
                         contents[0] = item;
                         inv.setItem(i, item1);
                         // And leave the loop
@@ -212,7 +203,7 @@ public class VTEFurnace extends TileEntityFurnace
                     // If there's no item: Lol, too easy ^^
                     if(item == null)
                     {
-                        inv.setItem(i, copy(contents[2]));
+                        inv.setItem(i, Util.copy(contents[2]));
                         contents[2] = null;
                         // And we can leave the loop
                         break;
@@ -221,7 +212,7 @@ public class VTEFurnace extends TileEntityFurnace
                     else if(contents[2].doMaterialsMatch(item))
                     {
                         // Put away as much as possible
-                        int max = min(contents[2].count, min(Item.byId[item.id].getMaxStackSize(), getMaxStackSize()) - item.count);
+                        int max = Util.min(contents[2].count, Util.min(Item.byId[item.id].getMaxStackSize(), getMaxStackSize()) - item.count);
                         item.count += max;
                         contents[2].count -= max;
                         // If we've put everything away
@@ -247,8 +238,8 @@ public class VTEFurnace extends TileEntityFurnace
                 if(getFuelTime(item) > 0)
                 {
                     // Then take it!
-                    item = copy(item);
-                    ItemStack item1 = copy(contents[1]);
+                    item = Util.copy(item);
+                    ItemStack item1 = Util.copy(contents[1]);
                     contents[1] = item;
                     inv.setItem(i, item1);
                     // And goodbye
@@ -306,39 +297,16 @@ public class VTEFurnace extends TileEntityFurnace
             return 0;
         }
         int i = item.id;
-        Item it = item.getItem();
         // CUSTOM FUEL HERE
-        if((i == Item.STICK.id) || (i == Block.SAPLING.id))
-        {
-            return 100;
-        }
-        #COMM_1A#else if(i == Block.WOOD_STEP.id)
-        {
-            return 150;
-        }
-        else if(((it instanceof ItemHoe) && (((ItemHoe)it).#FIELD_ITEMHOE_1#().equals("WOOD"))) || 
-                ((it instanceof ItemSword) && (((ItemSword)it).#FIELD_ITEMSWORD_1#().equals("WOOD"))) || 
-                ((it instanceof ItemTool) && (((ItemTool)it).#FIELD_ITEMTOOL_1#().equals("WOOD"))) ) // Derpnote
-        {
-            return 200;
-        }#COMM_1B#
-        else if((i < 256) && (Block.byId[i].material == Material.WOOD))
-        {
-            return 300;
-        }
-        else if(i == Item.COAL.id)
-        {
-            return 1600;
-        }
-        else if(i == Item.BLAZE_ROD.id)
-        {
-            return 2400;
-        }
-        else if(i == Item.LAVA_BUCKET.id)
+        // Lava should melt 128 items, not 100
+        if(i == Item.LAVA_BUCKET.id)
         {
             return 25600;
         }
-        return 0;
+        else
+        {
+            return fuelTime(item);
+        }
     }
     
     private double getBurnSpeed(ItemStack item)
@@ -393,7 +361,7 @@ public class VTEFurnace extends TileEntityFurnace
         // Nothing in there? Then put something there.
         if(contents[2] == null)
         {
-            contents[2] = copy(itemstack);
+            contents[2] = Util.copy(itemstack);
         }
         // Burn ahead
         else if(contents[2].doMaterialsMatch(itemstack))

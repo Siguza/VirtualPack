@@ -6,6 +6,8 @@ package net.drgnome.virtualpack.util;
 
 import java.io.*;
 import java.net.*;
+import javax.xml.bind.DatatypeConverter;
+import net.minecraft.server.v#MC_VERSION#.*;
 
 public class Util
 {
@@ -15,6 +17,12 @@ public class Util
         int i = (int)d;
         d -= i;
         return i + (d >= 0.5 ? 1 : (d <= -0.5 ? -1 : 0));
+    }
+    
+    // Same for Math.floor
+    public static int floor(double d)
+    {
+        return d < 0 ? (int)d - 1 : (int)d;
     }
     
     public static boolean hasUpdate(String name, String version)
@@ -94,6 +102,11 @@ public class Util
         return array;
     }
     
+    public static boolean areEqual(ItemStack item1, ItemStack item2)
+    {
+        return (item1.id == item2.id) && (item1.count == item2.count) && (item1.getData() == item2.getData());
+    }
+    
     public static int tryParse(String s, int i)
     {
         try
@@ -103,6 +116,18 @@ public class Util
         catch(Throwable t)
         {
             return i;
+        }
+    }
+    
+    public static double tryParse(String s, double d)
+    {
+        try
+        {
+            return Double.parseDouble(s);
+        }
+        catch(Throwable t)
+        {
+            return d;
         }
     }
     
@@ -123,6 +148,81 @@ public class Util
     public static double smooth(double d, int digits)
     {
         double factor = Math.pow(10, digits);
-        return Math.round(d * factor) / factor;
+        return round(d * factor) / factor;
+    }
+    
+    public static int max(int... values)
+    {
+        int tmp = values[0];
+        for(int i = 1; i < values.length; i++)
+        {
+            if(values[i] > tmp)
+            {
+                tmp = values[i];
+            }
+        }
+        return tmp;
+    }
+    
+    public static int min(int... values)
+    {
+        int tmp = values[0];
+        for(int i = 1; i < values.length; i++)
+        {
+            if(values[i] < tmp)
+            {
+                tmp = values[i];
+            }
+        }
+        return tmp;
+    }
+    
+    // null.cloneItemStack throws a NullPointerException, therefore:
+    public static ItemStack copy(ItemStack item)
+    {
+        return item == null ? null : item.cloneItemStack();
+    }
+    
+    public static ItemStack[] copy(ItemStack item[])
+    {
+        ItemStack it[] = new ItemStack[item.length];
+        for(int i = 0; i < it.length; i++)
+        {
+            it[i] = copy(item[i]);
+        }
+        return it;
+    }
+    
+    public static ItemStack stringToItemStack(String string)
+    {
+        if((string == null) || (string.length() == 0))
+        {
+            return null;
+        }
+        return ItemStack.#FIELD_ITEMSTACK_1#(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string)));
+        /*try
+        {
+            if(VPluginBase.dbVersion == 1)
+            {
+                 // Derpnote 2
+            }
+            else
+            {
+                return stringToItemStack_old(string);
+            }
+        }
+        catch(Throwable t)
+        {
+            t.printStackTrace();
+        }*/
+    }
+    
+    public static String itemStackToString(ItemStack item)
+    {
+        if(item == null)
+        {
+            return "";
+        }
+        return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound())));
     }
 }

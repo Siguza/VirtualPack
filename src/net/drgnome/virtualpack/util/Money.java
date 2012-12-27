@@ -95,7 +95,7 @@ public class Money
     }
     
     // Rather link to false than crash with a NullPointerException
-    private static class NullMoney extends Money
+    public static class NullMoney extends Money
     {
         private NullMoney()
         {

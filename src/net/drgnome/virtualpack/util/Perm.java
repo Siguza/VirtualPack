@@ -30,7 +30,12 @@ public class Perm
     
     public static boolean has(CommandSender sender, String permission)
     {
-        return (sender instanceof Player) ? has(((Player)sender).getWorld().getName(), ((Player)sender).getName(), permission) : true;
+        if(sender instanceof Player)
+        {
+            Player player = (Player)sender;
+            return has(player.getWorld().getName(), player.getName(), permission);
+        }
+        return true;
     }
     
     public static boolean has(String world, String username, String permission)
