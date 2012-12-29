@@ -6,8 +6,10 @@ package net.drgnome.virtualpack.util;
 
 import java.io.*;
 import java.net.*;
+import java.lang.reflect.*;
 import javax.xml.bind.DatatypeConverter;
 import net.minecraft.server.v#MC_VERSION#.*;
+import static net.drgnome.virtualpack.util.Global.*;
 
 public class Util
 {
@@ -200,21 +202,6 @@ public class Util
             return null;
         }
         return ItemStack.#FIELD_ITEMSTACK_1#(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string)));
-        /*try
-        {
-            if(VPluginBase.dbVersion == 1)
-            {
-                 // Derpnote 2
-            }
-            else
-            {
-                return stringToItemStack_old(string);
-            }
-        }
-        catch(Throwable t)
-        {
-            t.printStackTrace();
-        }*/
     }
     
     public static String itemStackToString(ItemStack item)
@@ -224,5 +211,41 @@ public class Util
             return "";
         }
         return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound())));
+    }
+    
+    public static void openWindow(EntityPlayer player, Container container, String name, int id, int size)
+    {
+        player.playerConnection.sendPacket(new Packet100OpenWindow(1, id, name, size));
+        player.activeContainer = container;
+        container.windowId = 1;
+        container.addSlotListener((ICrafting)player);
+    }
+    
+    public static boolean loadJar(File file)
+    {
+        ClassLoader loader = _plugin.getClass().getClassLoader();
+        if(loader instanceof URLClassLoader)
+        {
+            try
+            {
+                URLClassLoader cl = (URLClassLoader)loader;
+                Method m = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+                m.setAccessible(true);
+                m.invoke(cl, file.toURI().toURL());
+            }
+            catch(Throwable t1)
+            {
+                warn();
+                t1.printStackTrace();
+                return false;
+            }
+        }
+        else
+        {
+            warn();
+            _log.severe("[VirtualPack] PluginClassLoader not URLClassLoader!");
+            return false;
+        }
+        return true;
     }
 }

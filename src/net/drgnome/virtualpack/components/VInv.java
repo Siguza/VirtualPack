@@ -31,6 +31,16 @@ public class VInv implements IInventory
         }
     }
     
+    public VInv(int rows, ItemStack[] items)
+    {
+        this(rows);
+        int max = (contents.length > items.length) ? items.length : contents.length;
+        for(int i = 0; i < max; i++)
+        {
+            contents[i] = items[i];
+        }
+    }
+    
     public String[] save()
     {
         String string[] = new String[contents.length];

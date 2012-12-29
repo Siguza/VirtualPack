@@ -212,6 +212,7 @@ public class Lang
         setDef("config.fail2", "[VirtualPack] World \"%1\" copies configuration of world \"%2\" which results in a loop!");
         setDef("config.fail3", "[VirtualPack] Disabling VirtualPack on world \"%1\"!");
         setDef("worldedit", "[VirtualPack] Could not find WorldEdit!");
+        setDef("virtualchest", "[VirtualPack] Could not find VirtualChest!");
         setDef("world.disabled", "VirtualPack is not enabled on this world.");
         setDef("command.error", "Internal error while executing command. See the console.");
     }

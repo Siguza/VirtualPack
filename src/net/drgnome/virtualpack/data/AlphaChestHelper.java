@@ -6,7 +6,6 @@ package net.drgnome.virtualpack.data;
 
 import java.io.*;
 import java.util.*;
-import java.lang.reflect.*;
 import java.util.zip.GZIPInputStream;
 import net.minecraft.server.v#MC_VERSION#.*;
 import net.drgnome.virtualpack.*;

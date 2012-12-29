@@ -119,27 +119,8 @@ public class VPlugin extends JavaPlugin
                 if(name.contains("worldedit") && name.substring(name.length() - 4).equals(".jar"))
                 {
                     found = true;
-                    ClassLoader loader = this.getClass().getClassLoader();
-                    if(loader instanceof URLClassLoader)
+                    if(!Util.loadJar(file))
                     {
-                        try
-                        {
-                            URLClassLoader cl = (URLClassLoader)loader;
-                            Method m = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-                            m.setAccessible(true);
-                            m.invoke(cl, file.toURI().toURL());
-                        }
-                        catch(Throwable t1)
-                        {
-                            warn();
-                            t1.printStackTrace();
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        warn();
-                        _log.severe("[VirtualPack] PluginClassLoader not URLClassLoader!");
                         return false;
                     }
                 }
@@ -363,6 +344,7 @@ public class VPlugin extends JavaPlugin
                 loadFlatfile();
             }
             AlphaChestHelper.check();
+            VirtualChestHelper.check();
 		}
 		catch(Throwable t)
 		{

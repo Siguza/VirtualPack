@@ -307,7 +307,7 @@ public class VCommands implements CommandExecutor
             {
                 sendMessage(sender, Lang.get("help.trash", cmd));
             }
-            sendMessage(sender, Lang.get("help.more", ChatColor.GOLD + "http://dev.bukkit.org/server-mods/virtualpack/commands"));
+            sendMessage(sender, Lang.get("help.more", ChatColor.GOLD + "http://dev.bukkit.org/server-mods/virtualpack/pages/commands"));
         }
     }
     

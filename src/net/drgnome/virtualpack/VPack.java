@@ -483,11 +483,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        player.playerConnection.sendPacket(new Packet100OpenWindow(1, 1, "", 9));
-        VWorkbench container = new VWorkbench(player);
-        player.activeContainer = container;
-        container.windowId = 1;
-        container.addSlotListener((ICrafting)player);
+        Util.openWindow(player, new VWorkbench(player), "", 1, 9);
     }
     
     /** Uncrafter **/
@@ -527,11 +523,7 @@ public class VPack
         {
             guiname = guiname.substring(0, 32);
         }
-        player.playerConnection.sendPacket(new Packet100OpenWindow(1, 0, guiname, 2 * 9));
-        VUncrafter container = new VUncrafter(player);
-        player.activeContainer = container;
-        container.windowId = 1;
-        container.addSlotListener((ICrafting)player);
+        Util.openWindow(player, new VUncrafter(player), guiname, 0, 18);
     }
     
     /** Enchanting table **/
@@ -566,11 +558,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        player.playerConnection.sendPacket(new Packet100OpenWindow(1, 4, "", 9));
-        VEnchantTable container = new VEnchantTable(player, _bookshelves);
-        player.activeContainer = container;
-        container.windowId = 1;
-        container.addSlotListener((ICrafting)player);
+        Util.openWindow(player, new VEnchantTable(player, _bookshelves), "", 4, 9);
     }
     
     public void buyBookshelf(Player bukkitPlayer, int amount)
@@ -636,10 +624,7 @@ public class VPack
         {
             chestname = chestname.substring(0, 32);
         }
-        player.playerConnection.sendPacket(new Packet100OpenWindow(1, 0, chestname, getChestSize() * 9));
-        player.activeContainer = container;
-        container.windowId = 1;
-        container.addSlotListener((ICrafting)player);
+        Util.openWindow(player, container, chestname, 0, getChestSize() * 9);
     }
     
     public void dropChest(Player bukkitPlayer, int nr)
@@ -711,11 +696,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        VFurnace container = new VFurnace(player, fur);
-        player.playerConnection.sendPacket(new Packet100OpenWindow(1, 2, "", 3));
-        player.activeContainer = container;
-        container.windowId = 1;
-        container.addSlotListener((ICrafting)player);
+        Util.openWindow(player, new VFurnace(player, fur), "", 2, 3);
     }
     
     public void linkFurnace(Player bukkitPlayer, int furnaceNR, int chestNR, boolean free)
@@ -810,11 +791,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        VBrewingstand container = new VBrewingstand(player, brew);
-        player.playerConnection.sendPacket(new Packet100OpenWindow(1, 5, "", 4));
-        player.activeContainer = container;
-        container.windowId = 1;
-        container.addSlotListener((ICrafting)player);
+        Util.openWindow(player, new VBrewingstand(player, brew), "", 5, 4);
     }
     
     public void linkBrewingstand(Player bukkitPlayer, int brewNR, int chestNR, boolean free)
@@ -883,10 +860,6 @@ public class VPack
         {
             name = name.substring(0, 32);
         }
-        player.playerConnection.sendPacket(new Packet100OpenWindow(1, 0, name, 9));
-        player.activeContainer = container;
-        container.windowId = 1;
-        container.addSlotListener((ICrafting)player);
+        Util.openWindow(player, container, name, 0, 9);
     }
-
 }

@@ -8,15 +8,11 @@ import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import net.drgnome.virtualpack.util.*;
 
-public class VUncrafter extends ContainerChest
+public class VUncrafter extends VContainer
 {
-    EntityPlayer player;
-    
     public VUncrafter(EntityPlayer player)
     {
-        super(player.inventory, new VUncrafterInv());
-        this.checkReachable = false;
-        this.player = player;
+        super(player, new VUncrafterInv());
         #FIELD_CONTAINER_2# = new ArrayList(); // Derpnote
         #FIELD_CONTAINER_3# = new ArrayList(); // Derpnote
         for(int i = 0; i < 2; i++)
@@ -49,12 +45,5 @@ public class VUncrafter extends ContainerChest
                 entityhuman.drop(itemstack);
             }
         }
-    }
-    
-    public ItemStack clickItem(int i, int j, int meta, EntityHuman entityhuman)
-    {
-        ItemStack itemstack = super.clickItem(i, j, meta, entityhuman);
-        player.updateInventory(player.activeContainer);
-        return itemstack;
     }
 }
