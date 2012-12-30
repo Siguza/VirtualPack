@@ -51,6 +51,11 @@ public class VInv implements IInventory
         return string;
     }
     
+    public void clear()
+    {
+        contents = new ItemStack[contents.length];
+    }
+    
     public int getSize()
     {
         return contents.length;

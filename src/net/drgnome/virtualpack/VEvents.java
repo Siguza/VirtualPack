@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.entity.Player;
 import net.drgnome.virtualpack.util.Config;
 
@@ -26,6 +27,20 @@ public class VEvents implements Listener
         if(Config.worldEnabled(player.getWorld().getName()))
         {
             _plugin.handleDeath(player);
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void handlePlayerLogin(PlayerLoginEvent event)
+    {
+        if((event == null) || (event.getPlayer() == null))
+        {
+            return;
+        }
+        Player player = event.getPlayer();
+        for(String world : Config.worlds())
+        {
+            _plugin.getPack(world, player.getName()).processSent();
         }
     }
 }

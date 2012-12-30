@@ -22,7 +22,7 @@ import static net.drgnome.virtualpack.util.Global.*;
 public class VPlugin extends JavaPlugin
 {
     public static final String _version = "#VERSION#";
-    public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash"};
+    public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil"};
     
     private HashMap<String, HashMap<String, VPack>> _packs;
     private VThreadSave _saveThread;

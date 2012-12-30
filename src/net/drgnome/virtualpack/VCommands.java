@@ -34,6 +34,7 @@ public class VCommands implements CommandExecutor
         commandMap.put("b", VPlugin._components[5]);
         commandMap.put("e", VPlugin._components[6]);
         commandMap.put("t", VPlugin._components[7]);
+        commandMap.put("a", VPlugin._components[9]);
     }
     
     public static String alias(String command)
@@ -134,6 +135,14 @@ public class VCommands implements CommandExecutor
         else if(command.equals(VPlugin._components[7])) // Trash
         {
             trash(player, pack);
+        }
+        else if(command.equals(VPlugin._components[8]) && !admin) // Send
+        {
+            send(player, pack, args);
+        }
+        else if(command.equals(VPlugin._components[9])) // Anvil
+        {
+            anvil(player, pack, args, admin);
         }
         else // Unknown command
         {
@@ -655,7 +664,7 @@ public class VCommands implements CommandExecutor
     
     private void workbench(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player, "vpack.use.workbench"))
+        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.workbench"))
         {
             sendMessage(player, Lang.get("workbench.perm"), ChatColor.RED);
             return;
@@ -670,7 +679,7 @@ public class VCommands implements CommandExecutor
     
     private void uncrafter(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player, "vpack.use.uncrafter"))
+        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.uncrafter"))
         {
             sendMessage(player, Lang.get("uncrafter.perm"), ChatColor.RED);
             return;
@@ -685,7 +694,7 @@ public class VCommands implements CommandExecutor
     
     private void chest(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player, "vpack.use.chest"))
+        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.chest"))
         {
             sendMessage(player, Lang.get("chest.perm"), ChatColor.RED);
             return;
@@ -740,7 +749,7 @@ public class VCommands implements CommandExecutor
     
     private void furnace(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player, "vpack.use.furnace"))
+        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.furnace"))
         {
             sendMessage(player, Lang.get("furnace.perm"), ChatColor.RED);
             return;
@@ -808,7 +817,7 @@ public class VCommands implements CommandExecutor
     
     private void brew(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player, "vpack.use.brewingstand"))
+        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.brewingstand"))
         {
             sendMessage(player, Lang.get("brewingstand.perm"), ChatColor.RED);
             return;
@@ -876,7 +885,7 @@ public class VCommands implements CommandExecutor
     
     private void ench(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player, "vpack.use.enchanttable"))
+        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.enchanttable"))
         {
             sendMessage(player, Lang.get("enchanttable.perm"), ChatColor.RED);
             return;
@@ -911,5 +920,38 @@ public class VCommands implements CommandExecutor
     private void trash(Player player, VPack pack)
     {
         pack.openTrash(player);
+    }
+    
+    private void send(Player player, VPack pack, String[] args)
+    {
+        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.send"))
+        {
+            sendMessage(player, Lang.get("send.perm"), ChatColor.RED);
+            return;
+        }
+        if(args.length <= 0)
+        {
+            sendMessage(player, Lang.get("argument.few"), ChatColor.RED);
+            return;
+        }
+        int i = 0;
+        if(args.length > 1)
+        {
+            try
+            {
+                i = Integer.parseInt(args[1]);
+            }
+            catch(Throwable t)
+            {
+                sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                return;
+            }
+        }
+        pack.sendItem(player, args[0], i);
+    }
+    
+    private void anvil(Player player, VPack pack, String[] args, boolean admin)
+    {
+        
     }
 }

@@ -6,6 +6,7 @@ package net.drgnome.virtualpack.util;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
 import java.lang.reflect.*;
 import javax.xml.bind.DatatypeConverter;
 import net.minecraft.server.v#MC_VERSION#.*;
@@ -13,6 +14,9 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class Util
 {
+    private static boolean _lastStack;
+    private static String[] _lastStackIds;
+    
     // Math.round? Too damn slow!
     public static int round(double d)
     {
@@ -213,6 +217,78 @@ public class Util
         return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound())));
     }
     
+    public static ItemStack[] stack(ItemStack item1, ItemStack item2)
+    {
+        _lastStack = false;
+        if(!areEqual(item1, item2))
+        {
+            return new ItemStack[]{item1, item2};
+        }
+        if(item1 == null)
+        {
+            _lastStack = true;
+            return new ItemStack[]{item2, null};
+        }
+        int max = (item2.count > (item1.getMaxStackSize() - item1.count)) ? (item1.getMaxStackSize() - item1.count) : item2.count;
+        if(max <= 0)
+        {
+            return new ItemStack[]{item1, item2};
+        }
+        _lastStack = true;
+        item1.count += max;
+        item2.count -= max;
+        return new ItemStack[]{item1, (item2.count <= 0) ? null : item2};
+    }
+    
+    public static ItemStack[] stack(IInventory[] invs, ItemStack... items)
+    {
+        boolean[] stacked = new boolean[invs.length];
+        ArrayList<ItemStack> left = new ArrayList<ItemStack>();
+        for(ItemStack item : items)
+        {
+            for(int j = 0; j < invs.length; j++)
+            {
+                IInventory inv = invs[j];
+                ItemStack[] contents = inv.getContents();
+                stacked[j] = false;
+                for(int i = 0; i < contents.length; i++)
+                {
+                    ItemStack[] tmp = stack(contents[i], item);
+                    inv.setItem(i, tmp[0]);
+                    item = tmp[1];
+                    stacked[j] = stacked[j] || _lastStack;
+                    if(item == null)
+                    {
+                        break;
+                    }
+                }
+                if(item == null)
+                {
+                    break;
+                }
+            }
+            if(item != null)
+            {
+                left.add(item);
+            }
+        }
+        ArrayList<String> touched = new ArrayList<String>();
+        for(int i = 0; i < stacked.length; i++)
+        {
+            if(stacked[i])
+            {
+                touched.add("" + i);
+            }
+        }
+        _lastStackIds = touched.toArray(new String[0]);
+        return left.toArray(new ItemStack[0]);
+    }
+    
+    public static String[] getLastStackingIds()
+    {
+        return _lastStackIds;
+    }
+    
     public static void openWindow(EntityPlayer player, Container container, String name, int id, int size)
     {
         player.playerConnection.sendPacket(new Packet100OpenWindow(1, id, name, size));
@@ -247,5 +323,15 @@ public class Util
             return false;
         }
         return true;
+    }
+    
+    public static String base64en(String string)
+    {
+        return DatatypeConverter.printBase64Binary(string.getBytes());
+    }
+    
+    public static String base64de(String string)
+    {
+        return new String(DatatypeConverter.parseBase64Binary(string));
     }
 }

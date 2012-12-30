@@ -67,7 +67,9 @@ permissions:
   vpack.keep.uncrafter:
     description: Keep the uncrafter on death
   vpack.stats:
-    description: Allows you to see other user's stats
+    description: Allows you to see other users stats
+  vpack.send:
+    description: Allows you to send items to other users chests
   vpack.admin:
     description: Allows the use of Admin-features & doing a config reload
   vpack.admin.all:
@@ -80,7 +82,7 @@ permissions:
       vpack.admin.delete: true
       vpack.update: true
   vpack.admin.use:
-    description: Allows you to access any user's VirtualPack
+    description: Allows you to access any users VirtualPack
     children:
       vpack.admin: true
   vpack.admin.give:
@@ -92,7 +94,7 @@ permissions:
     children:
       vpack.admin: true
   vpack.admin.delete:
-    description: Allows you to completely delete a user's VirtualPack-account
+    description: Allows you to completely delete a users VirtualPack-account
     children:
       vpack.admin: true
   vpack.update:

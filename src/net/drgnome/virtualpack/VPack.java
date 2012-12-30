@@ -5,6 +5,7 @@
 package net.drgnome.virtualpack;
 
 import java.util.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.command.CommandSender;
@@ -24,21 +25,18 @@ public class VPack
     public boolean _hasUncrafter;
     public boolean _hasEnchantTable;
     public int _bookshelves;
-    private int _fLinks;
-    private int _bLinks;
-    public HashMap<Integer, VInv> _chests;
-    public HashMap<Integer, VTEFurnace> _furnaces;
-    public HashMap<Integer, VTEBrewingstand> _brews;
+    private int _fLinks = 0;
+    private int _bLinks = 0;
+    public HashMap<Integer, VInv> _chests = new HashMap<Integer, VInv>();
+    public HashMap<Integer, VTEFurnace> _furnaces = new HashMap<Integer, VTEFurnace>();
+    public HashMap<Integer, VTEBrewingstand> _brews = new HashMap<Integer, VTEBrewingstand>();
+    public ArrayList<ItemStack> _left = new ArrayList<ItemStack>();
+    public ArrayList<String> _messages = new ArrayList<String>();
     
     public VPack(String world, String player)
     {
         _world = world;
         _player = player;
-        _fLinks = 0;
-        _bLinks = 0;
-        _chests = new HashMap<Integer, VInv>();
-        _furnaces = new HashMap<Integer, VTEFurnace>();
-        _brews = new HashMap<Integer, VTEBrewingstand>();
         String[] groups = Perm.getGroups(_world, _player);
         if(Money.world(_world).enabled())
         {
@@ -127,6 +125,20 @@ public class VPack
             {
                 _bLinks = Util.tryParse(a[1], _bLinks);
             }
+            else if(a[0].equals("lft"))
+            {
+                for(int i = 1; i < a.length; i++)
+                {
+                    _left.add(Util.stringToItemStack(a[i]));
+                }
+            }
+            else if(a[0].equals("msg"))
+            {
+                for(int i = 1; i < a.length; i++)
+                {
+                    _messages.add(Util.base64de(a[i]));
+                }
+            }
         }
     }
     
@@ -150,7 +162,26 @@ public class VPack
         {
             list.add("b" + _separator[1] + Util.implode(_separator[1], brew.save()));
         }
+        ArrayList<String> tmp = new ArrayList<String>();
+        tmp.add("lft");
+        for(ItemStack item : _left)
+        {
+            tmp.add(Util.itemStackToString(item));
+        }
+        list.add(Util.implode(_separator[1], tmp.toArray(new String[0])));
+        tmp = new ArrayList<String>();
+        tmp.add("msg");
+        for(String s : _messages)
+        {
+            tmp.add(Util.base64en(s));
+        }
+        list.add(Util.implode(_separator[1], tmp.toArray(new String[0])));
         return Util.implode(_separator[0], list.toArray(new String[0]));
+    }
+    
+    public String getPlayer()
+    {
+        return _player;
     }
     
     public void tick()
@@ -302,6 +333,11 @@ public class VPack
             sendMessage(player, Lang.get("stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size()));
             sendMessage(player, Lang.get("stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size()));
         }
+    }
+    
+    public VInv[] getInvs()
+    {
+        return _chests.values().toArray(new VInv[0]);
     }
     
     public VInv getInv(int i)
@@ -598,7 +634,7 @@ public class VPack
         }
         for(int i = 0; i < amount; i++)
         {
-            _chests.put((Integer)(_chests.size() + i), new VInv(getChestSize()));
+            _chests.put((Integer)(_chests.size() + 1), new VInv(getChestSize()));
         }
         sendMessage(bukkitPlayer, (_chests.size() == 1) ? Lang.get("chest.bought.one") : Lang.get("chest.bought.many", "" + _chests.size()), ChatColor.GREEN);
     }
@@ -861,5 +897,67 @@ public class VPack
             name = name.substring(0, 32);
         }
         Util.openWindow(player, container, name, 0, 9);
+    }
+    
+    /** Sending **/
+    
+    public void sendItem(Player bukkitPlayer, String reciever, int chestNR)
+    {
+        ItemStack[] items;
+        if(chestNR == 0)
+        {
+            EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
+            ItemStack hand = player.inventory.getItemInHand();
+            if(hand == null)
+            {
+                return;
+            }
+            items = new ItemStack[]{Util.copy(hand)};
+            player.inventory.setItem(player.inventory.itemInHandIndex, null);
+        }
+        else
+        {
+            VInv inv = _chests.get((Integer)chestNR);
+            if(inv == null)
+            {
+                sendMessage(bukkitPlayer, Lang.get("chest.none"), ChatColor.RED);
+                return;
+            }
+            items = Util.copy(inv.getContents());
+            inv.clear();
+        }
+        VPack pack = _plugin.getPack(_world, reciever);
+        ItemStack[] left = Util.stack(pack.getInvs(), items);
+        String message = Lang.get("send.get", bukkitPlayer.getName(), Util.implode(", ", Util.getLastStackingIds()), (left.length > 0) ? (" " + Lang.get("getpart")) : "");
+        if(left.length > 0)
+        {
+            for(ItemStack stack : left)
+            {
+                pack._left.add(stack);
+            }
+        }
+        pack._messages.add(message);
+        pack.processSent();
+        sendMessage(bukkitPlayer, Lang.get((chestNR == 0) ? "send.done1" : "send.done2", reciever), ChatColor.GREEN);
+    }
+    
+    public void processSent()
+    {
+        Player bukkitPlayer = Bukkit.getPlayer(_player);
+        if(bukkitPlayer == null)
+        {
+            return;
+        }
+        EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
+        for(ItemStack item : _left.toArray(new ItemStack[0]))
+        {
+            player.drop(item);
+        }
+        for(String s : _messages.toArray(new String[0]))
+        {
+            sendMessage(bukkitPlayer, s, ChatColor.GREEN);
+        }
+        _left = new ArrayList<ItemStack>();
+        _messages = new ArrayList<String>();
     }
 }
