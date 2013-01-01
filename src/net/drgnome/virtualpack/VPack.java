@@ -910,6 +910,7 @@ public class VPack
             ItemStack hand = player.inventory.getItemInHand();
             if(hand == null)
             {
+                sendMessage(bukkitPlayer, Lang.get("send.empty"), ChatColor.RED);
                 return;
             }
             items = new ItemStack[]{Util.copy(hand)};
@@ -924,11 +925,38 @@ public class VPack
                 return;
             }
             items = Util.copy(inv.getContents());
+            boolean found = false;
+            for(ItemStack item : items)
+            {
+                if(item != null)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found)
+            {
+                sendMessage(bukkitPlayer, Lang.get("send.empty"), ChatColor.RED);
+                return;
+            }
             inv.clear();
         }
         VPack pack = _plugin.getPack(_world, reciever);
         ItemStack[] left = Util.stack(pack.getInvs(), items);
-        String message = Lang.get("send.get", bukkitPlayer.getName(), Util.implode(", ", Util.getLastStackingIds()), (left.length > 0) ? (" " + Lang.get("getpart")) : "");
+        String message = Lang.get("send.get1", bukkitPlayer.getName());
+        String[] touched = Util.getLastStackingIds();
+        if(touched.length > 0)
+        {
+            message += " " + Lang.get("send.get2", Util.implode(", ", touched));
+            if(left.length > 0)
+            {
+                message += " " + Lang.get("send.get3");
+            }
+        }
+        else
+        {
+            message += " " + Lang.get("send.get4");
+        }
         if(left.length > 0)
         {
             for(ItemStack stack : left)

@@ -389,7 +389,7 @@ public class VCommands implements CommandExecutor
                 return;
             }
             _plugin.setPack(player.getWorld().getName(), args[1], null);
-            sendMessage(player, Lang.get("admin.delete", new String[]{args[2]}), ChatColor.GREEN);
+            sendMessage(player, Lang.get("admin.delete", new String[]{args[1]}), ChatColor.GREEN);
         }
         else if(args[0].equals("use"))
         {

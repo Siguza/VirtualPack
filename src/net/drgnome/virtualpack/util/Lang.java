@@ -170,10 +170,13 @@ public class Lang
         setDef("enchanttable.book.one", "You now have 1 bookshelf.");
         setDef("enchanttable.book.many", "You now have %1 bookshelves");
         setDef("send.perm", "You're not allowed send items.");
+        setDef("send.empty", "You can't send nothing.");
         setDef("send.done1", "The item has been sent to %1.");
         setDef("send.done2", "The items have been sent to %1.");
-        setDef("send.get", "%1 has sent you some items. They have been put into the following chests: %2.%3");
-        setDef("send.getpart", "Some have also been dropped to you.");
+        setDef("send.get1", "%1 has sent you some items.");
+        setDef("send.get2", "They have been put into the following chests: %1.");
+        setDef("send.get3", "Some have also been dropped to you.");
+        setDef("send.get4", "They have been dropped to you.");
         setDef("admin.perm", "You're not allowed to do that!");
         setDef("admin.help.title", "----- ----- ----- Admin Help ----- ----- -----");
         setDef("admin.help.reload", "/%1 a reload - Reload the configs");

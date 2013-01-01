@@ -220,14 +220,18 @@ public class Util
     public static ItemStack[] stack(ItemStack item1, ItemStack item2)
     {
         _lastStack = false;
-        if(!areEqual(item1, item2))
+        if(item2 == null)
         {
-            return new ItemStack[]{item1, item2};
+            return new ItemStack[]{item1, null};
         }
         if(item1 == null)
         {
             _lastStack = true;
             return new ItemStack[]{item2, null};
+        }
+        if(!areEqual(item1, item2))
+        {
+            return new ItemStack[]{item1, item2};
         }
         int max = (item2.count > (item1.getMaxStackSize() - item1.count)) ? (item1.getMaxStackSize() - item1.count) : item2.count;
         if(max <= 0)
@@ -277,7 +281,7 @@ public class Util
         {
             if(stacked[i])
             {
-                touched.add("" + i);
+                touched.add("" + (i + 1));
             }
         }
         _lastStackIds = touched.toArray(new String[0]);
