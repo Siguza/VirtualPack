@@ -147,6 +147,12 @@ public class ConfigProxy
         setDef("tools.workbench.use", "0");
         setDef("tools.uncrafter.buy", "30000");
         setDef("tools.uncrafter.use", "0");
+        setDef("tools.enchanttable.multiply", "1");
+        setDef("tools.enchanttable.buy", "30000");
+        setDef("tools.enchanttable.use", "0");
+        setDef("tools.enchanttable.book", "5000");
+        setDef("tools.anvil.buy", "25000");
+        setDef("tools.anvil.use", "0");
         setDef("tools.chest.max", "10");
         setDef("tools.chest.start", "0");
         setDef("tools.chest.multiply", "1");
@@ -165,10 +171,6 @@ public class ConfigProxy
         setDef("tools.brewingstand.buy", "75000");
         setDef("tools.brewingstand.use", "0");
         setDef("tools.brewingstand.link", "100000");
-        setDef("tools.enchanttable.multiply", "1");
-        setDef("tools.enchanttable.buy", "30000");
-        setDef("tools.enchanttable.use", "0");
-        setDef("tools.enchanttable.book", "5000");
     }
     
     private void setDef(String path, Object value)

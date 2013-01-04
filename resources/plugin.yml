@@ -12,13 +12,18 @@ permissions:
     children:
       vpack.use: true
       vpack.use.workbench: true
+      vpack.use.uncrafter: true
       vpack.use.enchanttable: true
+      vpack.use.anvil: true
       vpack.use.chest: true
       vpack.use.furnace: true
       vpack.use.brewingstand: true
-      vpack.use.uncrafter: true
   vpack.use.workbench:
     description: Allows the use of the VirtualPack workbench
+    children:
+      vpack.use: true
+  vpack.use.uncrafter:
+    description: Allows the use of the VirtualPack uncrafter
     children:
       vpack.use: true
   vpack.use.enchanttable:
@@ -29,6 +34,16 @@ permissions:
     description: Leaves your XP where they are
     children:
       vpack.use: true
+      vpack.use.enchanttable: true
+  vpack.use.anvil:
+    description: Allows the use of the VirtualPack anvil
+    children:
+      vpack.use: true
+  vpack.use.anvil.free:
+    description: Leaves your XP where they are
+    children:
+      vpack.use: true
+      vpack.use.anvil: true
   vpack.use.chest:
     description: Allows the use of the VirtualPack chests
     children:
@@ -41,31 +56,30 @@ permissions:
     description: Allows the use of the VirtualPack brewing stands
     children:
       vpack.use: true
-  vpack.use.uncrafter:
-    description: Allows the use of the VirtualPack uncrafter
-    children:
-      vpack.use: true
   vpack.keep.all:
     decsription: Everything is kept upon death
     children:
       vpack.keep.workbench: true
+      vpack.keep.uncrafter: true
       vpack.keep.enchanttable: true
+      vpack.keep.anvil: true
       vpack.keep.chest: true
       vpack.keep.furnace: true
       vpack.keep.brewingstand: true
-      vpack.keep.uncrafter: true
   vpack.keep.workbench:
     description: Keep the workbench on death
+  vpack.keep.uncrafter:
+    description: Keep the uncrafter on death
   vpack.keep.enchanttable:
     description: Keep the enchantment table on death
+  vpack.keep.anvil:
+    description: Keep the anvil on death
   vpack.keep.chest:
     description: Keep all chests on death
   vpack.keep.furnace:
     description: Keep all furnaces on death
   vpack.keep.brewingstand:
     description: Keep all brewing stands on death
-  vpack.keep.uncrafter:
-    description: Keep the uncrafter on death
   vpack.stats:
     description: Allows you to see other users stats
   vpack.send:

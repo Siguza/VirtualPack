@@ -83,6 +83,11 @@ public class Lang
         setDef("help.workbench.use", "/%1 w - Open your workbench");
         setDef("help.uncrafter.buy", "/%1 uc buy - Buy the Uncrafter");
         setDef("help.uncrafter.use", "/%1 uc - Open the Uncrafter (see %2/%1 help uc%3)");
+        setDef("help.enchanttable.buy", "/%1 e buy - Buy an enchantmant table");
+        setDef("help.enchanttable.use", "/%1 e - Open your enchantment table");
+        setDef("help.enchanttable.book", "/%1 e buy b [x] - Buy [x] bookshelves");
+        setDef("help.anvil.buy", "/%1 a buy - Buy the Anvil");
+        setDef("help.anvil.use", "/%1 a - Open the Anvil");
         setDef("help.chest.buy", "/%1 c buy [x] - Buy [x] chest(s)");
         setDef("help.chest.use", "/%1 c [x] - Open your Chest (nr. x)");
         setDef("help.chest.drop", "/%1 c drop [x] - Drop the contents of chest (nr. x)");
@@ -96,9 +101,6 @@ public class Lang
         setDef("help.brewingstand.link", "/%1 b l (x) (y) - Link your brewing stand (x) with a chest (y)");
         setDef("help.brewingstand.unlink", "/%1 b u (x) - Remove the link from your brewing stand (x)");
         setDef("help.link.info", "See %2/%1 help link%3 for more information about links");
-        setDef("help.enchanttable.buy", "/%1 e buy - Buy an enchantmant table");
-        setDef("help.enchanttable.use", "/%1 e - Open your enchantment table");
-        setDef("help.enchanttable.book", "/%1 e buy b [x] - Buy [x] bookshelves");
         setDef("help.trash", "/%1 t - Open the trash");
         setDef("help.more", "More: %1");
         setDef("version", "VirtualPack %1");
@@ -108,6 +110,7 @@ public class Lang
         setDef("stats.workbench", "Workbench: %1%2");
         setDef("stats.uncrafter", "Uncrafter: %1%2");
         setDef("stats.enchanttable", "Enchantment Table: %1%2");
+        setDef("stats.anvil", "Anvil: %1%2");
         setDef("stats.books", ", with %1 bookshelves");
         setDef("stats.chest", "Chests: %1%2");
         setDef("stats.furnace", "Furnaces: %1%2");
@@ -118,10 +121,11 @@ public class Lang
         setDef("price.title", "----- ----- ----- Prices ----- ----- -----");
         setDef("price.workbench", "Workbench: %1Buy: %2%3 %1Use: %2%4");
         setDef("price.uncrafter", "Uncrafter: %1Buy: %2%3 %1Use: %2%4");
+        setDef("price.enchanttable", "Enchantment Table: %1Buy: %2%3 %1Use: %2%4 %1Bookshelf: %2%5");
+        setDef("price.anvil", "Anvil: %1Buy: %2%3 %1Use: %2%4");
         setDef("price.chest", "Chest: %1Buy: %2%3 %1Use: %2%4");
         setDef("price.furnace", "Furnace: %1Buy: %2%3 %1Use: %2%4 %1Link: %2%5");
         setDef("price.brewingstand", "Brewing Stand: %1Buy: %2%3 %1Use: %2%4 %1Link: %2%5");
-        setDef("price.enchanttable", "Enchantment Table: %1Buy: %2%3 %1Use: %2%4 %1Bookshelf: %2%5");
         setDef("price.free", "Economy is disabled, everything is for free, have fun! :)");
         setDef("yes", "yes");
         setDef("no", "no");
@@ -139,6 +143,10 @@ public class Lang
         setDef("uncrafter.none", "You don't have an uncrafter.");
         setDef("uncrafter.max", "You already have an uncrafter.");
         setDef("uncrafter.bought", "You bought an uncrafter.");
+        setDef("anvil.perm", "You're not allowed to use the anvil.");
+        setDef("anvil.none", "You don't have an anvil.");
+        setDef("anvil.max", "You already have an anvil.");
+        setDef("anvil.bought", "You bought an anvil.");
         setDef("chest.name", "V Chest %1");
         setDef("chest.perm", "You're not allowed to use chests.");
         setDef("chest.none", "This chest doesn't exist.");
@@ -192,6 +200,8 @@ public class Lang
         setDef("admin.give.uncrafter.done", "Gave %1 an uncrafter.");
         setDef("admin.give.enchanttable.have", "This user already has an enchantment table.");
         setDef("admin.give.enchanttable.done", "Gave %1 an enchantment table.");
+        setDef("admin.give.anvil.have", "This user already has an anvil.");
+        setDef("admin.give.anvil.done", "Gave %1 an anvil.");
         setDef("admin.give.chest.one", "Gave %1 a chest.");
         setDef("admin.give.chest.many", "Gave %1 %2 chests.");
         setDef("admin.give.furnace.one", "Gave %1 a furnace.");
@@ -206,6 +216,8 @@ public class Lang
         setDef("admin.take.uncrafter.done", "Took the uncrafter away from %1.");
         setDef("admin.take.enchanttable.none", "This user doesn't have an enchantment table.");
         setDef("admin.take.enchanttable.done", "Tool the enchantment table away from %1.");
+        setDef("admin.take.anvil.none", "This user doesn't have an anvil.");
+        setDef("admin.take.anvil.done", "Took the anvil away from %1.");
         setDef("admin.take.chest.one", "Took a chest away from %1.");
         setDef("admin.take.chest.many", "Took %2 chests away from %1.");
         setDef("admin.take.furnace.one", "Took a furnace away from %1.");

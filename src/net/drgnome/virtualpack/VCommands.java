@@ -283,6 +283,17 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get("help.uncrafter.buy", cmd));
                 sendMessage(sender, Lang.get("help.uncrafter.use", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
             }
+            if(Perm.has(sender, "vpack.use.enchanttable"))
+            {
+                sendMessage(sender, Lang.get("help.enchanttable.buy", cmd));
+                sendMessage(sender, Lang.get("help.enchanttable.use", cmd));
+                sendMessage(sender, Lang.get("help.enchanttable.book", cmd));
+            }
+            if(Perm.has(sender, "vpack.use.anvil"))
+            {
+                sendMessage(sender, Lang.get("help.anvil.buy", cmd));
+                sendMessage(sender, Lang.get("help.anvil.use", cmd));
+            }
             if(Perm.has(sender, "vpack.use.chest"))
             {
                 sendMessage(sender, Lang.get("help.chest.buy", cmd));
@@ -305,12 +316,6 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get("help.brewingstand.link", cmd));
                 sendMessage(sender, Lang.get("help.brewingstand.unlink", cmd));
                 sendMessage(sender, Lang.get("help.link.info", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
-            }
-            if(Perm.has(sender, "vpack.use.enchanttable"))
-            {
-                sendMessage(sender, Lang.get("help.enchanttable.buy", cmd));
-                sendMessage(sender, Lang.get("help.enchanttable.use", cmd));
-                sendMessage(sender, Lang.get("help.enchanttable.book", cmd));
             }
             if(Perm.has(sender, "vpack.use.trash"))
             {
@@ -478,6 +483,18 @@ public class VCommands implements CommandExecutor
                 sendMessage(player, Lang.get("admin.give.enchanttable.done"), ChatColor.GREEN);
             }
         }
+        else if(args[1].equals("anvil"))
+        {
+            if(pack._hasAnvil)
+            {
+                sendMessage(player, Lang.get("admin.give.anvil.have"), ChatColor.RED);
+            }
+            else
+            {
+                pack._hasAnvil = true;
+                sendMessage(player, Lang.get("admin.give.anvil.done"), ChatColor.GREEN);
+            }
+        }
         else if(args[1].equals("chest"))
         {
             for(int i = 0; i < amount; i++)
@@ -576,6 +593,18 @@ public class VCommands implements CommandExecutor
                 sendMessage(player, Lang.get("admin.give.enchanttable.done"), ChatColor.GREEN);
             }
         }
+        else if(args[1].equals("anvil"))
+        {
+            if(!pack._hasAnvil)
+            {
+                sendMessage(player, Lang.get("admin.take.anvil.none"), ChatColor.RED);
+            }
+            else
+            {
+                pack._hasAnvil = false;
+                sendMessage(player, Lang.get("admin.take.anvil.done"), ChatColor.GREEN);
+            }
+        }
         else if(args[1].equals("chest"))
         {
             for(int i = 0; i < amount; i++)
@@ -652,6 +681,7 @@ public class VCommands implements CommandExecutor
             sendMessage(player, Lang.get("price.workbench", y, g, "" + pack.priceWorkbenchBuy(), "" + pack.priceWorkbenchUse()));
             sendMessage(player, Lang.get("price.uncrafter", y, g, "" + pack.priceUncrafterBuy(), "" + pack.priceUncrafterUse()));
             sendMessage(player, Lang.get("price.enchanttable", y, g, "" + pack.priceEnchBuy(), "" + pack.priceEnchUse(), "" + pack.priceEnchBook(1)));
+            sendMessage(player, Lang.get("price.anvil", y, g, "" + pack.priceAnvilBuy(), "" + pack.priceAnvilUse()));
             sendMessage(player, Lang.get("price.chest", y, g, "" + pack.priceChestBuy(1), "" + pack.priceChestUse()));
             sendMessage(player, Lang.get("price.furnace", y, g, "" + pack.priceFurnaceBuy(1), "" + pack.priceFurnaceUse(), "" + pack.priceFurnaceLink()));
             sendMessage(player, Lang.get("price.brewingstand", y, g, "" + pack.priceBrewBuy(1), "" + pack.priceBrewUse(), "" + pack.priceBrewLink()));
@@ -952,6 +982,16 @@ public class VCommands implements CommandExecutor
     
     private void anvil(Player player, VPack pack, String[] args, boolean admin)
     {
-        
+        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.anvil"))
+        {
+            sendMessage(player, Lang.get("anvil.perm"), ChatColor.RED);
+            return;
+        }
+        if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
+        {
+            pack.buyAnvil(player);
+            return;
+        }
+        pack.openAnvil(player, admin);
     }
 }

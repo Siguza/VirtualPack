@@ -24,6 +24,7 @@ public class VPack
     public boolean _hasWorkbench;
     public boolean _hasUncrafter;
     public boolean _hasEnchantTable;
+    public boolean _hasAnvil;
     public int _bookshelves;
     private int _fLinks = 0;
     private int _bLinks = 0;
@@ -44,6 +45,7 @@ public class VPack
             _hasUncrafter = Config.getDouble(_world, groups, "tools","uncrafter", "buy", false) == 0D;
             _hasEnchantTable = Config.getDouble(_world, groups, "tools","enchanttable", "buy", false) == 0D;
             _bookshelves = Config.getDouble(_world, groups, "tools","enchanttable", "book", false) == 0D ? _maxBookshelves : 0;
+            _hasAnvil = Config.getDouble(_world, groups, "tools","anvil", "buy", false) == 0D;
             for(int i = 1; i <= Config.getInt(_world, groups, "tools","chest", "start", true); i++)
             {
                 _chests.put((Integer)i, new VInv(getChestSize()));
@@ -63,6 +65,7 @@ public class VPack
             _hasUncrafter = true;
             _hasEnchantTable = true;
             _bookshelves = _maxBookshelves;
+            _hasAnvil = true;
             for(int i = 1; i <= Config.getInt(_world, groups, "tools", "chest", "max", true); i++)
             {
                 _chests.put((Integer)i, new VInv(getChestSize()));
@@ -101,6 +104,10 @@ public class VPack
             {
                 _hasEnchantTable = a[1].equals("1") || _hasEnchantTable;
                 _bookshelves = Util.max(_bookshelves, Util.tryParse(a[2], _bookshelves));
+            }
+            else if(a[0].equals("av"))
+            {
+                _hasAnvil = a[1].equals("1") || _hasAnvil;
             }
             else if(a[0].equals("c"))
             {
@@ -148,6 +155,7 @@ public class VPack
         list.add("w" + _separator[1] + (_hasWorkbench ? "1" : "0"));
         list.add("u" + _separator[1] + (_hasUncrafter ? "1" : "0"));
         list.add(Util.implode(_separator[1], "e", _hasEnchantTable ? "1" : "0", "" + _bookshelves));
+        list.add("av" + _separator[1] + (_hasAnvil ? "1" : "0"));
         list.add("fl" + _separator[1] + _fLinks);
         list.add("bl" + _separator[1] + _bLinks);
         for(VInv inv : _chests.values().toArray(new VInv[0]))
@@ -278,6 +286,10 @@ public class VPack
             _hasEnchantTable = false;
             _bookshelves = 0;
         }
+        if(!Perm.has(_world, _player, "vpack.keep.anvil"))
+        {
+            _hasAnvil = false;
+        }
         if(!Perm.has(_world, _player, "vpack.keep.chest"))
         {
             _chests = new HashMap<Integer, VInv>();
@@ -317,6 +329,7 @@ public class VPack
             sendMessage(player, Lang.get("stats.workbench", "" + ChatColor.GREEN, _hasWorkbench ? Lang.get("yes") : Lang.get("no")));
             sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, _hasUncrafter ? Lang.get("yes") : Lang.get("no")));
             sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, _hasEnchantTable ? Lang.get("yes") : Lang.get("no")) + (_hasEnchantTable ? Lang.get("stats.books", "" + _bookshelves): ""));
+            sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, _hasAnvil ? Lang.get("yes") : Lang.get("no")));
             int i = Config.getInt(_world, _player, "tools", "chest", "max", true);
             sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size() + (i != -1 ? "/" + i : "")));
             i = Config.getInt(_world, _player, "tools", "furnace", "max", true);
@@ -329,6 +342,7 @@ public class VPack
             sendMessage(player, Lang.get("stats.workbench", "" + ChatColor.GREEN, Lang.get("yes")));
             sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, Lang.get("yes")));
             sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, Lang.get("yes")) + Lang.get("stats.books", "15"));
+            sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, Lang.get("yes")));
             sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size()));
             sendMessage(player, Lang.get("stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size()));
             sendMessage(player, Lang.get("stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size()));
@@ -410,6 +424,16 @@ public class VPack
             price += (base * Math.pow(factor, numBookshelves() + i));
         }
         return Util.smooth(price, 2);
+    }
+    
+    public double priceAnvilBuy()
+    {
+        return Config.getDouble(_world, _player, "tools", "anvil", "buy", false, 2);
+    }
+    
+    public double priceAnvilUse()
+    {
+        return Config.getDouble(_world, _player, "tools", "anvil", "use", false, 2);
     }
     
     public double priceChestBuy(int amount)
@@ -615,6 +639,41 @@ public class VPack
         }
         _bookshelves += amount;
         sendMessage(bukkitPlayer, (_bookshelves == 1) ? Lang.get("enchanttable.book.one") : Lang.get("enchanttable.book.many", "" + _bookshelves), ChatColor.GREEN);
+    }
+    
+    /** Anvil **/
+    
+    public void buyAnvil(Player bukkitPlayer)
+    {
+        if(_hasAnvil)
+        {
+            sendMessage(bukkitPlayer, Lang.get("anvil.max"), ChatColor.RED);
+            return;
+        }
+        if(!Money.world(_world).hasTake(_player, priceAnvilBuy()))
+        {
+            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            return;
+        }
+        _hasAnvil = true;
+        sendMessage(bukkitPlayer, Lang.get("anvil.bought"), ChatColor.GREEN);
+    }
+    
+    public void openAnvil(Player bukkitPlayer, boolean free)
+    {
+        if(!_hasAnvil)
+        {
+            sendMessage(bukkitPlayer, Lang.get("anvil.none"), ChatColor.RED);
+            return;
+        }
+        free = free || !Money.world(_world).enabled();
+        EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
+        if(!free && !Money.world(_world).hasTake(_player, priceAnvilUse()))
+        {
+            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            return;
+        }
+        Util.openWindow(player, new VAnvil(player), "", 8, 9);
     }
     
     /** Chest **/
