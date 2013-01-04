@@ -273,6 +273,11 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get("help.version", cmd));
             sendMessage(sender, Lang.get("help.stats", cmd));
             sendMessage(sender, Lang.get("help.price", cmd));
+            if(Perm.has(sender, "vpack.send"))
+            {
+                sendMessage(sender, Lang.get("help.send1", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get("help.send2", cmd), ChatColor.AQUA);
+            }
             if(Perm.has(sender, "vpack.use.workbench"))
             {
                 sendMessage(sender, Lang.get("help.workbench.buy", cmd));

@@ -79,6 +79,8 @@ public class Lang
         setDef("help.version", "/%1 v - Version");
         setDef("help.stats", "/%1 s - Show stats");
         setDef("help.price", "/%1 p - Show prices");
+        setDef("help.send1", "/%1 send (player) - Send the item in your hand to a player");
+        setDef("help.send2", "/%1 send (player) (x) - Send all the contents of your chest nr. x to a player");
         setDef("help.workbench.buy", "/%1 w buy - Buy a workbench for yourself");
         setDef("help.workbench.use", "/%1 w - Open your workbench");
         setDef("help.uncrafter.buy", "/%1 uc buy - Buy the Uncrafter");
