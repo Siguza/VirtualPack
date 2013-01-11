@@ -40,23 +40,21 @@ public class Perm
     
     public static boolean has(String world, String username, String permission)
     {
-        return _perm == null ? false : _perm.has(world, username, permission);
+        if(_perm == null)
+        {
+            _log.warning("[VirtualPack] Permission instance is null!");
+            return false;
+        }
+        return (_perm.has(world, username, permission) || _perm.has((String)null, username, permission));
     }
     
     public static String[] getGroups(String world, String username)
     {
-        try
+        if(_perm == null)
         {
-            return  _perm.getPlayerGroups(world, username);
+            _log.warning("[VirtualPack] Permission instance is null!");
+            return new String[0];
         }
-        catch(NullPointerException n)
-        {
-        }
-        catch(Throwable t)
-        {
-            warn();
-            t.printStackTrace();
-        }
-        return new String[0];
+        return Util.merge(_perm.getPlayerGroups(world, username), _perm.getPlayerGroups((String)null, username));
     }
 }

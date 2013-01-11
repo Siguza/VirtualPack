@@ -151,6 +151,22 @@ public class Util
         return string;
     }
     
+    public static <T> T[] merge(T[]... objects)
+    {
+        ArrayList<T> list = new ArrayList<T>();
+        for(T[] array : objects)
+        {
+            for(T obj : array)
+            {
+                if(!list.contains(obj))
+                {
+                    list.add(obj);
+                }
+            }
+        }
+        return (T[])list.toArray();
+    }
+    
     public static double smooth(double d, int digits)
     {
         double factor = Math.pow(10, digits);
