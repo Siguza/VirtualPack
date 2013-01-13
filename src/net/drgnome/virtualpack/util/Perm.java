@@ -55,6 +55,6 @@ public class Perm
             _log.warning("[VirtualPack] Permission instance is null!");
             return new String[0];
         }
-        return Util.merge(_perm.getPlayerGroups(world, username), _perm.getPlayerGroups((String)null, username));
+        return Util.<String> merge(_perm.getPlayerGroups(world, username), _perm.getPlayerGroups((String)null, username));
     }
 }

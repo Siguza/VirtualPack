@@ -344,6 +344,7 @@ public class VPlugin extends JavaPlugin
                 loadFlatfile();
             }
             AlphaChestHelper.check();
+            BackpackHelper.check();
             VirtualChestHelper.check();
 		}
 		catch(Throwable t)

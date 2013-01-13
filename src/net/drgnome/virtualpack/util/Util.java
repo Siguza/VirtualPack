@@ -164,7 +164,7 @@ public class Util
                 }
             }
         }
-        return (T[])list.toArray();
+        return list.toArray((T[])Array.newInstance(objects[0].getClass().getComponentType(), list.size()));
     }
     
     public static double smooth(double d, int digits)
