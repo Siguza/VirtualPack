@@ -5,6 +5,15 @@ author: Siguza
 depend: [Vault]
 softdepend: [WorldEdit, Multiverse-Core, PermissionsEx, GroupManager, PermissionsBukkit, iConomy, BOSEconomy]
 permissions:
+  vpack.all:
+    description: Gives FULL ACCESS to ALL VirtualPack features!
+    children:
+      vpack.use.all: true
+      vpack.use.enchanttable.free: true
+      vpack.use.anvil.free: true
+      vpack.keep.all: true
+      vpack.send: true
+      vpack.admin.all: true
   vpack.use:
     description: Allows the basic use of VirtualPack
   vpack.use.all:
@@ -94,7 +103,9 @@ permissions:
       vpack.admin.give: true
       vpack.admin.take: true
       vpack.admin.delete: true
+      vpack.stats: true
       vpack.update: true
+      vpack.creative: true
   vpack.admin.use:
     description: Allows you to access any users VirtualPack
     children:
@@ -113,3 +124,5 @@ permissions:
       vpack.admin: true
   vpack.update:
     decsription: Notifies you of new VirtualPack versions
+  vpack.creative:
+    decsription: Allows you to use VirtualPack in creative mode even if creative mode is blocked.

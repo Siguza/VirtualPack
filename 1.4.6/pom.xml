@@ -197,6 +197,10 @@
                                     <value>u</value>
                                 </replacement>
                                 <replacement>
+                                    <token>#FIELD_ITEM_5#</token> <!-- () has subtypes -->
+                                    <value>l</value>
+                                </replacement>
+                                <replacement>
                                     <token>#FIELD_ITEMENCHANTEDBOOK_1#</token> <!-- (ItemStack, EnchantmentInstance) -->
                                     <value>a</value>
                                 </replacement>
@@ -231,6 +235,10 @@
                                 <replacement>
                                     <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#</token> <!-- st (NBTTagCompound) -->
                                     <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NBTTAGCOMPOUND_1#</token> <!-- (String) remove element -->
+                                    <value>o</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_POTIONBREWER_1#</token> <!-- st (int, String) -->

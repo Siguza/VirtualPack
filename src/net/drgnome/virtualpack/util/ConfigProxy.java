@@ -97,6 +97,7 @@ public class ConfigProxy
         setDef("save-interval", "0");
         setDef("on-death", "keep");
         setDef("economy", "true");
+        setDef("allow-creative", "false");
         setDef("events.use", "true");
         setDef("events.ignorecancelled", "false");
         setDef("db.use", "false");

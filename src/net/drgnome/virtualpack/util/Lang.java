@@ -11,7 +11,7 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class Lang
 {
-    public static final String _langVersion = "3";
+    public static final String _langVersion = "4";
     private static YamlConfiguration _file = new YamlConfiguration();
     private static File _dir;
     
@@ -62,6 +62,7 @@ public class Lang
         setDef("update.msg", "There is an update for VirtualPack available! Click here:");
         setDef("update.link", "http://dev.bukkit.org/server-mods/virtualpack/files/");
         setDef("vpack.ecodisabled", "Economy is disabled, you don't need to buy anything.");
+        setDef("vpack.nocreative", "You can't access VirtualPack in creative mode.");
         setDef("vpack.misseco", "VirtualPack: Cannot find any vault-hooked economy plugin, disabling.");
         setDef("vpack.missperm", "VirtualPack: Cannot find any vault-hooked permissions plugin, disabling.");
         setDef("vpack.enable", "VirtualPack %1 enabled");
@@ -119,6 +120,7 @@ public class Lang
         setDef("stats.brewingstand", "Brewing Stands: %1%2");
         setDef("stats.link", "%1, free links: %2%3");
         setDef("use.player", "This command can only be used by a player.");
+        setDef("use.world", "You have to specify a world when using this command in the console.");
         setDef("use.perm", "You're not allowed to use VPack.");
         setDef("price.title", "----- ----- ----- Prices ----- ----- -----");
         setDef("price.workbench", "Workbench: %1Buy: %2%3 %1Use: %2%4");
@@ -190,10 +192,11 @@ public class Lang
         setDef("admin.perm", "You're not allowed to do that!");
         setDef("admin.help.title", "----- ----- ----- Admin Help ----- ----- -----");
         setDef("admin.help.reload", "/%1 a reload - Reload the configs");
-        setDef("admin.help.use", "/%1 a use (name) (action) - Access the VirtualPack of player 'name'. The 'action' parameter is what you normally type after '/%1', e.g. 'c drop 5'");
-        setDef("admin.help.give", "/%1 a give (name) (tool) [x] - Give [x] of a 'tool' to the player 'name'");
-        setDef("admin.help.take", "/%1 a take (name) (tool) [x] - Take [x] of a 'tool' away from the player 'name'");
-        setDef("admin.help.delete", "/%1 a delete (name) - Delete the VirtualPack of the player 'name'");
+        setDef("admin.help.world", "/%1 ad w:(world) (use/give/take/delete) - Execute one of the commands below in a different world than the one you're in");
+        setDef("admin.help.use", "/%1 ad use (name) (action) - Access the VirtualPack of player 'name'. The 'action' parameter is what you normally type after '/%1', e.g. 'c drop 5'");
+        setDef("admin.help.give", "/%1 ad give (name) (tool) [x] - Give [x] of a 'tool' to the player 'name'");
+        setDef("admin.help.take", "/%1 ad take (name) (tool) [x] - Take [x] of a 'tool' away from the player 'name'");
+        setDef("admin.help.delete", "/%1 ad delete (name) - Delete the VirtualPack of the player 'name'");
         setDef("admin.reloaded", "Reloaded the configs.");
         setDef("admin.saved", "User data saved.");
         setDef("admin.give.workbench.have", "This user already has a workbench.");

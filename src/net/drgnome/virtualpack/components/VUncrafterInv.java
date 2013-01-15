@@ -21,75 +21,110 @@ public class VUncrafterInv extends VInv
     {
         if((item != null) && (slot < 9))
         {
-            List list = CraftingManager.getInstance().getRecipes(); // Derpnote
+            List list = CraftingManager.getInstance().getRecipes();
             Object tmp;
             Object tmp2;
-            IRecipe recipe; // Derpnote
+            IRecipe recipe;
             ItemStack result;
-            for(int i = 0; i < list.size(); i++)
+            for(int i = -1; i < list.size(); i++)
             {
-                tmp = list.get(i);
-                if(!(tmp instanceof IRecipe)) // Derpnote
+                ItemStack[] back = new ItemStack[0];
+                if(i == -1)
                 {
-                    continue;
-                }
-                recipe = (IRecipe)tmp; // Derpnote
-                if(recipe == null)
-                {
-                    continue;
-                }
-                result = Util.copy(recipe.#FIELD_IRECIPE_1#()); // Derpnote
-                if((result == null) || (result.id != item.id) || (result.getData() != item.getData()))
-                {
-                    continue;
-                }
-                ItemStack back[] = new ItemStack[0];
-                if(recipe instanceof ShapedRecipes)
-                {
-                    try
+                    if(item.id == 403)
                     {
-                        Field field = ShapedRecipes.class.getDeclaredField("items");
-                        field.setAccessible(true);
-                        tmp2 = field.get(recipe);
-                        if(!(tmp2 instanceof ItemStack[]))
+                        back = new ItemStack[]{new ItemStack(340, item.count, item.getData())};
+                    }
+                    else
+                    {
+                        NBTTagList ench = item.getEnchantments();
+                        if((ench == null) || (ench.size() <= 0))
+                        {
+                            continue;
+                        }
+                        else if(!Item.byId[item.id].#FIELD_ITEM_5#() && (item.getData() != 0))
                         {
                             break;
                         }
-                        ItemStack[] tmp3 = (ItemStack[])tmp2;
-                        back = new ItemStack[tmp3.length];
-                        for(int j = 0; j < tmp3.length; j++)
+                        back = new ItemStack[ench.size() + 1];
+                        back[0] = Util.copy(item);
+                        back[0].getTag().#FIELD_NBTTAGCOMPOUND_1#("ench");
+                        for(int j = 0; j < ench.size(); j++)
                         {
-                            back[j] = Util.copy(tmp3[j]);
+                            back[j + 1] = new ItemStack(403, 1, 0);
+                            NBTTagCompound tag = new NBTTagCompound("tag");
+                            NBTTagList elist = new NBTTagList("ench");
+                            elist.add(ench.get(j));
+                            tag.set("ench", elist);
+                            back[j + 1].setTag(tag);
                         }
                     }
-                    catch(Throwable t)
-                    {
-                        t.printStackTrace();
-                        break;
-                    }
+                    result = Util.copy(item);
                 }
-                else if(recipe instanceof ShapelessRecipes)
+                else
                 {
-                    try
+                    tmp = list.get(i);
+                    if(!(tmp instanceof IRecipe))
                     {
-                        Field field = ShapelessRecipes.class.getDeclaredField("ingredients");
-                        field.setAccessible(true);
-                        tmp2 = field.get(recipe);
-                        if(!(tmp2 instanceof List))
+                        continue;
+                    }
+                    recipe = (IRecipe)tmp;
+                    if(recipe == null)
+                    {
+                        continue;
+                    }
+                    result = Util.copy(recipe.#FIELD_IRECIPE_1#()); // Derpnote
+                    if((result == null) || (result.id != item.id) || (result.getData() != item.getData()))
+                    {
+                        continue;
+                    }
+                    if(recipe instanceof ShapedRecipes)
+                    {
+                        try
                         {
+                            Field field = ShapedRecipes.class.getDeclaredField("items");
+                            field.setAccessible(true);
+                            tmp2 = field.get(recipe);
+                            if(!(tmp2 instanceof ItemStack[]))
+                            {
+                                break;
+                            }
+                            ItemStack[] tmp3 = (ItemStack[])tmp2;
+                            back = new ItemStack[tmp3.length];
+                            for(int j = 0; j < tmp3.length; j++)
+                            {
+                                back[j] = Util.copy(tmp3[j]);
+                            }
+                        }
+                        catch(Throwable t)
+                        {
+                            t.printStackTrace();
                             break;
                         }
-                        Object obj[] = ((List)tmp2).toArray();
-                        back = new ItemStack[obj.length];
-                        for(int j = 0; j < obj.length; j++)
-                        {
-                            back[j] = Util.copy((ItemStack)obj[j]);
-                        }
                     }
-                    catch(Throwable t)
+                    else if(recipe instanceof ShapelessRecipes)
                     {
-                        t.printStackTrace();
-                        break;
+                        try
+                        {
+                            Field field = ShapelessRecipes.class.getDeclaredField("ingredients");
+                            field.setAccessible(true);
+                            tmp2 = field.get(recipe);
+                            if(!(tmp2 instanceof List))
+                            {
+                                break;
+                            }
+                            Object[] obj = ((List)tmp2).toArray();
+                            back = new ItemStack[obj.length];
+                            for(int j = 0; j < obj.length; j++)
+                            {
+                                back[j] = Util.copy((ItemStack)obj[j]);
+                            }
+                        }
+                        catch(Throwable t)
+                        {
+                            t.printStackTrace();
+                            break;
+                        }
                     }
                 }
                 for(int j = 0; j < back.length; j++)
@@ -100,14 +135,14 @@ public class VUncrafterInv extends VInv
                     }
                 }
                 ItemStack abc;
-                ItemStack test[] = new ItemStack[9];
+                ItemStack[] test = new ItemStack[9];
                 for(int j = 0; j < test.length; j++)
                 {
                     abc = getItem(j + 9);
                     test[j] = Util.copy(abc);
                 }
                 boolean success;
-                ItemStack test1[] = Util.copy(test);
+                ItemStack[] test1 = Util.copy(test);
                 for(; item.count >= result.count; item.count -= result.count)
                 {
                     success = true;
@@ -153,13 +188,6 @@ public class VUncrafterInv extends VInv
         {
             item = null;
         }
-        if(item == null)
-        {
-            super.setItem(slot, null);
-        }
-        else
-        {
-            super.setItem(slot, Util.copy(item));
-        }
+        super.setItem(slot, Util.copy(item));
     }
 }

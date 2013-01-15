@@ -6,6 +6,7 @@ package net.drgnome.virtualpack;
 
 import java.util.*;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import net.drgnome.virtualpack.util.*;
@@ -104,7 +105,11 @@ public class VCommands implements CommandExecutor
     
     private void tools(Player player, VPack pack, String command, String args[], boolean admin)
     {
-        if(!Money.world(player.getWorld().getName()).enabled() && (args.length >= 1) && args[0].equalsIgnoreCase("buy"))
+        if((player.getGameMode() == GameMode.CREATIVE) && (!Config.bool(player.getWorld().getName(), "allow-creative")) && (!admin) && (!Perm.has(player, "vpack.creative")))
+        {
+            sendMessage(player, Lang.get("vpack.nocreative"), ChatColor.RED);
+        }
+        else if(!Money.world(player.getWorld().getName()).enabled() && (args.length >= 1) && args[0].equalsIgnoreCase("buy"))
         {
             sendMessage(player, Lang.get("vpack.ecodisabled"), ChatColor.YELLOW);
         }
@@ -341,6 +346,7 @@ public class VCommands implements CommandExecutor
         {
             sendMessage(sender, Lang.get("admin.help.title"), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.reload"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.world"), ChatColor.GOLD);
             sendMessage(sender, Lang.get("admin.help.use"), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.give"), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.take"), ChatColor.AQUA);
@@ -368,40 +374,61 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get("admin.saved"), ChatColor.YELLOW);
             return;
         }
+        else if(args.length < 2)
+        {
+            sendMessage(sender, "argument.few", ChatColor.RED);
+            return;
+        }
+        String world;
+        if(args[0].toLowerCase().startsWith("w:"))
+        {
+            world = args[0].substring(2);
+            args = Util.copy(args, 1);
+        }
+        else
+        {
+            if(sender instanceof Player)
+            {
+                world = ((Player)sender).getWorld().getName();
+            }
+            else
+            {
+                sendMessage(sender, Lang.get("use.world"), ChatColor.RED);
+                return;
+            }
+        }
+        if(args[0].equals("give"))
+        {
+            give(world, sender, Util.copy(args, 1));
+            return;
+        }
+        else if(args[0].equals("take"))
+        {
+            take(world, sender, Util.copy(args, 1));
+            return;
+        }
+        else if(args[0].equals("delete"))
+        {
+            if(!Perm.has(sender, "vpack.admin.delete"))
+            {
+                sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+                return;
+            }
+            if(!_plugin.hasPack(world, args[1]))
+            {
+                sendMessage(sender, Lang.get("vpack.none"), ChatColor.RED);
+                return;
+            }
+            _plugin.setPack(world, args[1], null);
+            sendMessage(sender, Lang.get("admin.delete", args[1]), ChatColor.GREEN);
+        }
         else if(!(sender instanceof Player))
         {
             sendMessage(sender, Lang.get("use.player"), ChatColor.RED);
             return;
         }
         Player player = (Player)sender;
-        if(args.length < 2)
-        {
-            sendMessage(player, "argument.few", ChatColor.RED);
-        }
-        else if(args[0].equals("give"))
-        {
-            give(player, Util.copy(args, 1));
-        }
-        else if(args[0].equals("take"))
-        {
-            take(player, Util.copy(args, 1));
-        }
-        else if(args[0].equals("delete"))
-        {
-            if(!Perm.has(player, "vpack.admin.delete"))
-            {
-                sendMessage(player, Lang.get("admin.perm"), ChatColor.RED);
-                return;
-            }
-            if(!_plugin.hasPack(player.getWorld().getName(), args[1]))
-            {
-                sendMessage(player, Lang.get("vpack.none"), ChatColor.RED);
-                return;
-            }
-            _plugin.setPack(player.getWorld().getName(), args[1], null);
-            sendMessage(player, Lang.get("admin.delete", new String[]{args[1]}), ChatColor.GREEN);
-        }
-        else if(args[0].equals("use"))
+        if(args[0].equals("use"))
         {
             if(!Perm.has(player, "vpack.admin.use"))
             {
@@ -421,24 +448,24 @@ public class VCommands implements CommandExecutor
         }
     }
     
-    private void give(Player player, String[] args)
+    private void give(String world, CommandSender sender, String[] args)
     {
-        if(!Perm.has(player, "vpack.admin.give"))
+        if(!Perm.has(sender, "vpack.admin.give"))
         {
-            sendMessage(player, Lang.get("admin.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
             return;
         }
         if(args.length < 2)
         {
-            sendMessage(player, Lang.get("argument.few"), ChatColor.RED);
+            sendMessage(sender, Lang.get("argument.few"), ChatColor.RED);
             return;
         }
-        if(!_plugin.hasPack(player.getWorld().getName(), args[0]))
+        if(!_plugin.hasPack(world, args[0]))
         {
-            sendMessage(player, Lang.get("vpack.none"), ChatColor.RED);
+            sendMessage(sender, Lang.get("vpack.none"), ChatColor.RED);
             return;
         }
-        VPack pack = _plugin.getPack(player.getWorld().getName(), args[0]);
+        VPack pack = _plugin.getPack(world, args[0]);
         int amount = 1;
         if(args.length >= 3)
         {
@@ -448,7 +475,7 @@ public class VCommands implements CommandExecutor
             }
             catch(Throwable t)
             {
-                sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                sendMessage(sender, Lang.get("argument.invalid"), ChatColor.RED);
             }
         }
         args[1] = longname(args[1]);
@@ -456,48 +483,48 @@ public class VCommands implements CommandExecutor
         {
             if(pack._hasWorkbench)
             {
-                sendMessage(player, Lang.get("admin.give.workbench.have"), ChatColor.RED);
+                sendMessage(sender, Lang.get("admin.give.workbench.have"), ChatColor.RED);
             }
             else
             {
                 pack._hasWorkbench = true;
-                sendMessage(player, Lang.get("admin.give.workbench.done"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get("admin.give.workbench.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("uncrafter"))
         {
             if(pack._hasUncrafter)
             {
-                sendMessage(player, Lang.get("admin.give.uncrafter.have"), ChatColor.RED);
+                sendMessage(sender, Lang.get("admin.give.uncrafter.have"), ChatColor.RED);
             }
             else
             {
                 pack._hasUncrafter = true;
-                sendMessage(player, Lang.get("admin.give.uncrafter.done"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get("admin.give.uncrafter.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("enchanttable"))
         {
             if(pack._hasEnchantTable)
             {
-                sendMessage(player, Lang.get("admin.give.enchanttable.have"), ChatColor.RED);
+                sendMessage(sender, Lang.get("admin.give.enchanttable.have"), ChatColor.RED);
             }
             else
             {
                 pack._hasEnchantTable = true;
-                sendMessage(player, Lang.get("admin.give.enchanttable.done"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get("admin.give.enchanttable.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("anvil"))
         {
             if(pack._hasAnvil)
             {
-                sendMessage(player, Lang.get("admin.give.anvil.have"), ChatColor.RED);
+                sendMessage(sender, Lang.get("admin.give.anvil.have"), ChatColor.RED);
             }
             else
             {
                 pack._hasAnvil = true;
-                sendMessage(player, Lang.get("admin.give.anvil.done"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get("admin.give.anvil.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("chest"))
@@ -506,7 +533,7 @@ public class VCommands implements CommandExecutor
             {
                 pack._chests.put((Integer)(pack._chests.size() + 1), new VInv(pack.getChestSize()));
             }
-            sendMessage(player, (amount == 1) ? Lang.get("admin.give.chest.one", args[0]) : Lang.get("admin.give.chest.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get("admin.give.chest.one", args[0]) : Lang.get("admin.give.chest.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("furnace"))
         {
@@ -514,7 +541,7 @@ public class VCommands implements CommandExecutor
             {
                 pack._furnaces.put((Integer)(pack._furnaces.size() + 1), new VTEFurnace(pack));
             }
-            sendMessage(player, (amount == 1) ? Lang.get("admin.give.furnace.one", args[0]) : Lang.get("admin.give.furnace.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get("admin.give.furnace.one", args[0]) : Lang.get("admin.give.furnace.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("brewingstand"))
         {
@@ -522,33 +549,33 @@ public class VCommands implements CommandExecutor
             {
                 pack._brews.put((Integer)(pack._brews.size() + 1), new VTEBrewingstand(pack));
             }
-            sendMessage(player, (amount == 1) ? Lang.get("admin.give.brewingstand.one", args[0]) : Lang.get("admin.give.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get("admin.give.brewingstand.one", args[0]) : Lang.get("admin.give.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("book"))
         {
             int max = amount + pack._bookshelves > VPack._maxBookshelves ? VPack._maxBookshelves : amount + pack._bookshelves;
             pack._bookshelves += max;
-            sendMessage(player, (amount == 1) ? Lang.get("admin.give.book.one", args[0]) : Lang.get("admin.give.book.many", args[0], "" + max), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get("admin.give.book.one", args[0]) : Lang.get("admin.give.book.many", args[0], "" + max), ChatColor.GREEN);
         }
     }
 
-    private void take(Player player, String[] args)
+    private void take(String world, CommandSender sender, String[] args)
     {
-        if(!Perm.has(player, "vpack.admin.take"))
+        if(!Perm.has(sender, "vpack.admin.take"))
         {
-            sendMessage(player, Lang.get("admin.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
             return;
         }
         if(args.length < 2)
         {
-            sendMessage(player, Lang.get("argument.few"), ChatColor.RED);
+            sendMessage(sender, Lang.get("argument.few"), ChatColor.RED);
             return;
         }
-        if(!_plugin.hasPack(player.getWorld().getName(), args[0]))
+        if(!_plugin.hasPack(world, args[0]))
         {
-            sendMessage(player, Lang.get("vpack.none"), ChatColor.RED);
+            sendMessage(sender, Lang.get("vpack.none"), ChatColor.RED);
         }
-        VPack pack = _plugin.getPack(player.getWorld().getName(), args[0]);
+        VPack pack = _plugin.getPack(world, args[0]);
         int amount = 1;
         if(args.length >= 3)
         {
@@ -558,7 +585,7 @@ public class VCommands implements CommandExecutor
             }
             catch(Throwable t)
             {
-                sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                sendMessage(sender, Lang.get("argument.invalid"), ChatColor.RED);
             }
         }
         args[1] = longname(args[1]);
@@ -566,48 +593,48 @@ public class VCommands implements CommandExecutor
         {
             if(!pack._hasWorkbench)
             {
-                sendMessage(player, Lang.get("admin.take.workbench.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get("admin.take.workbench.none"), ChatColor.RED);
             }
             else
             {
                 pack._hasWorkbench = false;
-                sendMessage(player, Lang.get("admin.take.workbench.done"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get("admin.take.workbench.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("uncrafter"))
         {
             if(!pack._hasUncrafter)
             {
-                sendMessage(player, Lang.get("admin.take.uncrafter.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get("admin.take.uncrafter.none"), ChatColor.RED);
             }
             else
             {
                 pack._hasUncrafter = false;
-                sendMessage(player, Lang.get("admin.take.uncrafter.done"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get("admin.take.uncrafter.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("enchanttable"))
         {
             if(!pack._hasEnchantTable)
             {
-                sendMessage(player, Lang.get("admin.take.enchanttable.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get("admin.take.enchanttable.none"), ChatColor.RED);
             }
             else
             {
                 pack._hasEnchantTable = false;
-                sendMessage(player, Lang.get("admin.give.enchanttable.done"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get("admin.give.enchanttable.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("anvil"))
         {
             if(!pack._hasAnvil)
             {
-                sendMessage(player, Lang.get("admin.take.anvil.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get("admin.take.anvil.none"), ChatColor.RED);
             }
             else
             {
                 pack._hasAnvil = false;
-                sendMessage(player, Lang.get("admin.take.anvil.done"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get("admin.take.anvil.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("chest"))
@@ -619,7 +646,7 @@ public class VCommands implements CommandExecutor
                     pack._chests.remove((Integer)pack._chests.size());
                 }
             }
-            sendMessage(player, (amount == 1) ? Lang.get("admin.take.chest.one", args[0]) : Lang.get("admin.take.chest.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get("admin.take.chest.one", args[0]) : Lang.get("admin.take.chest.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("furnace"))
         {
@@ -630,7 +657,7 @@ public class VCommands implements CommandExecutor
                     pack._furnaces.remove((Integer)pack._furnaces.size());
                 }
             }
-            sendMessage(player, (amount == 1) ? Lang.get("admin.take.furnace.one", args[0]) : Lang.get("admin.take.furnace.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get("admin.take.furnace.one", args[0]) : Lang.get("admin.take.furnace.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("brewingstand"))
         {
@@ -641,13 +668,13 @@ public class VCommands implements CommandExecutor
                     pack._brews.remove((Integer)pack._brews.size());
                 }
             }
-            sendMessage(player, (amount == 1) ? Lang.get("admin.take.brewingstand.one", args[0]) : Lang.get("admin.take.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get("admin.take.brewingstand.one", args[0]) : Lang.get("admin.take.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("book"))
         {
             int max = pack._bookshelves - amount < 0 ? pack._bookshelves : amount;
             pack._bookshelves -= max;
-            sendMessage(player, (amount == 1) ? Lang.get("admin.take.book.one", args[0]) : Lang.get("admin.take.book.many", args[0], "" + max), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get("admin.take.book.one", args[0]) : Lang.get("admin.take.book.many", args[0], "" + max), ChatColor.GREEN);
         }
     }
     
