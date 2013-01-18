@@ -344,13 +344,15 @@ public class VCommands implements CommandExecutor
         }
         if((args.length <= 0) || args[0].equalsIgnoreCase("help"))
         {
+            List<String> list = Config.list("commands." + VPlugin._components[0]);
+            String cmd = (list.size() <= 0) ? "" : list.get(0);
             sendMessage(sender, Lang.get("admin.help.title"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.reload"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.world"), ChatColor.GOLD);
-            sendMessage(sender, Lang.get("admin.help.use"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.give"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.take"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.delete"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.reload", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.world", cmd), ChatColor.GOLD);
+            sendMessage(sender, Lang.get("admin.help.use", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.give", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.take", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.delete", cmd), ChatColor.AQUA);
             return;
         }
         args[0] = args[0].toLowerCase();
