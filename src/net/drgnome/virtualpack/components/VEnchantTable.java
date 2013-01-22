@@ -88,7 +88,7 @@ public class VEnchantTable extends ContainerEnchantTable
                 CraftItemStack item = CraftItemStack.asCraftMirror(itemstack);
                 if(Config.bool("events.use"))
                 {
-                    EnchantItemEvent event = new EnchantItemEvent((Player)entityhuman.getBukkitEntity(), this.getBukkitView(), entityhuman.getBukkitEntity().getWorld().getBlockAt(0, 0, 0), item, this.costs[i], enchants, i);
+                    EnchantItemEvent event = new EnchantItemEvent(getPlayer(), this.getBukkitView(), getPlayer().getWorld().getBlockAt(0, 0, 0), item, this.costs[i], enchants, i);
                     ((CraftServer)Bukkit.getServer()).getPluginManager().callEvent(event);
                     level = event.getExpLevelCost();
                     if(event.isCancelled() && !Config.bool("events.ignorecancelled"))
