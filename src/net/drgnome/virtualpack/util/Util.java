@@ -156,8 +156,16 @@ public class Util
         ArrayList<T> list = new ArrayList<T>();
         for(T[] array : objects)
         {
+            if(array == null)
+            {
+                continue;
+            }
             for(T obj : array)
             {
+                if(obj == null)
+                {
+                    continue;
+                }
                 if(!list.contains(obj))
                 {
                     list.add(obj);
