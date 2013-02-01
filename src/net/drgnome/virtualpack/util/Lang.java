@@ -189,6 +189,7 @@ public class Lang
         setDef("send.get2", "They have been put into the following chests: %1.");
         setDef("send.get3", "Some have also been dropped to you.");
         setDef("send.get4", "They have been dropped to you.");
+        setDef("send.relieve", "Type '%1' to stop this notifications.");
         setDef("admin.perm", "You're not allowed to do that!");
         setDef("admin.help.title", "----- ----- ----- Admin Help ----- ----- -----");
         setDef("admin.help.reload", "/%1 a reload - Reload the configs");

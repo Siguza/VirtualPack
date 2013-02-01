@@ -172,6 +172,7 @@ public class ConfigProxy
         setDef("tools.brewingstand.buy", "75000");
         setDef("tools.brewingstand.use", "0");
         setDef("tools.brewingstand.link", "100000");
+        setDef("send.notify-interval", "0");
         /*setDef("blacklist.use-as-whitelist", "false");
         setDef("blacklist.uncrafter", new ArrayList<String>());
         setDef("blacklist.store", new ArrayList<String>());*/

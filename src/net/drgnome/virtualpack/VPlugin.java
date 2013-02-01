@@ -10,6 +10,7 @@ import java.net.*;
 import java.util.*;
 import java.util.logging.*;
 import java.sql.*;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.sk89q.bukkit.util.*;
@@ -18,21 +19,23 @@ import net.drgnome.virtualpack.util.*;
 
 import static net.drgnome.virtualpack.util.Global.*;
 
-public class VPlugin extends JavaPlugin
+public class VPlugin extends JavaPlugin implements Runnable
 {
     public static final String _version = "#VERSION#";
     public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil"};
     
-    private HashMap<String, HashMap<String, VPack>> _packs;
+    private HashMap<String, HashMap<String, VPack>> _packs = new HashMap<String, HashMap<String, VPack>>();
+    private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
+    private int _saveTick = 0;
+    private int _annoyTick = 0;
+    private int _upTick = 72000;
+    private boolean _update = false;
+    private boolean _saveRequested = false;
+    private boolean _loadRequested = false;
+    private boolean _waitForGroupManager = false;
+    private boolean _portMysql = false;
+    private boolean _loadSuccess = false;
     private VThreadSave _saveThread;
-    private int _saveTick;
-    private int _upTick;
-    private boolean _update;
-    private boolean _saveRequested;
-    private boolean _loadRequested;
-    private boolean _waitForGroupManager;
-    private boolean _portMysql;
-    private boolean _loadSuccess;
     private CommandRegistration _reg;
     
     public VPlugin()
@@ -56,15 +59,6 @@ public class VPlugin extends JavaPlugin
     
     private void init()
     {
-        _saveTick = 0;
-        _upTick = 60 * 60 * 20;
-        _update = false;
-        _saveRequested = false;
-        _loadRequested = false;
-        _waitForGroupManager = false;
-        _portMysql = false;
-        _loadSuccess = false;
-        _packs = new HashMap<String, HashMap<String, VPack>>();
         checkFiles();
         Lang.init();
         Config.reload();
@@ -184,7 +178,7 @@ public class VPlugin extends JavaPlugin
             warn();
             t.printStackTrace();
         }
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThread(this), 0L, 1L);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 1L);
     }
     
     public void onDisable()
@@ -505,7 +499,12 @@ public class VPlugin extends JavaPlugin
         }
     }
     
-    public synchronized void tick()
+    public void run()
+    {
+        tick();
+    }
+    
+    public void tick()
     {
         if(_waitForGroupManager)
         {
@@ -547,6 +546,26 @@ public class VPlugin extends JavaPlugin
                 pack.tick();
             }
         }
+        if(Config.getInt("send.notify-interval") > 0)
+        {
+            _annoyTick--;
+            if(_annoyTick <= 0)
+            {
+                _annoyTick = Config.getInt("send.notify-interval") * 20;
+                for(Map.Entry<Player, ArrayList<String>> entry : _annoyPlayers.entrySet())
+                {
+                    for(String msg : entry.getValue())
+                    {
+                        sendMessage(entry.getKey(), msg, ChatColor.GREEN);
+                    }
+                    List<String> cmds = Config.list("commands." + VPlugin._components[0]);
+                    if(cmds.size() > 0)
+                    {
+                        sendMessage(entry.getKey(), Lang.get("send.relieve", cmds.get(0)), ChatColor.RED);
+                    }
+                }
+            }
+        }
         if(!_update && Config.bool("check-update"))
         {
             _upTick++;
@@ -585,5 +604,24 @@ public class VPlugin extends JavaPlugin
     public boolean hasUpdate()
     {
         return _update;
+    }
+    
+    public void annoyPlayer(Player player, String[] messages)
+    {
+        ArrayList<String> list = _annoyPlayers.get(player);
+        if(list == null)
+        {
+            list = new ArrayList<String>();
+            _annoyPlayers.put(player, list);
+        }
+        for(String msg : messages)
+        {
+            list.add(msg);
+        }
+    }
+    
+    public void stopAnnoyingPlayer(Player player)
+    {
+        _annoyPlayers.remove(player);
     }
 }

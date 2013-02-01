@@ -187,6 +187,11 @@ public class VPack
         return Util.implode(_separator[0], list.toArray(new String[0]));
     }
     
+    public String getWorld()
+    {
+        return _world;
+    }
+    
     public String getPlayer()
     {
         return _player;
@@ -1064,11 +1069,16 @@ public class VPack
         {
             player.drop(item);
         }
-        for(String s : _messages.toArray(new String[0]))
+        String[] array = _messages.toArray(new String[0]);
+        for(String s : array)
         {
             sendMessage(bukkitPlayer, s, ChatColor.GREEN);
         }
         _left = new ArrayList<ItemStack>();
+        if(Config.getInt("send.notify-interval") > 0)
+        {
+            _plugin.annoyPlayer(bukkitPlayer, array);
+        }
         _messages = new ArrayList<String>();
     }
 }

@@ -77,6 +77,10 @@ public class VCommands implements CommandExecutor
     
     private void cmd(CommandSender sender, String command, String[] args)
     {
+        if(sender instanceof Player)
+        {
+            _plugin.stopAnnoyingPlayer((Player)sender);
+        }
         if(command.equals(VPlugin._components[0])) // Main
         {
             main(sender, args);
