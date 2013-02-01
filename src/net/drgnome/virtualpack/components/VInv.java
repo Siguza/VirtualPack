@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack.components;
@@ -72,7 +72,7 @@ public class VInv implements IInventory
         {
             if(contents[slot].count <= size)
             {
-                ItemStack item = Util.copy(contents[slot]);
+                ItemStack item = Util.copy_old(contents[slot]);
                 setItem(slot, null);
                 return item;
             }
@@ -90,7 +90,7 @@ public class VInv implements IInventory
     {
         if((slot < contents.length) && (contents[slot] != null))
         {
-            ItemStack item = Util.copy(contents[slot]);
+            ItemStack item = Util.copy_old(contents[slot]);
             contents[slot] = null;
             return item;
         }

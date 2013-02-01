@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack.components;
@@ -183,8 +183,8 @@ public class VTEFurnace extends TileEntityFurnace
                     if(getBurnResult(item) != null)
                     {
                         // We have to exchange the items, but we can't do it directly without messing everything up
-                        item = Util.copy(item);
-                        ItemStack item1 = Util.copy(contents[0]);
+                        item = Util.copy_old(item);
+                        ItemStack item1 = Util.copy_old(contents[0]);
                         contents[0] = item;
                         inv.setItem(i, item1);
                         // And leave the loop
@@ -203,7 +203,7 @@ public class VTEFurnace extends TileEntityFurnace
                     // If there's no item: Lol, too easy ^^
                     if(item == null)
                     {
-                        inv.setItem(i, Util.copy(contents[2]));
+                        inv.setItem(i, Util.copy_old(contents[2]));
                         contents[2] = null;
                         // And we can leave the loop
                         break;
@@ -238,8 +238,8 @@ public class VTEFurnace extends TileEntityFurnace
                 if(getFuelTime(item) > 0)
                 {
                     // Then take it!
-                    item = Util.copy(item);
-                    ItemStack item1 = Util.copy(contents[1]);
+                    item = Util.copy_old(item);
+                    ItemStack item1 = Util.copy_old(contents[1]);
                     contents[1] = item;
                     inv.setItem(i, item1);
                     // And goodbye
@@ -361,7 +361,7 @@ public class VTEFurnace extends TileEntityFurnace
         // Nothing in there? Then put something there.
         if(contents[2] == null)
         {
-            contents[2] = Util.copy(itemstack);
+            contents[2] = Util.copy_old(itemstack);
         }
         // Burn ahead
         else if(contents[2].doMaterialsMatch(itemstack))

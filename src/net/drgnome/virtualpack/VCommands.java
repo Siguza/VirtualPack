@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack;
@@ -166,7 +166,7 @@ public class VCommands implements CommandExecutor
             args[i] = args[i].toLowerCase();
         }
         String command = longname(args[0]);
-        args = Util.copy(args, 1);
+        args = Util.cut(args, 1);
         if(command.equals("version"))
         {
             sendMessage(sender, Lang.get("version", VPlugin._version), ChatColor.BLUE);
@@ -376,6 +376,19 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get("admin.saved"), ChatColor.YELLOW);
             return;
         }
+        else if(args[0].equals("loadfile"))
+        {
+            if(!Config.bool("db.use"))
+            {
+                sendMessage(sender, Lang.get("admin.mysql"), ChatColor.YELLOW);
+                return;
+            }
+            _plugin.saveUserData(true, "backup.db");
+            _plugin.forceMysqlPort();
+            _plugin.loadUserData();
+            sendMessage(sender, Lang.get("admin.loaded"), ChatColor.YELLOW);
+            return;
+        }
         else if(args.length < 2)
         {
             sendMessage(sender, "argument.few", ChatColor.RED);
@@ -385,7 +398,7 @@ public class VCommands implements CommandExecutor
         if(args[0].toLowerCase().startsWith("w:"))
         {
             world = args[0].substring(2);
-            args = Util.copy(args, 1);
+            args = Util.cut(args, 1);
         }
         else
         {
@@ -401,12 +414,12 @@ public class VCommands implements CommandExecutor
         }
         if(args[0].equals("give"))
         {
-            give(world, sender, Util.copy(args, 1));
+            give(world, sender, Util.cut(args, 1));
             return;
         }
         else if(args[0].equals("take"))
         {
-            take(world, sender, Util.copy(args, 1));
+            take(world, sender, Util.cut(args, 1));
             return;
         }
         else if(args[0].equals("delete"))
@@ -442,7 +455,7 @@ public class VCommands implements CommandExecutor
                 sendMessage(player, "argument.few", ChatColor.RED);
                 return;
             }
-            tools(player, _plugin.getPack(player.getWorld().getName(), args[1]), longname(args[2]), Util.copy(args, 3), true);
+            tools(player, _plugin.getPack(player.getWorld().getName(), args[1]), longname(args[2]), Util.cut(args, 3), true);
         }
         else
         {
@@ -998,8 +1011,28 @@ public class VCommands implements CommandExecutor
             sendMessage(player, Lang.get("argument.few"), ChatColor.RED);
             return;
         }
+        boolean copy = false;
+        if(args[0].equalsIgnoreCase("-copy"))
+        {
+            if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.send.copy"))
+            {
+                sendMessage(player, Lang.get("send.copy.perm"), ChatColor.RED);
+                return;
+            }
+            args = Util.cut(args, 1);
+            copy = true;
+        }
+        else if(args[0].equalsIgnoreCase("-all"))
+        {
+            if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.send.all"))
+            {
+                sendMessage(player, Lang.get("send.all.perm"), ChatColor.RED);
+                return;
+            }
+            copy = true;
+        }
         int i = 0;
-        if(args.length > 1)
+        if(args.length >= 2)
         {
             try
             {
@@ -1011,7 +1044,7 @@ public class VCommands implements CommandExecutor
                 return;
             }
         }
-        pack.sendItem(player, args[0], i);
+        pack.sendItem(player, args[0], i, copy);
     }
     
     private void anvil(Player player, VPack pack, String[] args, boolean admin)

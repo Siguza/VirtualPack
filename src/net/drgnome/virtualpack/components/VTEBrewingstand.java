@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack.components;
@@ -132,8 +132,8 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                         if(isBrewable(item, items[3]))
                         {
                             // Then exchange the items
-                            item = Util.copy(item);
-                            ItemStack item1 = Util.copy(items[i]);
+                            item = Util.copy_old(item);
+                            ItemStack item1 = Util.copy_old(items[i]);
                             items[i] = item;
                             inv.setItem(j, item1);
                             // And leave the loop
@@ -178,8 +178,8 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             // If we found anything matching, let's exchange
             if(max != -1)
             {
-                item = Util.copy(inv.getItem(max));
-                ItemStack item1 = Util.copy(items[3]);
+                item = Util.copy_old(inv.getItem(max));
+                ItemStack item1 = Util.copy_old(items[3]);
                 items[3] = item;
                 inv.setItem(max, item1);
             }
@@ -242,8 +242,8 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                         // Nothing to do if we have no mapping
                         if(mapping == -1)
                         {
-                            item = Util.copy(inv.getItem(mapping));
-                            item1 = Util.copy(items[i]);
+                            item = Util.copy_old(inv.getItem(mapping));
+                            item1 = Util.copy_old(items[i]);
                             items[i] = item;
                             inv.setItem(mapping, item1);
                         }

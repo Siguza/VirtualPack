@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack.util;
@@ -172,6 +172,9 @@ public class ConfigProxy
         setDef("tools.brewingstand.buy", "75000");
         setDef("tools.brewingstand.use", "0");
         setDef("tools.brewingstand.link", "100000");
+        /*setDef("blacklist.use-as-whitelist", "false");
+        setDef("blacklist.uncrafter", new ArrayList<String>());
+        setDef("blacklist.store", new ArrayList<String>());*/
     }
     
     private void setDef(String path, Object value)

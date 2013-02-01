@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>2.1</version>
+    <version>2.2</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -28,6 +28,10 @@
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
+		<repository>
+			<id>nbtlib-repo</id>
+			<url>http://build.drgnome.net/plugin/repository/everything/</url>
+		</repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -48,6 +52,13 @@
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
             <version>5.4.6-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.drgnome.nbtlib</groupId>
+            <artifactId>NBTLib</artifactId>
+            <version>0.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

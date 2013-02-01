@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack.components;
@@ -47,7 +47,7 @@ public class VUncrafterInv extends VInv
                             break;
                         }
                         back = new ItemStack[ench.size() + 1];
-                        back[0] = Util.copy(item);
+                        back[0] = Util.copy_old(item);
                         back[0].getTag().#FIELD_NBTTAGCOMPOUND_1#("ench");
                         for(int j = 0; j < ench.size(); j++)
                         {
@@ -59,7 +59,7 @@ public class VUncrafterInv extends VInv
                             back[j + 1].setTag(tag);
                         }
                     }
-                    result = Util.copy(item);
+                    result = Util.copy_old(item);
                 }
                 else
                 {
@@ -73,7 +73,7 @@ public class VUncrafterInv extends VInv
                     {
                         continue;
                     }
-                    result = Util.copy(recipe.#FIELD_IRECIPE_1#()); // Derpnote
+                    result = Util.copy_old(recipe.#FIELD_IRECIPE_1#()); // Derpnote
                     if((result == null) || (result.id != item.id) || (result.getData() != item.getData()))
                     {
                         continue;
@@ -93,7 +93,7 @@ public class VUncrafterInv extends VInv
                             back = new ItemStack[tmp3.length];
                             for(int j = 0; j < tmp3.length; j++)
                             {
-                                back[j] = Util.copy(tmp3[j]);
+                                back[j] = Util.copy_old(tmp3[j]);
                             }
                         }
                         catch(Throwable t)
@@ -117,7 +117,7 @@ public class VUncrafterInv extends VInv
                             back = new ItemStack[obj.length];
                             for(int j = 0; j < obj.length; j++)
                             {
-                                back[j] = Util.copy((ItemStack)obj[j]);
+                                back[j] = Util.copy_old((ItemStack)obj[j]);
                             }
                         }
                         catch(Throwable t)
@@ -139,10 +139,10 @@ public class VUncrafterInv extends VInv
                 for(int j = 0; j < test.length; j++)
                 {
                     abc = getItem(j + 9);
-                    test[j] = Util.copy(abc);
+                    test[j] = Util.copy_old(abc);
                 }
                 boolean success;
-                ItemStack[] test1 = Util.copy(test);
+                ItemStack[] test1 = Util.copy_old(test);
                 for(; item.count >= result.count; item.count -= result.count)
                 {
                     success = true;
@@ -158,7 +158,7 @@ public class VUncrafterInv extends VInv
                             
                             if(test1[k] == null)
                             {
-                                test1[k] = Util.copy(back[j]);
+                                test1[k] = Util.copy_old(back[j]);
                                 test1[k].count = 1;
                                 success = true;
                                 break;
@@ -175,7 +175,7 @@ public class VUncrafterInv extends VInv
                             break;
                         }
                     }
-                    test = Util.copy(test1);
+                    test = Util.copy_old(test1);
                 }
                 for(int j = 0; j < test.length; j++)
                 {
@@ -188,6 +188,6 @@ public class VUncrafterInv extends VInv
         {
             item = null;
         }
-        super.setItem(slot, Util.copy(item));
+        super.setItem(slot, Util.copy_old(item));
     }
 }

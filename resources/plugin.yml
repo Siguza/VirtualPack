@@ -13,7 +13,7 @@ permissions:
       vpack.use.enchanttable.free: true
       vpack.use.anvil.free: true
       vpack.keep.all: true
-      vpack.send: true
+      vpack.send.all: true
       vpack.admin.all: true
 
   vpack.use:
@@ -49,7 +49,6 @@ permissions:
   vpack.use.enchanttable.free:
     description: "Leaves your XP where they are when enchanting"
     children:
-      vpack.use: true
       vpack.use.enchanttable: true
 
   vpack.use.anvil:
@@ -60,7 +59,6 @@ permissions:
   vpack.use.anvil.free:
     description: "Leaves your XP where they are when using the anvil"
     children:
-      vpack.use: true
       vpack.use.anvil: true
 
   vpack.use.chest:
@@ -115,6 +113,16 @@ permissions:
 
   vpack.send:
     description: "Allows you to send items to other users chests"
+
+  vpack.send.copy:
+    description: "Allows you to copy and send items to other users chests"
+    children:
+      vpack.send: true
+
+  vpack.send.all:
+    description: "Allows you to copy and send items to all other users at the same time"
+    children:
+      vpack.send.copy: true
 
   vpack.admin:
     description: "Allows the use of Admin-features & doing a config reload"

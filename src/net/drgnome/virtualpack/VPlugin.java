@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack;
@@ -10,7 +10,6 @@ import java.net.*;
 import java.util.*;
 import java.util.logging.*;
 import java.sql.*;
-import java.sql.Connection; // Java compiler needs it
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.sk89q.bukkit.util.*;
@@ -233,6 +232,16 @@ public class VPlugin extends JavaPlugin
         return map.containsKey(player.toLowerCase());
     }
     
+    public VPack[] getPacks(String world)
+    {
+        if(!Config.bool(world, "enabled"))
+        {
+            return null;
+        }
+        world = Config.world(world);
+        return _packs.get(world).values().toArray(new VPack[0]);
+    }
+    
     public VPack getPack(Player player)
     {
         return getPack(player.getWorld().getName(), player.getName());
@@ -289,6 +298,11 @@ public class VPlugin extends JavaPlugin
     
     public synchronized void saveUserData(boolean forcefile)
     {
+        saveUserData(forcefile, "data.db");
+    }
+    
+    public synchronized void saveUserData(boolean forcefile, String filename)
+    {
         if(!_loadSuccess)
         {
             _log.warning("[VirtualPack] CANNOT SAVE USER DATA, LOADING ALREADY FAILED!");
@@ -314,7 +328,7 @@ public class VPlugin extends JavaPlugin
         }
         else
         {
-            _saveThread = new VThreadSave(new File(getDataFolder(), "data.db"), _packs);
+            _saveThread = new VThreadSave(new File(getDataFolder(), filename), _packs);
         }
         _saveThread.start();
         _saveRequested = false;
@@ -434,6 +448,11 @@ public class VPlugin extends JavaPlugin
             setPack(data[0], data[1], new VPack(data[0], data[1], data[2].split(_separator[0])));
         }
         _loadSuccess = true;
+    }
+    
+    public void forceMysqlPort()
+    {
+        _portMysql = true;
     }
     
     public void handleDeath(Player player)

@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack;
@@ -112,17 +112,17 @@ public class VPack
             else if(a[0].equals("c"))
             {
                 count[0]++;
-                _chests.put((Integer)count[0], new VInv(getChestSize(), Util.copy(a, 1)));
+                _chests.put((Integer)count[0], new VInv(getChestSize(), Util.cut(a, 1)));
             }
             else if(a[0].equals("f"))
             {
                 count[1]++;
-                _furnaces.put((Integer)count[1], new VTEFurnace(this, Util.copy(a, 1)));
+                _furnaces.put((Integer)count[1], new VTEFurnace(this, Util.cut(a, 1)));
             }
             else if(a[0].equals("b"))
             {
                 count[2]++;
-                _brews.put((Integer)count[2], new VTEBrewingstand(this, Util.copy(a, 1)));
+                _brews.put((Integer)count[2], new VTEBrewingstand(this, Util.cut(a, 1)));
             }
             else if(a[0].equals("fl"))
             {
@@ -736,7 +736,7 @@ public class VPack
             ItemStack item = inv.getItem(i);
             if(item != null)
             {
-                player.drop(Util.copy(item));
+                player.drop(Util.copy_old(item));
                 inv.setItem(i, null);
             }
         }
@@ -960,7 +960,7 @@ public class VPack
     
     /** Sending **/
     
-    public void sendItem(Player bukkitPlayer, String reciever, int chestNR)
+    public void sendItem(Player bukkitPlayer, String reciever, int chestNR, boolean copy)
     {
         ItemStack[] items;
         if(chestNR == 0)
@@ -972,8 +972,11 @@ public class VPack
                 sendMessage(bukkitPlayer, Lang.get("send.empty"), ChatColor.RED);
                 return;
             }
-            items = new ItemStack[]{Util.copy(hand)};
-            player.inventory.setItem(player.inventory.itemInHandIndex, null);
+            items = new ItemStack[]{Util.copy_old(hand)};
+            if(!copy)
+            {
+                player.inventory.setItem(player.inventory.itemInHandIndex, null);
+            }
         }
         else
         {
@@ -983,7 +986,7 @@ public class VPack
                 sendMessage(bukkitPlayer, Lang.get("chest.none"), ChatColor.RED);
                 return;
             }
-            items = Util.copy(inv.getContents());
+            items = Util.copy_old(inv.getContents());
             boolean found = false;
             for(ItemStack item : items)
             {
@@ -998,9 +1001,31 @@ public class VPack
                 sendMessage(bukkitPlayer, Lang.get("send.empty"), ChatColor.RED);
                 return;
             }
-            inv.clear();
+            if(!copy)
+            {
+                inv.clear();
+            }
         }
-        VPack pack = _plugin.getPack(_world, reciever);
+        if(reciever.equalsIgnoreCase("-all"))
+        {
+            for(VPack pack : _plugin.getPacks(_world))
+            {
+                if(_player.equalsIgnoreCase(pack.getPlayer()))
+                {
+                    continue;
+                }
+                sendItem(bukkitPlayer, pack, Util.copy_old(items));
+                sendMessage(bukkitPlayer, Lang.get((chestNR == 0) ? "send.done1" : "send.done2", pack.getPlayer()), ChatColor.GREEN);
+            }
+        }
+        else
+        {
+            sendItem(bukkitPlayer, _plugin.getPack(_world, reciever), items);
+        }
+    }
+    
+    private void sendItem(Player bukkitPlayer, VPack pack, ItemStack... items)
+    {
         ItemStack[] left = Util.stack(pack.getInvs(), items);
         String message = Lang.get("send.get1", bukkitPlayer.getName());
         String[] touched = Util.getLastStackingIds();
@@ -1025,7 +1050,6 @@ public class VPack
         }
         pack._messages.add(message);
         pack.processSent();
-        sendMessage(bukkitPlayer, Lang.get((chestNR == 0) ? "send.done1" : "send.done2", reciever), ChatColor.GREEN);
     }
     
     public void processSent()

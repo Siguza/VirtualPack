@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack.util;
@@ -199,6 +199,8 @@ public class Lang
         setDef("admin.help.delete", "/%1 ad delete (name) - Delete the VirtualPack of the player 'name'");
         setDef("admin.reloaded", "Reloaded the configs.");
         setDef("admin.saved", "User data saved.");
+        setDef("admin.loaded", "User data loaded, MySQL data saved to backup.db.");
+        setDef("admin.mysql", "This command can only be used when using MySQL.");
         setDef("admin.give.workbench.have", "This user already has a workbench.");
         setDef("admin.give.workbench.done", "Gave %1 a workbench.");
         setDef("admin.give.uncrafter.have", "This user already has an uncrafter.");

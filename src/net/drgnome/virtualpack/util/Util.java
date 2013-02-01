@@ -1,5 +1,5 @@
 // Bukkit Plugin "VirtualPack" by Siguza
-// This software is distributed under the following license:
+// The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack.util;
@@ -98,7 +98,85 @@ public class Util
         return false;
     }
     
-    public static String[] copy(String[] string, int start)
+    public static <T> T[] createGenericArray(Class<T> clazz)
+    {
+        return createGenericArray(clazz, 0);
+    }
+    
+    public static <T> T[] createGenericArray(Class<T> clazz, int... size)
+    {
+        for(int i = 0; i < size.length; i++)
+        {
+            if(size[i] < 0)
+            {
+                size[i] = 0;
+            }
+        }
+        try
+        {
+            return (T[])(Array.newInstance(clazz, size));
+        }
+        catch(Throwable t)
+        {
+            t.printStackTrace();
+            return (T[])null;
+        }
+    }
+    
+    public static <T extends Cloneable> T copy(T object)
+    {
+        if(object != null)
+        {
+            try
+            {
+                Method m = object.getClass().getMethod("clone");
+                m.setAccessible(true);
+                return (T)m.invoke(object);
+            }
+            catch(Throwable t)
+            {
+                t.printStackTrace();
+            }
+        }
+        return null;
+    }
+    
+    public static <T extends Cloneable> T[] copy(T... objects)
+    {
+        ArrayList<T> list = new ArrayList<T>();
+        for(T obj : objects)
+        {
+            list.add(copy(obj));
+        }
+        return list.toArray(createGenericArray((Class<T>)objects.getClass().getComponentType()));
+    }
+    
+    public static net.minecraft.server.v#MC_VERSION#.ItemStack copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item)
+    {
+        return item == null ? null : item.cloneItemStack();
+    }
+    
+    public static net.minecraft.server.v#MC_VERSION#.ItemStack[] copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item[])
+    {
+        net.minecraft.server.v#MC_VERSION#.ItemStack it[] = new net.minecraft.server.v#MC_VERSION#.ItemStack[item.length];
+        for(int i = 0; i < it.length; i++)
+        {
+            it[i] = copy_old(item[i]);
+        }
+        return it;
+    }
+    
+    public static <T> T[] cut(T[] objects, int start)
+    {
+        T[] array = createGenericArray((Class<T>)objects.getClass().getComponentType(), objects.length - start);
+        for(int i = start; i < objects.length; i++)
+        {
+            array[i - start] = objects[i];
+        }
+        return array;
+    }
+    
+    /*public static String[] copy(String[] string, int start)
     {
         String[] array = new String[string.length - start];
         for(int i = start; i < string.length; i++)
@@ -106,9 +184,33 @@ public class Util
             array[i - start] = string[i];
         }
         return array;
+    }*/
+    
+    public static <T> T[] merge(T[]... objects)
+    {
+        ArrayList<T> list = new ArrayList<T>();
+        for(T[] array : objects)
+        {
+            if(array == null)
+            {
+                continue;
+            }
+            for(T obj : array)
+            {
+                if(obj == null)
+                {
+                    continue;
+                }
+                if(!list.contains(obj))
+                {
+                    list.add(obj);
+                }
+            }
+        }
+        return list.toArray((T[])Array.newInstance(objects[0].getClass().getComponentType(), list.size()));
     }
     
-    public static boolean areEqual(ItemStack item1, ItemStack item2)
+    public static boolean areEqual(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
     {
         return (item1.id == item2.id) && (item1.count == item2.count) && (item1.getData() == item2.getData());
     }
@@ -151,30 +253,6 @@ public class Util
         return string;
     }
     
-    public static <T> T[] merge(T[]... objects)
-    {
-        ArrayList<T> list = new ArrayList<T>();
-        for(T[] array : objects)
-        {
-            if(array == null)
-            {
-                continue;
-            }
-            for(T obj : array)
-            {
-                if(obj == null)
-                {
-                    continue;
-                }
-                if(!list.contains(obj))
-                {
-                    list.add(obj);
-                }
-            }
-        }
-        return list.toArray((T[])Array.newInstance(objects[0].getClass().getComponentType(), list.size()));
-    }
-    
     public static double smooth(double d, int digits)
     {
         double factor = Math.pow(10, digits);
@@ -207,32 +285,16 @@ public class Util
         return tmp;
     }
     
-    // null.cloneItemStack throws a NullPointerException, therefore:
-    public static ItemStack copy(ItemStack item)
-    {
-        return item == null ? null : item.cloneItemStack();
-    }
-    
-    public static ItemStack[] copy(ItemStack item[])
-    {
-        ItemStack it[] = new ItemStack[item.length];
-        for(int i = 0; i < it.length; i++)
-        {
-            it[i] = copy(item[i]);
-        }
-        return it;
-    }
-    
-    public static ItemStack stringToItemStack(String string)
+    public static net.minecraft.server.v#MC_VERSION#.ItemStack stringToItemStack(String string)
     {
         if((string == null) || (string.length() == 0))
         {
             return null;
         }
-        return ItemStack.#FIELD_ITEMSTACK_1#(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string)));
+        return net.minecraft.server.v#MC_VERSION#.ItemStack.#FIELD_ITEMSTACK_1#(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string)));
     }
     
-    public static String itemStackToString(ItemStack item)
+    public static String itemStackToString(net.minecraft.server.v#MC_VERSION#.ItemStack item)
     {
         if(item == null)
         {
@@ -241,47 +303,47 @@ public class Util
         return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound())));
     }
     
-    public static ItemStack[] stack(ItemStack item1, ItemStack item2)
+    public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
     {
         _lastStack = false;
         if(item2 == null)
         {
-            return new ItemStack[]{item1, null};
+            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, null};
         }
         if(item1 == null)
         {
             _lastStack = true;
-            return new ItemStack[]{item2, null};
+            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item2, null};
         }
         if(!areEqual(item1, item2))
         {
-            return new ItemStack[]{item1, item2};
+            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, item2};
         }
         int max = (item2.count > (item1.getMaxStackSize() - item1.count)) ? (item1.getMaxStackSize() - item1.count) : item2.count;
         if(max <= 0)
         {
-            return new ItemStack[]{item1, item2};
+            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, item2};
         }
         _lastStack = true;
         item1.count += max;
         item2.count -= max;
-        return new ItemStack[]{item1, (item2.count <= 0) ? null : item2};
+        return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, (item2.count <= 0) ? null : item2};
     }
     
-    public static ItemStack[] stack(IInventory[] invs, ItemStack... items)
+    public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(IInventory[] invs, net.minecraft.server.v#MC_VERSION#.ItemStack... items)
     {
         boolean[] stacked = new boolean[invs.length];
-        ArrayList<ItemStack> left = new ArrayList<ItemStack>();
-        for(ItemStack item : items)
+        ArrayList<net.minecraft.server.v#MC_VERSION#.ItemStack> left = new ArrayList<net.minecraft.server.v#MC_VERSION#.ItemStack>();
+        for(net.minecraft.server.v#MC_VERSION#.ItemStack item : items)
         {
             for(int j = 0; j < invs.length; j++)
             {
                 IInventory inv = invs[j];
-                ItemStack[] contents = inv.getContents();
+                net.minecraft.server.v#MC_VERSION#.ItemStack[] contents = inv.getContents();
                 stacked[j] = false;
                 for(int i = 0; i < contents.length; i++)
                 {
-                    ItemStack[] tmp = stack(contents[i], item);
+                    net.minecraft.server.v#MC_VERSION#.ItemStack[] tmp = stack(contents[i], item);
                     inv.setItem(i, tmp[0]);
                     item = tmp[1];
                     stacked[j] = stacked[j] || _lastStack;
@@ -309,7 +371,7 @@ public class Util
             }
         }
         _lastStackIds = touched.toArray(new String[0]);
-        return left.toArray(new ItemStack[0]);
+        return left.toArray(new net.minecraft.server.v#MC_VERSION#.ItemStack[0]);
     }
     
     public static String[] getLastStackingIds()
