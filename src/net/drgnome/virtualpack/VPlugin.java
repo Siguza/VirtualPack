@@ -641,7 +641,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             loadUserData();
         }
-        if(!isReloading())
+        if(isReloading())
         {
             return;
         }

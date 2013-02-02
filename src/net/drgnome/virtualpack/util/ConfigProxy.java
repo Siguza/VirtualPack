@@ -8,14 +8,14 @@ import java.io.*;
 import java.util.*;
 import org.bukkit.configuration.file.*;
 import net.drgnome.virtualpack.VPlugin;
-
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class ConfigProxy
 {
     public static final String _configversion = "1";
     private FileConfiguration _global;
-    private HashMap<String, YamlConfiguration> _worlds;
+    private HashMap<String, YamlConfiguration> _worlds = new HashMap<String, YamlConfiguration>();
+    //private HashMap<String, ArrayList<ComparativeItemStack>> _blacklists = new HashMap<String, ArrayList<ComparativeItemStack>>();
     
     public ConfigProxy(FileConfiguration global, File dir)
     {
@@ -35,7 +35,6 @@ public class ConfigProxy
                 _global.set(s, null);
             }
         }
-        _worlds = new HashMap<String, YamlConfiguration>();
         for(File file : dir.listFiles())
         {
             if(!file.isFile())
@@ -86,6 +85,8 @@ public class ConfigProxy
             }
         }
         setDefs();
+        // new ArrayList<ComparativeItemStack>()
+        // ComparativeItemStack
     }
     
     private void setDefs()
@@ -174,9 +175,10 @@ public class ConfigProxy
         setDef("tools.brewingstand.use", "0");
         setDef("tools.brewingstand.link", "100000");
         setDef("send.notify-interval", "0");
-        /*setDef("blacklist.use-as-whitelist", "false");
-        setDef("blacklist.uncrafter", new ArrayList<String>());
-        setDef("blacklist.store", new ArrayList<String>());*/
+        /*setDef("blacklist.uncrafter.whitelist", "false");
+        setDef("blacklist.uncrafter.list", new ArrayList<String>());
+        setDef("blacklist.store.whitelist", "false");
+        setDef("blacklist.store.list", new ArrayList<String>());*/
     }
     
     private void setDef(String path, Object value)
