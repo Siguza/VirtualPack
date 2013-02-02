@@ -81,7 +81,12 @@ public class VCommands implements CommandExecutor
         {
             _plugin.stopAnnoyingPlayer((Player)sender);
         }
-        if(command.equals(VPlugin._components[0])) // Main
+        if(_plugin.isReloading())
+        {
+            sendMessage(sender, Lang.get("loading.single", Config.bool("load-multithreaded") ? Lang.get("loading.multi", _plugin.getLoadingProgress()) : ""), ChatColor.YELLOW);
+            return;
+        }
+        else if(command.equals(VPlugin._components[0])) // Main
         {
             main(sender, args);
             return;

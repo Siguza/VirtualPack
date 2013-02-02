@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.sk89q.bukkit.util.*;
 import net.drgnome.virtualpack.data.*;
 import net.drgnome.virtualpack.util.*;
-
+import net.drgnome.virtualpack.thread.*;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class VPlugin extends JavaPlugin implements Runnable
@@ -26,6 +26,8 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     private HashMap<String, HashMap<String, VPack>> _packs = new HashMap<String, HashMap<String, VPack>>();
     private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
+    public ArrayList<VThreadLoad> _loadThreads = new ArrayList<VThreadLoad>();
+    private int _numLoadThreads = 0;
     private int _saveTick = 0;
     private int _annoyTick = 0;
     private int _upTick = 72000;
@@ -35,6 +37,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     private boolean _waitForGroupManager = false;
     private boolean _portMysql = false;
     private boolean _loadSuccess = false;
+    private VThreadInit _initThread;
     private VThreadSave _saveThread;
     private CommandRegistration _reg;
     
@@ -358,24 +361,24 @@ public class VPlugin extends JavaPlugin implements Runnable
         map.put(player.toLowerCase(), pack);
     }
     
-    public synchronized void saveUserData()
+    public void saveUserData()
     {
         saveUserData(false);
     }
     
-    public synchronized void saveUserData(boolean forcefile)
+    public void saveUserData(boolean forcefile)
     {
         saveUserData(forcefile, "data.db");
     }
     
-    public synchronized void saveUserData(boolean forcefile, String filename)
+    public void saveUserData(boolean forcefile, String filename)
     {
         if(!_loadSuccess)
         {
             _log.warning("[VirtualPack] CANNOT SAVE USER DATA, LOADING ALREADY FAILED!");
             return;
         }
-        if((_saveThread != null) && !(_saveThread.done()))
+        if(!canReload())
         {
             _saveRequested = true;
             return;
@@ -401,9 +404,27 @@ public class VPlugin extends JavaPlugin implements Runnable
         _saveRequested = false;
     }
     
-    public synchronized void loadUserData()
+    public void loadUserData()
     {
-        if((_saveThread != null) && !(_saveThread.done()))
+        if(Config.bool("load-multithreaded"))
+        {
+            if(isActuallyReloading())
+            {
+                return;
+            }
+            _numLoadThreads = 1;
+            _initThread = new VThreadInit();
+            _initThread.start();
+        }
+        else
+        {
+            loadUserData0();
+        }
+    }
+    
+    public synchronized void loadUserData0()
+    {
+        if((_saveThread != null) && !_saveThread.done())
         {
             _loadRequested = true;
             return;
@@ -508,11 +529,25 @@ public class VPlugin extends JavaPlugin implements Runnable
         load(list);
     }
     
-    private void load(ArrayList<String[]> list)
+    private void load(List<String[]> list)
     {
-        for(String[] data : list.toArray(new String[0][]))
+        if(Config.bool("load-multithreaded"))
         {
-            setPack(data[0], data[1], new VPack(data[0], data[1], data[2].split(_separator[0])));
+            _numLoadThreads = 0;
+            for(String[] data : list)
+            {
+                _numLoadThreads++;
+                VThreadLoad loadThread = new VThreadLoad(data);
+                _loadThreads.add(loadThread);
+                loadThread.start();
+            }
+        }
+        else
+        {
+            for(String[] data : list)
+            {
+                setPack(data[0], data[1], new VPack(data[0], data[1], data[2].split(_separator[0])));
+            }
         }
         _loadSuccess = true;
     }
@@ -602,6 +637,18 @@ public class VPlugin extends JavaPlugin implements Runnable
                 t.printStackTrace();
             }
         }
+        if(_loadRequested)
+        {
+            loadUserData();
+        }
+        if(!isReloading())
+        {
+            return;
+        }
+        if(_saveRequested)
+        {
+            saveUserData();
+        }
         Iterator<HashMap<String, VPack>> iterator = _packs.values().iterator();
         while(iterator.hasNext())
         {
@@ -634,7 +681,7 @@ public class VPlugin extends JavaPlugin implements Runnable
                     List<String> cmds = Config.list("commands." + VPlugin._components[0]);
                     if(cmds.size() > 0)
                     {
-                        sendMessage(entry.getKey(), Lang.get("send.relieve", cmds.get(0)), ChatColor.RED);
+                        sendMessage(entry.getKey(), Lang.get("send.relieve", "/" + cmds.get(0)), ChatColor.RED);
                     }
                 }
             }
@@ -646,14 +693,6 @@ public class VPlugin extends JavaPlugin implements Runnable
             {
                 checkUpdate();
             }
-        }
-        if(_saveRequested)
-        {
-            saveUserData();
-        }
-        if(_loadRequested)
-        {
-            loadUserData();
         }
         if(Config.getInt("save-interval") > 0)
         {
@@ -696,5 +735,25 @@ public class VPlugin extends JavaPlugin implements Runnable
     public void stopAnnoyingPlayer(Player player)
     {
         _annoyPlayers.remove(player);
+    }
+    
+    public String getLoadingProgress()
+    {
+        return "" + Util.smooth((double)(_numLoadThreads - _loadThreads.size()) * 100D / (double)_plugin._numLoadThreads, 2);
+    }
+    
+    public boolean isReloading()
+    {
+        return _loadRequested || isActuallyReloading();
+    }
+    
+    private boolean isActuallyReloading()
+    {
+        return !_loadThreads.isEmpty() || ((_initThread != null) && !_initThread.done());
+    }
+    
+    private boolean canReload()
+    {
+        return ((_saveThread == null) || _saveThread.done()) && !isActuallyReloading();
     }
 }

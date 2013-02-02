@@ -92,6 +92,7 @@ public class ConfigProxy
     {
         setDef("version", _configversion);
         setDef("enabled", "true");
+        setDef("load-multithreaded", "false");
         setDef("import-world", "");
         setDef("check-update", "true");
         setDef("save-interval", "0");

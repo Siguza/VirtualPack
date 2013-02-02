@@ -243,6 +243,8 @@ public class Lang
         setDef("virtualchest", "[VirtualPack] Could not find VirtualChest!");
         setDef("world.disabled", "VirtualPack is not enabled on this world.");
         setDef("command.error", "Internal error while executing command. See the console.");
+        setDef("loading.single", "VirtualPack is currently reloading, please be patient.%1");
+        setDef("loading.multi", " %1% done.");
     }
     
     // Set a default value
