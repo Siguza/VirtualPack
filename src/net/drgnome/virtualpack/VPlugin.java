@@ -406,7 +406,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public void loadUserData()
     {
-        if(Config.bool("load-multithreaded"))
+        if(Config.bool("load-multithreaded") || Config.string("load-multithreaded").equalsIgnoreCase("semi"))
         {
             if(isActuallyReloading())
             {
