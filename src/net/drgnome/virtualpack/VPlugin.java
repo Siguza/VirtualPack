@@ -97,6 +97,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             getPluginLoader().disablePlugin(this);
         }
+        _waitForGroupManager = false;
         _log.info(Lang.get("vpack.enable", _version));
     }
     
