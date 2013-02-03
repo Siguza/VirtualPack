@@ -8,6 +8,7 @@ import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import static net.drgnome.virtualpack.util.Global.*;
 
@@ -217,5 +218,19 @@ public class Config
     private static boolean isSet(String world, String string)
     {
         return _proxy.isSet(world, string);
+    }
+    
+    public static boolean isBlacklisted(Player player, String section, ItemStack item)
+    {
+        return isBlacklisted(player.getWorld().getName(), player.getName(), section, item);
+    }
+    
+    public static boolean isBlacklisted(String world, String player, String section, ItemStack item)
+    {
+        if(Perm.has(world, player, "vpack.bypass.blacklist." + section))
+        {
+            return false;
+        }
+        return _proxy.isBlacklisted(section, item);
     }
 }

@@ -14,7 +14,7 @@ import org.bukkit.craftbukkit.v#MC_VERSION#.CraftServer;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
 
-public class VEnchantTable extends ContainerEnchantTable
+public class VEnchantTable extends ContainerEnchantTable implements VGUI
 {
     private Random rand = new Random();
     private int bookshelves;

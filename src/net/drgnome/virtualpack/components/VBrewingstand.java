@@ -5,12 +5,66 @@
 package net.drgnome.virtualpack.components;
 
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
+import net.drgnome.virtualpack.util.Config;
 
-public class VBrewingstand extends ContainerBrewingStand
-{    
+public class VBrewingstand extends ContainerBrewingStand implements VGUI
+{
+    protected EntityPlayer player;
+    protected TileEntityBrewingStand _data;
+    
     public VBrewingstand(EntityPlayer player, TileEntityBrewingStand data)
     {
         super(player.inventory, data);
         this.checkReachable = false;
+        this._data = data;
+        this.player = player;
+    }
+    
+    public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
+    {
+        ItemStack item;
+        if(allowClick(slot, mouse, shift, human))
+        {
+            item = super.clickItem(slot, mouse, shift, human);
+        }
+        else
+        {
+            item = human.inventory.getCarried();
+        }
+        update();
+        return item;
+    }
+    
+    public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
+    {
+        if(shift == 1)
+        {
+            if(slot >= _data.getSize())
+            {
+                return isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - _data.getSize())));
+            }
+            return true;
+        }
+        else if((slot >= 0) && (slot < _data.getSize()))
+        {
+            return isItemAllowed(human, human.inventory.getCarried());
+        }
+        return true;
+    }
+    
+    protected int toInventorySlot(int slot)
+    {
+        return (slot >= 27) ? (slot - 27) : (slot + 9);
+    }
+    
+    private boolean isItemAllowed(EntityHuman human, ItemStack item)
+    {
+        return !Config.isBlacklisted(human.world.getWorld().getName(), human.name, "store", CraftItemStack.asBukkitCopy(item));
+    }
+    
+    protected void update()
+    {
+        player.updateInventory(player.activeContainer);
     }
 }

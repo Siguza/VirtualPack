@@ -45,7 +45,12 @@ public class Perm
             _log.warning("[VirtualPack] Permission instance is null!");
             return false;
         }
-        return (_perm.has(world, username, permission) || _perm.has((String)null, username, permission));
+        boolean has = _perm.has(world, username, permission);
+        if(!has && Config.bool("global-perms"))
+        {
+            has = _perm.has((String)null, username, permission);
+        }
+        return has;
     }
     
     public static String[] getGroups(String world, String username)
@@ -55,6 +60,11 @@ public class Perm
             _log.warning("[VirtualPack] Permission instance is null!");
             return new String[0];
         }
-        return Util.<String> merge(_perm.getPlayerGroups(world, username), _perm.getPlayerGroups((String)null, username));
+        String[] groups = _perm.getPlayerGroups(world, username);
+        if(Config.bool("global-perms"))
+        {
+            groups = Util.merge(groups, _perm.getPlayerGroups((String)null, username));
+        }
+        return groups;
     }
 }

@@ -10,10 +10,14 @@ import java.net.*;
 import java.util.*;
 import java.util.logging.*;
 import java.sql.*;
+import net.minecraft.server.v#MC_VERSION#.EntityPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
 import com.sk89q.bukkit.util.*;
+import net.drgnome.virtualpack.components.VGUI;
 import net.drgnome.virtualpack.data.*;
 import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.thread.*;
@@ -424,10 +428,21 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public synchronized void loadUserData0()
     {
+        _loadRequested = true;
         if((_saveThread != null) && !_saveThread.done())
         {
-            _loadRequested = true;
             return;
+        }
+        for(Player bukkitPlayer : Bukkit.getOnlinePlayers())
+        {
+            if(bukkitPlayer instanceof CraftPlayer)
+            {
+                EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
+                if((player.activeContainer != null) && (player.activeContainer instanceof VGUI))
+                {
+                    player.closeInventory();
+                }
+            }
         }
         try
 		{

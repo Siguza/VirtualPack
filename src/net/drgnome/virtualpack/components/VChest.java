@@ -5,15 +5,35 @@
 package net.drgnome.virtualpack.components;
 
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
+import net.drgnome.virtualpack.util.Config;
 
-public class VChest extends ContainerChest
+public class VChest extends VContainer
 {
-    protected EntityPlayer player;
-    
     public VChest(EntityPlayer player, IInventory data)
     {
-        super(player.inventory, data);
-        this.checkReachable = false;
-        this.player = player;
+        super(player, data);
+    }
+    
+    public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
+    {
+        if(shift == 1)
+        {
+            if(slot >= this.container.getSize())
+            {
+                return isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - this.container.getSize())));
+            }
+            return true;
+        }
+        else if((slot >= 0) && (slot < this.container.getSize()))
+        {
+            return isItemAllowed(human, human.inventory.getCarried());
+        }
+        return true;
+    }
+    
+    private boolean isItemAllowed(EntityHuman human, ItemStack item)
+    {
+        return !Config.isBlacklisted(human.world.getWorld().getName(), human.name, "store", CraftItemStack.asBukkitCopy(item));
     }
 }

@@ -6,6 +6,7 @@ package net.drgnome.virtualpack.components;
 
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
 
 public class VUncrafter extends VContainer
@@ -45,5 +46,38 @@ public class VUncrafter extends VContainer
                 entityhuman.drop(itemstack);
             }
         }
+    }
+    
+    public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
+    {
+        if(shift == 1)
+        {
+            if(slot >= this.container.getSize())
+            {
+                for(int i = 0; i < 9; i++)
+                {
+                    if(this.container.getItem(i) == null)
+                    {
+                        return isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - this.container.getSize())));
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+        else if((slot >= 0) && (slot < 9))
+        {
+            return isItemAllowed(human, human.inventory.getCarried());
+        }
+        else if((slot >= 9) && (slot < 18))
+        {
+            return human.inventory.getCarried() == null;
+        }
+        return super.allowClick(slot, mouse, shift, human);
+    }
+    
+    private boolean isItemAllowed(EntityHuman human, ItemStack item)
+    {
+        return !Config.isBlacklisted(human.world.getWorld().getName(), human.name, "uncrafter", CraftItemStack.asBukkitCopy(item));
     }
 }

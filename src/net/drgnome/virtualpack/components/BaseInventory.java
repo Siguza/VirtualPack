@@ -13,7 +13,6 @@ import net.drgnome.virtualpack.util.*;
 public abstract class BaseInventory implements Inventory
 {
     protected String _name;
-    protected int _stackSize = 64;
     protected ItemStack[] _contents;
     
     public BaseInventory(String name, int size)
@@ -39,12 +38,11 @@ public abstract class BaseInventory implements Inventory
     
     public int getMaxStackSize()
     {
-        return _stackSize;
+        return 64;
     }
     
     public void setMaxStackSize(int size)
     {
-        _stackSize = size;
     }
     
     public ItemStack getItem(int index)

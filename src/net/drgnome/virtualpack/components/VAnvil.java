@@ -10,7 +10,7 @@ import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.*;
 import net.drgnome.virtualpack.util.*;
 
-public class VAnvil extends ContainerAnvil
+public class VAnvil extends ContainerAnvil implements VGUI
 {
     private int l = 0;
     private String m;

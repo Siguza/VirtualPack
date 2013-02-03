@@ -111,6 +111,27 @@ permissions:
   vpack.stats:
     description: "Allows you to see other users stats"
 
+  vpack.bypass.all:
+    description: "Just everything starting with vpack.bypass"
+    children:
+      vpack.bypass.creative: true
+      vpack.bypass.blacklist.all: true
+
+  vpack.bypass.creative:
+    description: "Allows you to use VirtualPack in creative mode even if creative mode is blocked"
+
+  vpack.bypass.blacklist.all:
+    description: "Allows you to ignore all blacklists"
+    children:
+      vpack.bypass.blacklist.uncrafter: true
+      vpack.bypass.blacklist.store: true
+
+  vpack.bypass.blacklist.uncrafter:
+    description: "Allows you to ignore the uncrafter blacklist"
+
+  vpack.bypass.blacklist.store:
+    description: "Allows you to ignore the storing blacklist"
+
   vpack.send:
     description: "Allows you to send items to other users chests"
 
@@ -137,7 +158,7 @@ permissions:
       vpack.admin.delete: true
       vpack.stats: true
       vpack.update: true
-      vpack.creative: true
+      vpack.bypass.all: true
 
   vpack.admin.use:
     description: "Allows you to access any users VirtualPack"
@@ -161,6 +182,3 @@ permissions:
 
   vpack.update:
     description: "Notifies you of new VirtualPack versions"
-
-  vpack.creative:
-    description: "Allows you to use VirtualPack in creative mode even if creative mode is blocked"

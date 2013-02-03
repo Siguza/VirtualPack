@@ -6,6 +6,8 @@ package net.drgnome.virtualpack.util;
 
 import java.io.*;
 import java.util.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.*;
 import net.drgnome.virtualpack.VPlugin;
 import static net.drgnome.virtualpack.util.Global.*;
@@ -15,7 +17,7 @@ public class ConfigProxy
     public static final String _configversion = "1";
     private FileConfiguration _global;
     private HashMap<String, YamlConfiguration> _worlds = new HashMap<String, YamlConfiguration>();
-    //private HashMap<String, ArrayList<ComparativeItemStack>> _blacklists = new HashMap<String, ArrayList<ComparativeItemStack>>();
+    private HashMap<String, ConfigBlacklist> _blacklists = new HashMap<String, ConfigBlacklist>();
     
     public ConfigProxy(FileConfiguration global, File dir)
     {
@@ -85,8 +87,13 @@ public class ConfigProxy
             }
         }
         setDefs();
-        // new ArrayList<ComparativeItemStack>()
-        // ComparativeItemStack
+        for(Map.Entry<String, Object> entry : _global.getConfigurationSection("blacklist").getValues(false).entrySet())
+        {
+            if(entry.getValue() instanceof ConfigurationSection)
+            {
+                _blacklists.put(entry.getKey().toLowerCase(), new ConfigBlacklist((ConfigurationSection)entry.getValue()));
+            }
+        }
     }
     
     private void setDefs()
@@ -96,6 +103,7 @@ public class ConfigProxy
         setDef("load-multithreaded", "false");
         setDef("import-world", "");
         setDef("check-update", "true");
+        setDef("global-perms", "true");
         setDef("save-interval", "0");
         setDef("on-death", "keep");
         setDef("economy", "true");
@@ -175,10 +183,10 @@ public class ConfigProxy
         setDef("tools.brewingstand.use", "0");
         setDef("tools.brewingstand.link", "100000");
         setDef("send.notify-interval", "0");
-        /*setDef("blacklist.uncrafter.whitelist", "false");
+        setDef("blacklist.uncrafter.whitelist", "false");
         setDef("blacklist.uncrafter.list", new ArrayList<String>());
         setDef("blacklist.store.whitelist", "false");
-        setDef("blacklist.store.list", new ArrayList<String>());*/
+        setDef("blacklist.store.list", new ArrayList<String>());
     }
     
     private void setDef(String path, Object value)
@@ -231,5 +239,15 @@ public class ConfigProxy
     public boolean isSet(String world, String string)
     {
         return (!world.equals("*") && _worlds.containsKey(world)) ? _worlds.get(world).isSet(string) : _global.isSet(string);
+    }
+    
+    public boolean isBlacklisted(String section, ItemStack item)
+    {
+        ConfigBlacklist blacklist = _blacklists.get(section.toLowerCase());
+        if(blacklist == null)
+        {
+            return false;
+        }
+        return blacklist.isBlacklisted(item);
     }
 }

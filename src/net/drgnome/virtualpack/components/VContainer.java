@@ -6,18 +6,40 @@ package net.drgnome.virtualpack.components;
 
 import net.minecraft.server.v#MC_VERSION#.*;
 
-public abstract class VContainer extends VChest
-{    
+public abstract class VContainer extends ContainerChest implements VGUI
+{
+    protected EntityPlayer player;
+    
     public VContainer(EntityPlayer player, IInventory data)
     {
-        super(player, data);
+        super(player.inventory, data);
+        this.checkReachable = false;
+        this.player = player;
     }
     
-    public ItemStack clickItem(int i, int j, int meta, EntityHuman entityhuman)
+    public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
     {
-        ItemStack item = super.clickItem(i, j, meta, entityhuman);
+        ItemStack item;
+        if(allowClick(slot, mouse, shift, human))
+        {
+            item = super.clickItem(slot, mouse, shift, human);
+        }
+        else
+        {
+            item = human.inventory.getCarried();
+        }
         update();
         return item;
+    }
+    
+    public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
+    {
+        return true;
+    }
+    
+    protected int toInventorySlot(int slot)
+    {
+        return (slot >= 27) ? (slot - 27) : (slot + 9);
     }
     
     protected void update()
