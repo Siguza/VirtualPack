@@ -696,7 +696,7 @@ public class VPlugin extends JavaPlugin implements Runnable
                     List<String> cmds = Config.list("commands." + VPlugin._components[0]);
                     if(cmds.size() > 0)
                     {
-                        sendMessage(entry.getKey(), Lang.get("send.relieve", "/" + cmds.get(0)), ChatColor.RED);
+                        sendMessage(entry.getKey(), Lang.get("send.relieve", cmds.get(0)), ChatColor.RED);
                     }
                 }
             }

@@ -5,10 +5,12 @@
 package net.drgnome.virtualpack;
 
 import java.util.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
 import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.components.*;
 
@@ -114,7 +116,18 @@ public class VCommands implements CommandExecutor
     
     private void tools(Player player, VPack pack, String command, String args[], boolean admin)
     {
-        if((player.getGameMode() == GameMode.CREATIVE) && (!Config.bool(player.getWorld().getName(), "allow-creative")) && (!admin) && (!Perm.has(player, "vpack.creative")))
+        /** An ugly workaround, to be replaced when VPack us fully using the Bukkit API **/
+        if(!(player instanceof CraftPlayer))
+        {
+            Player p = Bukkit.getPlayer(player.getName());
+            if((p == null) || !(p instanceof CraftPlayer))
+            {
+                sendMessage(player, Lang.get("vpack.nocraftplayer"), ChatColor.RED);
+                return;
+            }
+            player = p;
+        }
+        if((player.getGameMode() == GameMode.CREATIVE) && (!Config.bool(player.getWorld().getName(), "allow-creative")) && (!admin) && (!Perm.has(player, "vpack.bypass.creative")))
         {
             sendMessage(player, Lang.get("vpack.nocreative"), ChatColor.RED);
         }
@@ -292,6 +305,14 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get("help.send1", cmd), ChatColor.AQUA);
                 sendMessage(sender, Lang.get("help.send2", cmd), ChatColor.AQUA);
             }
+            if(Perm.has(sender, "vpack.send.copy"))
+            {
+                sendMessage(sender, Lang.get("help.send3", cmd), ChatColor.AQUA);
+            }
+            if(Perm.has(sender, "vpack.send.all"))
+            {
+                sendMessage(sender, Lang.get("help.send4", cmd), ChatColor.AQUA);
+            }
             if(Perm.has(sender, "vpack.use.workbench"))
             {
                 sendMessage(sender, Lang.get("help.workbench.buy", cmd));
@@ -358,6 +379,9 @@ public class VCommands implements CommandExecutor
             String cmd = (list.size() <= 0) ? "" : list.get(0);
             sendMessage(sender, Lang.get("admin.help.title"), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.reload", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.save", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.savefile", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.loadfile", cmd), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.world", cmd), ChatColor.GOLD);
             sendMessage(sender, Lang.get("admin.help.use", cmd), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.give", cmd), ChatColor.AQUA);

@@ -11,7 +11,7 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class Lang
 {
-    public static final String _langVersion = "4";
+    public static final String _langVersion = "5";
     private static YamlConfiguration _file = new YamlConfiguration();
     private static File _dir;
     
@@ -74,7 +74,7 @@ public class Lang
         setDef("help.link.description", "You can \"link\" a furnace or brewing stand with a chest. This means that whenever the furnace runs out of fuel or anything to smelt or the brewing stand runs out of ingredients, they will look into the specified chest and try to get things out of there that they can use. They will also put their smelting and brewing results in that chest if their \"output stack\" has reached the maximum stack size. Once you linked a furnace or brewing stand with a chest, you will always be able to link that furnace or brewing stand with an other chest for free. Also, for every unlink you do you'll be able to link a furnace or brewing stand for free. The number of \"free links\" is shown on the stats page.");
         setDef("help.link.note", "Note: You can NOT convert a furnace link into a brewing stand link or the other way round!");
         setDef("help.title", "----- ----- ----- VirtualPack Help ----- ----- -----");
-        setDef("help.admin", "/%1 a - Admin Help");
+        setDef("help.admin", "/%1 ad - Admin Help");
         setDef("help.args", "Arguments in () must be given, those in [] are optional and will usually be 1 if not given");
         setDef("help.commands", "/%1 help commands - Show the available commands");
         setDef("help.version", "/%1 v - Version");
@@ -82,6 +82,8 @@ public class Lang
         setDef("help.price", "/%1 p - Show prices");
         setDef("help.send1", "/%1 send (player) - Send the item in your hand to a player");
         setDef("help.send2", "/%1 send (player) (x) - Send all the contents of your chest nr. x to a player");
+        setDef("help.send3", "/%1 send -copy (player) [x] - Copy the item(s) and send it to a player");
+        setDef("help.send4", "/%1 send -all [x] - Copy the item(s) and send it to ALL players");
         setDef("help.workbench.buy", "/%1 w buy - Buy a workbench for yourself");
         setDef("help.workbench.use", "/%1 w - Open your workbench");
         setDef("help.uncrafter.buy", "/%1 uc buy - Buy the Uncrafter");
@@ -189,10 +191,13 @@ public class Lang
         setDef("send.get2", "They have been put into the following chests: %1.");
         setDef("send.get3", "Some have also been dropped to you.");
         setDef("send.get4", "They have been dropped to you.");
-        setDef("send.relieve", "Type '%1' to stop this notifications.");
+        setDef("send.relieve", "Type '/%1' to stop this notifications.");
         setDef("admin.perm", "You're not allowed to do that!");
         setDef("admin.help.title", "----- ----- ----- Admin Help ----- ----- -----");
-        setDef("admin.help.reload", "/%1 a reload - Reload the configs");
+        setDef("admin.help.reload", "/%1 ad reload - Reload the configs");
+        setDef("admin.help.save", "/%1 ad save - Manually save user data");
+        setDef("admin.help.savefile", "/%1 ad savefile - Manually save user data to the data.db file");
+        setDef("admin.help.loadfile", "/%1 ad loadfile - Force loading data form data.db file");
         setDef("admin.help.world", "/%1 ad w:(world) (use/give/take/delete) - Execute one of the commands below in a different world than the one you're in");
         setDef("admin.help.use", "/%1 ad use (name) (action) - Access the VirtualPack of player 'name'. The 'action' parameter is what you normally type after '/%1', e.g. 'c drop 5'");
         setDef("admin.help.give", "/%1 ad give (name) (tool) [x] - Give [x] of a 'tool' to the player 'name'");
@@ -245,6 +250,7 @@ public class Lang
         setDef("command.error", "Internal error while executing command. See the console.");
         setDef("loading.single", "VirtualPack is currently reloading, please be patient.%1");
         setDef("loading.multi", " %1% done.");
+        setDef("nocraftplayer", "Can't get the CraftBukkit player instance, sorry.");
     }
     
     // Set a default value
