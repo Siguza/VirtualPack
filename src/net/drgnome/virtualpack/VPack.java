@@ -630,7 +630,7 @@ public class VPack
     {
         if(_bookshelves >= _maxBookshelves)
         {
-            sendMessage(bukkitPlayer, Lang.get("enchanttable.book.max"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get("enchanttable.book.max", "" + _maxBookshelves), ChatColor.RED);
             return;
         }
         if(amount > _maxBookshelves - _bookshelves)

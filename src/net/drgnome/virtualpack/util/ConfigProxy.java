@@ -69,8 +69,8 @@ public class ConfigProxy
                 {
                     if(_worlds.get(yaml.getString("copy")) == yaml)
                     {
-                        _log.severe(Lang.get("config.fail2", world, yaml.getString("copy")));
-                        _log.severe(Lang.get("config.fail3", world));
+                        _log.severe("[VirtualPack] World \"" + world + "\" copies configuration of world \"" + yaml.getString("copy") + "\" which results in a loop!");
+                        _log.severe("[VirtualPack] Disabling VirtualPack on world \"" + world + "\"!");
                         yaml.set("enabled", "false");
                     }
                     else
@@ -80,8 +80,8 @@ public class ConfigProxy
                 }
                 else
                 {
-                    _log.severe(Lang.get("config.fail1", world, yaml.getString("copy")));
-                    _log.severe(Lang.get("config.fail3", world));
+                    _log.severe("[VirtualPack] World \"" + world + "\" copies configuration of world \"" + yaml.getString("copy") + "\", but there is no config for this world!");
+                    _log.severe("[VirtualPack] Disabling VirtualPack on world \"" + world + "\"!");
                     yaml.set("enabled", "false");
                 }
             }
@@ -100,6 +100,7 @@ public class ConfigProxy
     {
         setDef("version", _configversion);
         setDef("enabled", "true");
+        setDef("language", "en");
         setDef("load-multithreaded", "false");
         setDef("import-world", "");
         setDef("check-update", "true");

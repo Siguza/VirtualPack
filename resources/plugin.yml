@@ -3,7 +3,7 @@ main: net.drgnome.virtualpack.VPlugin
 version: #VERSION#
 author: Siguza
 depend: [Vault]
-softdepend: [WorldEdit, Multiverse-Core, PermissionsEx, GroupManager, PermissionsBukkit, iConomy, BOSEconomy]
+softdepend: [ProtocolLib, WorldEdit, Multiverse-Core, PermissionsEx, GroupManager, PermissionsBukkit, iConomy, BOSEconomy]
 permissions:
 
   vpack.all:

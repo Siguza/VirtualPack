@@ -44,6 +44,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     private VThreadInit _initThread;
     private VThreadSave _saveThread;
     private CommandRegistration _reg;
+    private boolean _starting = true;
     
     public VPlugin()
     {
@@ -66,9 +67,10 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     private void init()
     {
+        _waitForGroupManager = false;
         checkFiles();
-        Lang.init();
         Config.reload();
+        Lang.init();
         saveConfig();
         if(Config.bool("db.use"))
         {
@@ -97,82 +99,17 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             getPluginLoader().disablePlugin(this);
         }
-        _waitForGroupManager = false;
+        /*try
+        {
+            Class.forName("com.comphenix.protocol.ProtocolLibrary"); // Need to check
+            TransmutationListener.register();
+        }
+        catch(ClassNotFoundException e)
+        {
+            _log.info("[VirtualPack] No ProtocolLib!");
+        }*/
         _log.info(Lang.get("vpack.enable", _version));
     }
-    
-    /*private void init()
-    {
-        long together = System.nanoTime();
-        long nano = System.nanoTime();
-        checkFiles();
-        System.out.println("[Debug] Checking for needed files: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        nano = System.nanoTime();
-        Lang.init();
-        System.out.println("[Debug] Setting up language system: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        nano = System.nanoTime();
-        Config.reload();
-        System.out.println("[Debug] Checking the config: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        nano = System.nanoTime();
-        saveConfig();
-        System.out.println("[Debug] Saving the config: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        nano = System.nanoTime();
-        if(Config.bool("db.use"))
-        {
-            try
-            {
-                String table = Config.string("db.table");
-                System.out.println("[Debug] Reading the mysql table name from the config: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-                nano = System.nanoTime();
-                Connection db = mysql();
-                System.out.println("[Debug] Connecting to the mysql server: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-                nano = System.nanoTime();
-                db.prepareStatement("CREATE TABLE IF NOT EXISTS `" + table + "` (`world` varchar(255) NOT NULL, `user` varchar(255) NOT NULL, `data` longtext NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;").execute();
-                System.out.println("[Debug] Checking if the mysql table exists: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-                nano = System.nanoTime();
-                ResultSet row = db.prepareStatement("SELECT * FROM `" + table + "`").executeQuery();
-                System.out.println("[Debug] Check if there is any data in it: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-                nano = System.nanoTime();
-                _portMysql = !row.next();
-                System.out.println("[Debug] Note to self: port flatfile to mysql: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-                nano = System.nanoTime();
-                db.close();
-                System.out.println("[Debug] Closing the mysql connection: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-                nano = System.nanoTime();
-            }
-            catch(Throwable t)
-            {
-                t.printStackTrace();
-            }
-        }
-        boolean flag1 = Perm.init();
-        System.out.println("[Debug] Setting up permissions: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        nano = System.nanoTime();
-        boolean flag2 = Money.init();
-        System.out.println("[Debug] Setting up economy: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        nano = System.nanoTime();
-        if(!flag1 || !flag2)
-        {
-            getPluginLoader().disablePlugin(this);
-            return;
-        }
-        System.out.println("[Debug] Checking if that both worked: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        nano = System.nanoTime();
-        System.out.println("[Debug] Port mysql: " + _portMysql);
-        loadUserData();
-        System.out.println("[Debug] Loading user data: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        nano = System.nanoTime();
-        getServer().getPluginManager().registerEvents(new VEvents(), this);
-        System.out.println("[Debug] Register VPack thread: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        nano = System.nanoTime();
-        if(!registerCommands())
-        {
-            getPluginLoader().disablePlugin(this);
-        }
-        System.out.println("[Debug] Register commands: " + (((float)(System.nanoTime() - nano))/1000000000F) + " s");
-        System.out.println("[Debug] All together: " + (((float)(System.nanoTime() - together))/1000000000F) + " s");
-        _log.info(Lang.get("vpack.enable", _version));
-    }*/
     
     private boolean registerCommands()
     {
@@ -595,7 +532,14 @@ public class VPlugin extends JavaPlugin implements Runnable
         super.reloadConfig();
         Config.reload();
         saveConfig();
-        Lang.reload();
+        if(_starting)
+        {
+            _starting = false;
+        }
+        else
+        {
+            Lang.reload();
+        }
     }
     
     private void checkFiles()

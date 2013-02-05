@@ -53,9 +53,9 @@ public class VUncrafterInv extends VInv
                         {
                             back[j + 1] = new ItemStack(403, 1, 0);
                             NBTTagCompound tag = new NBTTagCompound("tag");
-                            NBTTagList elist = new NBTTagList("ench");
+                            NBTTagList elist = new NBTTagList("StoredEnchantments");
                             elist.add(ench.get(j));
-                            tag.set("ench", elist);
+                            tag.set("StoredEnchantments", elist);
                             back[j + 1].setTag(tag);
                         }
                     }
