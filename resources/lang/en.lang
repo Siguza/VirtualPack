@@ -184,6 +184,7 @@ admin.delete=Deleted %1's VirtualPack.
 trash.name=V Trash
 worldedit=[VirtualPack] Could not find WorldEdit!
 virtualchest=[VirtualPack] Could not find VirtualChest!
+alphachest=[VirtualPack] Could not find AlphaChest!
 world.disabled=VirtualPack is not enabled on this world.
 command.error=Internal error while executing command. See the console.
 loading.single=VirtualPack is currently reloading, please be patient.%1

@@ -176,16 +176,6 @@ public class Util
         return array;
     }
     
-    /*public static String[] copy(String[] string, int start)
-    {
-        String[] array = new String[string.length - start];
-        for(int i = start; i < string.length; i++)
-        {
-            array[i - start] = string[i];
-        }
-        return array;
-    }*/
-    
     public static <T> T[] merge(T[]... objects)
     {
         ArrayList<T> list = new ArrayList<T>();

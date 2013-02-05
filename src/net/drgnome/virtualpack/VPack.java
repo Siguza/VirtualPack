@@ -8,8 +8,10 @@ import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.minecraft.server.v#MC_VERSION#.*;
 import net.drgnome.virtualpack.components.*;
 import net.drgnome.virtualpack.util.*;
@@ -367,6 +369,22 @@ public class VPack
     public void addInv(VInv inv)
     {
         _chests.put((Integer)(_chests.size() + 1), inv);
+    }
+    
+    public void addInv(Inventory bukkitInv)
+    {
+        if(bukkitInv == null)
+        {
+            addInv(new VInv(getChestSize()));
+            return;
+        }
+        org.bukkit.inventory.ItemStack[] stack = bukkitInv.getContents();
+        ItemStack[] items = new ItemStack[stack.length];
+        for(int i = 0; i < items.length; i++)
+        {
+            items[i] = CraftItemStack.asNMSCopy(stack[i]);
+        }
+        addInv(new VInv(getChestSize(), items));
     }
     
     public int numBookshelves()
