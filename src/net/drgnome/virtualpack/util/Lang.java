@@ -40,7 +40,7 @@ public class Lang
             if(!create)
             {
                 String lv = _file.getString("langv");
-                String lc = _file.getString("langv");
+                String lc = _file.getString("langc");
                 if((lv == null) || (!lv.equalsIgnoreCase(_langVersion)) || (lc == null) || (!lc.equalsIgnoreCase(Config.string("language"))))
                 {
                     _file.save(new File(_dir, "lang_" + Config.string("language") + "_" + _langVersion + ".yml"));
@@ -65,20 +65,8 @@ public class Lang
         try
         {
             JarFile jar = new JarFile(Lang.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(jar.getInputStream(jar.getJarEntry("lang/" + Config.string("language") + ".lang")), Charset.forName("UTF-8")));
-            ArrayList<String> list = new ArrayList<String>();
-            String line;
-            while((line = reader.readLine()) != null)
+            for(String[] s : Util.readIni(jar.getInputStream(jar.getJarEntry("lang/" + Config.string("language") + ".lang"))))
             {
-                list.add(line);
-            }
-            for(String l : list)
-            {
-                String[] s = l.split("=");
-                if(s.length != 2)
-                {
-                    continue;
-                }
                 setDef(s[0], s[1]);
             }
         }

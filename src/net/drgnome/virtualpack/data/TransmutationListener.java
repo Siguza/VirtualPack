@@ -5,27 +5,53 @@
 package net.drgnome.virtualpack.data;
 
 import java.util.*;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.*;
 import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.reflect.FieldAccessException;
+import net.drgnome.virtualpack.util.*;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class TransmutationListener extends PacketAdapter
 {
+    public static final String _prefix = Util.parseColors("backdoor");
+    
     public static void register()
     {
-        ProtocolLibrary.getProtocolManager().addPacketListener(new TransmutationListener());
+        HashSet<Integer> set = new HashSet<Integer>();
+        try
+        {
+            set.addAll(Packets.getServerRegistry().getSupported());
+            set.addAll(Packets.getClientRegistry().getSupported());
+        }
+        catch(FieldAccessException e)
+        {
+            set.addAll(Packets.getServerRegistry().values());
+            set.addAll(Packets.getClientRegistry().values());
+        }
+        ProtocolLibrary.getProtocolManager().addPacketListener(new TransmutationListener(set));
     }
     
-    public TransmutationListener()
+    public TransmutationListener(Set<Integer> set)
     {
-        super(_plugin, ConnectionSide.SERVER_SIDE, ListenerPriority.HIGHEST, Packets.getServerRegistry().values());
+        super(_plugin, ConnectionSide.BOTH, ListenerPriority.HIGHEST, set);
+    }
+    
+    public void onPacketReceiving(PacketEvent event)
+    {
+        handlePacket(event, false);
     }
     
     public void onPacketSending(PacketEvent event)
+    {
+        handlePacket(event, true);
+    }
+    
+    private void handlePacket(PacketEvent event, boolean send)
     {
         if((event == null) || event.isCancelled() || (event.getPacket() == null))
         {
@@ -38,13 +64,12 @@ public class TransmutationListener extends PacketAdapter
             {
                 for(int i = 0; i < mod1.size(); i++)
                 {
-                    applyChange(mod1.readSafely(i));
-                    //mod1.writeSafely(i, applyChange(mod1.readSafely(i)));
+                    mod1.writeSafely(i, applyChange(mod1.readSafely(i), send));
                 }
             }
             catch(Throwable t)
             {
-                _log.info("[VirtualPack] Nothing severe, but can't modify outgoing item stacks. (1)");
+                _log.warning("[VirtualPack] Nothing severe, but can't modify outgoing item stacks. (1)");
                 t.printStackTrace();
             }
         }
@@ -55,19 +80,18 @@ public class TransmutationListener extends PacketAdapter
             {
                 for(int i = 0; i < mod2.size(); i++)
                 {
-                    applyChange(mod2.readSafely(i));
-                    //mod2.writeSafely(i, applyChange(mod2.readSafely(i)));
+                    mod2.writeSafely(i, applyChange(mod2.readSafely(i), send));
                 }
             }
             catch(Throwable t)
             {
-                _log.info("[VirtualPack] Nothing severe, but can't modify outgoing item stacks. (2)");
+                _log.warning("[VirtualPack] Nothing severe, but can't modify outgoing item stacks. (2)");
                 t.printStackTrace();
             }
         }
     }
     
-    private ItemStack[] applyChange(ItemStack[] origItems)
+    private ItemStack[] applyChange(ItemStack[] origItems, boolean send)
     {
         if(origItems == null)
         {
@@ -76,25 +100,39 @@ public class TransmutationListener extends PacketAdapter
         ItemStack[] items = new ItemStack[origItems.length];
         for(int i = 0; i < items.length; i++)
         {
-            items[i] = applyChange(origItems[i]);
+            items[i] = applyChange(origItems[i], send);
         }
         return items;
     }
     
-    private ItemStack applyChange(ItemStack origItem)
+    private ItemStack applyChange(ItemStack origItem, boolean send)
     {
         if(origItem == null)
         {
             return null;
         }
-        //ItemStack item = ItemStack.deserialize(origItem.serialize());
         ItemStack item = origItem.clone();
-        System.out.println(item == origItem ? "yes" : "no");
-        //ItemMeta meta = item.getItemMeta();
         ItemMeta meta = item.getItemMeta().clone();
-        System.out.println(meta == origItem.getItemMeta() ? "ja" : "nein");
         List<String> lore = meta.hasLore() ? meta.getLore() : (new ArrayList<String>());
-        lore.add("Le Test");
+        if(send)
+        {
+            double value = TransmutationHelper.getValue(item);
+            if(value > 0)
+            {
+                lore.add(_prefix + Lang.get("matter.item", Util.parseColors(Config.string("transmutation.color.name")), Util.parseColors(Config.string("transmutation.color.value")), Util.formatDouble(value)));
+            }
+        }
+        else
+        {
+            for(int i = 0; i < lore.size(); i++)
+            {
+                if(lore.get(i).startsWith(_prefix))
+                {
+                    lore.remove(i);
+                    i--;
+                }
+            }
+        }
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;

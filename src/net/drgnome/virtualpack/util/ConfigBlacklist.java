@@ -7,6 +7,7 @@ package net.drgnome.virtualpack.util;
 import java.util.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.configuration.ConfigurationSection;
+import net.drgnome.virtualpack.item.ComparativeItemStack;
 
 import static net.drgnome.virtualpack.util.Global.*;
 

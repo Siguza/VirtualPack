@@ -5,11 +5,14 @@
 package net.drgnome.virtualpack.util;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.net.*;
 import java.util.*;
+import java.math.BigDecimal;
 import java.lang.reflect.*;
 import javax.xml.bind.DatatypeConverter;
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.ChatColor;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class Util
@@ -200,6 +203,16 @@ public class Util
         return list.toArray((T[])Array.newInstance(objects[0].getClass().getComponentType(), list.size()));
     }
     
+    public static <T> ArrayList<T> createList(T... array)
+    {
+        ArrayList<T> list = new ArrayList<T>();
+        for(T t : array)
+        {
+            list.add(t);
+        }
+        return list;
+    }
+    
     public static boolean areEqual(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
     {
         return (item1.id == item2.id) && (item1.count == item2.count) && (item1.getData() == item2.getData());
@@ -247,6 +260,23 @@ public class Util
     {
         double factor = Math.pow(10, digits);
         return round(d * factor) / factor;
+    }
+    
+    public static String formatDouble(double d)
+    {
+        String[] plain = BigDecimal.valueOf(smooth(d, 3)).toPlainString().split("\\.");
+        String formatted = "";
+        while(plain[0].length() >= 4)
+        {
+            formatted = "'" + plain[0].substring(plain[0].length() - 3) + formatted;
+            plain[0] = plain[0].substring(0, plain[0].length() - 3);
+        }
+        formatted = plain[0] + formatted;
+        if((plain.length > 1) && (tryParse(plain[1], 0) != 0))
+        {
+            formatted += plain[1];
+        }
+        return formatted;
     }
     
     public static int max(int... values)
@@ -413,5 +443,36 @@ public class Util
     public static String base64de(String string)
     {
         return new String(DatatypeConverter.parseBase64Binary(string));
+    }
+    
+    public static String[][] readIni(File file) throws FileNotFoundException, IOException
+    {
+        return readIni(new FileInputStream(file));
+    }
+    
+    public static String[][] readIni(InputStream stream) throws IOException
+    {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
+        ArrayList<String[]> list = new ArrayList<String[]>();
+        String line;
+        while((line = reader.readLine()) != null)
+        {
+            String[] parts = line.split("=");
+            if(parts.length == 2)
+            {
+                list.add(parts);
+            }
+        }
+        return list.toArray(new String[0][]);
+    }
+    
+    public static String parseColors(String chars)
+    {
+        String colors = "";
+        for(char c : chars.toCharArray())
+        {
+            colors += ChatColor.getByChar(c).toString();
+        }
+        return colors;
     }
 }

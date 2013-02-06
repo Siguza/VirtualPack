@@ -2,15 +2,17 @@
 // The license under which this software is released can be accessed at:
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
-package net.drgnome.virtualpack.util;
+package net.drgnome.virtualpack.item;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import net.drgnome.virtualpack.util.Util;
 
 public class ComparativeItemStack
 {
-    private int _id;
-    private int _meta;
+    protected static short _defaultMeta = 0;
+    protected int _id;
+    protected short _meta;
     
     public static boolean hasSubtypes(int id)
     {
@@ -24,11 +26,18 @@ public class ComparativeItemStack
     
     public ComparativeItemStack(String data)
     {
-        _meta = -1;
+        _meta = _defaultMeta;
         if(data.contains(":"))
         {
             String[] split = data.split(":");
-            _meta = Util.tryParse(split[1], _meta);
+            if(split[1].equals("*"))
+            {
+                _meta = -1;
+            }
+            else
+            {
+                _meta = (short)Util.tryParse(split[1], _meta);
+            }
             data = split[0];
         }
         try
@@ -44,10 +53,10 @@ public class ComparativeItemStack
     
     public ComparativeItemStack(ItemStack item)
     {
-        this(item == null ? 0 : item.getTypeId(), item == null ? -1 : (int)item.getDurability());
+        this(item == null ? 0 : item.getTypeId(), item == null ? _defaultMeta : item.getDurability());
     }
     
-    public ComparativeItemStack(int id, int meta)
+    public ComparativeItemStack(int id, short meta)
     {
         _id = id;
         _meta = meta;
@@ -59,6 +68,15 @@ public class ComparativeItemStack
         {
             return _id == 0;
         }
-        return (item.getTypeId() == _id) && ((_meta == -1) || (!hasSubtypes(_id)) || (_meta == (int)item.getDurability()));
+        return (item.getTypeId() == _id) && ((_meta == -1) || (!hasSubtypes(_id)) || (_meta == item.getDurability()));
+    }
+    
+    public boolean matches(ComparativeItemStack stack)
+    {
+        if(stack == null)
+        {
+            return _id == 0;
+        }
+        return (stack._id == _id) && ((_meta == -1) || (!hasSubtypes(_id)) || (_meta == stack._meta));
     }
 }

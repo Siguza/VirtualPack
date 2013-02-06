@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.*;
 import org.bukkit.entity.HumanEntity;
 import net.drgnome.virtualpack.util.*;
+import net.drgnome.virtualpack.item.ComparativeItemStack;
 
 public abstract class BaseInventory implements Inventory
 {
@@ -74,10 +75,10 @@ public abstract class BaseInventory implements Inventory
     
     public int first(int id)
     {
-        return first(id, -1);
+        return first(id, (short)-1);
     }
     
-    public int first(int id, int meta)
+    public int first(int id, short meta)
     {
         return first(new ComparativeItemStack(id, meta));
     }
@@ -96,10 +97,10 @@ public abstract class BaseInventory implements Inventory
     
     public int first(Material material)
     {
-        return first(material, -1);
+        return first(material, (short)-1);
     }
     
-    public int first(Material material, int meta)
+    public int first(Material material, short meta)
     {
         return first(material == null ? 0 : material.getId(), meta);
     }
@@ -116,10 +117,10 @@ public abstract class BaseInventory implements Inventory
     
     public void remove(int id)
     {
-        remove(id, -1);
+        remove(id, (short)-1);
     }
     
-    public void remove(int id, int meta)
+    public void remove(int id, short meta)
     {
         remove(new ComparativeItemStack(id, meta));
     }
@@ -137,10 +138,10 @@ public abstract class BaseInventory implements Inventory
     
     public void remove(Material material)
     {
-        remove(material, -1);
+        remove(material, (short)-1);
     }
     
-    public void remove(Material material, int meta)
+    public void remove(Material material, short meta)
     {
         remove(material == null ? 0 : material.getId(), meta);
     }

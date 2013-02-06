@@ -111,50 +111,30 @@ public class ConfigProxy
         setDef("allow-creative", "false");
         setDef("events.use", "true");
         setDef("events.ignorecancelled", "false");
+        /*setDef("transmutation.enabled", "false");
+        setDef("transmutation.show-value", "true");
+        setDef("transmutation.god-items", Util.createList("DRAGON_EGG"));
+        setDef("transmutation.notify-unmapped", "false");
+        setDef("transmutation.notify-mismatch", "false");
+        setDef("transmutation.override-mismatch", "true");
+        setDef("transmutation.color.name", "1n");
+        setDef("transmutation.color.value", "4");*/
         setDef("db.use", "false");
         setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
         setDef("db.user", "herp");
         setDef("db.pw", "derp");
         setDef("db.table", "vpack");
-        ArrayList<String> list0 = new ArrayList<String>();
-        list0.add("v");
-        list0.add("virtual");
-        list0.add("virtualpack");
-        setDef("commands." + VPlugin._components[0], list0);
-        ArrayList<String> list1 = new ArrayList<String>();
-        list1.add("wb");
-        list1.add("workbench");
-        setDef("commands." + VPlugin._components[1], list1);
-        ArrayList<String> list2 = new ArrayList<String>();
-        list2.add("uc");
-        list2.add("uncrafter");
-        setDef("commands." + VPlugin._components[2], list2);
-        ArrayList<String> list3 = new ArrayList<String>();
-        list3.add("chest");
-        setDef("commands." + VPlugin._components[3], list3);
-        ArrayList<String> list4 = new ArrayList<String>();
-        list4.add("furnace");
-        setDef("commands." + VPlugin._components[4], list4);
-        ArrayList<String> list5 = new ArrayList<String>();
-        list5.add("brew");
-        list5.add("brewingstand");
-        setDef("commands." + VPlugin._components[5], list5);
-        ArrayList<String> list6 = new ArrayList<String>();
-        list6.add("ench");
-        list6.add("enchtable");
-        list6.add("enchanttable");
-        list6.add("enchantingtable");
-        setDef("commands." + VPlugin._components[6], list6);
-        ArrayList<String> list7 = new ArrayList<String>();
-        list7.add("trash");
-        setDef("commands." + VPlugin._components[7], list7);
-        ArrayList<String> list8 = new ArrayList<String>();
-        list8.add("send");
-        setDef("commands." + VPlugin._components[8], list8);
-        ArrayList<String> list9 = new ArrayList<String>();
-        list9.add("an");
-        list9.add("anvil");
-        setDef("commands." + VPlugin._components[9], list9);
+        setDef("commands." + VPlugin._components[0], Util.createList("v", "virtual", "virtualpack"));
+        setDef("commands." + VPlugin._components[1], Util.createList("wb", "workbench"));
+        setDef("commands." + VPlugin._components[2], Util.createList("uc", "uncrafter"));
+        setDef("commands." + VPlugin._components[3], Util.createList("chest"));
+        setDef("commands." + VPlugin._components[4], Util.createList("furnace"));
+        setDef("commands." + VPlugin._components[5], Util.createList("brew", "brewingstand"));
+        setDef("commands." + VPlugin._components[6], Util.createList("ench", "enchtable", "enchanttable", "enchantingtable"));
+        setDef("commands." + VPlugin._components[7], Util.createList("trash"));
+        setDef("commands." + VPlugin._components[8], Util.createList("send"));
+        setDef("commands." + VPlugin._components[9], Util.createList("an", "anvil"));
+        //setDef("commands." + VPlugin._components[10], Util.createList("mat", "matter"));
         setDef("tools.workbench.buy", "20000");
         setDef("tools.workbench.use", "0");
         setDef("tools.uncrafter.buy", "30000");
@@ -165,6 +145,8 @@ public class ConfigProxy
         setDef("tools.enchanttable.book", "5000");
         setDef("tools.anvil.buy", "25000");
         setDef("tools.anvil.use", "0");
+        /*setDef("tools.materializer.buy", "50000");
+        setDef("tools.materializer.use", "0");*/
         setDef("tools.chest.max", "10");
         setDef("tools.chest.start", "0");
         setDef("tools.chest.multiply", "1");
@@ -188,6 +170,8 @@ public class ConfigProxy
         setDef("blacklist.uncrafter.list", new ArrayList<String>());
         setDef("blacklist.store.whitelist", "false");
         setDef("blacklist.store.list", new ArrayList<String>());
+        /*setDef("blacklist.materializer.whitelist", "false");
+        setDef("blacklist.materializer.list", new ArrayList<String>());*/
     }
     
     private void setDef(String path, Object value)

@@ -38,6 +38,8 @@ public class VCommands implements CommandExecutor
         commandMap.put("e", VPlugin._components[6]);
         commandMap.put("t", VPlugin._components[7]);
         commandMap.put("a", VPlugin._components[9]);
+        // TODO
+        //commandMap.put("m", VPlugin._components[10]);
     }
     
     public static String alias(String command)
@@ -171,6 +173,11 @@ public class VCommands implements CommandExecutor
         {
             anvil(player, pack, args, admin);
         }
+        // TODO
+        /*else if(command.equals(VPlugin._components[9])) // Materializer
+        {
+            matter(player, pack, args, admin);
+        }*/
         else // Unknown command
         {
             sendMessage(player, Lang.get("argument.unknown"), ChatColor.RED);
@@ -1095,4 +1102,22 @@ public class VCommands implements CommandExecutor
         }
         pack.openAnvil(player, admin);
     }
+    
+    // TODO
+    /*private void matter(Player player, VPack pack, String[] args, boolean admin)
+    {
+        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.materializer"))
+        {
+            sendMessage(player, Lang.get("anvil.perm"), ChatColor.RED);
+            return;
+        }
+        if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
+        {
+            pack.buyAnvil(player);
+            return;
+        }
+        pack.openAnvil(player, admin);
+    }*/
+    
+    // matter(player, pack, args, admin);
 }

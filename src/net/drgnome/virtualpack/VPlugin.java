@@ -8,6 +8,7 @@ import java.lang.reflect.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.jar.*;
 import java.util.logging.*;
 import java.sql.*;
 import net.minecraft.server.v#MC_VERSION#.EntityPlayer;
@@ -26,7 +27,7 @@ import static net.drgnome.virtualpack.util.Global.*;
 public class VPlugin extends JavaPlugin implements Runnable
 {
     public static final String _version = "#VERSION#";
-    public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil"};
+    public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil", "materializer"};
     
     private HashMap<String, HashMap<String, VPack>> _packs = new HashMap<String, HashMap<String, VPack>>();
     private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
@@ -99,14 +100,22 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             getPluginLoader().disablePlugin(this);
         }
-        /*try
+        // TODO
+        /*if(Config.bool("transmutation.enabled"))
         {
-            Class.forName("com.comphenix.protocol.ProtocolLibrary"); // Need to check
-            TransmutationListener.register();
-        }
-        catch(ClassNotFoundException e)
-        {
-            _log.info("[VirtualPack] No ProtocolLib!");
+            TransmutationHelper.init();
+            if(Config.bool("transmutation.show-value"))
+            {
+                try
+                {
+                    Class.forName("com.comphenix.protocol.ProtocolLibrary"); // Need to check
+                    TransmutationListener.register();
+                }
+                catch(ClassNotFoundException e)
+                {
+                    _log.severe(Lang.get("protocollib"));
+                }
+            }
         }*/
         _log.info(Lang.get("vpack.enable", _version));
     }
@@ -557,13 +566,25 @@ public class VPlugin extends JavaPlugin implements Runnable
                 File data = new File(file, files[i]);
                 if(!data.exists())
                 {
-                    PrintStream writer = new PrintStream(new FileOutputStream(data));
-                    writer.close();
+                    data.createNewFile();
                 }
             }
+            // TODO
+            /*String tName = "transmutation.ini";
+            File transmutation = new File(tName);
+            if(!transmutation.exists())
+            {
+                transmutation.createNewFile();
+                JarFile jar = new JarFile(Lang.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+                JarEntry entry = jar.getJarEntry(tName);
+                byte[] array = new byte[(int)(entry.getSize())];
+                (new DataInputStream(jar.getInputStream(entry))).readFully(array);
+                (new FileOutputStream(transmutation)).write(array);
+            }*/
         }
         catch(Throwable t)
         {
+            t.printStackTrace();
         }
     }
     
