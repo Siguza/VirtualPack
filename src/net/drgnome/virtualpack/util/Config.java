@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import net.drgnome.virtualpack.item.ComparativeItemStack;
 
 import static net.drgnome.virtualpack.util.Global.*;
 
@@ -226,6 +227,15 @@ public class Config
     }
     
     public static boolean isBlacklisted(String world, String player, String section, ItemStack item)
+    {
+        if(Perm.has(world, player, "vpack.bypass.blacklist." + section))
+        {
+            return false;
+        }
+        return _proxy.isBlacklisted(section, item);
+    }
+    
+    public static boolean isBlacklisted(String world, String player, String section, ComparativeItemStack item)
     {
         if(Perm.has(world, player, "vpack.bypass.blacklist." + section))
         {

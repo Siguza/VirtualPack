@@ -12,6 +12,8 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
 import net.drgnome.virtualpack.util.*;
+import net.drgnome.virtualpack.item.ValuedItemStack;
+import net.drgnome.virtualpack.data.TransmutationHelper;
 import net.drgnome.virtualpack.components.*;
 
 import static net.drgnome.virtualpack.util.Global.*;
@@ -38,8 +40,7 @@ public class VCommands implements CommandExecutor
         commandMap.put("e", VPlugin._components[6]);
         commandMap.put("t", VPlugin._components[7]);
         commandMap.put("a", VPlugin._components[9]);
-        // TODO
-        //commandMap.put("m", VPlugin._components[10]);
+        commandMap.put("m", VPlugin._components[10]);
     }
     
     public static String alias(String command)
@@ -173,11 +174,10 @@ public class VCommands implements CommandExecutor
         {
             anvil(player, pack, args, admin);
         }
-        // TODO
-        /*else if(command.equals(VPlugin._components[9])) // Materializer
+        else if(command.equals(VPlugin._components[9])) // Materializer
         {
             matter(player, pack, args, admin);
-        }*/
+        }
         else // Unknown command
         {
             sendMessage(player, Lang.get("argument.unknown"), ChatColor.RED);
@@ -341,6 +341,12 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get("help.anvil.buy", cmd));
                 sendMessage(sender, Lang.get("help.anvil.use", cmd));
             }
+            if(Perm.has(sender, "vpack.use.materializer") && Config.bool("transmutation.enabled"))
+            {
+                sendMessage(sender, Lang.get("help.matter.buy", cmd));
+                sendMessage(sender, Lang.get("help.matter.use", cmd));
+                sendMessage(sender, Lang.get("help.matter.list", cmd));
+            }
             if(Perm.has(sender, "vpack.use.chest"))
             {
                 sendMessage(sender, Lang.get("help.chest.buy", cmd));
@@ -369,7 +375,7 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get("help.trash", cmd));
             }
             sendMessage(sender, Lang.get("help.more", ""));
-            sender.sendMessage(ChatColor.GOLD + "http://dev.bukkit.org/server-mods/virtualpack/pages/commands"); // Thou shall not split my link!
+            sender.sendMessage(ChatColor.GOLD + "http://dev.bukkit.org/server-mods/virtualpack/pages/commands"); // Thou shall not split my link! :P
         }
     }
     
@@ -1103,21 +1109,34 @@ public class VCommands implements CommandExecutor
         pack.openAnvil(player, admin);
     }
     
-    // TODO
-    /*private void matter(Player player, VPack pack, String[] args, boolean admin)
+    private void matter(Player player, VPack pack, String[] args, boolean admin)
     {
+        if(!Config.bool("transmutation.enabled"))
+        {
+            sendMessage(player, Lang.get("matter.disabled"), ChatColor.RED);
+            return;
+        }
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.materializer"))
         {
-            sendMessage(player, Lang.get("anvil.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get("matter.perm"), ChatColor.RED);
             return;
         }
-        if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
+        if(args.length >= 1)
         {
-            pack.buyAnvil(player);
-            return;
+            if(args[0].equalsIgnoreCase("buy"))
+            {
+                pack.buyMaterializer(player);
+                return;
+            }
+            else if(args[0].equalsIgnoreCase("list"))
+            {
+                for(ValuedItemStack stack : TransmutationHelper.getAll())
+                {
+                    sendMessage(player, stack.toString() + " = " + Util.formatDouble(stack.getValue()));
+                }
+                return;
+            }
         }
-        pack.openAnvil(player, admin);
-    }*/
-    
-    // matter(player, pack, args, admin);
+        pack.openMaterializer(player, admin);
+    }
 }

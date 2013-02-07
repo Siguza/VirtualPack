@@ -41,4 +41,16 @@ public class ConfigBlacklist
         }
         return _whitelist;
     }
+    
+    public boolean isBlacklisted(ComparativeItemStack item)
+    {
+        for(ComparativeItemStack stack : _list)
+        {
+            if(stack.matches(item))
+            {
+                return !_whitelist;
+            }
+        }
+        return _whitelist;
+    }
 }

@@ -6,6 +6,7 @@ package net.drgnome.virtualpack.item;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import net.drgnome.virtualpack.util.Util;
 
 public class ValuedItemStack extends ComparativeItemStack
 {
@@ -36,6 +37,11 @@ public class ValuedItemStack extends ComparativeItemStack
     
     public ItemStack createStack()
     {
-        return new ItemStack(_id, Material.getMaterial(_id).getMaxStackSize(), _meta < 0 ? 0 : _meta);
+        return super.createStack(Material.getMaterial(_id).getMaxStackSize());
+    }
+    
+    public String toString()
+    {
+        return Material.getMaterial(_id).name() + (_meta > 0 ? ":" + _meta : "");
     }
 }

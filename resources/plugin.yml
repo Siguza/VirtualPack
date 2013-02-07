@@ -125,12 +125,16 @@ permissions:
     children:
       vpack.bypass.blacklist.uncrafter: true
       vpack.bypass.blacklist.store: true
+      vpack.bypass.blacklist.materializer: true
 
   vpack.bypass.blacklist.uncrafter:
     description: "Allows you to ignore the uncrafter blacklist"
 
   vpack.bypass.blacklist.store:
     description: "Allows you to ignore the storing blacklist"
+
+  vpack.bypass.blacklist.materializer:
+    description: "Allows you to ignore the materializer blacklist"
 
   vpack.send:
     description: "Allows you to send items to other users chests"

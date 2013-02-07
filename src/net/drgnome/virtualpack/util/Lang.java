@@ -64,7 +64,6 @@ public class Lang
         setDef("langc", Config.string("language"));
         try
         {
-            JarFile jar = new JarFile(Lang.class.getProtectionDomain().getCodeSource().getLocation().getPath());
             for(String[] s : Util.readIni(_plugin.getResource("lang/" + Config.string("language") + ".lang")))
             {
                 setDef(s[0], s[1]);

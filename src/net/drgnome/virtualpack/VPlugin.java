@@ -100,9 +100,9 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             getPluginLoader().disablePlugin(this);
         }
-        // TODO
-        /*if(Config.bool("transmutation.enabled"))
+        if(Config.bool("transmutation.enabled"))
         {
+            checkMatterFile();
             TransmutationHelper.init();
             if(Config.bool("transmutation.show-value"))
             {
@@ -116,7 +116,7 @@ public class VPlugin extends JavaPlugin implements Runnable
                     _log.severe(Lang.get("protocollib"));
                 }
             }
-        }*/
+        }
         _log.info(Lang.get("vpack.enable", _version));
     }
     
@@ -151,6 +151,7 @@ public class VPlugin extends JavaPlugin implements Runnable
                 return false;
             }
         }
+        String main = "/" + Config.list("commands.main").get(0);
         ArrayList<CommandInfo> list = new ArrayList<CommandInfo>();
         for(String component : _components)
         {
@@ -161,7 +162,10 @@ public class VPlugin extends JavaPlugin implements Runnable
                 {
                     continue;
                 }
-                list.add(new CommandInfo("/" + commands[0], "VirtualPack", commands, this, new String[]{"vpack.use"}));
+                for(String c : commands)
+                {
+                    list.add(new CommandInfo(main, Lang.get("cmd." + component), new String[]{c}, this, new String[]{"vpack.use"}));
+                }
             }
             catch(NullPointerException e)
             {
@@ -548,6 +552,10 @@ public class VPlugin extends JavaPlugin implements Runnable
         else
         {
             Lang.reload();
+            if(Config.bool("transmutation.enabled"))
+            {
+                TransmutationHelper.init();
+            }
         }
     }
     
@@ -569,18 +577,32 @@ public class VPlugin extends JavaPlugin implements Runnable
                     data.createNewFile();
                 }
             }
-            // TODO
-            /*String tName = "transmutation.ini";
-            File transmutation = new File(tName);
+        }
+        catch(Throwable t)
+        {
+            t.printStackTrace();
+        }
+    }
+    
+    private void checkMatterFile()
+    {
+        try
+        {
+            String tName = "transmutation.ini";
+            File transmutation = new File(getDataFolder(), tName);
             if(!transmutation.exists())
             {
                 transmutation.createNewFile();
-                JarFile jar = new JarFile(Lang.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-                JarEntry entry = jar.getJarEntry(tName);
-                byte[] array = new byte[(int)(entry.getSize())];
-                (new DataInputStream(jar.getInputStream(entry))).readFully(array);
-                (new FileOutputStream(transmutation)).write(array);
-            }*/
+                DataInputStream in = new DataInputStream(getResource(tName));
+                FileOutputStream out = new FileOutputStream(transmutation);
+                int buf;
+                while((buf = in.available()) > 0)
+                {
+                    byte[] array = new byte[buf];
+                    in.readFully(array);
+                    out.write(array);
+                }
+            }
         }
         catch(Throwable t)
         {

@@ -68,7 +68,7 @@ public class ComparativeItemStack
         {
             return _id == 0;
         }
-        return (item.getTypeId() == _id) && ((_meta == -1) || (!hasSubtypes(_id)) || (_meta == item.getDurability()));
+        return (item.getTypeId() == _id) && ((_meta == -1) || (item.getDurability() == -1) || (!hasSubtypes(_id)) || (_meta == item.getDurability()));
     }
     
     public boolean matches(ComparativeItemStack stack)
@@ -77,6 +77,16 @@ public class ComparativeItemStack
         {
             return _id == 0;
         }
-        return (stack._id == _id) && ((_meta == -1) || (!hasSubtypes(_id)) || (_meta == stack._meta));
+        return (stack._id == _id) && ((_meta == -1) || (stack._meta == -1) || (!hasSubtypes(_id)) || (_meta == stack._meta));
+    }
+    
+    public int getId()
+    {
+        return _id;
+    }
+    
+    public ItemStack createStack(int stackSize)
+    {
+        return new ItemStack(_id, stackSize, _meta < 0 ? 0 : _meta);
     }
 }

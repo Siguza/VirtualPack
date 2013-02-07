@@ -11,12 +11,12 @@ import org.bukkit.entity.HumanEntity;
 import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.item.ComparativeItemStack;
 
-public abstract class BaseInventory implements Inventory
+public abstract class BaseInv implements Inventory
 {
     protected String _name;
     protected ItemStack[] _contents;
     
-    public BaseInventory(String name, int size)
+    public BaseInv(String name, int size)
     {
         _name = name;
         _contents = new ItemStack[size];
@@ -170,6 +170,107 @@ public abstract class BaseInventory implements Inventory
     {
         return null;
     }
+    
+    public ListIterator<ItemStack> iterator()
+    {
+        return getContentsList().listIterator();
+    }
+    
+    public ListIterator<ItemStack> iterator(int index)
+    {
+        return getContentsList().listIterator(index);
+    }
+    
+    private List<ItemStack> getContentsList()
+    {
+        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+        for(ItemStack item : _contents)
+        {
+            if(item != null)
+            {
+                list.add(item);
+            }
+        }
+        return list;
+    }
+    
+    public HashMap<Integer, ItemStack> all(int id)
+    {
+        return all(id, (short)-1);
+    }
+    
+    public HashMap<Integer, ItemStack> all(int id, short meta)
+    {
+        return all(new ComparativeItemStack(id, meta));
+    }
+    
+    public HashMap<Integer, ItemStack> all(Material material)
+    {
+        return all(material, (short)-1);
+    }
+    
+    public HashMap<Integer, ItemStack> all(Material material, short meta)
+    {
+        return all(material == null ? 0 : material.getId(), meta);
+    }
+    
+    public HashMap<Integer, ItemStack> all(ItemStack item)
+    {
+        return all(new ComparativeItemStack(item));
+    }
+    
+    public HashMap<Integer, ItemStack> all(ComparativeItemStack stack)
+    {
+        HashMap<Integer, ItemStack> map = new HashMap<Integer, ItemStack>();
+        for(int i = 0; i < _contents.length; i++)
+        {
+            if(stack.matches(_contents[i]))
+            {
+                map.put(i, _contents[i]);
+            }
+        }
+        return map;
+    }
+    
+    /*public abstract boolean contains(int id)
+    {
+        return contains(id, 1);
+    }
+    
+    public abstract boolean contains(int id, int amount)
+    {
+        return contains(id, amount, (short)-1);
+    }
+    
+    public abstract boolean contains(int id, int amount)
+    {
+        return contains(id, amount, (short)-1);
+    }
+    
+    public abstract boolean contains(Material material)
+    {
+        
+    }
+    
+    public abstract boolean contains(ItemStack item)
+    {
+        
+    }
+    
+    public abstract boolean contains(Material paramMaterial, int amount)
+    {
+        
+    }
+    
+    public abstract boolean contains(ItemStack paramItemStack, int amount)
+    {
+        
+    }
+    
+    public abstract boolean containsAtLeast(ItemStack paramItemStack, int amount)
+    {
+        
+    }*/
     
     public void onClose(HumanEntity player)
     {

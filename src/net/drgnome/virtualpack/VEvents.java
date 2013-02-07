@@ -10,8 +10,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.entity.Player;
-import net.drgnome.virtualpack.components.BaseInventory;
+import net.drgnome.virtualpack.components.BaseInv;
+import net.drgnome.virtualpack.components.BaseView;
 import net.drgnome.virtualpack.util.Config;
 
 import static net.drgnome.virtualpack.util.Global.*;
@@ -45,10 +47,19 @@ public class VEvents implements Listener
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void handleGUIClose(InventoryCloseEvent event)
     {
-        if(!(event.getInventory() instanceof BaseInventory))
+        if(!(event.getInventory() instanceof BaseInv))
         {
             return;
         }
-        ((BaseInventory)event.getInventory()).onClose(event.getPlayer());
+        ((BaseInv)event.getInventory()).onClose(event.getPlayer());
+    }
+    
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void handleGUIClose(InventoryClickEvent event)
+    {
+        if((event.getView() instanceof BaseView) && !((BaseView)event.getView()).allowClick(event.getRawSlot(), event.isRightClick(), event.isShiftClick()))
+        {
+            event.setCancelled(true);
+        }
     }
 }

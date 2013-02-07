@@ -15,13 +15,9 @@ import static net.drgnome.virtualpack.util.Global.*;
 public class TransmutationHelper
 {
     private static ArrayList<ValuedItemStack> _list;
-    private static boolean _notify;
-    private static boolean _override;
     
     public static void init()
     {
-        _notify = Config.bool("transmutation.notify-mismatch");
-        _override = Config.bool("transmutation.override-mismatch");
         _list = new ArrayList<ValuedItemStack>();
         try
         {
@@ -30,7 +26,7 @@ public class TransmutationHelper
                 double value;
                 try
                 {
-                    value = Double.parseDouble(array[1]);
+                    value = Util.parseBigDouble(array[1]);
                     if(value < 0)
                     {
                         value = 0;
@@ -43,6 +39,7 @@ public class TransmutationHelper
                 _list.add(new ValuedItemStack(array[0], value));
             }
             ArrayList<QuantitativeRecipe> recipes = getAllRecipes();
+            QuantitativeRecipe[] all = recipes.toArray(new QuantitativeRecipe[0]);
             while(true)
             {
                 int size = recipes.size();
@@ -54,21 +51,25 @@ public class TransmutationHelper
                         recipes.remove(rec);
                         i--;
                     }
-                    /*switch(addMapping(rec))
-                     {
-                     case 2:
-                     failed.add(rec); // No break!
-                     case 1:
-                     recipes.remove(rec);
-                     i--;
-                     }*/
                 }
                 if(recipes.size() == size)
                 {
                     break;
                 }
             }
-            // Some more stuff
+            if(Config.bool("transmutation.notify-mismatch"))
+            {
+                for(QuantitativeRecipe recipe : all)
+                {
+                    double val1 = getValue(recipe.getResult()) * (double)recipe.getResult().getAmount();
+                    double val2 = calculateValue(recipe.getIngredients());
+                    if((val1 != val2) && (val1 > 0) && (val2 > 0))
+                    {
+                        short meta = recipe.getResult().getDurability();
+                        _log.warning(Lang.get("matter.mismatch", recipe.getResult().getTypeId() + (meta > 0 ? ":" + meta : ""), Util.printDouble(val1), Util.printDouble(val2)));
+                    }
+                }
+            }
             sort();
         }
         catch(Throwable t)
@@ -109,9 +110,14 @@ public class TransmutationHelper
                     }
                 }
             }
+            else if(recipe instanceof FurnaceRecipe)
+            {
+                addToMap(ingredients, ((FurnaceRecipe)recipe).getInput());
+            }
             else
             {
-                // Notify human
+                short meta = recipe.getResult().getDurability();
+                _log.info(Lang.get("matter.customIngredient", recipe.getResult().getTypeId() + (meta > 0 ? ":" + meta : ""), recipe.getClass().getName()));
                 continue;
             }
             recipes.add(new QuantitativeRecipe(recipe.getResult(), ingredients));
@@ -121,6 +127,10 @@ public class TransmutationHelper
     
     private static void addToMap(Map<ComparativeItemStack, Integer> map, ItemStack item)
     {
+        if(item == null)
+        {
+            return;
+        }
         ComparativeItemStack key = null;
         for(ComparativeItemStack stack : map.keySet().toArray(new ComparativeItemStack[0]))
         {
@@ -142,110 +152,40 @@ public class TransmutationHelper
     
     private static boolean addMapping(QuantitativeRecipe recipe)
     {
-        boolean mapped = isMapped(recipe.getResult());
-        if(mapped && !Config.bool("notify-mismatch") && !Config.bool("override-mismatch"))
+        ItemStack result = recipe.getResult();
+        if(isDefined(result))
         {
             return true;
         }
+        double value = calculateValue(recipe.getIngredients());
+        if(value < 0)
+        {
+            return false;
+        }
+        _list.add(new ValuedItemStack(result, value / (double)result.getAmount()));
+        return true;
+    }
+    
+    private static double calculateValue(HashMap<ComparativeItemStack, Integer> map)
+    {
         double value = 0D;
-        for(ComparativeItemStack stack : recipe.getIngredients().keySet())
+        for(Map.Entry<ComparativeItemStack, Integer> entry : map.entrySet())
         {
-            
-        }
-        return false; // TODO
-    }
-    
-    /*private int addMapping(Recipe recipe)
-    {
-        ItemStack item = recipe.getResult();
-        if(isMapped(item))
-        {
-            return 1;
-        }
-        HashMap<ComparativeItemStack, Integer> ingredients = new HashMap<ItemStack, Integer>();
-        if(recipe instanceof ShapelessRecipe)
-        {
-            for(ItemStack in : ((ShapelessRecipe)recipe).getIngredientList().toArray(new ItemStack[0]))
+            if(!isMapped(entry.getKey()))
             {
-                addToMap(ingredients, in);
+                return -1D;
             }
-        }
-        else if(recipe instanceof ShapedRecipe)
-        {
-            ShapedRecipe re = (ShapedRecipe)recipe;
-            Map<Character, ItemStack> map = re.getIngredientMap();
-            for(String shape : re.getShape())
+            if(isMapped(new ComparativeItemStack(325, (short)0)) && ((entry.getKey().getId() == 326) || (entry.getKey().getId() == 327) || (entry.getKey().getId() == 335))) // I hate buckets -.-
             {
-                for(char c = shape.toCharArray())
-                {
-                    addToMap(ingredients, map.get(Character.valueOf(c)));
-                }
-            }
-        }
-        else
-        {
-            return 2;
-        }
-        for(ComparativeItemStack stack : ingredients.keySet().toArray(new ComparativeItemStack[0]))
-        {
-            if()
-        }
-    }
-    
-    private static double initValue(ItemStack item)
-    {
-        return initValue(new ComparativeItemStack(item));
-    }
-    
-    private static double initValue(ComparativeItemStack item)
-    {
-        _defining.add(item);
-        for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
-        {
-            if(stack.matches(item))
-            {
-                _defining.remove(stack);
-                return stack.getValue();
-            }
-        }
-        for(Recipe recipe : Bukkit.getRecipesFor().toArray(new Recipe[0]))
-        {
-            HashMap<ComparativeItemStack, Integer> ingredients = new HashMap<ItemStack, Integer>();
-            if(recipe instanceof ShapelessRecipe)
-            {
-                for(ItemStack ing : ((ShapelessRecipe)recipe).getIngredientList().toArray(new ItemStack[0]))
-                {
-                    if(ingredients.containsKey(ing))
-                    {
-                        
-                    }
-                    else
-                    {
-                        ingredients.put(ing);
-                    }
-                }
-            }
-            else if(recipe instanceof ShapedRecipe)
-            {
-                ShapedRecipe re = (ShapedRecipe)recipe;
-                Map<Character, ItemStack> map = re.getIngredientMap();
-                for(String shape : re.getShape())
-                {
-                    for(char c = shape.toCharArray())
-                    {
-                        
-                    }
-                }
+                value += (getValue(entry.getKey()) - getValue(new ComparativeItemStack(325, (short)0))) * entry.getValue().doubleValue();
             }
             else
             {
-                short meta = item.getDurability();
-                _log.info(Lang.get("matter.customIngredient", item.getTypeId() + (meta > 0 ? ":" + meta : ""), recipe.getClass().getName()));
-                continue;
+                value += getValue(entry.getKey()) * entry.getValue().doubleValue();
             }
         }
-        _defining.remove(item);
-    }*/
+        return value;
+    }
     
     private static void sort()
     {
@@ -269,7 +209,7 @@ public class TransmutationHelper
         }
     }
     
-    private static boolean isMapped(ItemStack item)
+    private static boolean isDefined(ItemStack item)
     {
         for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
         {
@@ -281,13 +221,37 @@ public class TransmutationHelper
         return false;
     }
     
-    private static boolean isMapped(ComparativeItemStack item)
+    private static boolean isDefined(ComparativeItemStack item)
     {
         for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
         {
             if(stack.matches(item))
             {
                 return true;
+            }
+        }
+        return false;
+    }
+    
+    private static boolean isMapped(ItemStack item)
+    {
+        for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
+        {
+            if(stack.matches(item))
+            {
+                return stack.getValue() > 0;
+            }
+        }
+        return false;
+    }
+    
+    private static boolean isMapped(ComparativeItemStack item)
+    {
+        for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
+        {
+            if(stack.matches(item))
+            {
+                return stack.getValue() > 0;
             }
         }
         return false;
@@ -315,5 +279,10 @@ public class TransmutationHelper
             }
         }
         return 0D;
+    }
+    
+    public static ValuedItemStack[] getAll()
+    {
+        return _list.toArray(new ValuedItemStack[0]);
     }
 }

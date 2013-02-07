@@ -28,6 +28,13 @@ public class Util
         return i + (d >= 0.5 ? 1 : (d <= -0.5 ? -1 : 0));
     }
     
+    public static double roundBig(double d)
+    {
+        long i = (long)d;
+        d -= i;
+        return i + (d >= 0.5 ? 1 : (d <= -0.5 ? -1 : 0));
+    }
+    
     // Same for Math.floor
     public static int floor(double d)
     {
@@ -242,6 +249,47 @@ public class Util
         }
     }
     
+    public static double parseBigDouble(String s)
+    {
+        return (new BigDecimal(s)).setScale(2).doubleValue();
+    }
+    
+    /*public static double parseBigDouble(String s)
+    {
+        System.out.println(s);
+        System.out.println((new BigDecimal(s)).toPlainString());
+        double d = 0D;
+        String[] parts = s.split("\\.");
+        for(int i = 0; i < parts[0].length(); i++)
+        {
+            try
+            {
+                d += Double.parseDouble(parts[0].substring(parts[0].length() - (i + 1), parts[0].length() - i)) * (double)Math.pow(10, i);
+            }
+            catch(NumberFormatException e)
+            {
+                e.printStackTrace();
+                return 0D;
+            }
+        }
+        if(parts.length > 1)
+        {
+            for(int i = 0; i < parts[1].length(); i++)
+            {
+                try
+                {
+                    d += Double.parseDouble(parts[1].substring(i, i + 1)) * (double)Math.pow(10, -(i + 1));
+                }
+                catch(NumberFormatException e)
+                {
+                    e.printStackTrace();
+                    return 0D;
+                }
+            }
+        }
+        return d;
+    }*/
+    
     public static String implode(String glue, String... parts)
     {
         if((glue == null) || (parts.length <= 0))
@@ -262,9 +310,20 @@ public class Util
         return round(d * factor) / factor;
     }
     
+    public static double smoothBig(double d, int digits)
+    {
+        double factor = Math.pow(10, digits);
+        return roundBig(d * factor) / factor;
+    }
+    
+    public static String printDouble(double d)
+    {
+        return BigDecimal.valueOf(smoothBig(d, 3)).toPlainString();
+    }
+    
     public static String formatDouble(double d)
     {
-        String[] plain = BigDecimal.valueOf(smooth(d, 3)).toPlainString().split("\\.");
+        String[] plain = printDouble(d).split("\\.");
         String formatted = "";
         while(plain[0].length() >= 4)
         {

@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.*;
 import net.drgnome.virtualpack.VPlugin;
+import net.drgnome.virtualpack.item.ComparativeItemStack;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class ConfigProxy
@@ -111,14 +112,12 @@ public class ConfigProxy
         setDef("allow-creative", "false");
         setDef("events.use", "true");
         setDef("events.ignorecancelled", "false");
-        /*setDef("transmutation.enabled", "false");
+        setDef("transmutation.enabled", "false");
         setDef("transmutation.show-value", "true");
         setDef("transmutation.god-items", Util.createList("DRAGON_EGG"));
-        setDef("transmutation.notify-unmapped", "false");
-        setDef("transmutation.notify-mismatch", "false");
-        setDef("transmutation.override-mismatch", "true");
+        setDef("transmutation.notify-mismatch", "true");
         setDef("transmutation.color.name", "1n");
-        setDef("transmutation.color.value", "4");*/
+        setDef("transmutation.color.value", "4");
         setDef("db.use", "false");
         setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
         setDef("db.user", "herp");
@@ -134,7 +133,7 @@ public class ConfigProxy
         setDef("commands." + VPlugin._components[7], Util.createList("trash"));
         setDef("commands." + VPlugin._components[8], Util.createList("send"));
         setDef("commands." + VPlugin._components[9], Util.createList("an", "anvil"));
-        //setDef("commands." + VPlugin._components[10], Util.createList("mat", "matter"));
+        setDef("commands." + VPlugin._components[10], Util.createList("mat", "matter"));
         setDef("tools.workbench.buy", "20000");
         setDef("tools.workbench.use", "0");
         setDef("tools.uncrafter.buy", "30000");
@@ -145,8 +144,8 @@ public class ConfigProxy
         setDef("tools.enchanttable.book", "5000");
         setDef("tools.anvil.buy", "25000");
         setDef("tools.anvil.use", "0");
-        /*setDef("tools.materializer.buy", "50000");
-        setDef("tools.materializer.use", "0");*/
+        setDef("tools.materializer.buy", "50000");
+        setDef("tools.materializer.use", "0");
         setDef("tools.chest.max", "10");
         setDef("tools.chest.start", "0");
         setDef("tools.chest.multiply", "1");
@@ -170,8 +169,8 @@ public class ConfigProxy
         setDef("blacklist.uncrafter.list", new ArrayList<String>());
         setDef("blacklist.store.whitelist", "false");
         setDef("blacklist.store.list", new ArrayList<String>());
-        /*setDef("blacklist.materializer.whitelist", "false");
-        setDef("blacklist.materializer.list", new ArrayList<String>());*/
+        setDef("blacklist.materializer.whitelist", "false");
+        setDef("blacklist.materializer.list", Util.createList("263:1"));
     }
     
     private void setDef(String path, Object value)
@@ -227,6 +226,16 @@ public class ConfigProxy
     }
     
     public boolean isBlacklisted(String section, ItemStack item)
+    {
+        ConfigBlacklist blacklist = _blacklists.get(section.toLowerCase());
+        if(blacklist == null)
+        {
+            return false;
+        }
+        return blacklist.isBlacklisted(item);
+    }
+    
+    public boolean isBlacklisted(String section, ComparativeItemStack item)
     {
         ConfigBlacklist blacklist = _blacklists.get(section.toLowerCase());
         if(blacklist == null)

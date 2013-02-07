@@ -699,6 +699,41 @@ public class VPack
         Util.openWindow(player, new VAnvil(player), "", 8, 9);
     }
     
+    /** Materializer **/
+    
+    public void buyMaterializer(Player bukkitPlayer)
+    {
+        /*if(_hasAnvil)
+        {
+            sendMessage(bukkitPlayer, Lang.get("anvil.max"), ChatColor.RED);
+            return;
+        }
+        if(!Money.world(_world).hasTake(_player, priceAnvilBuy()))
+        {
+            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            return;
+        }
+        _hasAnvil = true;
+        sendMessage(bukkitPlayer, Lang.get("anvil.bought"), ChatColor.GREEN);*/
+    }
+    
+    public void openMaterializer(Player bukkitPlayer, boolean free)
+    {
+        /*if(!_hasAnvil)
+        {
+            sendMessage(bukkitPlayer, Lang.get("anvil.none"), ChatColor.RED);
+            return;
+        }
+        free = free || !Money.world(_world).enabled();
+        EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
+        if(!free && !Money.world(_world).hasTake(_player, priceAnvilUse()))
+        {
+            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            return;
+        }
+        Util.openWindow(player, new VAnvil(player), "", 8, 9);*/
+    }
+    
     /** Chest **/
     
     public void buyChest(Player bukkitPlayer, int amount)
