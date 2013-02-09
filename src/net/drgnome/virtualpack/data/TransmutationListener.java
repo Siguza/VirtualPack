@@ -14,6 +14,7 @@ import com.comphenix.protocol.events.*;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import net.drgnome.virtualpack.util.*;
+import net.drgnome.virtualpack.components.MatterInv;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class TransmutationListener extends PacketAdapter
@@ -34,6 +35,11 @@ public class TransmutationListener extends PacketAdapter
             set.addAll(Packets.getClientRegistry().values());
         }
         ProtocolLibrary.getProtocolManager().addPacketListener(new TransmutationListener(set));
+    }
+    
+    public static void unregister()
+    {
+        ProtocolLibrary.getProtocolManager().removePacketListeners(_plugin);
     }
     
     public TransmutationListener(Set<Integer> set)
@@ -116,10 +122,13 @@ public class TransmutationListener extends PacketAdapter
         List<String> lore = meta.hasLore() ? meta.getLore() : (new ArrayList<String>());
         if(send)
         {
-            double value = TransmutationHelper.getValue(item);
-            if(value > 0)
+            if(!meta.hasDisplayName() || !meta.getDisplayName().startsWith(MatterInv._prefix))
             {
-                lore.add(_prefix + Lang.get("matter.iteminfo", Util.parseColors(Config.string("transmutation.color.name")), ChatColor.RESET.toString(), Util.parseColors(Config.string("transmutation.color.value")), Util.formatDouble(value)));
+                double value = TransmutationHelper.getValue(item);
+                if(value > 0)
+                {
+                    lore.add(_prefix + Lang.get("matter.iteminfo", Util.parseColors(Config.string("transmutation.color.name")), ChatColor.RESET.toString(), Util.parseColors(Config.string("transmutation.color.value")), Util.formatDouble(value)));
+                }
             }
         }
         else

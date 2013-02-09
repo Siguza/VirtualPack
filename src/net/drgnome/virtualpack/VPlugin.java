@@ -94,7 +94,6 @@ public class VPlugin extends JavaPlugin implements Runnable
             getPluginLoader().disablePlugin(this);
             return;
         }
-        loadUserData();
         getServer().getPluginManager().registerEvents(new VEvents(), this);
         if(!registerCommands())
         {
@@ -117,6 +116,7 @@ public class VPlugin extends JavaPlugin implements Runnable
                 }
             }
         }
+        loadUserData();
         _log.info(Lang.get("vpack.enable", _version));
     }
     
@@ -216,6 +216,17 @@ public class VPlugin extends JavaPlugin implements Runnable
     {
         super.onDisable();
         getServer().getScheduler().cancelTasks(this);
+        if(Config.bool("transmutation.enabled") && Config.bool("transmutation.show-value"))
+        {
+            try
+            {
+                Class.forName("com.comphenix.protocol.ProtocolLibrary");
+                TransmutationListener.unregister();
+            }
+            catch(ClassNotFoundException e)
+            {
+            }
+        }
         if(!_waitForGroupManager)
         {
             saveUserData();

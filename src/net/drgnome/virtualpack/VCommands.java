@@ -15,6 +15,7 @@ import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.item.ValuedItemStack;
 import net.drgnome.virtualpack.data.TransmutationHelper;
 import net.drgnome.virtualpack.components.*;
+import net.drgnome.virtualpack.tmp.*; /** FUUU **/
 
 import static net.drgnome.virtualpack.util.Global.*;
 
@@ -119,7 +120,7 @@ public class VCommands implements CommandExecutor
     
     private void tools(Player player, VPack pack, String command, String args[], boolean admin)
     {
-        /** An ugly workaround, to be replaced when VPack us fully using the Bukkit API **/
+        /** An ugly workaround, to be replaced when VPack is fully using the Bukkit API **/
         if(!(player instanceof CraftPlayer))
         {
             Player p = Bukkit.getPlayer(player.getName());
@@ -174,7 +175,7 @@ public class VCommands implements CommandExecutor
         {
             anvil(player, pack, args, admin);
         }
-        else if(command.equals(VPlugin._components[9])) // Materializer
+        else if(command.equals(VPlugin._components[10])) // Materializer
         {
             matter(player, pack, args, admin);
         }
@@ -266,10 +267,15 @@ public class VCommands implements CommandExecutor
         {
             args = new String[]{"1"};
         }
-        if(args[0].equals("uncrafter"))
+        if(longname(args[0]).equals(VPlugin._components[2]))
         {
             sendMessage(sender, Lang.get("help.uncrafter.title"), ChatColor.AQUA);
             sendMessage(sender, Lang.get("help.uncrafter.description"), ChatColor.AQUA);
+        }
+        else if(longname(args[0]).equals(VPlugin._components[10]))
+        {
+            sendMessage(sender, Lang.get("help.matter.title"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("help.matter.description"), ChatColor.AQUA);
         }
         else if(args[0].equals("link"))
         {
@@ -281,7 +287,7 @@ public class VCommands implements CommandExecutor
         {
             for(String component : VPlugin._components)
             {
-                if(!component.equals(VPlugin._components[0]) && !Perm.has(sender, "vpack.use." + component))
+                if((!component.equals(VPlugin._components[0]) && !Perm.has(sender, "vpack.use." + component)) || (component.equals(VPlugin._components[10]) && !Config.bool("transmutation.enabled")))
                 {
                     continue;
                 }
@@ -344,7 +350,7 @@ public class VCommands implements CommandExecutor
             if(Perm.has(sender, "vpack.use.materializer") && Config.bool("transmutation.enabled"))
             {
                 sendMessage(sender, Lang.get("help.matter.buy", cmd));
-                sendMessage(sender, Lang.get("help.matter.use", cmd));
+                sendMessage(sender, Lang.get("help.matter.use", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
                 sendMessage(sender, Lang.get("help.matter.list", cmd));
             }
             if(Perm.has(sender, "vpack.use.chest"))
@@ -405,10 +411,24 @@ public class VCommands implements CommandExecutor
         args[0] = args[0].toLowerCase();
         if(args[0].equals("reload"))
         {
-            _plugin.saveUserData();
-            _plugin.reloadConfig();
-            _plugin.loadUserData();
-            sendMessage(sender, Lang.get("admin.reloaded"), ChatColor.YELLOW);
+            if(args.length > 1)
+            {
+                for(String world : Config.worlds())
+                {
+                    if(_plugin.hasPack(world, args[1]))
+                    {
+                        _plugin.getPack(world, args[1]).recalculate();
+                    }
+                }
+                sendMessage(sender, Lang.get("admin.reloadeduser", args[1]), ChatColor.YELLOW);
+            }
+            else
+            {
+                _plugin.saveUserData();
+                _plugin.reloadConfig();
+                _plugin.loadUserData();
+                sendMessage(sender, Lang.get("admin.reloaded"), ChatColor.YELLOW);
+            }
             return;
         }
         else if(args[0].equals("save"))
@@ -436,9 +456,24 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get("admin.loaded"), ChatColor.YELLOW);
             return;
         }
+        else if(args[0].equals("listmatter"))
+        {
+            if(Config.bool("transmutation.enabled"))
+            {
+                for(ValuedItemStack stack : TransmutationHelper.getAll())
+                {
+                    sendMessage(sender, stack.toString() + " = " + Util.formatDouble(stack.getValue()));
+                }
+            }
+            else
+            {
+                sendMessage(sender, Lang.get("matter.disabled"), ChatColor.RED);
+            }
+            return;
+        }
         else if(args.length < 2)
         {
-            sendMessage(sender, "argument.few", ChatColor.RED);
+            sendMessage(sender, Lang.get("argument.few"), ChatColor.RED);
             return;
         }
         String world;
@@ -499,7 +534,7 @@ public class VCommands implements CommandExecutor
             }
             else if(args.length < 3)
             {
-                sendMessage(player, "argument.few", ChatColor.RED);
+                sendMessage(player, Lang.get("argument.few"), ChatColor.RED);
                 return;
             }
             tools(player, _plugin.getPack(player.getWorld().getName(), args[1]), longname(args[2]), Util.cut(args, 3), true);
@@ -587,6 +622,20 @@ public class VCommands implements CommandExecutor
             {
                 pack._hasAnvil = true;
                 sendMessage(sender, Lang.get("admin.give.anvil.done", args[0]), ChatColor.GREEN);
+            }
+        }
+        else if(args[1].equals("materializer"))
+        {
+            if(pack._matter == null)
+            {
+                /** FUUU **/
+                // pack._matter = new MatterInv(pack.getWorld(), pack.getPlayer());
+                pack._matter = new TmpMatterInv(pack.getWorld(), pack.getPlayer());
+                sendMessage(sender, Lang.get("admin.give.matter.done", args[0]), ChatColor.GREEN);
+            }
+            else
+            {
+                sendMessage(sender, Lang.get("admin.give.matter.have"), ChatColor.RED);
             }
         }
         else if(args[1].equals("chest"))
@@ -699,6 +748,18 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get("admin.take.anvil.done", args[0]), ChatColor.GREEN);
             }
         }
+        else if(args[1].equals("materializer"))
+        {
+            if(pack._matter == null)
+            {
+                sendMessage(sender, Lang.get("admin.take.matter.none"), ChatColor.RED);
+            }
+            else
+            {
+                pack._matter = null;
+                sendMessage(sender, Lang.get("admin.take.matter.done", args[0]), ChatColor.GREEN);
+            }
+        }
         else if(args[1].equals("chest"))
         {
             for(int i = 0; i < amount; i++)
@@ -770,12 +831,13 @@ public class VCommands implements CommandExecutor
         if(Money.world(player.getWorld().getName()).enabled())
         {
             VPack pack = _plugin.getPack(player);
-            final String y = "" + ChatColor.YELLOW;
-            final String g = "" + ChatColor.GREEN;;
+            final String y = ChatColor.YELLOW.toString();
+            final String g = ChatColor.GREEN.toString();
             sendMessage(player, Lang.get("price.workbench", y, g, "" + pack.priceWorkbenchBuy(), "" + pack.priceWorkbenchUse()));
             sendMessage(player, Lang.get("price.uncrafter", y, g, "" + pack.priceUncrafterBuy(), "" + pack.priceUncrafterUse()));
             sendMessage(player, Lang.get("price.enchanttable", y, g, "" + pack.priceEnchBuy(), "" + pack.priceEnchUse(), "" + pack.priceEnchBook(1)));
             sendMessage(player, Lang.get("price.anvil", y, g, "" + pack.priceAnvilBuy(), "" + pack.priceAnvilUse()));
+            sendMessage(player, Lang.get("price.matter", y, g, "" + pack.priceMatterBuy(), "" + pack.priceMatterUse()));
             sendMessage(player, Lang.get("price.chest", y, g, "" + pack.priceChestBuy(1), "" + pack.priceChestUse()));
             sendMessage(player, Lang.get("price.furnace", y, g, "" + pack.priceFurnaceBuy(1), "" + pack.priceFurnaceUse(), "" + pack.priceFurnaceLink()));
             sendMessage(player, Lang.get("price.brewingstand", y, g, "" + pack.priceBrewBuy(1), "" + pack.priceBrewUse(), "" + pack.priceBrewLink()));
@@ -1130,7 +1192,23 @@ public class VCommands implements CommandExecutor
             }
             else if(args[0].equalsIgnoreCase("list"))
             {
-                for(ValuedItemStack stack : TransmutationHelper.getAll())
+                int page = 1;
+                if(args.length >= 2)
+                {
+                    try
+                    {
+                        page = Integer.parseInt(args[1]);
+                        if(page < 1)
+                        {
+                            page = 1;
+                        }
+                    }
+                    catch(Throwable t)
+                    {
+                        sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                    }
+                }
+                for(ValuedItemStack stack : TransmutationHelper.getAll(page - 1))
                 {
                     sendMessage(player, stack.toString() + " = " + Util.formatDouble(stack.getValue()));
                 }

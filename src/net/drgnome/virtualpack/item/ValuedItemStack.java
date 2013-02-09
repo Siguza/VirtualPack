@@ -35,11 +35,6 @@ public class ValuedItemStack extends ComparativeItemStack
         return _value;
     }
     
-    public ItemStack createStack()
-    {
-        return super.createStack(Material.getMaterial(_id).getMaxStackSize());
-    }
-    
     public String toString()
     {
         return Material.getMaterial(_id).name() + (_meta > 0 ? ":" + _meta : "");

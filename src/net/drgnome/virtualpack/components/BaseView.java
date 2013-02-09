@@ -24,17 +24,7 @@ public class BaseView extends InventoryView
     public void setItem(int slot, ItemStack item)
     {
         super.setItem(slot, item);
-        try
-        {
-            Method m = _player.getClass().getMethod("updateInventory");
-            m.setAccessible(true);
-            m.invoke(_player);
-        }
-        catch(Throwable t)
-        {
-            warn();
-            t.printStackTrace();
-        }
+        updateInv();
     }
     
     public Inventory getTopInventory()
@@ -57,8 +47,25 @@ public class BaseView extends InventoryView
         return _inv.getType();
     }
     
-    public boolean allowClick(int slot, boolean right, boolean shift)
+    public final boolean allowClick(int slot, boolean right, boolean shift)
     {
-        return true;
+        boolean flag = _inv.allowClick(_player, slot, right, shift);
+        updateInv();
+        return flag;
+    }
+    
+    public void updateInv()
+    {
+        try
+        {
+            Method m = _player.getClass().getMethod("updateInventory");
+            m.setAccessible(true);
+            m.invoke(_player);
+        }
+        catch(Throwable t)
+        {
+            warn();
+            t.printStackTrace();
+        }
     }
 }

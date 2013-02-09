@@ -90,6 +90,10 @@ public class TransmutationHelper
         ArrayList<QuantitativeRecipe> recipes = new ArrayList<QuantitativeRecipe>();
         for(Recipe recipe : base)
         {
+            if(recipe.getResult().getAmount() <= 0)
+            {
+                continue;
+            }
             HashMap<ComparativeItemStack, Integer> ingredients = new HashMap<ComparativeItemStack, Integer>();
             if(recipe instanceof ShapelessRecipe)
             {
@@ -259,6 +263,10 @@ public class TransmutationHelper
     
     public static double getValue(ItemStack item)
     {
+        if(item == null)
+        {
+            return 0D;
+        }
         for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
         {
             if(stack.matches(item))
@@ -271,6 +279,10 @@ public class TransmutationHelper
     
     public static double getValue(ComparativeItemStack item)
     {
+        if(item == null)
+        {
+            return 0D;
+        }
         for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
         {
             if(stack.matches(item))
@@ -284,5 +296,59 @@ public class TransmutationHelper
     public static ValuedItemStack[] getAll()
     {
         return _list.toArray(new ValuedItemStack[0]);
+    }
+    
+    public static ValuedItemStack[] getAll(int start)
+    {
+        start *= 20;
+        if(start >= _list.size())
+        {
+            return new ValuedItemStack[0];
+        }
+        ListIterator<ValuedItemStack> it = _list.listIterator(start);
+        ArrayList<ValuedItemStack> list = new ArrayList<ValuedItemStack>();
+        for(int i = 0; i < 20; i++)
+        {
+            if(!it.hasNext())
+            {
+                break;
+            }
+            list.add(it.next());
+        }
+        return list.toArray(new ValuedItemStack[0]);
+    }
+    
+    public static ValuedItemStack[] getAllFiltered(String world, String player)
+    {
+        return filter(world, player, _list);
+    }
+    
+    public static ValuedItemStack[] getAllFiltered(String world, String player, ComparativeItemStack[] unlocked)
+    {
+        ArrayList<ValuedItemStack> list = new ArrayList<ValuedItemStack>();
+        for(ValuedItemStack stack : _list)
+        {
+            for(ComparativeItemStack item : unlocked)
+            {
+                if(stack.matches(item))
+                {
+                    list.add(stack);
+                    break;
+                }
+            }
+        }
+        return filter(world, player, list);
+    }
+    
+    private static ValuedItemStack[] filter(String world, String player, ArrayList<ValuedItemStack> list)
+    {
+        for(ValuedItemStack stack : list.toArray(new ValuedItemStack[0]))
+        {
+            if(Config.isBlacklisted(world, player, "materializer", stack))
+            {
+                list.remove(stack);
+            }
+        }
+        return list.toArray(new ValuedItemStack[0]);
     }
 }

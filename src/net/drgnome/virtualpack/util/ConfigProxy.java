@@ -19,6 +19,7 @@ public class ConfigProxy
     private FileConfiguration _global;
     private HashMap<String, YamlConfiguration> _worlds = new HashMap<String, YamlConfiguration>();
     private HashMap<String, ConfigBlacklist> _blacklists = new HashMap<String, ConfigBlacklist>();
+    private ArrayList<ComparativeItemStack> _godItems = new ArrayList<ComparativeItemStack>();
     
     public ConfigProxy(FileConfiguration global, File dir)
     {
@@ -95,6 +96,10 @@ public class ConfigProxy
                 _blacklists.put(entry.getKey().toLowerCase(), new ConfigBlacklist((ConfigurationSection)entry.getValue()));
             }
         }
+        for(String s : _global.getStringList("transmutation.god-items"))
+        {
+            _godItems.add(new ComparativeItemStack(s));
+        }
     }
     
     private void setDefs()
@@ -118,6 +123,8 @@ public class ConfigProxy
         setDef("transmutation.notify-mismatch", "true");
         setDef("transmutation.color.name", "1n");
         setDef("transmutation.color.value", "4");
+        setDef("transmutation.color.stored-name", "2l");
+        setDef("transmutation.color.stored-value", "e");
         setDef("db.use", "false");
         setDef("db.url", "jdbc:mysql://localhost:3306/minecraft");
         setDef("db.user", "herp");
@@ -243,5 +250,21 @@ public class ConfigProxy
             return false;
         }
         return blacklist.isBlacklisted(item);
+    }
+    
+    public boolean isGodItem(ItemStack item)
+    {
+        if(item == null)
+        {
+            return false;
+        }
+        for(ComparativeItemStack stack : _godItems)
+        {
+            if(stack.matches(item))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

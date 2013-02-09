@@ -243,4 +243,9 @@ public class Config
         }
         return _proxy.isBlacklisted(section, item);
     }
+    
+    public static boolean isGodItem(ItemStack item)
+    {
+        return _proxy.isGodItem(item);
+    }
 }

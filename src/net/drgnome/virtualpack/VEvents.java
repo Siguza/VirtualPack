@@ -54,7 +54,7 @@ public class VEvents implements Listener
         ((BaseInv)event.getInventory()).onClose(event.getPlayer());
     }
     
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void handleGUIClose(InventoryClickEvent event)
     {
         if((event.getView() instanceof BaseView) && !((BaseView)event.getView()).allowClick(event.getRawSlot(), event.isRightClick(), event.isShiftClick()))

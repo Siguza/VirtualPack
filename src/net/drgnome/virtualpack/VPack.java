@@ -15,6 +15,7 @@ import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.minecraft.server.v#MC_VERSION#.*;
 import net.drgnome.virtualpack.components.*;
 import net.drgnome.virtualpack.util.*;
+import net.drgnome.virtualpack.tmp.*; /** FUUU **/
 
 import static net.drgnome.virtualpack.util.Global.*;
 
@@ -27,6 +28,9 @@ public class VPack
     public boolean _hasUncrafter;
     public boolean _hasEnchantTable;
     public boolean _hasAnvil;
+    /** FUUU **/
+    // public MatterInv _matter = null;
+    public TmpMatterInv _matter = null;
     public int _bookshelves;
     private int _fLinks = 0;
     private int _bLinks = 0;
@@ -48,17 +52,26 @@ public class VPack
             _hasEnchantTable = Config.getDouble(_world, groups, "tools","enchanttable", "buy", false) == 0D;
             _bookshelves = Config.getDouble(_world, groups, "tools","enchanttable", "book", false) == 0D ? _maxBookshelves : 0;
             _hasAnvil = Config.getDouble(_world, groups, "tools","anvil", "buy", false) == 0D;
-            for(int i = 1; i <= Config.getInt(_world, groups, "tools","chest", "start", true); i++)
+            if(Config.getDouble(_world, groups, "tools","anvil", "buy", false) == 0D)
             {
-                _chests.put((Integer)i, new VInv(getChestSize()));
+                /** FUUU **/
+                // _matter = new MatterInv(_world, _player);
+                _matter = new TmpMatterInv(_world, _player);
             }
-            for(int i = 1; i <= Config.getInt(_world, groups, "tools", "furnace", "start", true); i++)
+            int max = Config.getInt(_world, groups, "tools","chest", "start", true);
+            for(int i = 1; i <= max; i++)
             {
-                _furnaces.put((Integer)i, new VTEFurnace(this));
+                _chests.put(i, new VInv(getChestSize()));
             }
-            for(int i = 1; i <= Config.getInt(_world, groups, "tools", "brewingstand", "start", true); i++)
+            max = Config.getInt(_world, groups, "tools", "furnace", "start", true);
+            for(int i = 1; i <= max; i++)
             {
-                _brews.put((Integer)i, new VTEBrewingstand(this));
+                _furnaces.put(i, new VTEFurnace(this));
+            }
+            max = Config.getInt(_world, groups, "tools", "brewingstand", "start", true);
+            for(int i = 1; i <= max; i++)
+            {
+                _brews.put(i, new VTEBrewingstand(this));
             }
         }
         else
@@ -68,17 +81,23 @@ public class VPack
             _hasEnchantTable = true;
             _bookshelves = _maxBookshelves;
             _hasAnvil = true;
-            for(int i = 1; i <= Config.getInt(_world, groups, "tools", "chest", "max", true); i++)
+            /** FUUU **/
+            // _matter = new MatterInv(_world, _player);
+            _matter = new TmpMatterInv(_world, _player);
+            int max = Config.getInt(_world, groups, "tools", "chest", "max", true);
+            for(int i = 1; i <= max; i++)
             {
-                _chests.put((Integer)i, new VInv(getChestSize()));
+                _chests.put(i, new VInv(getChestSize()));
             }
-            for(int i = 1; i <= Config.getInt(_world, groups, "tools", "furnace", "max", true); i++)
+            max = Config.getInt(_world, groups, "tools", "furnace", "max", true);
+            for(int i = 1; i <= max; i++)
             {
-                _furnaces.put((Integer)i, new VTEFurnace(this));
+                _furnaces.put(i, new VTEFurnace(this));
             }
-            for(int i = 1; i <= Config.getInt(_world, groups, "tools", "brewingstand", "max", true); i++)
+            max = Config.getInt(_world, groups, "tools", "brewingstand", "max", true);
+            for(int i = 1; i <= max; i++)
             {
-                _brews.put((Integer)i, new VTEBrewingstand(this));
+                _brews.put(i, new VTEBrewingstand(this));
             }
         }
     }
@@ -111,20 +130,29 @@ public class VPack
             {
                 _hasAnvil = a[1].equals("1") || _hasAnvil;
             }
+            else if(a[0].equals("m"))
+            {
+                if(a[1].equals("1"))
+                {
+                    /** FUUU **/
+                    // _matter = new MatterInv(_world, _player, Util.cut(a, 2));
+                    _matter = new TmpMatterInv(_world, _player, Util.cut(a, 2));
+                }
+            }
             else if(a[0].equals("c"))
             {
                 count[0]++;
-                _chests.put((Integer)count[0], new VInv(getChestSize(), Util.cut(a, 1)));
+                _chests.put(count[0], new VInv(getChestSize(), Util.cut(a, 1)));
             }
             else if(a[0].equals("f"))
             {
                 count[1]++;
-                _furnaces.put((Integer)count[1], new VTEFurnace(this, Util.cut(a, 1)));
+                _furnaces.put(count[1], new VTEFurnace(this, Util.cut(a, 1)));
             }
             else if(a[0].equals("b"))
             {
                 count[2]++;
-                _brews.put((Integer)count[2], new VTEBrewingstand(this, Util.cut(a, 1)));
+                _brews.put(count[2], new VTEBrewingstand(this, Util.cut(a, 1)));
             }
             else if(a[0].equals("fl"))
             {
@@ -158,6 +186,7 @@ public class VPack
         list.add("u" + _separator[1] + (_hasUncrafter ? "1" : "0"));
         list.add(Util.implode(_separator[1], "e", _hasEnchantTable ? "1" : "0", "" + _bookshelves));
         list.add("av" + _separator[1] + (_hasAnvil ? "1" : "0"));
+        list.add("m" + _separator[1] + (_matter == null ? "0" : "1") + (_matter == null ? "" : (_separator[1] + Util.implode(_separator[1], _matter.serialize()))));
         list.add("fl" + _separator[1] + _fLinks);
         list.add("bl" + _separator[1] + _bLinks);
         for(VInv inv : _chests.values().toArray(new VInv[0]))
@@ -211,6 +240,69 @@ public class VPack
         }
     }
     
+    public void recalculate()
+    {
+        String[] groups = Perm.getGroups(_world, _player);
+        if(Money.world(_world).enabled())
+        {
+            _hasWorkbench = _hasWorkbench || (Config.getDouble(_world, groups, "tools", "workbench", "buy", false) == 0D);
+            _hasUncrafter = _hasUncrafter || (Config.getDouble(_world, groups, "tools","uncrafter", "buy", false) == 0D);
+            _hasEnchantTable = _hasEnchantTable || (Config.getDouble(_world, groups, "tools","enchanttable", "buy", false) == 0D);
+            _bookshelves = Util.max(_bookshelves, Config.getDouble(_world, groups, "tools","enchanttable", "book", false) == 0D ? _maxBookshelves : 0);
+            _hasAnvil = _hasAnvil || (Config.getDouble(_world, groups, "tools","anvil", "buy", false) == 0D);
+            if((_matter == null) && (Config.getDouble(_world, groups, "tools","anvil", "buy", false) == 0D))
+            {
+                /** FUUU **/
+                // _matter = new MatterInv(_world, _player);
+                _matter = new TmpMatterInv(_world, _player);
+            }
+            int max = Config.getInt(_world, groups, "tools", "chest", "start", true);
+            while(_chests.size() < max)
+            {
+                _chests.put(_chests.size() + 1, new VInv(getChestSize()));
+            }
+            max = Config.getInt(_world, groups, "tools", "furnace", "start", true);
+            while(_furnaces.size() < max)
+            {
+                _furnaces.put(_furnaces.size() + 1, new VTEFurnace(this));
+            }
+            max = Config.getInt(_world, groups, "tools", "brewingstand", "start", true);
+            while(_brews.size() < max)
+            {
+                _brews.put(_brews.size() + 1, new VTEBrewingstand(this));
+            }
+        }
+        else
+        {
+            _hasWorkbench = true;
+            _hasUncrafter = true;
+            _hasEnchantTable = true;
+            _bookshelves = _maxBookshelves;
+            _hasAnvil = true;
+            if(_matter == null)
+            {
+                /** FUUU **/
+                // _matter = new MatterInv(_world, _player);
+                _matter = new TmpMatterInv(_world, _player);
+            }
+            int max = Config.getInt(_world, groups, "tools", "chest", "max", true);
+            while(_chests.size() < max)
+            {
+                _chests.put(_chests.size() + 1, new VInv(getChestSize()));
+            }
+            max = Config.getInt(_world, groups, "tools", "furnace", "max", true);
+            while(_furnaces.size() < max)
+            {
+                _furnaces.put(_furnaces.size() + 1, new VTEFurnace(this));
+            }
+            max = Config.getInt(_world, groups, "tools", "brewingstand", "max", true);
+            while(_brews.size() < max)
+            {
+                _brews.put(_brews.size() + 1, new VTEBrewingstand(this));
+            }
+        }
+    }
+    
     public void drop(Player player)
     {
         EntityPlayer p = ((CraftPlayer)player).getHandle();
@@ -241,6 +333,10 @@ public class VPack
         if(!Perm.has(_world, _player, "vpack.keep.enchanttable"))
         {
             _bookshelves = 0;
+        }
+        if(!Perm.has(_world, _player, "vpack.keep.materializer"))
+        {
+            _matter.reset();
         }
         if(!Perm.has(_world, _player, "vpack.keep.chest"))
         {
@@ -297,6 +393,10 @@ public class VPack
         {
             _hasAnvil = false;
         }
+        if(!Perm.has(_world, _player, "vpack.keep.materializer"))
+        {
+            _matter = null;
+        }
         if(!Perm.has(_world, _player, "vpack.keep.chest"))
         {
             _chests = new HashMap<Integer, VInv>();
@@ -337,6 +437,7 @@ public class VPack
             sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, _hasUncrafter ? Lang.get("yes") : Lang.get("no")));
             sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, _hasEnchantTable ? Lang.get("yes") : Lang.get("no")) + (_hasEnchantTable ? Lang.get("stats.books", "" + _bookshelves): ""));
             sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, _hasAnvil ? Lang.get("yes") : Lang.get("no")));
+            sendMessage(player, Lang.get("stats.matter", "" + ChatColor.GREEN, _matter == null ? Lang.get("no") : Lang.get("yes")));
             int i = Config.getInt(_world, _player, "tools", "chest", "max", true);
             sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size() + (i != -1 ? "/" + i : "")));
             i = Config.getInt(_world, _player, "tools", "furnace", "max", true);
@@ -350,6 +451,7 @@ public class VPack
             sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, Lang.get("yes")));
             sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, Lang.get("yes")) + Lang.get("stats.books", "15"));
             sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, Lang.get("yes")));
+            sendMessage(player, Lang.get("stats.matter", "" + ChatColor.GREEN, Lang.get("yes")));
             sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size()));
             sendMessage(player, Lang.get("stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size()));
             sendMessage(player, Lang.get("stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size()));
@@ -457,6 +559,16 @@ public class VPack
     public double priceAnvilUse()
     {
         return Config.getDouble(_world, _player, "tools", "anvil", "use", false, 2);
+    }
+    
+    public double priceMatterBuy()
+    {
+        return Config.getDouble(_world, _player, "tools", "materializer", "buy", false, 2);
+    }
+    
+    public double priceMatterUse()
+    {
+        return Config.getDouble(_world, _player, "tools", "materializer", "use", false, 2);
     }
     
     public double priceChestBuy(int amount)
@@ -703,35 +815,45 @@ public class VPack
     
     public void buyMaterializer(Player bukkitPlayer)
     {
-        /*if(_hasAnvil)
+        if(_matter != null)
         {
-            sendMessage(bukkitPlayer, Lang.get("anvil.max"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get("matter.max"), ChatColor.RED);
             return;
         }
-        if(!Money.world(_world).hasTake(_player, priceAnvilBuy()))
+        if(!Money.world(_world).hasTake(_player, priceMatterBuy()))
         {
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        _hasAnvil = true;
-        sendMessage(bukkitPlayer, Lang.get("anvil.bought"), ChatColor.GREEN);*/
+        /** FUUU **/
+        // _matter = new MatterInv(_world, _player);
+        _matter = new TmpMatterInv(_world, _player);
+        sendMessage(bukkitPlayer, Lang.get("matter.bought"), ChatColor.GREEN);
     }
     
-    public void openMaterializer(Player bukkitPlayer, boolean free)
+    public void openMaterializer(Player player, boolean free)
     {
-        /*if(!_hasAnvil)
+        if(_matter == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("anvil.none"), ChatColor.RED);
+            sendMessage(player, Lang.get("matter.none"), ChatColor.RED);
             return;
         }
         free = free || !Money.world(_world).enabled();
-        EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
+        EntityPlayer mcPlayer = ((CraftPlayer)player).getHandle(); /** FUUU **/
         if(!free && !Money.world(_world).hasTake(_player, priceAnvilUse()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(player, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VAnvil(player), "", 8, 9);*/
+        _matter.updateInv();
+        /** FUUU ALL THE WAY **/
+        //Util.openInv(player, _matter);
+        String guiname = Lang.get("matter.name");
+        if(guiname.length() > 32)
+        {
+            guiname = guiname.substring(0, 32);
+        }
+        Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter), guiname, 0, 54);
     }
     
     /** Chest **/

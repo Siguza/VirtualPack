@@ -87,6 +87,16 @@ public class ComparativeItemStack
     
     public ItemStack createStack(int stackSize)
     {
-        return new ItemStack(_id, stackSize, _meta < 0 ? 0 : _meta);
+        if(stackSize <= 0)
+        {
+            return null;
+        }
+        int maxStack = Material.getMaterial(_id).getMaxStackSize();
+        return new ItemStack(_id, stackSize > maxStack ? maxStack : stackSize, _meta < 0 ? 0 : _meta);
+    }
+    
+    public String serialize()
+    {
+        return (_id + ":" + (_meta == -1 ? "*" : _meta));
     }
 }

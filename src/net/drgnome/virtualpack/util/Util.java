@@ -13,6 +13,9 @@ import java.lang.reflect.*;
 import javax.xml.bind.DatatypeConverter;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import net.drgnome.virtualpack.components.BaseInv;
+import net.drgnome.virtualpack.components.BaseView;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class Util
@@ -249,11 +252,6 @@ public class Util
         }
     }
     
-    public static double parseBigDouble(String s)
-    {
-        return (new BigDecimal(s)).setScale(2).doubleValue();
-    }
-    
     /*public static double parseBigDouble(String s)
     {
         System.out.println(s);
@@ -316,6 +314,11 @@ public class Util
         return roundBig(d * factor) / factor;
     }
     
+    public static String printDoublePlain(double d)
+    {
+        return BigDecimal.valueOf(d).toPlainString();
+    }
+    
     public static String printDouble(double d)
     {
         return BigDecimal.valueOf(smoothBig(d, 3)).toPlainString();
@@ -333,9 +336,22 @@ public class Util
         formatted = plain[0] + formatted;
         if((plain.length > 1) && (tryParse(plain[1], 0) != 0))
         {
-            formatted += plain[1];
+            formatted += "." + plain[1];
         }
         return formatted;
+    }
+    
+    public static double parseBigDouble(String s)
+    {
+        try
+        {
+            return (new BigDecimal(s)).doubleValue();
+        }
+        catch(Throwable t)
+        {
+            return 0D;
+        }
+        // return (new BigDecimal(s)).setScale(2).doubleValue();
     }
     
     public static int max(int... values)
@@ -464,6 +480,11 @@ public class Util
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);
+    }
+    
+    public static void openInv(Player player, BaseInv inv)
+    {
+        player.openInventory(new BaseView(player, inv));
     }
     
     public static boolean loadJar(File file)
