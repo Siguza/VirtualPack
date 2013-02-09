@@ -398,6 +398,11 @@ public class VCommands implements CommandExecutor
             String cmd = (list.size() <= 0) ? "" : list.get(0);
             sendMessage(sender, Lang.get("admin.help.title"), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.reload", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get("admin.help.reloaduser", cmd), ChatColor.AQUA);
+            if(Config.bool("transmutation.enabled"))
+            {
+                sendMessage(sender, Lang.get("admin.help.listmatter", cmd), ChatColor.AQUA);
+            }
             sendMessage(sender, Lang.get("admin.help.save", cmd), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.savefile", cmd), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.loadfile", cmd), ChatColor.AQUA);

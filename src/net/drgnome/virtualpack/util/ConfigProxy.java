@@ -177,7 +177,7 @@ public class ConfigProxy
         setDef("blacklist.store.whitelist", "false");
         setDef("blacklist.store.list", new ArrayList<String>());
         setDef("blacklist.materializer.whitelist", "false");
-        setDef("blacklist.materializer.list", Util.createList("263:1"));
+        setDef("blacklist.materializer.list", new ArrayList<String>());
     }
     
     private void setDef(String path, Object value)
