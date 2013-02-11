@@ -433,28 +433,76 @@ public class VPack
     {
         if(Money.world(_world).enabled())
         {
-            sendMessage(player, Lang.get("stats.workbench", "" + ChatColor.GREEN, _hasWorkbench ? Lang.get("yes") : Lang.get("no")));
-            sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, _hasUncrafter ? Lang.get("yes") : Lang.get("no")));
-            sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, _hasEnchantTable ? Lang.get("yes") : Lang.get("no")) + (_hasEnchantTable ? Lang.get("stats.books", "" + _bookshelves): ""));
-            sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, _hasAnvil ? Lang.get("yes") : Lang.get("no")));
-            sendMessage(player, Lang.get("stats.matter", "" + ChatColor.GREEN, _matter == null ? Lang.get("no") : Lang.get("yes")));
-            int i = Config.getInt(_world, _player, "tools", "chest", "max", true);
-            sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size() + (i != -1 ? "/" + i : "")));
-            i = Config.getInt(_world, _player, "tools", "furnace", "max", true);
-            sendMessage(player, Lang.get("stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size() + (i != -1 ? "/" + i : "")) + (Lang.get("stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _fLinks)));
-            i = Config.getInt(_world, _player, "tools", "brewingstand", "max", true);
-            sendMessage(player, Lang.get("stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size() + (i != -1 ? "/" + i : "")) + (Lang.get("stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _bLinks)));
+            if(Perm.has(_world, _player, "vpack.use.workbench"))
+            {
+                sendMessage(player, Lang.get("stats.workbench", "" + ChatColor.GREEN, _hasWorkbench ? Lang.get("yes") : Lang.get("no")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.uncrafter"))
+            {
+                sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, _hasUncrafter ? Lang.get("yes") : Lang.get("no")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.enchanttable"))
+            {
+                sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, _hasEnchantTable ? Lang.get("yes") : Lang.get("no")) + (_hasEnchantTable ? Lang.get("stats.books", "" + _bookshelves): ""));
+            }
+            if(Perm.has(_world, _player, "vpack.use.anvil"))
+            {
+                sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, _hasAnvil ? Lang.get("yes") : Lang.get("no")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.materializer"))
+            {
+                sendMessage(player, Lang.get("stats.matter", "" + ChatColor.GREEN, _matter == null ? Lang.get("no") : Lang.get("yes")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.chest"))
+            {
+                int i = Config.getInt(_world, _player, "tools", "chest", "max", true);
+                sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size() + (i != -1 ? "/" + i : "")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.furnace"))
+            {
+                int i = Config.getInt(_world, _player, "tools", "furnace", "max", true);
+                sendMessage(player, Lang.get("stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size() + (i != -1 ? "/" + i : "")) + (Lang.get("stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _fLinks)));
+            }
+            if(Perm.has(_world, _player, "vpack.use.brewingstand"))
+            {
+                int i = Config.getInt(_world, _player, "tools", "brewingstand", "max", true);
+                sendMessage(player, Lang.get("stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size() + (i != -1 ? "/" + i : "")) + (Lang.get("stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _bLinks)));
+            }
         }
         else
         {
-            sendMessage(player, Lang.get("stats.workbench", "" + ChatColor.GREEN, Lang.get("yes")));
-            sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, Lang.get("yes")));
-            sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, Lang.get("yes")) + Lang.get("stats.books", "15"));
-            sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, Lang.get("yes")));
-            sendMessage(player, Lang.get("stats.matter", "" + ChatColor.GREEN, Lang.get("yes")));
-            sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size()));
-            sendMessage(player, Lang.get("stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size()));
-            sendMessage(player, Lang.get("stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size()));
+            if(Perm.has(_world, _player, "vpack.use.workbench"))
+            {
+                sendMessage(player, Lang.get("stats.workbench", "" + ChatColor.GREEN, Lang.get("yes")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.uncrafter"))
+            {
+                sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, Lang.get("yes")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.enchanttable"))
+            {
+                sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, Lang.get("yes")) + Lang.get("stats.books", "" + _maxBookshelves));
+            }
+            if(Perm.has(_world, _player, "vpack.use.anvil"))
+            {
+                sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, Lang.get("yes")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.materializer"))
+            {
+                sendMessage(player, Lang.get("stats.matter", "" + ChatColor.GREEN, Lang.get("yes")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.chest"))
+            {
+                sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size()));
+            }
+            if(Perm.has(_world, _player, "vpack.use.furnace"))
+            {
+                sendMessage(player, Lang.get("stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size()));
+            }
+            if(Perm.has(_world, _player, "vpack.use.brewingstand"))
+            {
+                sendMessage(player, Lang.get("stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size()));
+            }
         }
     }
     
