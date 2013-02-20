@@ -838,14 +838,38 @@ public class VCommands implements CommandExecutor
             VPack pack = _plugin.getPack(player);
             final String y = ChatColor.YELLOW.toString();
             final String g = ChatColor.GREEN.toString();
-            sendMessage(player, Lang.get("price.workbench", y, g, "" + pack.priceWorkbenchBuy(), "" + pack.priceWorkbenchUse()));
-            sendMessage(player, Lang.get("price.uncrafter", y, g, "" + pack.priceUncrafterBuy(), "" + pack.priceUncrafterUse()));
-            sendMessage(player, Lang.get("price.enchanttable", y, g, "" + pack.priceEnchBuy(), "" + pack.priceEnchUse(), "" + pack.priceEnchBook(1)));
-            sendMessage(player, Lang.get("price.anvil", y, g, "" + pack.priceAnvilBuy(), "" + pack.priceAnvilUse()));
-            sendMessage(player, Lang.get("price.matter", y, g, "" + pack.priceMatterBuy(), "" + pack.priceMatterUse()));
-            sendMessage(player, Lang.get("price.chest", y, g, "" + pack.priceChestBuy(1), "" + pack.priceChestUse()));
-            sendMessage(player, Lang.get("price.furnace", y, g, "" + pack.priceFurnaceBuy(1), "" + pack.priceFurnaceUse(), "" + pack.priceFurnaceLink()));
-            sendMessage(player, Lang.get("price.brewingstand", y, g, "" + pack.priceBrewBuy(1), "" + pack.priceBrewUse(), "" + pack.priceBrewLink()));
+            if(Perm.has(player, "vpack.use.workbench"))
+            {
+                sendMessage(player, Lang.get("price.workbench", y, g, "" + pack.priceWorkbenchBuy(), "" + pack.priceWorkbenchUse()));
+            }
+            if(Perm.has(player, "vpack.use.uncrafter"))
+            {
+                sendMessage(player, Lang.get("price.uncrafter", y, g, "" + pack.priceUncrafterBuy(), "" + pack.priceUncrafterUse()));
+            }
+            if(Perm.has(player, "vpack.use.enchanttable"))
+            {
+                sendMessage(player, Lang.get("price.enchanttable", y, g, "" + pack.priceEnchBuy(), "" + pack.priceEnchUse(), "" + pack.priceEnchBook(1)));
+            }
+            if(Perm.has(player, "vpack.use.anvil"))
+            {
+                sendMessage(player, Lang.get("price.anvil", y, g, "" + pack.priceAnvilBuy(), "" + pack.priceAnvilUse()));
+            }
+            if(Perm.has(player, "vpack.use.materializer"))
+            {
+                sendMessage(player, Lang.get("price.matter", y, g, "" + pack.priceMatterBuy(), "" + pack.priceMatterUse()));
+            }
+            if(Perm.has(player, "vpack.use.chest"))
+            {
+                sendMessage(player, Lang.get("price.chest", y, g, "" + pack.priceChestBuy(1), "" + pack.priceChestUse()));
+            }
+            if(Perm.has(player, "vpack.use.furnace"))
+            {
+                sendMessage(player, Lang.get("price.furnace", y, g, "" + pack.priceFurnaceBuy(1), "" + pack.priceFurnaceUse(), "" + pack.priceFurnaceLink()));
+            }
+            if(Perm.has(player, "vpack.use.brewingstand"))
+            {
+                sendMessage(player, Lang.get("price.brewingstand", y, g, "" + pack.priceBrewBuy(1), "" + pack.priceBrewUse(), "" + pack.priceBrewLink()));
+            }
         }
         else
         {
