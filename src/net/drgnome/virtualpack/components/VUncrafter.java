@@ -78,6 +78,14 @@ public class VUncrafter extends VContainer
     
     private boolean isItemAllowed(EntityHuman human, ItemStack item)
     {
+        if(!Config.bool(human.world.getWorld().getName(), "uncraft-enchanted"))
+        {
+            NBTTagList ench = item.getEnchantments();
+            if((ench != null) && (ench.size() > 0))
+            {
+                return false;
+            }
+        }
         return !Config.isBlacklisted(human.world.getWorld().getName(), human.name, "uncrafter", CraftItemStack.asBukkitCopy(item));
     }
 }

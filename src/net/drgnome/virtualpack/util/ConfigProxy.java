@@ -115,6 +115,7 @@ public class ConfigProxy
         setDef("on-death", "keep");
         setDef("economy", "true");
         setDef("allow-creative", "false");
+        setDef("uncraft-enchanted", "true");
         setDef("events.use", "true");
         setDef("events.ignorecancelled", "false");
         setDef("transmutation.enabled", "false");

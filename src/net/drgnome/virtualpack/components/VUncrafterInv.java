@@ -11,7 +11,6 @@ import net.drgnome.virtualpack.util.*;
 
 public class VUncrafterInv extends VInv
 {
-    
     public VUncrafterInv()
     {
         super(2);
