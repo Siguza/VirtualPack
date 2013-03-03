@@ -36,6 +36,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     private int _saveTick = 0;
     private int _annoyTick = 0;
     private int _upTick = 72000;
+    private int _loadTick = 0;
     private boolean _update = false;
     private boolean _saveRequested = false;
     private boolean _loadRequested = false;
@@ -658,6 +659,19 @@ public class VPlugin extends JavaPlugin implements Runnable
         if(isReloading())
         {
             return;
+        }
+        if(!_loadSuccess)
+        {
+            int reloadInterval = Config.getInt("reload-on-failure");
+            if(reloadInterval > 0)
+            {
+                _loadTick++;
+                if(_loadTick > reloadInterval * 20)
+                {
+                    _loadTick = 0;
+                    loadUserData();
+                }
+            }
         }
         if(_saveRequested)
         {

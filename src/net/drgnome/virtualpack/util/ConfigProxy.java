@@ -108,6 +108,7 @@ public class ConfigProxy
         setDef("enabled", "true");
         setDef("language", "en");
         setDef("load-multithreaded", "false");
+        setDef("reload-on-failure", "0");
         setDef("import-world", "");
         setDef("check-update", "true");
         setDef("global-perms", "true");
