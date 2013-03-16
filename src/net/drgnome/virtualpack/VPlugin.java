@@ -408,7 +408,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
         }
         try
-		{
+        {
             if(_portMysql)
             {
                 loadFlatfile();
@@ -426,13 +426,13 @@ public class VPlugin extends JavaPlugin implements Runnable
             AlphaChestHelper.check();
             BackpackHelper.check();
             VirtualChestHelper.check();
-		}
-		catch(Throwable t)
-		{
+        }
+        catch(Throwable t)
+        {
             _log.severe("[VirtualPack] COULD NOT LOAD USER DATA!");
             t.printStackTrace();
             _loadSuccess = false;
-		}
+        }
         _loadRequested = false;
     }
     
@@ -717,7 +717,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         if(!_update && Config.bool("check-update"))
         {
             _upTick++;
-            if(_upTick >= 60 * 60 * 20)
+            if(_upTick >= 72000)
             {
                 checkUpdate();
             }

@@ -128,7 +128,7 @@ public class VUncrafterInv extends VInv
                 }
                 for(int j = 0; j < back.length; j++)
                 {
-                    if((back[j] != null) && (back[j].getData() < 0))
+                    if((back[j] != null) && ((back[j].getData() < 0) || (back[j].getData() >= 0x7FFF)))
                     {
                         back[j].setData(0);
                     }

@@ -22,33 +22,36 @@ public class VAnvilSlot extends Slot
         return false;
     }
 
-    public boolean a(EntityHuman entityhuman)
+    public boolean #FIELD_SLOT_4#(EntityHuman entityhuman)
     {
-        return (VAnvil.playerFree(entityhuman) || entityhuman.expLevel >= _anvil.a) && (_anvil.a > 0) && this.d();
+        return (VAnvil.playerFree(entityhuman) || entityhuman.expLevel >= _anvil.#FIELD_CONTAINERANVIL_5#) && (_anvil.#FIELD_CONTAINERANVIL_5# > 0) && #FIELD_SLOT_1#();
     }
 
-    public void a(EntityHuman entityhuman, ItemStack itemstack)
+    public void #FIELD_SLOT_5#(EntityHuman entityhuman, ItemStack itemstack)
     {
-        entityhuman.levelDown(VAnvil.playerFree(entityhuman) ? 0 : (-_anvil.a));
-        VAnvil.a(_anvil).setItem(0, null);
-        if(VAnvil.b(_anvil) > 0)
+        if(!VAnvil.playerFree(entityhuman))
         {
-            ItemStack itemstack1 = VAnvil.a(_anvil).getItem(1);
-            if(itemstack1 != null && itemstack1.count > VAnvil.b(_anvil))
+            entityhuman.levelDown(-_anvil.#FIELD_CONTAINERANVIL_5#);
+        }
+        VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(0, null);
+        if(VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil) > 0)
+        {
+            ItemStack itemstack1 = VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).getItem(1);
+            if(itemstack1 != null && itemstack1.count > VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil))
             {
-                itemstack1.count -= VAnvil.b(_anvil);
-                VAnvil.a(_anvil).setItem(1, itemstack1);
+                itemstack1.count -= VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil);
+                VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, itemstack1);
             }
             else
             {
-                VAnvil.a(_anvil).setItem(1, null);
+                VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, null);
             }
         }
         else
         {
-            VAnvil.a(_anvil).setItem(1, null);
+            VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, null);
         }
-        _anvil.a = 0;
+        _anvil.#FIELD_CONTAINERANVIL_5# = 0;
         _anvil.updatePlayerInventory();
     }
 }

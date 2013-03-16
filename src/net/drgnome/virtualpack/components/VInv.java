@@ -117,6 +117,11 @@ public class VInv implements IInventory
         return "Blubb";
     }
     
+    public boolean c() // Has name?
+    {
+        return true;
+    }
+    
     public int getMaxStackSize()
     {
         return 64;
@@ -144,6 +149,11 @@ public class VInv implements IInventory
     public ItemStack[] getContents()
     {
         return contents;
+    }
+    
+    public boolean #FIELD_IINVENTORY_3#(int slot, ItemStack item)
+    {
+        return true;
     }
     
     public void update()

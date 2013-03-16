@@ -476,7 +476,11 @@ public class Util
     
     public static void openWindow(EntityPlayer player, Container container, String name, int id, int size)
     {
-        player.playerConnection.sendPacket(new Packet100OpenWindow(1, id, name, size));
+        if(name.length() > 32)
+        {
+            name = name.substring(0, 32);
+        }
+        player.playerConnection.sendPacket(new Packet100OpenWindow(1, id, name, size, true));
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);

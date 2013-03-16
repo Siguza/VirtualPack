@@ -22,7 +22,7 @@
         </repository>
         <repository>
             <id>vault-repo</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+            <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>
@@ -35,28 +35,28 @@
         <repository>
             <id>comphenix-rep</id>
             <name>Comphenix Repository</name>
-            <url>http://repo.comphenix.net/content/groups/public</url>
+            <url>http://repo.comphenix.net/content/groups/public/</url>
         </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.4.6-R0.4-SNAPSHOT</version>
+            <version>1.5-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.25-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
-            <version>5.4.6-SNAPSHOT</version>
+            <version>5.5.3-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>2.0.0</version>
+            <version>2.3.0</version>
         </dependency>
     </dependencies>
     <build>
@@ -142,7 +142,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#MC_VERSION#</token>
-                                    <value>1_4_6</value>
+                                    <value>1_5_R1</value>
                                 </replacement>
                                 <!-- Hello there -->
                                 <replacement>
@@ -166,8 +166,48 @@
                                     <value>b</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_CONTAINERENCHANTTABLE_1#</token> <!-- (IInventory) -->
+                                    <token>#FIELD_CONTAINER_6#</token> <!-- (IInventory) -->
                                     <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_8#</token> <!-- (ItemStack, int, int, bool) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_9#</token> <!-- () -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_10#</token> <!-- (EntityHuman, int) -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_1#</token> <!-- static (ContainerAnvil) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_2#</token> <!-- IInventory -->
+                                    <value>f</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_3#</token> <!-- IInventory -->
+                                    <value>g</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_4#</token> <!-- () -->
+                                    <value>e</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_5#</token> <!-- int -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_6#</token> <!-- (String) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_7#</token> <!-- static (ContainerAnvil) -->
+                                    <value>b</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINERENCHANTTABLE_2#</token> <!-- (EntityHuman, int) -->
@@ -182,6 +222,10 @@
                                     <value>b</value>
                                 </replacement>
                                 <replacement>
+                                    <token>#FIELD_ENCHANTMENT_1#</token> <!-- (Enchantment) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
                                     <token>#FIELD_ENCHANTMENTMANAGER_1#</token> <!-- st (Random, int, int, ItemStack) -->
                                     <value>a</value>
                                 </replacement>
@@ -190,12 +234,28 @@
                                     <value>b</value>
                                 </replacement>
                                 <replacement>
+                                    <token>#FIELD_ENCHANTMENTMANAGER_3#</token> <!-- st (ItemStack) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENTMANAGER_4#</token> <!-- st (Map, ItemStack) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
                                     <token>#FIELD_IINVENTORY_1#</token> <!-- (EntityHuman) -->
-                                    <value>a_</value>
+                                    <value>a</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IINVENTORY_2#</token> <!-- () -->
-                                    <value>f</value>
+                                    <value>g</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_3#</token> <!-- (int, ItemStack) -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_4#</token> <!-- () -->
+                                    <value>c</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IRECIPE_1#</token> <!-- () -->
@@ -203,47 +263,75 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_1#</token> <!-- () -->
-                                    <value>s</value>
+                                    <value>t</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_2#</token> <!-- () -->
-                                    <value>r</value>
+                                    <value>s</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_3#</token> <!-- () -->
-                                    <value>v</value>
+                                    <value>w</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_4#</token> <!-- () -->
-                                    <value>u</value>
+                                    <value>v</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_5#</token> <!-- () has subtypes -->
-                                    <value>l</value>
+                                    <value>m</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_6#</token> <!-- () -->
+                                    <value>g</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMENCHANTEDBOOK_1#</token> <!-- (ItemStack, EnchantmentInstance) -->
                                     <value>a</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_ITEMPOTION_1#</token> <!-- st (int) -->
+                                    <token>#FIELD_ITEMENCHANTEDBOOK_2#</token> <!-- (ItemStack) -->
                                     <value>g</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_ITEMPOTION_2#</token> <!-- (int) -->
+                                    <token>#FIELD_ITEMPOTION_1#</token> <!-- st (int) -->
                                     <value>f</value>
                                 </replacement>
                                 <replacement>
+                                    <token>#FIELD_ITEMPOTION_2#</token> <!-- (int) -->
+                                    <value>c</value>
+                                </replacement>
+                                <replacement>
                                     <token>#FIELD_ITEMSTACK_1#</token> <!-- st (NBTTagCompound) -->
-                                    <value>a</value>
+                                    <value>createStack</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_2#</token> <!-- () -->
-                                    <value>v</value>
+                                    <value>w</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_3#</token> <!-- (int) -->
                                     <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_5#</token> <!-- () -->
+                                    <value>j</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_6#</token> <!-- () -->
+                                    <value>l</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_7#</token> <!-- () -->
+                                    <value>getName</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_8#</token> <!-- () -->
+                                    <value>hasName</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_9#</token> <!-- (String) -->
+                                    <value>c</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_NBTBASE_1#</token> <!-- st (DataInput) -->
@@ -259,7 +347,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_NBTTAGCOMPOUND_1#</token> <!-- (String) remove element -->
-                                    <value>o</value>
+                                    <value>remove</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_POTIONBREWER_1#</token> <!-- st (int, String) -->
@@ -268,6 +356,26 @@
                                 <replacement>
                                     <token>#FIELD_RECIPESFURNACE_1#</token> <!-- Class name -->
                                     <value>RecipesFurnace</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_1#</token> <!-- () -->
+                                    <value>d</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_2#</token> <!-- (ItemStack, ItemStack) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_3#</token> <!-- () -->
+                                    <value>e</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_4#</token> <!-- (EntityHuman) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_5#</token> <!-- (EntityHuman, ItemStack) -->
+                                    <value>a</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_TILEENTITY_1#</token> <!-- () -->

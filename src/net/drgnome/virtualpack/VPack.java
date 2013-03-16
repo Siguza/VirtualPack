@@ -726,7 +726,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VWorkbench(player), "", 1, 9);
+        Util.openWindow(player, new VWorkbench(player), Lang.get("workbench.name"), 1, 9);
     }
     
     /** Uncrafter **/
@@ -761,12 +761,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        String guiname = Lang.get("uncrafter.name");
-        if(guiname.length() > 32)
-        {
-            guiname = guiname.substring(0, 32);
-        }
-        Util.openWindow(player, new VUncrafter(player), guiname, 0, 18);
+        Util.openWindow(player, new VUncrafter(player), Lang.get("uncrafter.name"), 0, 18);
     }
     
     /** Enchanting table **/
@@ -801,7 +796,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VEnchantTable(player, _bookshelves), "", 4, 9);
+        Util.openWindow(player, new VEnchantTable(player, _bookshelves), Lang.get("enchanttable.name"), 4, 9);
     }
     
     public void buyBookshelf(Player bukkitPlayer, int amount)
@@ -856,7 +851,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VAnvil(player), "", 8, 9);
+        Util.openWindow(player, new VAnvil(player), Lang.get("anvil.name"), 8, 9);
     }
     
     /** Materializer **/
@@ -896,12 +891,7 @@ public class VPack
         _matter.updateInv();
         /** FUUU ALL THE WAY **/
         //Util.openInv(player, _matter);
-        String guiname = Lang.get("matter.name");
-        if(guiname.length() > 32)
-        {
-            guiname = guiname.substring(0, 32);
-        }
-        Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter), guiname, 0, 54);
+        Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter), Lang.get("matter.name"), 0, 54);
     }
     
     /** Chest **/
@@ -942,12 +932,7 @@ public class VPack
             return;
         }
         VChest container = new VChest(player, inv);
-        String chestname = Lang.get("chest.name", "" + nr);
-        if(chestname.length() > 32)
-        {
-            chestname = chestname.substring(0, 32);
-        }
-        Util.openWindow(player, container, chestname, 0, getChestSize() * 9);
+        Util.openWindow(player, container, Lang.get("chest.name", "" + nr), 0, getChestSize() * 9);
     }
     
     public void dropChest(Player bukkitPlayer, int nr)
@@ -1019,7 +1004,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VFurnace(player, fur), "", 2, 3);
+        Util.openWindow(player, new VFurnace(player, fur), Lang.get("furnace.name", "" + nr), 2, 3);
     }
     
     public void linkFurnace(Player bukkitPlayer, int furnaceNR, int chestNR, boolean free)
@@ -1114,7 +1099,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VBrewingstand(player, brew), "", 5, 4);
+        Util.openWindow(player, new VBrewingstand(player, brew), Lang.get("brewingstand.name", "" + nr), 5, 4);
     }
     
     public void linkBrewingstand(Player bukkitPlayer, int brewNR, int chestNR, boolean free)
@@ -1178,12 +1163,7 @@ public class VPack
     {
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         VTrash container = new VTrash(player);
-        String name = Lang.get("trash.name");
-        if(name.length() > 32)
-        {
-            name = name.substring(0, 32);
-        }
-        Util.openWindow(player, container, name, 0, 9);
+        Util.openWindow(player, container, Lang.get("trash.name"), 0, 9);
     }
     
     /** Sending **/

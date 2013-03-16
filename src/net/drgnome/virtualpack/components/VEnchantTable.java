@@ -26,12 +26,12 @@ public class VEnchantTable extends ContainerEnchantTable implements VGUI
         this.bookshelves = bookshelves;
     }
     
-    public void #FIELD_CONTAINERENCHANTTABLE_1#(IInventory iinventory)
+    public void #FIELD_CONTAINER_6#(IInventory iinventory)
     {
         if(iinventory == this.enchantSlots)
         {
             ItemStack itemstack = iinventory.getItem(0);
-            if(itemstack != null && itemstack.v())
+            if(itemstack != null && itemstack.#FIELD_ITEMSTACK_2#())
             {
                 this.#FIELD_CONTAINERENCHANTTABLE_3# = this.rand.nextLong();
                 for(int i = 0; i < 3; ++i)
@@ -140,7 +140,7 @@ public class VEnchantTable extends ContainerEnchantTable implements VGUI
                     entityhuman.levelDown(-level);
                 }
                 // CraftBukkit end
-                this.#FIELD_CONTAINERENCHANTTABLE_1#(this.enchantSlots);
+                this.#FIELD_CONTAINER_6#(this.enchantSlots);
             }
             return true;
         }
