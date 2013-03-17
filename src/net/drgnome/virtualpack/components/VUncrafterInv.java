@@ -41,7 +41,7 @@ public class VUncrafterInv extends VInv
                         {
                             continue;
                         }
-                        else if(!Item.byId[item.id].#FIELD_ITEM_5#() && (item.getData() != 0))
+                        else if((!Item.byId[item.id].#FIELD_ITEM_5#() && (item.getData() != 0)) || !Config.bool("uncraft-enchanted"))
                         {
                             break;
                         }
@@ -133,14 +133,65 @@ public class VUncrafterInv extends VInv
                         back[j].setData(0);
                     }
                 }
-                ItemStack abc;
+                /** NEW **/
                 ItemStack[] test = new ItemStack[9];
                 for(int j = 0; j < test.length; j++)
                 {
-                    abc = getItem(j + 9);
-                    test[j] = Util.copy_old(abc);
+                    test[j] = Util.copy_old(getItem(j + 9));
                 }
+                ItemStack[] test1 = Util.copy_old(test);
                 boolean success;
+                for(; item.count >= result.count; item.count -= result.count)
+                {
+                    success = true;
+                    for(int j = 0; j < back.length; j++)
+                    {
+                        if((back[j] == null) || (Item.byId[back[j].id].#FIELD_ITEM_1#())) // Derpnote
+                        {
+                            continue;
+                        }
+                        success = false;
+                        for(int k = 0; k < test1.length; k++)
+                        {
+                            if(test1[k] == null)
+                            {
+                                test1[k] = Util.copy_old(back[j]);
+                                test1[k].count = 1;
+                                success = true;
+                                break;
+                            }
+                            else if((test1[k].id == back[j].id) && (test1[k].getData() == back[j].getData()) && (test1[k].count < Item.byId[test1[k].id].getMaxStackSize()))
+                            {
+                                test1[k].count += 1;
+                                success = true;
+                                break;
+                            }
+                        }
+                        if(!success)
+                        {
+                            break;
+                        }
+                    }
+                    if(success)
+                    {
+                        test = Util.copy_old(test1);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                for(int j = 0; j < test.length; j++)
+                {
+                    super.setItem(j + 9, test[j]);
+                }
+                break;
+                /*ItemStack[] test = new ItemStack[9];
+                for(int j = 0; j < test.length; j++)
+                {
+                    test[j] = Util.copy_old(getItem(j + 9));
+                }
+                boolean success = false;
                 ItemStack[] test1 = Util.copy_old(test);
                 for(; item.count >= result.count; item.count -= result.count)
                 {
@@ -180,7 +231,7 @@ public class VUncrafterInv extends VInv
                 {
                     super.setItem(j + 9, test[j]);
                 }
-                break;
+                break;*/
             }
         }
         if((item != null) && (item.count <= 0))

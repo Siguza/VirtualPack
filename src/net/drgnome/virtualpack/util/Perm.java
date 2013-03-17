@@ -55,16 +55,23 @@ public class Perm
     
     public static String[] getGroups(String world, String username)
     {
-        if(_perm == null)
+        try
         {
-            _log.warning("[VirtualPack] Permission instance is null!");
+            if(_perm == null)
+            {
+                _log.warning("[VirtualPack] Permission instance is null!");
+                return new String[0];
+            }
+            String[] groups = _perm.getPlayerGroups(world, username);
+            if(Config.bool("global-perms"))
+            {
+                groups = Util.merge(groups, _perm.getPlayerGroups((String)null, username));
+            }
+            return groups;
+        }
+        catch(UnsupportedOperationException e)
+        {
             return new String[0];
         }
-        String[] groups = _perm.getPlayerGroups(world, username);
-        if(Config.bool("global-perms"))
-        {
-            groups = Util.merge(groups, _perm.getPlayerGroups((String)null, username));
-        }
-        return groups;
     }
 }
