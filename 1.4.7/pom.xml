@@ -28,10 +28,10 @@
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
-		<repository>
-			<id>nbtlib-repo</id>
-			<url>http://build.drgnome.net/plugin/repository/everything/</url>
-		</repository>
+        <repository>
+            <id>nbtlib-repo</id>
+            <url>http://build.drgnome.net/plugin/repository/everything/</url>
+        </repository>
         <repository>
             <id>comphenix-rep</id>
             <name>Comphenix Repository</name>
@@ -83,34 +83,34 @@
             </resource>
         </resources>
         <pluginManagement>
-        	<plugins>
-        		<plugin>
-                	<groupId>org.eclipse.m2e</groupId>
-                	<artifactId>lifecycle-mapping</artifactId>
-                	<version>1.0.0</version>
-                	<configuration>
-                    	<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-							            <groupId>com.google.code.maven-replacer-plugin</groupId>
-							            <artifactId>replacer</artifactId>
-							            <versionRange>1.5.1</versionRange>
-							            <goals>
-							            	<goal>replace</goal>
-							            </goals>
-						            </pluginExecutionFilter>
-							          	<action>
-							            	<execute></execute>
-							         	</action>
-							          	<comment>source: </comment>
-						        </pluginExecution>
-	                    	</pluginExecutions>
-                    	</lifecycleMappingMetadata>
-                	</configuration>
-          		</plugin>
-        	</plugins>
-    	</pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                                        <artifactId>replacer</artifactId>
+                                        <versionRange>1.5.1</versionRange>
+                                        <goals>
+                                            <goal>replace</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                          <action>
+                                            <execute></execute>
+                                         </action>
+                                          <comment>source: </comment>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                  </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
