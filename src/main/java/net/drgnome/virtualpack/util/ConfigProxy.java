@@ -113,6 +113,7 @@ public class ConfigProxy
         setDef("check-update", "true");
         setDef("global-perms", "true");
         setDef("save-interval", "300");
+        setDef("tick.interval", "5");
         setDef("on-death", "keep");
         setDef("economy", "true");
         setDef("allow-creative", "false");
@@ -174,6 +175,7 @@ public class ConfigProxy
         setDef("tools.brewingstand.use", "0");
         setDef("tools.brewingstand.link", "100000");
         setDef("send.notify-interval", "0");
+        setDef("send.drop", "false");
         setDef("blacklist.uncrafter.whitelist", "false");
         setDef("blacklist.uncrafter.list", new ArrayList<String>());
         setDef("blacklist.store.whitelist", "false");

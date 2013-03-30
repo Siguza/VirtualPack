@@ -69,6 +69,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     private void init()
     {
+        getServer().getScheduler().cancelTasks(this);
         _waitForGroupManager = false;
         checkFiles();
         Config.reload();
@@ -118,6 +119,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
         }
         loadUserData();
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 1L);
         _log.info(Lang.get("vpack.enable", _version));
     }
     
@@ -624,11 +626,6 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public void run()
     {
-        tick();
-    }
-    
-    public void tick()
-    {
         if(_waitForGroupManager)
         {
             try
@@ -660,12 +657,13 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             return;
         }
+        int ticks = Config.getInt("tick.interval");
         if(!_loadSuccess)
         {
             int reloadInterval = Config.getInt("reload-on-failure");
             if(reloadInterval > 0)
             {
-                _loadTick++;
+                _loadTick += ticks;
                 if(_loadTick > reloadInterval * 20)
                 {
                     _loadTick = 0;
@@ -691,12 +689,12 @@ public class VPlugin extends JavaPlugin implements Runnable
                 {
                     continue;
                 }
-                pack.tick();
+                pack.tick(ticks);
             }
         }
         if(Config.getInt("send.notify-interval") > 0)
         {
-            _annoyTick--;
+            _annoyTick -= ticks;
             if(_annoyTick <= 0)
             {
                 _annoyTick = Config.getInt("send.notify-interval") * 20;
@@ -716,7 +714,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         if(!_update && Config.bool("check-update"))
         {
-            _upTick++;
+            _upTick += ticks;
             if(_upTick >= 72000)
             {
                 checkUpdate();
@@ -724,7 +722,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         if(Config.getInt("save-interval") > 0)
         {
-            _saveTick++;
+            _saveTick += ticks;
             if(_saveTick >= Config.getInt("save-interval") * 20)
             {
                 _log.info("[VirtualPack] Saving user data...");

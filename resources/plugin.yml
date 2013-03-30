@@ -7,7 +7,7 @@ softdepend: [ProtocolLib, WorldEdit, Multiverse-Core, PermissionsEx, GroupManage
 permissions:
 
   vpack.all:
-    description: "Gives FULL ACCESS to ALL VirtualPack features!"
+    description: "Gives FULL access to ALL VirtualPack features!"
     children:
       vpack.use.all: true
       vpack.use.enchanttable.free: true
