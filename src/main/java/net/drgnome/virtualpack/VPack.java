@@ -303,7 +303,7 @@ public class VPack
         {
             _bookshelves = 0;
         }
-        if(!Perm.has(_world, _player, "vpack.keep.materializer"))
+        if((_matter != null) && !Perm.has(_world, _player, "vpack.keep.materializer"))
         {
             _matter.reset();
         }
