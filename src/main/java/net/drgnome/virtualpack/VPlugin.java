@@ -119,7 +119,8 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
         }
         loadUserData();
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 1L);
+        int tick = Config.getInt("tick.interval");
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, (long)(tick <= 0 ? 1 : tick));
         _log.info(Lang.get("vpack.enable", _version));
     }
     
