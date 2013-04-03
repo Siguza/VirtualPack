@@ -69,7 +69,6 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     private void init()
     {
-        getServer().getScheduler().cancelTasks(this);
         _waitForGroupManager = false;
         checkFiles();
         Config.reload();
@@ -202,6 +201,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             else
             {
                 _waitForGroupManager = true;
+                getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 1L);
             }
         }
         catch(ClassNotFoundException e)
@@ -213,7 +213,6 @@ public class VPlugin extends JavaPlugin implements Runnable
             warn();
             t.printStackTrace();
         }
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 1L);
     }
     
     public void onDisable()
@@ -633,6 +632,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             {
                 if(((Boolean)(Class.forName("org.anjocaido.groupmanager.GroupManager").getMethod("isLoaded").invoke(null))).booleanValue())
                 {
+                    getServer().getScheduler().cancelTasks(this);
                     init();
                 }
                 else
