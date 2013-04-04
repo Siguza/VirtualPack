@@ -429,9 +429,11 @@ public class VCommands implements CommandExecutor
             }
             else
             {
+                Bukkit.getServer().getScheduler().cancelTasks(_plugin);
                 _plugin.saveUserData();
                 _plugin.reloadConfig();
                 _plugin.loadUserData();
+                Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(_plugin, _plugin, 0L, (long)Util.getTick());
                 sendMessage(sender, Lang.get("admin.reloaded"), ChatColor.YELLOW);
             }
             return;
@@ -474,6 +476,11 @@ public class VCommands implements CommandExecutor
             {
                 sendMessage(sender, Lang.get("matter.disabled"), ChatColor.RED);
             }
+            return;
+        }
+        else if(args[0].equals("cut"))
+        {
+            cut(sender, Util.cut(args, 1));
             return;
         }
         else if(args.length < 2)
@@ -547,6 +554,60 @@ public class VCommands implements CommandExecutor
         else
         {
             sendMessage(sender, Lang.get("argument.unknown"), ChatColor.RED);
+        }
+    }
+    
+    private void cut(CommandSender sender, String[] args)
+    {
+        if(!Perm.has(sender, "vpack.admin.cut"))
+        {
+            sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+            return;
+        }
+        boolean force = false;
+        String player = null;
+        String group = null;
+        if((args.length > 0) && args[0].equalsIgnoreCase("force"))
+        {
+            if(Perm.has(sender, "vpack.admin.cut.force"))
+            {
+                force = true;
+            }
+            else
+            {
+                sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+                return;
+            }
+            args = Util.cut(args, 1);
+        }
+        if(args.length > 0)
+        {
+            if(args.length < 2)
+            {
+                sendMessage(sender, Lang.get("argument.few"), ChatColor.RED);
+                return;
+            }
+            else if(args[0].equalsIgnoreCase("player"))
+            {
+                player = args[1];
+            }
+            else if(args[0].equalsIgnoreCase("group"))
+            {
+                group = args[1];
+            }
+            else
+            {
+                sendMessage(sender, Lang.get("argument.unknown"), ChatColor.RED);
+                return;
+            }
+        }
+        for(VPack pack : _plugin.getAllPacks())
+        {
+            if((Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.bypass.cut") && !force) || ((player != null) && player.equalsIgnoreCase(pack.getPlayer())) || ((group != null) && Perm.inGroup(pack.getWorld(), pack.getPlayer(), group)))
+            {
+                continue;
+            }
+            pack.cut();
         }
     }
     

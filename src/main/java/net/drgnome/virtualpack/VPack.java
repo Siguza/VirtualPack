@@ -177,17 +177,11 @@ public class VPack
     {
         for(VTEFurnace fur : _furnaces.values().toArray(new VTEFurnace[0]))
         {
-            for(int i = 0; i < ticks; i++)
-            {
-                fur.tick();
-            }
+            fur.tick(ticks);
         }
         for(VTEBrewingstand brew : _brews.values().toArray(new VTEBrewingstand[0]))
         {
-            for(int i = 0; i < ticks; i++)
-            {
-                brew.tick();
-            }
+            brew.tick(ticks);
         }
     }
     
@@ -270,6 +264,11 @@ public class VPack
                 }
             }
         }
+    }
+    
+    public void cut()
+    {
+        
     }
     
     public void drop(Player player)

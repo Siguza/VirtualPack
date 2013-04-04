@@ -17,31 +17,25 @@ public class VTEFurnace extends TileEntityFurnace
 {
     // To access the chests
     private VPack vpack;
-    public int link;
     private ItemStack[] contents = new ItemStack[3];
+    public int link = 0;
     // For custom stuff
-    private double burnSpeed;
-    private double meltSpeed;
+    private double burnSpeed = 1D;
+    private double meltSpeed = 1D;
     // I'm internally using "myCookTime" to not lose any precision, but for displaying the progress I still have to use "cookTime"
-    private double myCookTime;
+    private double myCookTime = 0D;
     // Call me paranoid, but this has to be checked
-    private int lastID;
+    private int lastID = 0;
     // Increases performance (or should at least)
-    private long lastCheck;
+    private long lastCheck = 0L;
     
     // New VTE
     public VTEFurnace(VPack vpack)
     {
         this.vpack = vpack;
-        link = 0;
-        burnSpeed = 1.0D;
-        meltSpeed = 1.0D;
-        myCookTime = 0.0D;
         cookTime = 0;
         burnTime = 0;
         ticksForCurrentFuel = 0;
-        lastID = 0;
-        lastCheck = 0;
     }
     
     // Read from save
@@ -83,10 +77,10 @@ public class VTEFurnace extends TileEntityFurnace
     // For compatibility
     public void #FIELD_TILEENTITY_1#() // Derpnote
     {
-        tick();
+        tick(1);
     }
     
-    public void tick()
+    public void tick(int ticks)
     {
         checkLink();
         int newID = contents[0] == null ? 0 : contents[0].id;
@@ -126,19 +120,19 @@ public class VTEFurnace extends TileEntityFurnace
         if(isBurning())
         {
             // Then move on
-            burnTime--;
+            burnTime -= ticks;
             // I'm using a double here because of the custom recipes.
             // The faster this fuel burns and the faster the recipe melts, the faster we're done
-            myCookTime += burnSpeed * meltSpeed;
+            myCookTime += burnSpeed * meltSpeed * ((double)ticks);
             // Finished burning?
-            if(myCookTime >= 200.0D)
+            while(myCookTime >= 200.0D)
             {
                 myCookTime -= 200.0D;
                 burn();
             }
         }
         // If it's not burning, we reset the burning progress!
-        else
+        else if(!canBurn())
         {
             myCookTime = 0.0D;
         }
@@ -266,7 +260,7 @@ public class VTEFurnace extends TileEntityFurnace
     // This needs a little addition
     public boolean isBurning()
     {
-        return super.isBurning() && (burnSpeed > 0.0D);
+        return (burnTime > 0) && (burnSpeed > 0.0D) && canBurn();
     }
     
     private ItemStack getBurnResult(ItemStack item)

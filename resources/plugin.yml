@@ -130,6 +130,9 @@ permissions:
   vpack.bypass.creative:
     description: "Allows you to use VirtualPack in creative mode even if creative mode is blocked"
 
+  vpack.bypass.cut:
+    description: "Excludes you from cuts"
+
   vpack.bypass.blacklist.all:
     description: "Allows you to ignore all blacklists"
     children:
@@ -165,7 +168,7 @@ permissions:
   vpack.admin.all:
     description: "All Admin-Permissions for VirtualPack"
     children:
-      vpack.admin: true
+      vpack.admin.cut.force: true
       vpack.admin.use: true
       vpack.admin.give: true
       vpack.admin.take: true
@@ -173,6 +176,16 @@ permissions:
       vpack.stats: true
       vpack.update: true
       vpack.bypass.all: true
+
+  vpack.admin.cut:
+    description: "Allows you to remove tools that are over the maximum in the config"
+    children:
+      vpack.admin: true
+
+  vpack.admin.cut.force:
+    description: "Allows you to force tool cutting"
+    children:
+      vpack.admin.cut: true
 
   vpack.admin.use:
     description: "Allows you to access any users VirtualPack"

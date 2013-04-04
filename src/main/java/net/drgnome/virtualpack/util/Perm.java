@@ -74,4 +74,26 @@ public class Perm
             return new String[0];
         }
     }
+    
+    public static boolean inGroup(String world, String username, String group)
+    {
+        try
+        {
+            if(_perm == null)
+            {
+                _log.warning("[VirtualPack] Permission instance is null!");
+                return false;
+            }
+            boolean in = _perm.playerInGroup(world, username, group);
+            if(Config.bool("global-perms") && !in)
+            {
+                in = _perm.playerInGroup((String)null, username, group);
+            }
+            return in;
+        }
+        catch(UnsupportedOperationException e)
+        {
+            return false;
+        }
+    }
 }

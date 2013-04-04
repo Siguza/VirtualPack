@@ -118,8 +118,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
         }
         loadUserData();
-        int tick = Config.getInt("tick.interval");
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, (long)(tick <= 0 ? 1 : tick));
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, (long)Util.getTick());
         _log.info(Lang.get("vpack.enable", _version));
     }
     
@@ -269,6 +268,22 @@ public class VPlugin extends JavaPlugin implements Runnable
             return false;
         }
         return map.containsKey(player.toLowerCase());
+    }
+    
+    public VPack[] getAllPacks()
+    {
+        ArrayList<VPack> list = new ArrayList<VPack>();
+        Iterator<HashMap<String, VPack>> iterator = _packs.values().iterator();
+        while(iterator.hasNext())
+        {
+            HashMap<String, VPack> map = iterator.next();
+            if(map == null)
+            {
+                continue;
+            }
+            list.addAll(map.values());
+        }
+        return list.toArray(new VPack[0]);
     }
     
     public VPack[] getPacks(String world)
@@ -658,7 +673,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             return;
         }
-        int ticks = Config.getInt("tick.interval");
+        int ticks = Util.getTick();
         if(!_loadSuccess)
         {
             int reloadInterval = Config.getInt("reload-on-failure");

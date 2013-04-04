@@ -63,10 +63,10 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     // For compatibility
     public void #FIELD_TILEENTITY_1#() // Derpnote
     {
-        tick();
+        tick(1);
     }
     
-    public void tick()
+    public void tick(int ticks)
     {
         checkLink();
         int newID = items[3] == null ? 0 : items[3].id;
@@ -82,7 +82,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         // Are we brewing?
         if(canBrew() && (myBrewTime > 0.0D))
         {
-            myBrewTime -= brewSpeed;
+            myBrewTime -= brewSpeed * ((double)ticks);
             // Are we done?
             if(myBrewTime <= 0.0D)
             {

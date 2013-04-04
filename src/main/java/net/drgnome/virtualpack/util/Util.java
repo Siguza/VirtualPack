@@ -559,4 +559,10 @@ public class Util
         }
         return colors;
     }
+    
+    public static int getTick()
+    {
+        int tick = Config.getInt("tick.interval");
+        return (tick > 0) ? tick : 10;
+    }
 }
