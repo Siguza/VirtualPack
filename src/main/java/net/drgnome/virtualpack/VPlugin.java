@@ -189,8 +189,17 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public void onEnable()
     {
-    	VPlugin._version = this.getDescription().getVersion();
         super.onEnable();
+    	VPlugin._version = this.getDescription().getVersion();
+    	/* Needed for reflection */
+    	InputStream mappingFile = getResource("mappings.srg");
+    	if(mappingFile == null)
+    	{
+    		getLogger().log(Level.WARNING, "No mapping file was found! Disabling!");
+    		Bukkit.getPluginManager().disablePlugin(this);
+    		return;
+    	}
+    	ObfuscationHelper.registerMappings(Util.convertStreamToString(mappingFile));
         _waitForGroupManager = false;
         try
         {

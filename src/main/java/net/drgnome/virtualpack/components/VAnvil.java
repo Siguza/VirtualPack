@@ -343,7 +343,7 @@ public class VAnvil extends ContainerAnvil implements VGUI
 
     public static IInventory a(VAnvil anvil)
     {
-        return getInv(anvil, "g");
+        return getInv(anvil, ObfuscationHelper.getMapping("ContainerAnvil/g"));
     }
 
     public static int b(VAnvil anvil)
