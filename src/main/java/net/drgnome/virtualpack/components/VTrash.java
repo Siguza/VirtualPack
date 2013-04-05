@@ -4,7 +4,7 @@
 
 package net.drgnome.virtualpack.components;
 
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 
 public class VTrash extends VContainer
 {

@@ -10,7 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
-import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
 import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.item.ValuedItemStack;
 import net.drgnome.virtualpack.data.TransmutationHelper;

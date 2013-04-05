@@ -6,7 +6,7 @@ package net.drgnome.virtualpack.components;
 
 import java.util.*;
 import java.lang.reflect.*;
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 import net.drgnome.virtualpack.util.*;
 
 public class VUncrafterInv extends VInv
@@ -41,13 +41,13 @@ public class VUncrafterInv extends VInv
                         {
                             continue;
                         }
-                        else if((!Item.byId[item.id].#FIELD_ITEM_5#() && (item.getData() != 0)) || !Config.bool("uncraft-enchanted"))
+                        else if((!Item.byId[item.id].m() && (item.getData() != 0)) || !Config.bool("uncraft-enchanted"))
                         {
                             break;
                         }
                         back = new ItemStack[ench.size() + 1];
                         back[0] = Util.copy_old(item);
-                        back[0].getTag().#FIELD_NBTTAGCOMPOUND_1#("ench");
+                        back[0].getTag().remove("ench");
                         for(int j = 0; j < ench.size(); j++)
                         {
                             back[j + 1] = new ItemStack(403, 1, 0);
@@ -72,7 +72,7 @@ public class VUncrafterInv extends VInv
                     {
                         continue;
                     }
-                    result = Util.copy_old(recipe.#FIELD_IRECIPE_1#()); // Derpnote
+                    result = Util.copy_old(recipe.b()); // Derpnote
                     if((result == null) || (result.id != item.id) || (result.getData() != item.getData()))
                     {
                         continue;
@@ -146,7 +146,7 @@ public class VUncrafterInv extends VInv
                     success = true;
                     for(int j = 0; j < back.length; j++)
                     {
-                        if((back[j] == null) || (Item.byId[back[j].id].#FIELD_ITEM_1#())) // Derpnote
+                        if((back[j] == null) || (Item.byId[back[j].id].t())) // Derpnote
                         {
                             continue;
                         }
@@ -198,7 +198,7 @@ public class VUncrafterInv extends VInv
                     success = true;
                     for(int j = 0; j < back.length; j++)
                     {
-                        if((back[j] == null) || (Item.byId[back[j].id].#FIELD_ITEM_1#())) // Derpnote
+                        if((back[j] == null) || (Item.byId[back[j].id].t())) // Derpnote
                         {
                             continue;
                         }

@@ -5,10 +5,10 @@
 package net.drgnome.virtualpack.components;
 
 import java.util.*;
-import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 import net.drgnome.virtualpack.util.*;
 
 public class VInv implements IInventory
@@ -76,7 +76,7 @@ public class VInv implements IInventory
                 setItem(slot, null);
                 return item;
             }
-            ItemStack item = contents[slot].#FIELD_ITEMSTACK_3#(size); // Derpnote
+            ItemStack item = contents[slot].a(size); // Derpnote
             if(contents[slot].count <= 0)
             {
                 setItem(slot, null);
@@ -131,7 +131,7 @@ public class VInv implements IInventory
     {
     }
     
-    public boolean #FIELD_IINVENTORY_1#(EntityHuman entityhuman) // Derpnote
+    public boolean a(EntityHuman entityhuman) // Derpnote
     {
         return true;
     }
@@ -151,7 +151,7 @@ public class VInv implements IInventory
         return contents;
     }
     
-    public boolean #FIELD_IINVENTORY_3#(int slot, ItemStack item)
+    public boolean b(int slot, ItemStack item)
     {
         return true;
     }
@@ -160,7 +160,7 @@ public class VInv implements IInventory
     {
     }
     
-    public void #FIELD_IINVENTORY_2#() // Derpnote
+    public void g() // Derpnote
     {
     }
     

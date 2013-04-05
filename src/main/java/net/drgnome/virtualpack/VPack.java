@@ -10,9 +10,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
-import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
+import net.minecraft.server.v1_5_R2.*;
 import net.drgnome.virtualpack.components.*;
 import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.tmp.*; /** FUUU **/

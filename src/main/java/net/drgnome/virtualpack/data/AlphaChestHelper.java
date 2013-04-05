@@ -8,7 +8,7 @@ import java.lang.reflect.*;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 import org.bukkit.inventory.Inventory;
 import net.drgnome.virtualpack.*;
 import net.drgnome.virtualpack.components.*;

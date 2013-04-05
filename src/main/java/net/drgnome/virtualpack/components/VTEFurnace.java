@@ -5,9 +5,9 @@
 package net.drgnome.virtualpack.components;
 
 import java.util.*;
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import net.drgnome.virtualpack.VPack;
 import net.drgnome.virtualpack.util.*;
@@ -75,7 +75,7 @@ public class VTEFurnace extends TileEntityFurnace
     }
     
     // For compatibility
-    public void #FIELD_TILEENTITY_1#() // Derpnote
+    public void g() // Derpnote
     {
         tick(1);
     }
@@ -101,9 +101,9 @@ public class VTEFurnace extends TileEntityFurnace
             // Before we remove the item: how fast does it burn?
             burnSpeed = getBurnSpeed(contents[1]);
             // If it's a container item (lava bucket), we only consume its contents (not like evil Notch!)
-            if(Item.byId[contents[1].id].#FIELD_ITEM_1#()) // Derpnote
+            if(Item.byId[contents[1].id].t()) // Derpnote
             {
-                contents[1] = new ItemStack(Item.byId[contents[1].id].#FIELD_ITEM_2#());  // Derpnote
+                contents[1] = new ItemStack(Item.byId[contents[1].id].s());  // Derpnote
             }
             // If it's not a container, consume it! Om nom nom nom!
             else
@@ -271,7 +271,7 @@ public class VTEFurnace extends TileEntityFurnace
         }
         int i = item.id;
         // CUSTOM RECIPE HERE
-        return #FIELD_RECIPESFURNACE_1#.getInstance().getResult(i); // Derpnote
+        return RecipesFurnace.getInstance().getResult(i); // Derpnote
     }
     
     private double getMeltSpeed(ItemStack item)
@@ -364,9 +364,9 @@ public class VTEFurnace extends TileEntityFurnace
         }
         // And consume the ingredient item
         // Goddamn, you have container functions, use them! Notch!
-        if(Item.byId[contents[0].id].#FIELD_ITEM_1#()) // Derpnote
+        if(Item.byId[contents[0].id].t()) // Derpnote
         {
-            contents[0] = new ItemStack(Item.byId[contents[0].id].#FIELD_ITEM_2#()); // Derpnote
+            contents[0] = new ItemStack(Item.byId[contents[0].id].s()); // Derpnote
         }
         else
         {
@@ -409,7 +409,7 @@ public class VTEFurnace extends TileEntityFurnace
             }
             else
             {
-                itemstack = contents[i].#FIELD_ITEMSTACK_3#(j); // Derpnote
+                itemstack = contents[i].a(j); // Derpnote
                 if(contents[i].count == 0)
                 {
                     contents[i] = null;
@@ -452,7 +452,7 @@ public class VTEFurnace extends TileEntityFurnace
         return null;
     }
     
-    public boolean #FIELD_IINVENTORY_1#(EntityHuman entityhuman) // Derpnote
+    public boolean a(EntityHuman entityhuman) // Derpnote
     {
         return true;
     }

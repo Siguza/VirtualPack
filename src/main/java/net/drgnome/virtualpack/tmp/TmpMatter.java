@@ -5,9 +5,9 @@
 package net.drgnome.virtualpack.tmp;
 
 import java.util.*;
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.item.*;
 import net.drgnome.virtualpack.components.*;
@@ -21,29 +21,29 @@ public class TmpMatter extends VContainer
     {
         super(player, inv);
         _inv = inv;
-        #FIELD_CONTAINER_2# = new ArrayList(); // Derpnote
-        #FIELD_CONTAINER_3# = new ArrayList(); // Derpnote
+        b = new ArrayList(); // Derpnote
+        c = new ArrayList(); // Derpnote
         for(int i = 0; i < 6; i++)
         {
             for(int j = 0; j < 9; j++)
             {
-                #FIELD_CONTAINER_4#(new Slot(container, j + 9 * i, 8 + j * 18, 18)); // Derpnote
+                a(new Slot(container, j + 9 * i, 8 + j * 18, 18)); // Derpnote
             }
         }
         for(int i = 0; i < 3; i++)
         {
             for(int j = 0; j < 9; j++)
             {
-                #FIELD_CONTAINER_4#(new Slot(player.inventory, j + i * 9 + 9, 8 + j * 18, 67 + i * 18)); // Derpnote
+                a(new Slot(player.inventory, j + i * 9 + 9, 8 + j * 18, 67 + i * 18)); // Derpnote
             }
         }
         for(int i = 0; i < 9; i++)
         {
-            #FIELD_CONTAINER_4#(new Slot(player.inventory, i, 8 + i * 18, 125)); // Derpnote
+            a(new Slot(player.inventory, i, 8 + i * 18, 125)); // Derpnote
         }
     }
     
-    public void #FIELD_CONTAINER_5#(EntityHuman entityhuman) // Derpnote
+    public void b(EntityHuman entityhuman) // Derpnote
     {
         for(int i = 1; i < 9; i++)
         {

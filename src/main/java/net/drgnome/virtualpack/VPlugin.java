@@ -11,12 +11,12 @@ import java.util.*;
 import java.util.jar.*;
 import java.util.logging.*;
 import java.sql.*;
-import net.minecraft.server.v#MC_VERSION#.EntityPlayer;
+import net.minecraft.server.v1_5_R2.EntityPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
 import com.sk89q.bukkit.util.*;
 import net.drgnome.virtualpack.components.VGUI;
 import net.drgnome.virtualpack.data.*;
@@ -26,7 +26,7 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class VPlugin extends JavaPlugin implements Runnable
 {
-    public static final String _version = "#VERSION#";
+    public static String _version;
     public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil", "materializer"};
     
     private HashMap<String, HashMap<String, VPack>> _packs = new HashMap<String, HashMap<String, VPack>>();
@@ -189,6 +189,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public void onEnable()
     {
+    	VPlugin._version = this.getDescription().getVersion();
         super.onEnable();
         _waitForGroupManager = false;
         try

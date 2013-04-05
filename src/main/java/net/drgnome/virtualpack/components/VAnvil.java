@@ -6,8 +6,8 @@ package net.drgnome.virtualpack.components;
 
 import java.util.*;
 import java.lang.reflect.*;
-import net.minecraft.server.v#MC_VERSION#.*;
-import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.*;
+import net.minecraft.server.v1_5_R2.*;
+import org.bukkit.craftbukkit.v1_5_R2.inventory.*;
 import net.drgnome.virtualpack.util.*;
 
 public class VAnvil extends ContainerAnvil implements VGUI
@@ -21,13 +21,13 @@ public class VAnvil extends ContainerAnvil implements VGUI
         super(entityplayer.inventory, null, 0, 0, 0, entityplayer);
         checkReachable = false;
         _player = entityplayer;
-        for(int i = 0; i < #FIELD_CONTAINER_3#.size(); i++)
+        for(int i = 0; i < c.size(); i++)
         {
             try
             {
-                if(Class.forName("net.minecraft.server.v#MC_VERSION#.SlotAnvilResult").isInstance(#FIELD_CONTAINER_3#.get(i)))
+                if(Class.forName("net.minecraft.server.v1_5_R2.SlotAnvilResult").isInstance(c.get(i)))
                 {
-                    #FIELD_CONTAINER_3#.set(i, new VAnvilSlot(this, getInv("#FIELD_CONTAINERANVIL_2#"), 2, 134, 47));
+                    c.set(i, new VAnvilSlot(this, getInv("f"), 2, 134, 47));
                     break;
                 }
             }
@@ -39,32 +39,32 @@ public class VAnvil extends ContainerAnvil implements VGUI
         }
     }
 
-    public void #FIELD_CONTAINER_6#(IInventory iinventory)
+    public void a(IInventory iinventory)
     {
-        super.#FIELD_CONTAINER_6#(iinventory);
-        if(iinventory == VAnvil.#FIELD_CONTAINERANVIL_1#(this))
+        super.a(iinventory);
+        if(iinventory == VAnvil.a(this))
         {
-            #FIELD_CONTAINERANVIL_4#();
+            e();
         }
     }
 
-    public void #FIELD_CONTAINERANVIL_4#()
+    public void e()
     {
-        ItemStack itemstack = VAnvil.#FIELD_CONTAINERANVIL_1#(this).getItem(0);
-        #FIELD_CONTAINERANVIL_5# = 0;
+        ItemStack itemstack = VAnvil.a(this).getItem(0);
+        a = 0;
         int i = 0;
         byte b0 = 0;
         int j = 0;
         if(itemstack == null)
         {
-            getInv("#FIELD_CONTAINERANVIL_2#").setItem(0, null);
-            #FIELD_CONTAINERANVIL_5# = 0;
+            getInv("f").setItem(0, null);
+            a = 0;
         }
         else
         {
             ItemStack itemstack1 = itemstack.cloneItemStack();
-            ItemStack itemstack2 = VAnvil.#FIELD_CONTAINERANVIL_1#(this).getItem(1);
-            Map map = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_3#(itemstack1);
+            ItemStack itemstack2 = VAnvil.a(this).getItem(1);
+            Map map = EnchantmentManager.a(itemstack1);
             boolean flag = false;
             int k = b0 + itemstack.getRepairCost() + (itemstack2 == null ? 0 : itemstack2.getRepairCost());
             _exp = 0;
@@ -77,40 +77,40 @@ public class VAnvil extends ContainerAnvil implements VGUI
             Enchantment enchantment;
             if(itemstack2 != null)
             {
-                flag = itemstack2.id == Item.ENCHANTED_BOOK.id && Item.ENCHANTED_BOOK.#FIELD_ITEMENCHANTEDBOOK_2#(itemstack2).size() > 0;
-                if(itemstack1.#FIELD_ITEM_6#() && Item.byId[itemstack1.id].a(itemstack, itemstack2))
+                flag = itemstack2.id == Item.ENCHANTED_BOOK.id && Item.ENCHANTED_BOOK.g(itemstack2).size() > 0;
+                if(itemstack1.g() && Item.byId[itemstack1.id].a(itemstack, itemstack2))
                 {
-                    l = Math.min(itemstack1.#FIELD_ITEMSTACK_5#(), itemstack1.#FIELD_ITEMSTACK_6#() / 4);
+                    l = Math.min(itemstack1.j(), itemstack1.l() / 4);
                     if(l <= 0)
                     {
-                        getInv("#FIELD_CONTAINERANVIL_2#").setItem(0, null);
-                        #FIELD_CONTAINERANVIL_5# = 0;
+                        getInv("f").setItem(0, null);
+                        a = 0;
                         return;
                     }
                     for(i1 = 0; l > 0 && i1 < itemstack2.count; ++i1)
                     {
-                        j1 = itemstack1.#FIELD_ITEMSTACK_5#() - l;
+                        j1 = itemstack1.j() - l;
                         itemstack1.setData(j1);
                         i += Math.max(1, l / 100) + map.size();
-                        l = Math.min(itemstack1.#FIELD_ITEMSTACK_5#(), itemstack1.#FIELD_ITEMSTACK_6#() / 4);
+                        l = Math.min(itemstack1.j(), itemstack1.l() / 4);
                     }
                     _exp = i1;
                 }
                 else
                 {
-                    if(!flag && (itemstack1.id != itemstack2.id || !itemstack1.#FIELD_ITEM_6#()))
+                    if(!flag && (itemstack1.id != itemstack2.id || !itemstack1.g()))
                     {
-                        getInv("#FIELD_CONTAINERANVIL_2#").setItem(0, null);
-                        #FIELD_CONTAINERANVIL_5# = 0;
+                        getInv("f").setItem(0, null);
+                        a = 0;
                         return;
                     }
-                    if(itemstack1.#FIELD_ITEM_6#() && !flag)
+                    if(itemstack1.g() && !flag)
                     {
-                        l = itemstack.#FIELD_ITEMSTACK_6#() - itemstack.#FIELD_ITEMSTACK_5#();
-                        i1 = itemstack2.#FIELD_ITEMSTACK_6#() - itemstack2.#FIELD_ITEMSTACK_5#();
-                        j1 = i1 + itemstack1.#FIELD_ITEMSTACK_6#() * 12 / 100;
+                        l = itemstack.l() - itemstack.j();
+                        i1 = itemstack2.l() - itemstack2.j();
+                        j1 = i1 + itemstack1.l() * 12 / 100;
                         int i2 = l + j1;
-                        k1 = itemstack1.#FIELD_ITEMSTACK_6#() - i2;
+                        k1 = itemstack1.l() - i2;
                         if(k1 < 0)
                         {
                             k1 = 0;
@@ -121,7 +121,7 @@ public class VAnvil extends ContainerAnvil implements VGUI
                             i += Math.max(1, j1 / 100);
                         }
                     }
-                    Map map1 = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_3#(itemstack2);
+                    Map map1 = EnchantmentManager.a(itemstack2);
                     iterator = map1.keySet().iterator();
                     while(iterator.hasNext())
                     {
@@ -150,7 +150,7 @@ public class VAnvil extends ContainerAnvil implements VGUI
                         while(iterator1.hasNext())
                         {
                             int l2 = ((Integer)iterator1.next()).intValue();
-                            if(l2 != j1 && !enchantment.#FIELD_ENCHANTMENT_1#(Enchantment.byId[l2]))
+                            if(l2 != j1 && !enchantment.a(Enchantment.byId[l2]))
                             {
                                 flag1 = false;
                                 i += k2;
@@ -190,15 +190,15 @@ public class VAnvil extends ContainerAnvil implements VGUI
                     }
                 }
             }
-            if(_itemName != null && !_itemName.equalsIgnoreCase(itemstack.#FIELD_ITEMSTACK_7#()) && _itemName.length() > 0)
+            if(_itemName != null && !_itemName.equalsIgnoreCase(itemstack.getName()) && _itemName.length() > 0)
             {
-                j = itemstack.#FIELD_ITEM_6#() ? 7 : itemstack.count * 5;
+                j = itemstack.g() ? 7 : itemstack.count * 5;
                 i += j;
-                if(itemstack.#FIELD_ITEMSTACK_8#())
+                if(itemstack.hasName())
                 {
                     k += j / 2;
                 }
-                itemstack1.#FIELD_ITEMSTACK_9#(_itemName);
+                itemstack1.c(_itemName);
             }
             l = 0;
             for(iterator = map.keySet().iterator(); iterator.hasNext(); k += l + k1 * l1)
@@ -238,16 +238,16 @@ public class VAnvil extends ContainerAnvil implements VGUI
             {
                 k = Math.max(1, k / 2);
             }
-            #FIELD_CONTAINERANVIL_5# = k + i;
+            a = k + i;
             if(i <= 0)
             {
                 itemstack1 = null;
             }
-            if(j == i && j > 0 && #FIELD_CONTAINERANVIL_5# >= 40)
+            if(j == i && j > 0 && a >= 40)
             {
-                #FIELD_CONTAINERANVIL_5# = 39;
+                a = 39;
             }
-            if(#FIELD_CONTAINERANVIL_5# >= 40 && !playerFree(_player))
+            if(a >= 40 && !playerFree(_player))
             {
                 itemstack1 = null;
             }
@@ -258,7 +258,7 @@ public class VAnvil extends ContainerAnvil implements VGUI
                 {
                     i1 = itemstack2.getRepairCost();
                 }
-                if(itemstack1.#FIELD_ITEMSTACK_8#())
+                if(itemstack1.hasName())
                 {
                     i1 -= 9;
                 }
@@ -268,18 +268,18 @@ public class VAnvil extends ContainerAnvil implements VGUI
                 }
                 i1 += 2;
                 itemstack1.setRepairCost(i1);
-                EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_4#(map, itemstack1);
+                EnchantmentManager.a(map, itemstack1);
             }
-            getInv("#FIELD_CONTAINERANVIL_2#").setItem(0, itemstack1);
-            #FIELD_CONTAINER_9#();
+            getInv("f").setItem(0, itemstack1);
+            b();
         }
     }
 
-    public void #FIELD_CONTAINER_5#(EntityHuman entityhuman)
+    public void b(EntityHuman entityhuman)
     {
-        for(int i = 0; i < VAnvil.#FIELD_CONTAINERANVIL_1#(this).getSize(); ++i)
+        for(int i = 0; i < VAnvil.a(this).getSize(); ++i)
         {
-            ItemStack itemstack = VAnvil.#FIELD_CONTAINERANVIL_1#(this).splitWithoutUpdate(i);
+            ItemStack itemstack = VAnvil.a(this).splitWithoutUpdate(i);
             if(itemstack != null)
             {
                 entityhuman.drop(itemstack);
@@ -287,30 +287,30 @@ public class VAnvil extends ContainerAnvil implements VGUI
         }
     }
 
-    public ItemStack #FIELD_CONTAINER_10#(EntityHuman entityhuman, int i)
+    public ItemStack b(EntityHuman entityhuman, int i)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot) #FIELD_CONTAINER_3#.get(i);
-        if(slot != null && slot.#FIELD_SLOT_1#())
+        Slot slot = (Slot) c.get(i);
+        if(slot != null && slot.d())
         {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.cloneItemStack();
             if(i == 2)
             {
-                if(!#FIELD_CONTAINER_8#(itemstack1, 3, 39, true))
+                if(!a(itemstack1, 3, 39, true))
                 {
                     return null;
                 }
-                slot.#FIELD_SLOT_2#(itemstack1, itemstack);
+                slot.a(itemstack1, itemstack);
             }
             else if(i != 0 && i != 1)
             {
-                if(i >= 3 && i < 39 && !#FIELD_CONTAINER_8#(itemstack1, 0, 2, false))
+                if(i >= 3 && i < 39 && !a(itemstack1, 0, 2, false))
                 {
                     return null;
                 }
             }
-            else if(!#FIELD_CONTAINER_8#(itemstack1, 3, 39, false))
+            else if(!a(itemstack1, 3, 39, false))
             {
                 return null;
             }
@@ -320,33 +320,33 @@ public class VAnvil extends ContainerAnvil implements VGUI
             }
             else
             {
-                slot.#FIELD_SLOT_3#();
+                slot.e();
             }
             if(itemstack1.count == itemstack.count)
             {
                 return null;
             }
-            slot.#FIELD_SLOT_2#(entityhuman, itemstack1);
+            slot.a(entityhuman, itemstack1);
         }
         return itemstack;
     }
 
-    public void #FIELD_CONTAINERANVIL_6#(String s)
+    public void a(String s)
     {
         _itemName = s;
-        if(this.getSlot(2).#FIELD_SLOT_1#())
+        if(this.getSlot(2).d())
         {
-            this.getSlot(2).getItem().#FIELD_ITEMSTACK_9#(_itemName);
+            this.getSlot(2).getItem().c(_itemName);
         }
-        #FIELD_CONTAINERANVIL_4#();
+        e();
     }
 
-    public static IInventory #FIELD_CONTAINERANVIL_1#(VAnvil anvil)
+    public static IInventory a(VAnvil anvil)
     {
-        return getInv(anvil, "#FIELD_CONTAINERANVIL_3#");
+        return getInv(anvil, "g");
     }
 
-    public static int #FIELD_CONTAINERANVIL_7#(VAnvil anvil)
+    public static int b(VAnvil anvil)
     {
         return anvil._exp;
     }

@@ -4,7 +4,7 @@
 
 package net.drgnome.virtualpack.components;
 
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 import net.drgnome.virtualpack.util.*;
 
 public class VAnvilSlot extends Slot
@@ -22,36 +22,36 @@ public class VAnvilSlot extends Slot
         return false;
     }
 
-    public boolean #FIELD_SLOT_4#(EntityHuman entityhuman)
+    public boolean a(EntityHuman entityhuman)
     {
-        return (VAnvil.playerFree(entityhuman) || entityhuman.expLevel >= _anvil.#FIELD_CONTAINERANVIL_5#) && (_anvil.#FIELD_CONTAINERANVIL_5# > 0) && #FIELD_SLOT_1#();
+        return (VAnvil.playerFree(entityhuman) || entityhuman.expLevel >= _anvil.a) && (_anvil.a > 0) && d();
     }
 
-    public void #FIELD_SLOT_5#(EntityHuman entityhuman, ItemStack itemstack)
+    public void a(EntityHuman entityhuman, ItemStack itemstack)
     {
         if(!VAnvil.playerFree(entityhuman))
         {
-            entityhuman.levelDown(-_anvil.#FIELD_CONTAINERANVIL_5#);
+            entityhuman.levelDown(-_anvil.a);
         }
-        VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(0, null);
-        if(VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil) > 0)
+        VAnvil.a(_anvil).setItem(0, null);
+        if(VAnvil.b(_anvil) > 0)
         {
-            ItemStack itemstack1 = VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).getItem(1);
-            if(itemstack1 != null && itemstack1.count > VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil))
+            ItemStack itemstack1 = VAnvil.a(_anvil).getItem(1);
+            if(itemstack1 != null && itemstack1.count > VAnvil.b(_anvil))
             {
-                itemstack1.count -= VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil);
-                VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, itemstack1);
+                itemstack1.count -= VAnvil.b(_anvil);
+                VAnvil.a(_anvil).setItem(1, itemstack1);
             }
             else
             {
-                VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, null);
+                VAnvil.a(_anvil).setItem(1, null);
             }
         }
         else
         {
-            VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, null);
+            VAnvil.a(_anvil).setItem(1, null);
         }
-        _anvil.#FIELD_CONTAINERANVIL_5# = 0;
+        _anvil.a = 0;
         _anvil.updatePlayerInventory();
     }
 }

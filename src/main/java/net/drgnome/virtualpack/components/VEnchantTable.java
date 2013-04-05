@@ -6,12 +6,12 @@ package net.drgnome.virtualpack.components;
 
 import java.util.*;
 import java.lang.reflect.*;
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.enchantment.*;
-import org.bukkit.craftbukkit.v#MC_VERSION#.CraftServer;
-import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_5_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
 
 public class VEnchantTable extends ContainerEnchantTable implements VGUI
@@ -26,17 +26,17 @@ public class VEnchantTable extends ContainerEnchantTable implements VGUI
         this.bookshelves = bookshelves;
     }
     
-    public void #FIELD_CONTAINER_6#(IInventory iinventory)
+    public void a(IInventory iinventory)
     {
         if(iinventory == this.enchantSlots)
         {
             ItemStack itemstack = iinventory.getItem(0);
-            if(itemstack != null && itemstack.#FIELD_ITEMSTACK_2#())
+            if(itemstack != null && itemstack.w())
             {
-                this.#FIELD_CONTAINERENCHANTTABLE_3# = this.rand.nextLong();
+                this.f = this.rand.nextLong();
                 for(int i = 0; i < 3; ++i)
                 {
-                    this.costs[i] = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_1#(this.rand, i, this.bookshelves, itemstack);
+                    this.costs[i] = EnchantmentManager.a(this.rand, i, this.bookshelves, itemstack);
                 }
                 if(Config.bool("events.use"))
                 {
@@ -55,7 +55,7 @@ public class VEnchantTable extends ContainerEnchantTable implements VGUI
                     }
                     // CraftBukkit end
                 }
-                this.#FIELD_CONTAINERENCHANTTABLE_4#();
+                this.b();
             }
             else
             {
@@ -67,12 +67,12 @@ public class VEnchantTable extends ContainerEnchantTable implements VGUI
         }
     }
     
-    public boolean #FIELD_CONTAINERENCHANTTABLE_2#(EntityHuman entityhuman, int i)
+    public boolean a(EntityHuman entityhuman, int i)
     {
         ItemStack itemstack = this.enchantSlots.getItem(0);
         if(this.costs[i] > 0 && itemstack != null && (entityhuman.expLevel >= this.costs[i] || entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.name, "vpack.use.enchanttable.free")))
         {
-            List list = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_2#(this.rand, itemstack, this.costs[i]);
+            List list = EnchantmentManager.b(this.rand, itemstack, this.costs[i]);
             boolean flag = itemstack.id == Item.BOOK.id;
             if(list != null)
             {
@@ -119,7 +119,7 @@ public class VEnchantTable extends ContainerEnchantTable implements VGUI
                                 continue;
                             }
                             EnchantmentInstance enchantment = new EnchantmentInstance(enchantId, entry.getValue());
-                            Item.ENCHANTED_BOOK.#FIELD_ITEMENCHANTEDBOOK_1#(itemstack, enchantment);
+                            Item.ENCHANTED_BOOK.a(itemstack, enchantment);
                             applied = true;
                             itemstack.id = Item.ENCHANTED_BOOK.id;
                             break;
@@ -140,7 +140,7 @@ public class VEnchantTable extends ContainerEnchantTable implements VGUI
                     entityhuman.levelDown(-level);
                 }
                 // CraftBukkit end
-                this.#FIELD_CONTAINER_6#(this.enchantSlots);
+                this.a(this.enchantSlots);
             }
             return true;
         }

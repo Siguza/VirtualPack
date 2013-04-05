@@ -11,7 +11,7 @@ import java.util.*;
 import java.math.BigDecimal;
 import java.lang.reflect.*;
 import javax.xml.bind.DatatypeConverter;
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import net.drgnome.virtualpack.components.BaseInv;
@@ -164,14 +164,14 @@ public class Util
         return list.toArray(createGenericArray((Class<T>)objects.getClass().getComponentType()));
     }
     
-    public static net.minecraft.server.v#MC_VERSION#.ItemStack copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item)
+    public static net.minecraft.server.v1_5_R2.ItemStack copy_old(net.minecraft.server.v1_5_R2.ItemStack item)
     {
         return item == null ? null : item.cloneItemStack();
     }
     
-    public static net.minecraft.server.v#MC_VERSION#.ItemStack[] copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item[])
+    public static net.minecraft.server.v1_5_R2.ItemStack[] copy_old(net.minecraft.server.v1_5_R2.ItemStack item[])
     {
-        net.minecraft.server.v#MC_VERSION#.ItemStack it[] = new net.minecraft.server.v#MC_VERSION#.ItemStack[item.length];
+        net.minecraft.server.v1_5_R2.ItemStack it[] = new net.minecraft.server.v1_5_R2.ItemStack[item.length];
         for(int i = 0; i < it.length; i++)
         {
             it[i] = copy_old(item[i]);
@@ -223,7 +223,7 @@ public class Util
         return list;
     }
     
-    public static boolean areEqual(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
+    public static boolean areEqual(net.minecraft.server.v1_5_R2.ItemStack item1, net.minecraft.server.v1_5_R2.ItemStack item2)
     {
         return (item1.id == item2.id) && (item1.count == item2.count) && (item1.getData() == item2.getData());
     }
@@ -380,65 +380,65 @@ public class Util
         return tmp;
     }
     
-    public static net.minecraft.server.v#MC_VERSION#.ItemStack stringToItemStack(String string)
+    public static net.minecraft.server.v1_5_R2.ItemStack stringToItemStack(String string)
     {
         if((string == null) || (string.length() == 0))
         {
             return null;
         }
-        return net.minecraft.server.v#MC_VERSION#.ItemStack.#FIELD_ITEMSTACK_1#(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string)));
+        return net.minecraft.server.v1_5_R2.ItemStack.createStack(NBTCompressedStreamTools.a(DatatypeConverter.parseBase64Binary(string)));
     }
     
-    public static String itemStackToString(net.minecraft.server.v#MC_VERSION#.ItemStack item)
+    public static String itemStackToString(net.minecraft.server.v1_5_R2.ItemStack item)
     {
         if(item == null)
         {
             return "";
         }
-        return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound())));
+        return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.a(item.save(new NBTTagCompound())));
     }
     
-    public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
+    public static net.minecraft.server.v1_5_R2.ItemStack[] stack(net.minecraft.server.v1_5_R2.ItemStack item1, net.minecraft.server.v1_5_R2.ItemStack item2)
     {
         _lastStack = false;
         if(item2 == null)
         {
-            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, null};
+            return new net.minecraft.server.v1_5_R2.ItemStack[]{item1, null};
         }
         if(item1 == null)
         {
             _lastStack = true;
-            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item2, null};
+            return new net.minecraft.server.v1_5_R2.ItemStack[]{item2, null};
         }
         if(!areEqual(item1, item2))
         {
-            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, item2};
+            return new net.minecraft.server.v1_5_R2.ItemStack[]{item1, item2};
         }
         int max = (item2.count > (item1.getMaxStackSize() - item1.count)) ? (item1.getMaxStackSize() - item1.count) : item2.count;
         if(max <= 0)
         {
-            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, item2};
+            return new net.minecraft.server.v1_5_R2.ItemStack[]{item1, item2};
         }
         _lastStack = true;
         item1.count += max;
         item2.count -= max;
-        return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, (item2.count <= 0) ? null : item2};
+        return new net.minecraft.server.v1_5_R2.ItemStack[]{item1, (item2.count <= 0) ? null : item2};
     }
     
-    public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(IInventory[] invs, net.minecraft.server.v#MC_VERSION#.ItemStack... items)
+    public static net.minecraft.server.v1_5_R2.ItemStack[] stack(IInventory[] invs, net.minecraft.server.v1_5_R2.ItemStack... items)
     {
         boolean[] stacked = new boolean[invs.length];
-        ArrayList<net.minecraft.server.v#MC_VERSION#.ItemStack> left = new ArrayList<net.minecraft.server.v#MC_VERSION#.ItemStack>();
-        for(net.minecraft.server.v#MC_VERSION#.ItemStack item : items)
+        ArrayList<net.minecraft.server.v1_5_R2.ItemStack> left = new ArrayList<net.minecraft.server.v1_5_R2.ItemStack>();
+        for(net.minecraft.server.v1_5_R2.ItemStack item : items)
         {
             for(int j = 0; j < invs.length; j++)
             {
                 IInventory inv = invs[j];
-                net.minecraft.server.v#MC_VERSION#.ItemStack[] contents = inv.getContents();
+                net.minecraft.server.v1_5_R2.ItemStack[] contents = inv.getContents();
                 stacked[j] = false;
                 for(int i = 0; i < contents.length; i++)
                 {
-                    net.minecraft.server.v#MC_VERSION#.ItemStack[] tmp = stack(contents[i], item);
+                    net.minecraft.server.v1_5_R2.ItemStack[] tmp = stack(contents[i], item);
                     inv.setItem(i, tmp[0]);
                     item = tmp[1];
                     stacked[j] = stacked[j] || _lastStack;
@@ -466,7 +466,7 @@ public class Util
             }
         }
         _lastStackIds = touched.toArray(new String[0]);
-        return left.toArray(new net.minecraft.server.v#MC_VERSION#.ItemStack[0]);
+        return left.toArray(new net.minecraft.server.v1_5_R2.ItemStack[0]);
     }
     
     public static String[] getLastStackingIds()

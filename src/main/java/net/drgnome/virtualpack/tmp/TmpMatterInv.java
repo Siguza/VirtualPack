@@ -5,9 +5,9 @@
 package net.drgnome.virtualpack.tmp;
 
 import java.util.*;
-import net.minecraft.server.v#MC_VERSION#.*;
+import net.minecraft.server.v1_5_R2.*;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.item.*;
 import net.drgnome.virtualpack.components.*;
