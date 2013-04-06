@@ -4,12 +4,17 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.drgnome.virtualpack.util.Util;
+import net.minecraft.server.v1_5_R2.EntityHuman;
+import net.minecraft.server.v1_5_R2.IInventory;
+import net.minecraft.server.v1_5_R2.ItemStack;
+
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
-import net.minecraft.server.v1_5_R2.*;
-import net.drgnome.virtualpack.util.*;
 
 public class VInv implements IInventory
 {
