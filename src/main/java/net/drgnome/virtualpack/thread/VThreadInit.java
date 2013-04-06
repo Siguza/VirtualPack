@@ -4,7 +4,7 @@
 
 package net.drgnome.virtualpack.thread;
 
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global._plugin;
 
 public class VThreadInit extends Thread
 {

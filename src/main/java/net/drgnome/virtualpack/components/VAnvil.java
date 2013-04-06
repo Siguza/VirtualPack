@@ -4,11 +4,21 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.util.*;
-import java.lang.reflect.*;
-import net.minecraft.server.v1_5_R2.*;
-import org.bukkit.craftbukkit.v1_5_R2.inventory.*;
-import net.drgnome.virtualpack.util.*;
+import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.Map;
+
+import net.drgnome.virtualpack.util.ObfuscationHelper;
+import net.drgnome.virtualpack.util.Perm;
+import net.minecraft.server.v1_5_R2.ContainerAnvil;
+import net.minecraft.server.v1_5_R2.Enchantment;
+import net.minecraft.server.v1_5_R2.EnchantmentManager;
+import net.minecraft.server.v1_5_R2.EntityHuman;
+import net.minecraft.server.v1_5_R2.EntityPlayer;
+import net.minecraft.server.v1_5_R2.IInventory;
+import net.minecraft.server.v1_5_R2.Item;
+import net.minecraft.server.v1_5_R2.ItemStack;
+import net.minecraft.server.v1_5_R2.Slot;
 
 public class VAnvil extends ContainerAnvil implements VGUI
 {

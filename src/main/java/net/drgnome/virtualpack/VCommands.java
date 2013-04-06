@@ -4,20 +4,30 @@
 
 package net.drgnome.virtualpack;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
-import net.drgnome.virtualpack.util.*;
+
 import net.drgnome.virtualpack.item.ValuedItemStack;
 import net.drgnome.virtualpack.data.TransmutationHelper;
 import net.drgnome.virtualpack.components.*;
 import net.drgnome.virtualpack.tmp.*; /** FUUU **/
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Lang;
+import net.drgnome.virtualpack.util.Money;
+import net.drgnome.virtualpack.util.Perm;
+import net.drgnome.virtualpack.util.Util;
 
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global.sendMessage;
+import static net.drgnome.virtualpack.util.Global._plugin;
 
 public class VCommands implements CommandExecutor
 {

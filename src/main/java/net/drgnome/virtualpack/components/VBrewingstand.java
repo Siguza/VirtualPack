@@ -4,9 +4,13 @@
 
 package net.drgnome.virtualpack.components;
 
-import net.minecraft.server.v1_5_R2.*;
 import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.Config;
+import net.minecraft.server.v1_5_R2.ContainerBrewingStand;
+import net.minecraft.server.v1_5_R2.EntityHuman;
+import net.minecraft.server.v1_5_R2.EntityPlayer;
+import net.minecraft.server.v1_5_R2.ItemStack;
+import net.minecraft.server.v1_5_R2.TileEntityBrewingStand;
 
 public class VBrewingstand extends ContainerBrewingStand implements VGUI
 {

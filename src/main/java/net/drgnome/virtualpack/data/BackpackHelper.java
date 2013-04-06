@@ -4,15 +4,16 @@
 
 package net.drgnome.virtualpack.data;
 
-import java.io.*;
-import java.util.*;
-import net.minecraft.server.v1_5_R2.*;
-import org.bukkit.configuration.*;
-import org.bukkit.configuration.file.*;
+import java.io.File;
+
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
-import net.drgnome.virtualpack.components.*;
-import net.drgnome.virtualpack.util.*;
-import static net.drgnome.virtualpack.util.Global.*;
+
+import net.drgnome.virtualpack.components.VInv;
+import net.minecraft.server.v1_5_R2.ItemStack;
+import static net.drgnome.virtualpack.util.Global._log;
+import static net.drgnome.virtualpack.util.Global._plugin;
 
 public class BackpackHelper
 {

@@ -10,7 +10,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.command.CommandSender;
 import net.milkbowl.vault.permission.Permission;
 
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global._log;
 
 public class Perm
 {

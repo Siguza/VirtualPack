@@ -4,15 +4,20 @@
 
 package net.drgnome.virtualpack.data;
 
-import java.io.*;
-import java.util.*;
-import java.lang.reflect.*;
-import net.minecraft.server.v1_5_R2.*;
-import org.bukkit.configuration.*;
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
+import net.drgnome.virtualpack.components.VInv;
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Lang;
+import net.drgnome.virtualpack.util.Util;
+import net.minecraft.server.v1_5_R2.ItemStack;
+
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
-import net.drgnome.virtualpack.components.*;
-import net.drgnome.virtualpack.util.*;
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global._plugin;
+import static net.drgnome.virtualpack.util.Global._log;
 
 public class VirtualChestHelper
 {

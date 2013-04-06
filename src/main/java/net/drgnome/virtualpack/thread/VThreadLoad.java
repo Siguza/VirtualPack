@@ -4,9 +4,9 @@
 
 package net.drgnome.virtualpack.thread;
 
-import java.util.*;
-import net.drgnome.virtualpack.*;
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global._plugin;
+import static net.drgnome.virtualpack.util.Global._separator;
+import net.drgnome.virtualpack.VPack;
 
 public class VThreadLoad extends Thread
 {

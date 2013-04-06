@@ -4,14 +4,20 @@
 
 package net.drgnome.virtualpack.tmp;
 
-import java.util.*;
-import net.minecraft.server.v1_5_R2.*;
+import java.util.ArrayList;
+
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
-import net.drgnome.virtualpack.util.*;
-import net.drgnome.virtualpack.item.*;
-import net.drgnome.virtualpack.components.*;
+
+import net.drgnome.virtualpack.components.MatterInv;
+import net.drgnome.virtualpack.components.VInv;
 import net.drgnome.virtualpack.data.TransmutationHelper;
+import net.drgnome.virtualpack.item.ComparativeItemStack;
+import net.drgnome.virtualpack.item.ValuedItemStack;
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Lang;
+import net.drgnome.virtualpack.util.Util;
+import net.minecraft.server.v1_5_R2.ItemStack;
 
 public class TmpMatterInv extends VInv
 {

@@ -5,7 +5,9 @@
 package net.drgnome.virtualpack.item;
 
 import java.util.HashMap;
-import org.bukkit.inventory.*;
+
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 
 public class QuantitativeRecipe implements Recipe
 {

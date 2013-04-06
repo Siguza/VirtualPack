@@ -4,15 +4,20 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.bukkit.entity.Player;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.inventory.InventoryType;
-import net.drgnome.virtualpack.util.*;
-import net.drgnome.virtualpack.item.*;
 import net.drgnome.virtualpack.data.TransmutationHelper;
+import net.drgnome.virtualpack.item.ComparativeItemStack;
+import net.drgnome.virtualpack.item.ValuedItemStack;
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Lang;
+import net.drgnome.virtualpack.util.Util;
 
 public class MatterInv extends BaseInv
 {

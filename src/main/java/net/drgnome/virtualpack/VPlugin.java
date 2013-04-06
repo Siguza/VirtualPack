@@ -3,26 +3,53 @@
 // http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 package net.drgnome.virtualpack;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
-import java.lang.reflect.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.logging.*;
-import java.sql.*;
 import net.minecraft.server.v1_5_R2.EntityPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
-import com.sk89q.bukkit.util.*;
+
+import com.sk89q.bukkit.util.CommandInfo;
+import com.sk89q.bukkit.util.CommandRegistration;
+
 import net.drgnome.virtualpack.components.VGUI;
-import net.drgnome.virtualpack.data.*;
-import net.drgnome.virtualpack.util.*;
-import net.drgnome.virtualpack.thread.*;
-import static net.drgnome.virtualpack.util.Global.*;
+import net.drgnome.virtualpack.data.AlphaChestHelper;
+import net.drgnome.virtualpack.data.BackpackHelper;
+import net.drgnome.virtualpack.data.TransmutationHelper;
+import net.drgnome.virtualpack.data.TransmutationListener;
+import net.drgnome.virtualpack.data.VirtualChestHelper;
+import net.drgnome.virtualpack.thread.VThreadInit;
+import net.drgnome.virtualpack.thread.VThreadLoad;
+import net.drgnome.virtualpack.thread.VThreadSave;
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Lang;
+import net.drgnome.virtualpack.util.Money;
+import net.drgnome.virtualpack.util.ObfuscationHelper;
+import net.drgnome.virtualpack.util.Perm;
+import net.drgnome.virtualpack.util.Util;
+import static net.drgnome.virtualpack.util.Global._separator;
+import static net.drgnome.virtualpack.util.Global._plugin;
+import static net.drgnome.virtualpack.util.Global._log;
+import static net.drgnome.virtualpack.util.Global.warn;
+import static net.drgnome.virtualpack.util.Global.sendMessage;
 
 public class VPlugin extends JavaPlugin implements Runnable
 {

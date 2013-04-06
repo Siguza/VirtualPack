@@ -4,16 +4,20 @@
 
 package net.drgnome.virtualpack.data;
 
-import java.lang.reflect.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_5_R2.*;
+
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Lang;
+import net.drgnome.virtualpack.util.Util;
+
 import org.bukkit.inventory.Inventory;
-import net.drgnome.virtualpack.*;
-import net.drgnome.virtualpack.components.*;
-import net.drgnome.virtualpack.util.*;
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global._plugin;
+import static net.drgnome.virtualpack.util.Global._log;
 
 public class AlphaChestHelper
 {

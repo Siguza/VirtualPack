@@ -4,13 +4,14 @@
 
 package net.drgnome.virtualpack.util;
 
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-import java.nio.charset.Charset;
-import org.bukkit.configuration.file.*;
+import static net.drgnome.virtualpack.util.Global.warn;
+import static net.drgnome.virtualpack.util.Global._plugin;
 
-import static net.drgnome.virtualpack.util.Global.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Lang
 {

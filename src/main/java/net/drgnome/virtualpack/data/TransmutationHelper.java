@@ -4,13 +4,29 @@
 
 package net.drgnome.virtualpack.data;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Map;
+
+import net.drgnome.virtualpack.item.ComparativeItemStack;
+import net.drgnome.virtualpack.item.QuantitativeRecipe;
+import net.drgnome.virtualpack.item.ValuedItemStack;
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Lang;
+import net.drgnome.virtualpack.util.Util;
+
 import org.bukkit.Bukkit;
-import org.bukkit.inventory.*;
-import net.drgnome.virtualpack.item.*;
-import net.drgnome.virtualpack.util.*;
-import static net.drgnome.virtualpack.util.Global.*;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
+
+import static net.drgnome.virtualpack.util.Global._log;
+import static net.drgnome.virtualpack.util.Global._plugin;
 
 public class TransmutationHelper
 {

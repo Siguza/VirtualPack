@@ -4,7 +4,11 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.*;
 import org.bukkit.entity.HumanEntity;

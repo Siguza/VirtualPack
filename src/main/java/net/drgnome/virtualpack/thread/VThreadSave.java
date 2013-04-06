@@ -4,12 +4,24 @@
 
 package net.drgnome.virtualpack.thread;
 
-import java.io.*;
-import java.sql.*;
-import java.util.*;
-import net.drgnome.virtualpack.*;
-import net.drgnome.virtualpack.util.*;
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global._separator;
+import static net.drgnome.virtualpack.util.Global.warn;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.drgnome.virtualpack.VPack;
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Util;
 
 public class VThreadSave extends Thread
 {

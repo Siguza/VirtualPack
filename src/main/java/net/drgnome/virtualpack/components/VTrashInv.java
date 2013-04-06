@@ -4,7 +4,8 @@
 
 package net.drgnome.virtualpack.components;
 
-import net.minecraft.server.v1_5_R2.*;
+import net.minecraft.server.v1_5_R2.ItemStack;
+
 
 public class VTrashInv extends VInv
 {

@@ -4,10 +4,19 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.util.*;
-import java.lang.reflect.*;
-import net.minecraft.server.v1_5_R2.*;
-import net.drgnome.virtualpack.util.*;
+import java.lang.reflect.Field;
+import java.util.List;
+
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Util;
+import net.minecraft.server.v1_5_R2.CraftingManager;
+import net.minecraft.server.v1_5_R2.IRecipe;
+import net.minecraft.server.v1_5_R2.Item;
+import net.minecraft.server.v1_5_R2.ItemStack;
+import net.minecraft.server.v1_5_R2.NBTTagCompound;
+import net.minecraft.server.v1_5_R2.NBTTagList;
+import net.minecraft.server.v1_5_R2.ShapedRecipes;
+import net.minecraft.server.v1_5_R2.ShapelessRecipes;
 
 public class VUncrafterInv extends VInv
 {

@@ -4,10 +4,15 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.lang.reflect.*;
-import org.bukkit.inventory.*;
+import java.lang.reflect.Method;
+
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.entity.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class BaseView extends InventoryView

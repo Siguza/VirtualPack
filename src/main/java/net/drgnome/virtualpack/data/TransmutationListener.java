@@ -4,18 +4,28 @@
 
 package net.drgnome.virtualpack.data;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.*;
+import com.comphenix.protocol.events.ConnectionSide;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.reflect.FieldAccessException;
-import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.components.MatterInv;
-import static net.drgnome.virtualpack.util.Global.*;
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Lang;
+import net.drgnome.virtualpack.util.Util;
+import static net.drgnome.virtualpack.util.Global._plugin;
+import static net.drgnome.virtualpack.util.Global._log;
 
 public class TransmutationListener extends PacketAdapter
 {

@@ -4,12 +4,13 @@
 
 package net.drgnome.virtualpack.util;
 
-import java.util.*;
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.economy.Economy;
 
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global._log;
 
 public class Money
 {

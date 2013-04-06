@@ -4,7 +4,31 @@
 
 package net.drgnome.virtualpack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import net.drgnome.virtualpack.components.VAnvil;
+import net.drgnome.virtualpack.components.VBrewingstand;
+import net.drgnome.virtualpack.components.VChest;
+import net.drgnome.virtualpack.components.VEnchantTable;
+import net.drgnome.virtualpack.components.VFurnace;
+import net.drgnome.virtualpack.components.VInv;
+import net.drgnome.virtualpack.components.VTEBrewingstand;
+import net.drgnome.virtualpack.components.VTEFurnace;
+import net.drgnome.virtualpack.components.VTrash;
+import net.drgnome.virtualpack.components.VUncrafter;
+import net.drgnome.virtualpack.components.VWorkbench;
+import net.drgnome.virtualpack.tmp.TmpMatter;
+import net.drgnome.virtualpack.tmp.TmpMatterInv;
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Lang;
+import net.drgnome.virtualpack.util.Money;
+import net.drgnome.virtualpack.util.Perm;
+import net.drgnome.virtualpack.util.Util;
+import net.minecraft.server.v1_5_R2.EntityPlayer;
+import net.minecraft.server.v1_5_R2.IInventory;
+import net.minecraft.server.v1_5_R2.ItemStack;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -12,12 +36,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
-import net.minecraft.server.v1_5_R2.*;
-import net.drgnome.virtualpack.components.*;
-import net.drgnome.virtualpack.util.*;
-import net.drgnome.virtualpack.tmp.*; /** FUUU **/
 
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global.sendMessage;
+import static net.drgnome.virtualpack.util.Global._separator;
+import static net.drgnome.virtualpack.util.Global._plugin;
 
 public class VPack
 {

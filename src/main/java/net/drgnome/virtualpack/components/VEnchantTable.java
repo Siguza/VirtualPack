@@ -4,15 +4,30 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.util.*;
-import java.lang.reflect.*;
-import net.minecraft.server.v1_5_R2.*;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.enchantment.*;
+import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.craftbukkit.v1_5_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
-import net.drgnome.virtualpack.util.*;
+
+import net.drgnome.virtualpack.util.Config;
+import net.drgnome.virtualpack.util.Perm;
+import net.minecraft.server.v1_5_R2.ContainerEnchantTable;
+import net.minecraft.server.v1_5_R2.Enchantment;
+import net.minecraft.server.v1_5_R2.EnchantmentInstance;
+import net.minecraft.server.v1_5_R2.EnchantmentManager;
+import net.minecraft.server.v1_5_R2.EntityHuman;
+import net.minecraft.server.v1_5_R2.EntityPlayer;
+import net.minecraft.server.v1_5_R2.IInventory;
+import net.minecraft.server.v1_5_R2.Item;
+import net.minecraft.server.v1_5_R2.ItemStack;
 
 public class VEnchantTable extends ContainerEnchantTable implements VGUI
 {

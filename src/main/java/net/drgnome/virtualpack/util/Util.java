@@ -4,19 +4,36 @@
 
 package net.drgnome.virtualpack.util;
 
-import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.Charset;
-import java.net.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.lang.reflect.*;
 import javax.xml.bind.DatatypeConverter;
-import net.minecraft.server.v1_5_R2.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import net.drgnome.virtualpack.components.BaseInv;
 import net.drgnome.virtualpack.components.BaseView;
-import static net.drgnome.virtualpack.util.Global.*;
+import net.minecraft.server.v1_5_R2.Container;
+import net.minecraft.server.v1_5_R2.EntityPlayer;
+import net.minecraft.server.v1_5_R2.ICrafting;
+import net.minecraft.server.v1_5_R2.IInventory;
+import net.minecraft.server.v1_5_R2.NBTCompressedStreamTools;
+import net.minecraft.server.v1_5_R2.NBTTagCompound;
+import net.minecraft.server.v1_5_R2.Packet100OpenWindow;
+import static net.drgnome.virtualpack.util.Global.warn;
+import static net.drgnome.virtualpack.util.Global._plugin;
+import static net.drgnome.virtualpack.util.Global._log;
 
 public class Util
 {

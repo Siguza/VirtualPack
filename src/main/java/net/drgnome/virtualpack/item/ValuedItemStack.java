@@ -6,7 +6,6 @@ package net.drgnome.virtualpack.item;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import net.drgnome.virtualpack.util.Util;
 
 public class ValuedItemStack extends ComparativeItemStack
 {

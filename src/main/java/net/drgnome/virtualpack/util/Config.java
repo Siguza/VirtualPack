@@ -4,14 +4,16 @@
 
 package net.drgnome.virtualpack.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import net.drgnome.virtualpack.item.ComparativeItemStack;
 
-import static net.drgnome.virtualpack.util.Global.*;
+import static net.drgnome.virtualpack.util.Global._plugin;
 
 public class Config
 {

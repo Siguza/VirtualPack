@@ -4,7 +4,9 @@
 
 package net.drgnome.virtualpack.components;
 
-import net.minecraft.server.v1_5_R2.*;
+import net.minecraft.server.v1_5_R2.ContainerWorkbench;
+import net.minecraft.server.v1_5_R2.EntityPlayer;
+
 
 public class VWorkbench extends ContainerWorkbench implements VGUI
 {
