@@ -166,7 +166,7 @@ permissions:
     description: "Allows the use of Admin-features & doing a config reload"
 
   vpack.admin.all:
-    description: "All Admin-Permissions for VirtualPack"
+    description: "All Admin permissions for VirtualPack"
     children:
       vpack.admin.cut.force: true
       vpack.admin.use: true
