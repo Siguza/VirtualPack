@@ -406,11 +406,30 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get("admin.help.save", cmd), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.savefile", cmd), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.loadfile", cmd), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.world", cmd), ChatColor.GOLD);
-            sendMessage(sender, Lang.get("admin.help.use", cmd), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.give", cmd), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.take", cmd), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.delete", cmd), ChatColor.AQUA);
+            if(Perm.has(sender, "vpack.admin.cut"))
+            {
+                sendMessage(sender, Lang.get("admin.help.cut", cmd), ChatColor.AQUA);
+            }
+            if(Perm.has(sender, "vpack.admin.use") || Perm.has(sender, "vpack.admin.give") || Perm.has(sender, "vpack.admin.take") || Perm.has(sender, "vpack.admin.delete"))
+            {
+                sendMessage(sender, Lang.get("admin.help.world", cmd), ChatColor.GOLD);
+            }
+            if(Perm.has(sender, "vpack.admin.use"))
+            {
+                sendMessage(sender, Lang.get("admin.help.use", cmd), ChatColor.AQUA);
+            }
+            if(Perm.has(sender, "vpack.admin.give"))
+            {
+                sendMessage(sender, Lang.get("admin.help.give", cmd), ChatColor.AQUA);
+            }
+            if(Perm.has(sender, "vpack.admin.take"))
+            {
+                sendMessage(sender, Lang.get("admin.help.take", cmd), ChatColor.AQUA);
+            }
+            if(Perm.has(sender, "vpack.admin.delete"))
+            {
+                sendMessage(sender, Lang.get("admin.help.delete", cmd), ChatColor.AQUA);
+            }
             return;
         }
         args[0] = args[0].toLowerCase();
@@ -609,6 +628,7 @@ public class VCommands implements CommandExecutor
             }
             pack.cut();
         }
+        sendMessage(sender, Lang.get("admin.cut"), ChatColor.GREEN);
     }
     
     private void give(String world, CommandSender sender, String[] args)

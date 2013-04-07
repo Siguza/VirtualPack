@@ -79,7 +79,7 @@
         <sourceDirectory>${project.basedir}/src</sourceDirectory>
         <resources>
             <resource>
-                <directory>${project.basedir}/../resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
             </resource>
         </resources>
         <pluginManagement>
@@ -139,22 +139,6 @@
                 <artifactId>replacer</artifactId>
                 <version>1.5.1</version>
                 <executions>
-                    <execution>
-                        <id>herp</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                        <configuration>
-                            <file>target/classes/plugin.yml</file>
-                            <replacements>
-                                <replacement>
-                                    <token>#VERSION#</token>
-                                    <value>${project.version}</value>
-                                </replacement>
-                            </replacements>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>derp</id>
                         <phase>process-sources</phase>

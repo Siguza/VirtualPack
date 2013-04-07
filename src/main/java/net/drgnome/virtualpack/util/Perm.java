@@ -40,17 +40,28 @@ public class Perm
     
     public static boolean has(String world, String username, String permission)
     {
-        if(_perm == null)
+        try
         {
-            _log.warning("[VirtualPack] Permission instance is null!");
-            return false;
+            if(_perm == null)
+            {
+                _log.warning("[VirtualPack] Permission instance is null!");
+                return false;
+            }
+            boolean has = _perm.has(world, username, permission);
+            if(!has && Config.bool("global-perms"))
+            {
+                has = _perm.has((String)null, username, permission);
+            }
+            return has;
         }
-        boolean has = _perm.has(world, username, permission);
-        if(!has && Config.bool("global-perms"))
+        catch(UnsupportedOperationException e) {}
+        catch(NullPointerException e) {}
+        catch(Throwable t)
         {
-            has = _perm.has((String)null, username, permission);
+            warn();
+            t.printStackTrace();
         }
-        return has;
+        return false;
     }
     
     public static String[] getGroups(String world, String username)
@@ -69,10 +80,14 @@ public class Perm
             }
             return groups;
         }
-        catch(UnsupportedOperationException e)
+        catch(UnsupportedOperationException e) {}
+        catch(NullPointerException e) {}
+        catch(Throwable t)
         {
-            return new String[0];
+            warn();
+            t.printStackTrace();
         }
+        return new String[0];
     }
     
     public static boolean inGroup(String world, String username, String group)
@@ -91,9 +106,13 @@ public class Perm
             }
             return in;
         }
-        catch(UnsupportedOperationException e)
+        catch(UnsupportedOperationException e) {}
+        catch(NullPointerException e) {}
+        catch(Throwable t)
         {
-            return false;
+            warn();
+            t.printStackTrace();
         }
+        return false;
     }
 }
