@@ -410,6 +410,10 @@ public class VCommands implements CommandExecutor
             {
                 sendMessage(sender, Lang.get("admin.help.cut", cmd), ChatColor.AQUA);
             }
+            if(Perm.has(sender, "vpack.admin.clean"))
+            {
+                sendMessage(sender, Lang.get("admin.help.clean", cmd), ChatColor.AQUA);
+            }
             if(Perm.has(sender, "vpack.admin.use") || Perm.has(sender, "vpack.admin.give") || Perm.has(sender, "vpack.admin.take") || Perm.has(sender, "vpack.admin.delete"))
             {
                 sendMessage(sender, Lang.get("admin.help.world", cmd), ChatColor.GOLD);
@@ -433,7 +437,16 @@ public class VCommands implements CommandExecutor
             return;
         }
         args[0] = args[0].toLowerCase();
-        if(args[0].equals("reload"))
+        if(args[0].equals("threads"))
+        {
+            sendMessage(sender, "Load: " + _plugin._threadId[0], ChatColor.GREEN);
+            sendMessage(sender, "Save: " + _plugin._threadId[1], ChatColor.GREEN);
+            sendMessage(sender, "Tick: " + _plugin._threadId[2], ChatColor.GREEN);
+            sendMessage(sender, "Notify: " + _plugin._threadId[3], ChatColor.GREEN);
+            sendMessage(sender, "Update: " + _plugin._threadId[4], ChatColor.GREEN);
+            return;
+        }
+        else if(args[0].equals("reload"))
         {
             if(args.length > 1)
             {
@@ -452,7 +465,7 @@ public class VCommands implements CommandExecutor
                 _plugin.saveUserData();
                 _plugin.reloadConfig();
                 _plugin.loadUserData();
-                Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(_plugin, _plugin, 0L, (long)Util.getTick());
+                _plugin.registerThreads();
                 sendMessage(sender, Lang.get("admin.reloaded"), ChatColor.YELLOW);
             }
             return;
@@ -505,6 +518,11 @@ public class VCommands implements CommandExecutor
         else if(args.length < 2)
         {
             sendMessage(sender, Lang.get("argument.few"), ChatColor.RED);
+            return;
+        }
+        else if(args[0].equals("clean"))
+        {
+            clean(sender, Util.cut(args, 1));
             return;
         }
         String world;
@@ -629,6 +647,32 @@ public class VCommands implements CommandExecutor
             pack.cut();
         }
         sendMessage(sender, Lang.get("admin.cut"), ChatColor.GREEN);
+    }
+    
+    private void clean(CommandSender sender, String[] args)
+    {
+        if(!Perm.has(sender, "vpack.admin.clean"))
+        {
+            sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+            return;
+        }
+        try
+        {
+            Date limit = new Date((new Date()).getTime() - (Long.parseLong(args[0]) * 86400000L));
+            for(VPack pack : _plugin.getAllPacks())
+            {
+                String player = pack.getPlayer();
+                if(limit.after(new Date(Bukkit.getOfflinePlayer(player).getLastPlayed())))
+                {
+                    _plugin.setPack(pack.getWorld(), player, null);
+                }
+            }
+            sendMessage(sender, Lang.get("admin.clean"), ChatColor.GREEN);
+        }
+        catch(NumberFormatException e)
+        {
+            sendMessage(sender, Lang.get("argument.invalid"), ChatColor.RED);
+        }
     }
     
     private void give(String world, CommandSender sender, String[] args)

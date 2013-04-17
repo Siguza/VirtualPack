@@ -33,20 +33,17 @@ public class VPlugin extends JavaPlugin implements Runnable
     private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
     public ArrayList<VThreadLoad> _loadThreads = new ArrayList<VThreadLoad>();
     private int _numLoadThreads = 0;
-    private int _saveTick = 0;
-    private int _annoyTick = 0;
-    private int _upTick = 72000;
     private int _loadTick = 0;
     private boolean _update = false;
     private boolean _saveRequested = false;
     private boolean _loadRequested = false;
-    private boolean _waitForGroupManager = false;
     private boolean _portMysql = false;
     private boolean _loadSuccess = false;
     private VThreadInit _initThread;
     private VThreadSave _saveThread;
     private CommandRegistration _reg;
     private boolean _starting = true;
+    int[] _threadId = new int[5];
     
     public VPlugin()
     {
@@ -67,9 +64,9 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
     }
     
-    private void init()
+    public void init()
     {
-        _waitForGroupManager = false;
+        getServer().getScheduler().cancelTasks(this);
         checkFiles();
         Config.reload();
         Lang.init();
@@ -118,7 +115,31 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
         }
         loadUserData();
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, (long)Util.getTick());
+        registerThreads();
+    }
+    
+    public void registerThreads()
+    {
+        _threadId[0] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadLoadManager(), 0L, 1L);
+        long tmp = ((long)Config.getInt("save-interval")) * 20L;
+        if(tmp > 0)
+        {
+            _threadId[1] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadSaveManager(), tmp, tmp);
+        }
+        tmp = (long)Config.getInt("tick.interval");
+        if(tmp > 0)
+        {
+            _threadId[2] = getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, tmp);
+        }
+        tmp = (long)Config.getInt("send.notify-interval");
+        if(tmp > 0)
+        {
+            _threadId[3] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadAnnoy(), 0L, tmp);
+        }
+        if(Config.bool("check-update"))
+        {
+            _threadId[4] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadUpdate(), 0L, 72000L);
+        }
         _log.info(Lang.get("vpack.enable", _version));
     }
     
@@ -190,7 +211,6 @@ public class VPlugin extends JavaPlugin implements Runnable
     public void onEnable()
     {
         super.onEnable();
-        _waitForGroupManager = false;
         try
         {
             if(((Boolean)(Class.forName("org.anjocaido.groupmanager.GroupManager").getMethod("isLoaded").invoke(null))).booleanValue())
@@ -199,8 +219,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
             else
             {
-                _waitForGroupManager = true;
-                getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 1L);
+                getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadWait(), 0L, 1L);
             }
         }
         catch(ClassNotFoundException e)
@@ -229,7 +248,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             {
             }
         }
-        if(!_waitForGroupManager)
+        if(!isReloading())
         {
             saveUserData();
             try 
@@ -639,32 +658,8 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
     }
     
-    public void run()
+    public void runLoad()
     {
-        if(_waitForGroupManager)
-        {
-            try
-            {
-                if(((Boolean)(Class.forName("org.anjocaido.groupmanager.GroupManager").getMethod("isLoaded").invoke(null))).booleanValue())
-                {
-                    getServer().getScheduler().cancelTasks(this);
-                    init();
-                }
-                else
-                {
-                    return;
-                }
-            }
-            catch(ClassNotFoundException e)
-            {
-                init();
-            }
-            catch(Throwable t)
-            {
-                warn();
-                t.printStackTrace();
-            }
-        }
         if(_loadRequested)
         {
             loadUserData();
@@ -673,24 +668,63 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             return;
         }
-        int ticks = Util.getTick();
         if(!_loadSuccess)
         {
             int reloadInterval = Config.getInt("reload-on-failure");
             if(reloadInterval > 0)
             {
-                _loadTick += ticks;
+                _loadTick++;
                 if(_loadTick > reloadInterval * 20)
                 {
                     _loadTick = 0;
                     loadUserData();
                 }
             }
+            else
+            {
+                return;
+            }
         }
         if(_saveRequested)
         {
             saveUserData();
         }
+    }
+    
+    public void runSave()
+    {
+        _log.info("[VirtualPack] Saving user data...");
+        saveUserData();
+    }
+    
+    public void runAnnoy()
+    {
+        for(Map.Entry<Player, ArrayList<String>> entry : _annoyPlayers.entrySet())
+        {
+            for(String msg : entry.getValue())
+            {
+                sendMessage(entry.getKey(), msg, ChatColor.GREEN);
+            }
+            List<String> cmds = Config.list("commands." + VPlugin._components[0]);
+            if(cmds.size() > 0)
+            {
+                sendMessage(entry.getKey(), Lang.get("send.relieve", cmds.get(0)), ChatColor.RED);
+            }
+        }
+    }
+    
+    public void runUpdate()
+    {
+        if(checkUpdate())
+        {
+            getServer().getScheduler().cancelTask(_threadId[4]);
+            _threadId[4] = 0;
+        }
+    }
+    
+    public void run()
+    {
+        int ticks = Config.getInt("tick.interval");
         Iterator<HashMap<String, VPack>> iterator = _packs.values().iterator();
         while(iterator.hasNext())
         {
@@ -708,50 +742,11 @@ public class VPlugin extends JavaPlugin implements Runnable
                 pack.tick(ticks);
             }
         }
-        if(Config.getInt("send.notify-interval") > 0)
-        {
-            _annoyTick -= ticks;
-            if(_annoyTick <= 0)
-            {
-                _annoyTick = Config.getInt("send.notify-interval") * 20;
-                for(Map.Entry<Player, ArrayList<String>> entry : _annoyPlayers.entrySet())
-                {
-                    for(String msg : entry.getValue())
-                    {
-                        sendMessage(entry.getKey(), msg, ChatColor.GREEN);
-                    }
-                    List<String> cmds = Config.list("commands." + VPlugin._components[0]);
-                    if(cmds.size() > 0)
-                    {
-                        sendMessage(entry.getKey(), Lang.get("send.relieve", cmds.get(0)), ChatColor.RED);
-                    }
-                }
-            }
-        }
-        if(!_update && Config.bool("check-update"))
-        {
-            _upTick += ticks;
-            if(_upTick >= 72000)
-            {
-                checkUpdate();
-            }
-        }
-        if(Config.getInt("save-interval") > 0)
-        {
-            _saveTick += ticks;
-            if(_saveTick >= Config.getInt("save-interval") * 20)
-            {
-                _log.info("[VirtualPack] Saving user data...");
-                saveUserData();
-                _saveTick = 0;
-            }
-        }
     }
     
     public boolean checkUpdate()
     {
         _update = Util.hasUpdate("vpack", _version);
-        _upTick = 0;
         return _update;
     }
     

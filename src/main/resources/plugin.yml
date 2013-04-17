@@ -125,6 +125,8 @@ permissions:
     description: "Just everything starting with vpack.bypass"
     children:
       vpack.bypass.creative: true
+      vpack.bypass.cut: true
+      vpack.bypass.clean: true
       vpack.bypass.blacklist.all: true
 
   vpack.bypass.creative:
@@ -132,6 +134,9 @@ permissions:
 
   vpack.bypass.cut:
     description: "Excludes you from cuts"
+
+  vpack.bypass.clean:
+    description: "Excludes you from cleans"
 
   vpack.bypass.blacklist.all:
     description: "Allows you to ignore all blacklists"
@@ -169,6 +174,7 @@ permissions:
     description: "All Admin permissions for VirtualPack"
     children:
       vpack.admin.cut.force: true
+      vpack.admin.clean: true
       vpack.admin.use: true
       vpack.admin.give: true
       vpack.admin.take: true
@@ -179,6 +185,11 @@ permissions:
 
   vpack.admin.cut:
     description: "Allows you to remove tools that are over the maximum in the config"
+    children:
+      vpack.admin: true
+
+  vpack.admin.clean:
+    description: "Allows you to delete packs of users who haven't been online for some time"
     children:
       vpack.admin: true
 

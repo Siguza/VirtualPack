@@ -113,7 +113,7 @@ public class ConfigProxy
         setDef("check-update", "true");
         setDef("global-perms", "true");
         setDef("save-interval", "300");
-        setDef("tick.interval", "5");
+        setDef("tick.interval", "10");
         setDef("on-death", "keep");
         setDef("economy", "true");
         setDef("allow-creative", "false");
