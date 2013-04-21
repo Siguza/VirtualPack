@@ -7,6 +7,7 @@ package net.drgnome.virtualpack.thread;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import net.drgnome.virtualpack.*;
 import net.drgnome.virtualpack.util.*;
 import static net.drgnome.virtualpack.util.Global.*;
@@ -15,9 +16,9 @@ public class VThreadSave extends Thread
 {
     private boolean _mysql;
     private File _file;
-    private HashMap<String, HashMap<String, VPack>> _packs;
+    private ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> _packs;
     
-    public VThreadSave(File file, HashMap<String, HashMap<String, VPack>> packs)
+    public VThreadSave(File file, ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> packs)
     {
         super();
         _mysql = false;
@@ -25,7 +26,7 @@ public class VThreadSave extends Thread
         _packs = packs;
     }
     
-    public VThreadSave(HashMap<String, HashMap<String, VPack>> packs)
+    public VThreadSave(ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> packs)
     {
         super();
         _mysql = true;
@@ -37,7 +38,7 @@ public class VThreadSave extends Thread
         try
         {
             ArrayList<String[]> list = new ArrayList<String[]>();
-            for(Map.Entry<String, HashMap<String, VPack>> entry1 : _packs.entrySet())
+            for(Map.Entry<String, ConcurrentHashMap<String, VPack>> entry1 : _packs.entrySet())
             {
                 String world = entry1.getKey();
                 for(Map.Entry<String, VPack> entry2 : entry1.getValue().entrySet())

@@ -10,6 +10,7 @@ import java.net.*;
 import java.util.*;
 import java.util.jar.*;
 import java.util.logging.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.sql.*;
 import net.minecraft.server.v#MC_VERSION#.EntityPlayer;
 import org.bukkit.Bukkit;
@@ -29,7 +30,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     public static final String _version = "#VERSION#";
     public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil", "materializer"};
     
-    private HashMap<String, HashMap<String, VPack>> _packs = new HashMap<String, HashMap<String, VPack>>();
+    private ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> _packs = new ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>>();
     private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
     public ArrayList<VThreadLoad> _loadThreads = new ArrayList<VThreadLoad>();
     private int _numLoadThreads = 0;
@@ -281,7 +282,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     public boolean hasPack(String world, String player)
     {
         world = Config.world(world);
-        HashMap<String, VPack> map = _packs.get(world);
+        ConcurrentHashMap<String, VPack> map = _packs.get(world);
         if(map == null)
         {
             return false;
@@ -292,10 +293,10 @@ public class VPlugin extends JavaPlugin implements Runnable
     public VPack[] getAllPacks()
     {
         ArrayList<VPack> list = new ArrayList<VPack>();
-        Iterator<HashMap<String, VPack>> iterator = _packs.values().iterator();
+        Iterator<ConcurrentHashMap<String, VPack>> iterator = _packs.values().iterator();
         while(iterator.hasNext())
         {
-            HashMap<String, VPack> map = iterator.next();
+            ConcurrentHashMap<String, VPack> map = iterator.next();
             if(map == null)
             {
                 continue;
@@ -327,10 +328,10 @@ public class VPlugin extends JavaPlugin implements Runnable
             return null;
         }
         world = Config.world(world);
-        HashMap<String, VPack> map = _packs.get(world);
+        ConcurrentHashMap<String, VPack> map = _packs.get(world);
         if(map == null)
         {
-            map = new HashMap<String, VPack>();
+            map = new ConcurrentHashMap<String, VPack>();
             _packs.put(world, map);
         }
         player = player.toLowerCase();
@@ -355,10 +356,10 @@ public class VPlugin extends JavaPlugin implements Runnable
             return;
         }
         world = Config.world(world);
-        HashMap<String, VPack> map = _packs.get(world);
+        ConcurrentHashMap<String, VPack> map = _packs.get(world);
         if(map == null)
         {
-            map = new HashMap<String, VPack>();
+            map = new ConcurrentHashMap<String, VPack>();
             _packs.put(world, map);
         }
         map.put(player.toLowerCase(), pack);
@@ -725,10 +726,10 @@ public class VPlugin extends JavaPlugin implements Runnable
     public void run()
     {
         int ticks = Config.getInt("tick.interval");
-        Iterator<HashMap<String, VPack>> iterator = _packs.values().iterator();
+        Iterator<ConcurrentHashMap<String, VPack>> iterator = _packs.values().iterator();
         while(iterator.hasNext())
         {
-            HashMap<String, VPack> map = iterator.next();
+            ConcurrentHashMap<String, VPack> map = iterator.next();
             if(map == null)
             {
                 continue;
