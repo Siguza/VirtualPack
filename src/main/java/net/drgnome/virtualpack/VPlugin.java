@@ -359,10 +359,21 @@ public class VPlugin extends JavaPlugin implements Runnable
         ConcurrentHashMap<String, VPack> map = _packs.get(world);
         if(map == null)
         {
+            if(pack == null)
+            {
+                return;
+            }
             map = new ConcurrentHashMap<String, VPack>();
             _packs.put(world, map);
         }
-        map.put(player.toLowerCase(), pack);
+        if(pack == null)
+        {
+            map.remove(player.toLowerCase());
+        }
+        else
+        {
+            map.put(player.toLowerCase(), pack);
+        }
     }
     
     public void saveUserData()

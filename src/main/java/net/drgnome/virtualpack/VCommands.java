@@ -662,6 +662,10 @@ public class VCommands implements CommandExecutor
             for(VPack pack : _plugin.getAllPacks())
             {
                 String player = pack.getPlayer();
+                if(Perm.has(pack.getWorld(), player, "vpack.bypass.clean"))
+                {
+                    continue;
+                }
                 if(limit.after(new Date(Bukkit.getOfflinePlayer(player).getLastPlayed())))
                 {
                     _plugin.setPack(pack.getWorld(), player, null);
