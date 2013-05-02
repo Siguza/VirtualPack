@@ -444,6 +444,7 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, "Tick: " + _plugin._threadId[2], ChatColor.GREEN);
             sendMessage(sender, "Notify: " + _plugin._threadId[3], ChatColor.GREEN);
             sendMessage(sender, "Update: " + _plugin._threadId[4], ChatColor.GREEN);
+            sendMessage(sender, "Init: " + _plugin._threadId[5], ChatColor.GREEN);
             return;
         }
         else if(args[0].equals("reload"))

@@ -44,7 +44,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     private VThreadSave _saveThread;
     private CommandRegistration _reg;
     private boolean _starting = true;
-    int[] _threadId = new int[5];
+    int[] _threadId = new int[6];
     
     public VPlugin()
     {
@@ -65,9 +65,13 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
     }
     
-    public void init()
+    public synchronized void init()
     {
-        getServer().getScheduler().cancelTasks(this);
+        if(_threadId[5] != 0)
+        {
+            getServer().getScheduler().cancelTask(_threadId[5]);
+            _threadId[5] = 0;
+        }
         checkFiles();
         Config.reload();
         Lang.init();
@@ -220,7 +224,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
             else
             {
-                getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadWait(), 0L, 1L);
+                _threadId[5] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadWait(), 0L, 1L);
             }
         }
         catch(ClassNotFoundException e)
