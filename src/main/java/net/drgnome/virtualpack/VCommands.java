@@ -410,7 +410,7 @@ public class VCommands implements CommandExecutor
             {
                 sendMessage(sender, Lang.get("admin.help.cut", cmd), ChatColor.AQUA);
             }
-            if(Perm.has(sender, "vpack.admin.clean"))
+            if(Perm.has(sender, "vpack.admin.clean") && !Config.bool("superperms"))
             {
                 sendMessage(sender, Lang.get("admin.help.clean", cmd), ChatColor.AQUA);
             }
@@ -604,7 +604,7 @@ public class VCommands implements CommandExecutor
         }
         else if(Config.bool("superperms"))
         {
-            sendMessage(sender, Lang.get("admin.cut.unsafe"), ChatColor.RED);
+            sendMessage(sender, Lang.get("admin.superperms"), ChatColor.RED);
             return;
         }
         boolean force = false;
@@ -660,6 +660,11 @@ public class VCommands implements CommandExecutor
         if(!Perm.has(sender, "vpack.admin.clean"))
         {
             sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+            return;
+        }
+        else if(Config.bool("superperms"))
+        {
+            sendMessage(sender, Lang.get("admin.superperms"), ChatColor.RED);
             return;
         }
         try
