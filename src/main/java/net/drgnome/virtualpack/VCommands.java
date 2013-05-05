@@ -406,7 +406,7 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get("admin.help.save", cmd), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.savefile", cmd), ChatColor.AQUA);
             sendMessage(sender, Lang.get("admin.help.loadfile", cmd), ChatColor.AQUA);
-            if(Perm.has(sender, "vpack.admin.cut"))
+            if(Perm.has(sender, "vpack.admin.cut") && !Config.bool("superperms"))
             {
                 sendMessage(sender, Lang.get("admin.help.cut", cmd), ChatColor.AQUA);
             }
@@ -600,6 +600,11 @@ public class VCommands implements CommandExecutor
         if(!Perm.has(sender, "vpack.admin.cut"))
         {
             sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+            return;
+        }
+        else if(Config.bool("superperms"))
+        {
+            sendMessage(sender, Lang.get("admin.cut.unsafe"), ChatColor.RED);
             return;
         }
         boolean force = false;

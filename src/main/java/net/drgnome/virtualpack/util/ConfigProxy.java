@@ -112,6 +112,7 @@ public class ConfigProxy
         setDef("import-world", "");
         setDef("check-update", "true");
         setDef("global-perms", "true");
+        setDef("superperms", "false");
         setDef("save-interval", "300");
         setDef("tick.interval", "10");
         setDef("on-death", "keep");

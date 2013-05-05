@@ -42,15 +42,29 @@ public class Perm
     {
         try
         {
-            if(_perm == null)
+            boolean has = false;
+            if(Config.bool("superperms"))
             {
-                _log.warning("[VirtualPack] Permission instance is null!");
-                return false;
+                Player player = Bukkit.getPlayerExact(username);
+                if(player != null)
+                {
+                    has = player.hasPermission(permission);
+                }
             }
-            boolean has = _perm.has(world, username, permission);
-            if(!has && Config.bool("global-perms"))
+            if(!has)
             {
-                has = _perm.has((String)null, username, permission);
+                if(_perm == null)
+                {
+                    _log.warning("[VirtualPack] Permission instance is null!");
+                }
+                else
+                {
+                    has = _perm.has(world, username, permission);
+                    if(!has && Config.bool("global-perms"))
+                    {
+                        has = _perm.has((String)null, username, permission);
+                    }
+                }
             }
             return has;
         }

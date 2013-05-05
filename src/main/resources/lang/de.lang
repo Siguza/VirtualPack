@@ -175,6 +175,7 @@ admin.saved=Daten gespeichert.
 admin.loaded=Daten geladen und MySQL-Daten nach backup.db gespeichert.
 admin.mysql=Dieser Command kann nur in Kombination mit MySQL benutzt werden.
 admin.cut=Die Packs wurden zurückgestuft.
+admin.cut.unsafe=Zurückstufen ist nicht möglich im SuperPerms-Modus. Sorry.
 admin.clean=Die Datenbank wurde bereinigt.
 admin.give.workbench.have=Dieser Spieler besitzt bereits eine Werkbank.
 admin.give.workbench.done=%1 hat nun eine Werkbank.
