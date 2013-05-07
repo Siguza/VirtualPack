@@ -589,6 +589,10 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public void handleDeath(Player player)
     {
+        if(!hasPack(player))
+        {
+            return;
+        }
         String death = Config.string("on-death").toLowerCase();
         if(death.equals("harddrop") || death.equals("drop"))
         {

@@ -40,6 +40,10 @@ public class VEvents implements Listener
         Player player = event.getPlayer();
         for(String world : Config.worlds())
         {
+            if(!_plugin.hasPack(world, player.getName()))
+            {
+                continue;
+            }
             _plugin.getPack(world, player.getName()).processSent();
         }
     }

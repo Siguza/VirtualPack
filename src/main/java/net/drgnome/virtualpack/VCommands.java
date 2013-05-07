@@ -202,6 +202,11 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get("version", VPlugin._version), ChatColor.BLUE);
             return;
         }
+        else if(command.equals("admin"))
+        {
+            admin(sender, args);
+            return;
+        }
         else if(command.equals("update"))
         {
             update(sender);
@@ -212,9 +217,9 @@ public class VCommands implements CommandExecutor
             help(sender, args);
             return;
         }
-        else if(command.equals("admin"))
+        else if(!Perm.has(sender, "vpack.use"))
         {
-            admin(sender, args);
+            sendMessage(sender, Lang.get("use.perm"), ChatColor.RED);
             return;
         }
         else if(!(sender instanceof Player))
@@ -311,8 +316,12 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get("help.admin", cmd), ChatColor.RED);
             }
             sendMessage(sender, Lang.get("help.version", cmd));
-            sendMessage(sender, Lang.get("help.stats", cmd));
-            sendMessage(sender, Lang.get("help.price", cmd));
+            if(Perm.has(sender, "vpack.use"))
+            {
+                
+                sendMessage(sender, Lang.get("help.stats", cmd));
+                sendMessage(sender, Lang.get("help.price", cmd));
+            }
             if(Perm.has(sender, "vpack.send"))
             {
                 sendMessage(sender, Lang.get("help.send1", cmd), ChatColor.AQUA);
@@ -646,7 +655,17 @@ public class VCommands implements CommandExecutor
         }
         for(VPack pack : _plugin.getAllPacks())
         {
-            if((Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.bypass.cut") && !force) || ((player != null) && player.equalsIgnoreCase(pack.getPlayer())) || ((group != null) && Perm.inGroup(pack.getWorld(), pack.getPlayer(), group)))
+            String w = pack.getWorld();
+            String p = pack.getPlayer();
+            if(Perm.has(w, p, "vpack.bypass.cut") && !force)
+            {
+                continue;
+            }
+            if(!Perm.has(w, p, "vpack.use"))
+            {
+                _plugin.setPack(w, p, null);
+            }
+            if(((player != null) && !player.equalsIgnoreCase(p)) || ((group != null) && !Perm.inGroup(w, p, group)))
             {
                 continue;
             }
