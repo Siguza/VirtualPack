@@ -813,4 +813,15 @@ public class VPlugin extends JavaPlugin implements Runnable
     {
         return ((_saveThread == null) || _saveThread.done()) && !isActuallyReloading();
     }
+    
+    void deleteEverything()
+    {
+        _loadSuccess = true;
+        _loadThreads = new ArrayList<VThreadLoad>();
+        _numLoadThreads = 0;
+        _saveRequested = false;
+        _loadRequested = false;
+        _packs = new ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>>();
+        _annoyPlayers = new HashMap<Player, ArrayList<String>>();
+    }
 }

@@ -442,6 +442,7 @@ public class VCommands implements CommandExecutor
             if(Perm.has(sender, "vpack.admin.delete"))
             {
                 sendMessage(sender, Lang.get("admin.help.delete", cmd), ChatColor.AQUA);
+                sendMessage(sender, "/" + cmd + " ad erase - REMOVE EVERYTHING", ChatColor.RED);
             }
             return;
         }
@@ -523,6 +524,29 @@ public class VCommands implements CommandExecutor
         else if(args[0].equals("cut"))
         {
             cut(sender, Util.cut(args, 1));
+            return;
+        }
+        else if(args[0].equals("erase"))
+        {
+            if(!Perm.has(sender, "vpack.admin.delete"))
+            {
+                sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+                return;
+            }
+            List<String> list = Config.list("commands." + VPlugin._components[0]);
+            sendMessage(sender, "WARNING: This will delete the whole VirtualPack database! If you are sure you want to do this, run:", ChatColor.YELLOW);
+            sendMessage(sender, "/" + ((list.size() <= 0) ? "" : list.get(0)) + " ad !!!erase!!!", ChatColor.RED);
+            return;
+        }
+        else if(args[0].equals("!!!erase!!!"))
+        {
+            if(!Perm.has(sender, "vpack.admin.delete"))
+            {
+                sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+                return;
+            }
+            _plugin.deleteEverything();
+            sendMessage(sender, "Deleted the universe.", ChatColor.YELLOW);
             return;
         }
         else if(args.length < 2)
