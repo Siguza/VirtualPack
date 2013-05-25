@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>2.5.1</version>
+    <version>2.5.2</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
-            <version>5.5.6-SNAPSHOT</version>
+            <version>5.5.7-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>2.4.1</version>
+            <version>2.4.3</version>
         </dependency>
     </dependencies>
     <build>
@@ -159,6 +159,26 @@
                                     <value>1_5_R3</value>
                                 </replacement>
                                 <!-- Hello there -->
+                                <replacement>
+                                    <token>#FIELD_BLOCK_1#</token> <!-- (float) -->
+                                    <value>c</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_BLOCK_2#</token> <!-- (StepSound) -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_BLOCK_3#</token> <!-- (float) -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_BLOCK_4#</token> <!-- (String) -->
+                                    <value>c</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_BLOCK_5#</token> <!-- StepSound -->
+                                    <value>q</value>
+                                </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_1#</token> <!-- () -->
                                     <value>a</value>

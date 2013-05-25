@@ -23,6 +23,7 @@ import net.drgnome.virtualpack.components.VGUI;
 import net.drgnome.virtualpack.data.*;
 import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.thread.*;
+import net.drgnome.virtualpack.inject.BlockVAnvil;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class VPlugin extends JavaPlugin implements Runnable
@@ -74,6 +75,10 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         checkFiles();
         Config.reload();
+        if(Config.bool("inject.anvil"))
+        {
+            BlockVAnvil.inject();
+        }
         Lang.init();
         saveConfig();
         if(Config.bool("db.use"))

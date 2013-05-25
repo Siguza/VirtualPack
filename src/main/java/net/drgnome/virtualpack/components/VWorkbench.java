@@ -6,7 +6,7 @@ package net.drgnome.virtualpack.components;
 
 import net.minecraft.server.v#MC_VERSION#.*;
 
-public class VWorkbench extends ContainerWorkbench implements VGUI
+public class VWorkbench extends ContainerWorkbench
 {
     public VWorkbench(EntityPlayer player)
     {

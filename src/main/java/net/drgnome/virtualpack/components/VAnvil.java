@@ -10,7 +10,7 @@ import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.*;
 import net.drgnome.virtualpack.util.*;
 
-public class VAnvil extends ContainerAnvil implements VGUI
+public class VAnvil extends ContainerAnvil
 {
     private int _exp = 0;
     private String _itemName;
@@ -38,6 +38,12 @@ public class VAnvil extends ContainerAnvil implements VGUI
             }
         }
     }
+    
+    public VAnvil(EntityPlayer entityplayer, int x, int y, int z)
+    {
+        super(entityplayer.inventory, entityplayer.world, x, y, z, entityplayer);
+        _player = entityplayer;
+    }
 
     public void #FIELD_CONTAINER_6#(IInventory iinventory)
     {
@@ -47,9 +53,16 @@ public class VAnvil extends ContainerAnvil implements VGUI
             #FIELD_CONTAINERANVIL_4#();
         }
     }
-
+    
     public void #FIELD_CONTAINERANVIL_4#()
     {
+        calculate0();
+        updatePlayerInventory();
+    }
+
+    public void calculate0()
+    {
+        final int maxLevel = Config.getInt(_player.getBukkitEntity(), "tools", "anvil", "maxlevel", true);
         ItemStack itemstack = VAnvil.#FIELD_CONTAINERANVIL_1#(this).getItem(0);
         #FIELD_CONTAINERANVIL_5# = 0;
         int i = 0;
@@ -243,11 +256,11 @@ public class VAnvil extends ContainerAnvil implements VGUI
             {
                 itemstack1 = null;
             }
-            if(j == i && j > 0 && #FIELD_CONTAINERANVIL_5# >= 40)
+            if(j == i && j > 0 && #FIELD_CONTAINERANVIL_5# >= maxLevel)
             {
-                #FIELD_CONTAINERANVIL_5# = 39;
+                #FIELD_CONTAINERANVIL_5# = maxLevel - 1;
             }
-            if(#FIELD_CONTAINERANVIL_5# >= 40 && !playerFree(_player))
+            if(#FIELD_CONTAINERANVIL_5# >= maxLevel && !playerFree(_player))
             {
                 itemstack1 = null;
             }

@@ -4,6 +4,7 @@
 
 package net.drgnome.virtualpack.components;
 
+// Used to identify containers that need to be closed on (re)load
 public interface VGUI
 {
 }

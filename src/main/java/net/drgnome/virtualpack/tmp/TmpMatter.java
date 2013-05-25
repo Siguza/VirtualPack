@@ -13,7 +13,7 @@ import net.drgnome.virtualpack.item.*;
 import net.drgnome.virtualpack.components.*;
 import net.drgnome.virtualpack.data.TransmutationHelper;
 
-public class TmpMatter extends VContainer
+public class TmpMatter extends VContainer implements VGUI
 {
     private TmpMatterInv _inv;
     

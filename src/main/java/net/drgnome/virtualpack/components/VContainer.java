@@ -6,7 +6,7 @@ package net.drgnome.virtualpack.components;
 
 import net.minecraft.server.v#MC_VERSION#.*;
 
-public abstract class VContainer extends ContainerChest implements VGUI
+public abstract class VContainer extends ContainerChest
 {
     protected EntityPlayer player;
     

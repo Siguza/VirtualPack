@@ -8,7 +8,7 @@ import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.Config;
 
-public class VChest extends VContainer
+public class VChest extends VContainer implements VGUI
 {
     public VChest(EntityPlayer player, IInventory data)
     {

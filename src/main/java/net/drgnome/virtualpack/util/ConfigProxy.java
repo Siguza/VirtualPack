@@ -121,6 +121,7 @@ public class ConfigProxy
         setDef("uncraft-enchanted", "true");
         setDef("events.use", "true");
         setDef("events.ignorecancelled", "false");
+        setDef("inject.anvil", "false");
         setDef("transmutation.enabled", "false");
         setDef("transmutation.show-value", "true");
         setDef("transmutation.god-items", Util.createList("DRAGON_EGG"));
@@ -155,6 +156,7 @@ public class ConfigProxy
         setDef("tools.enchanttable.book", "5000");
         setDef("tools.anvil.buy", "25000");
         setDef("tools.anvil.use", "0");
+        setDef("tools.anvil.maxlevel", "40");
         setDef("tools.materializer.buy", "50000");
         setDef("tools.materializer.use", "0");
         setDef("tools.chest.max", "10");
