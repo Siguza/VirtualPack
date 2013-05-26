@@ -31,8 +31,8 @@ public class VFurnace extends ContainerFurnace implements VGUI
         else
         {
             item = human.inventory.getCarried();
+            update();
         }
-        update();
         return item;
     }
     

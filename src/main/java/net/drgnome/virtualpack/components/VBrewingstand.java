@@ -31,8 +31,8 @@ public class VBrewingstand extends ContainerBrewingStand implements VGUI
         else
         {
             item = human.inventory.getCarried();
+            update();
         }
-        update();
         return item;
     }
     

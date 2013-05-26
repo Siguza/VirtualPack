@@ -27,8 +27,8 @@ public abstract class VContainer extends ContainerChest
         else
         {
             item = human.inventory.getCarried();
+            update();
         }
-        update();
         return item;
     }
     
