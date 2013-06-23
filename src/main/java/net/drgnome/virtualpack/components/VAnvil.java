@@ -155,7 +155,7 @@ public class VAnvil extends ContainerAnvil
                         l1 = j2;
                         int k2 = l1 - k1;
                         boolean flag1 = enchantment.canEnchant(itemstack);
-                        if(playerFree(_player))
+                        if(playerFree(_player) || (itemstack.id == ItemEnchantedBook.ENCHANTED_BOOK.id))
                         {
                             flag1 = true;
                         }
