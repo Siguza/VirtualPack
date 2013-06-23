@@ -21,7 +21,7 @@ public class Perm
         RegisteredServiceProvider perm = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
         if(perm == null)
         {
-            _log.warning(Lang.get("vpack.missperm"));
+            _log.warning(Lang.get(null, "vpack.missperm"));
             return false;
         }
         _perm = (Permission)perm.getProvider();

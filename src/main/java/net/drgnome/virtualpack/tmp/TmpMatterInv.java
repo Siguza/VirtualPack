@@ -107,7 +107,7 @@ public class TmpMatterInv extends VInv
     {
         org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(399, 1);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(MatterInv._prefix + Util.parseColors(Config.string("transmutation.color.stored-name")) + Lang.get("matter.stored"));
+        meta.setDisplayName(MatterInv._prefix + Util.parseColors(Config.string("transmutation.color.stored-name")) + Lang.getDirect(_playername, "matter.stored"));
         meta.setLore(Util.createList(Util.parseColors(Config.string("transmutation.color.stored-value")) + Util.formatDouble(_value)));
         item.setItemMeta(meta);
         super.setItem(0, CraftItemStack.asNMSCopy(item));

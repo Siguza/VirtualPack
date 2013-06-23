@@ -43,7 +43,7 @@ public class VirtualChestHelper
             }
             if(!found)
             {
-                _log.severe(Lang.get("virtualchest"));
+                _log.severe(Lang.get(null, "virtualchest"));
                 return;
             }
             load(chests);

@@ -440,73 +440,73 @@ public class VPack
         {
             if(Perm.has(_world, _player, "vpack.use.workbench"))
             {
-                sendMessage(player, Lang.get("stats.workbench", "" + ChatColor.GREEN, _hasWorkbench ? Lang.get("yes") : Lang.get("no")));
+                sendMessage(player, Lang.get(player, "stats.workbench", "" + ChatColor.GREEN, _hasWorkbench ? Lang.get(player, "yes") : Lang.get(player, "no")));
             }
             if(Perm.has(_world, _player, "vpack.use.uncrafter"))
             {
-                sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, _hasUncrafter ? Lang.get("yes") : Lang.get("no")));
+                sendMessage(player, Lang.get(player, "stats.uncrafter", "" + ChatColor.GREEN, _hasUncrafter ? Lang.get(player, "yes") : Lang.get(player, "no")));
             }
             if(Perm.has(_world, _player, "vpack.use.enchanttable"))
             {
-                sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, _hasEnchantTable ? Lang.get("yes") : Lang.get("no")) + (_hasEnchantTable ? Lang.get("stats.books", "" + _bookshelves): ""));
+                sendMessage(player, Lang.get(player, "stats.enchanttable", "" + ChatColor.GREEN, _hasEnchantTable ? Lang.get(player, "yes") : Lang.get(player, "no")) + (_hasEnchantTable ? Lang.get(player, "stats.books", "" + _bookshelves): ""));
             }
             if(Perm.has(_world, _player, "vpack.use.anvil"))
             {
-                sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, _hasAnvil ? Lang.get("yes") : Lang.get("no")));
+                sendMessage(player, Lang.get(player, "stats.anvil", "" + ChatColor.GREEN, _hasAnvil ? Lang.get(player, "yes") : Lang.get(player, "no")));
             }
             if(Perm.has(_world, _player, "vpack.use.materializer"))
             {
-                sendMessage(player, Lang.get("stats.matter", "" + ChatColor.GREEN, _matter == null ? Lang.get("no") : Lang.get("yes")));
+                sendMessage(player, Lang.get(player, "stats.matter", "" + ChatColor.GREEN, _matter == null ? Lang.get(player, "no") : Lang.get(player, "yes")));
             }
             if(Perm.has(_world, _player, "vpack.use.chest"))
             {
                 int i = Config.getInt(_world, _player, "tools", "chest", "max", true);
-                sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size() + (i != -1 ? "/" + i : "")));
+                sendMessage(player, Lang.get(player, "stats.chest", "" + ChatColor.GREEN, "" + _chests.size() + (i != -1 ? "/" + i : "")));
             }
             if(Perm.has(_world, _player, "vpack.use.furnace"))
             {
                 int i = Config.getInt(_world, _player, "tools", "furnace", "max", true);
-                sendMessage(player, Lang.get("stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size() + (i != -1 ? "/" + i : "")) + (Lang.get("stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _fLinks)));
+                sendMessage(player, Lang.get(player, "stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size() + (i != -1 ? "/" + i : "")) + (Lang.get(player, "stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _fLinks)));
             }
             if(Perm.has(_world, _player, "vpack.use.brewingstand"))
             {
                 int i = Config.getInt(_world, _player, "tools", "brewingstand", "max", true);
-                sendMessage(player, Lang.get("stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size() + (i != -1 ? "/" + i : "")) + (Lang.get("stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _bLinks)));
+                sendMessage(player, Lang.get(player, "stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size() + (i != -1 ? "/" + i : "")) + (Lang.get(player, "stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _bLinks)));
             }
         }
         else
         {
             if(Perm.has(_world, _player, "vpack.use.workbench"))
             {
-                sendMessage(player, Lang.get("stats.workbench", "" + ChatColor.GREEN, Lang.get("yes")));
+                sendMessage(player, Lang.get(player, "stats.workbench", "" + ChatColor.GREEN, Lang.get(player, "yes")));
             }
             if(Perm.has(_world, _player, "vpack.use.uncrafter"))
             {
-                sendMessage(player, Lang.get("stats.uncrafter", "" + ChatColor.GREEN, Lang.get("yes")));
+                sendMessage(player, Lang.get(player, "stats.uncrafter", "" + ChatColor.GREEN, Lang.get(player, "yes")));
             }
             if(Perm.has(_world, _player, "vpack.use.enchanttable"))
             {
-                sendMessage(player, Lang.get("stats.enchanttable", "" + ChatColor.GREEN, Lang.get("yes")) + Lang.get("stats.books", "" + _maxBookshelves));
+                sendMessage(player, Lang.get(player, "stats.enchanttable", "" + ChatColor.GREEN, Lang.get(player, "yes")) + Lang.get(player, "stats.books", "" + _maxBookshelves));
             }
             if(Perm.has(_world, _player, "vpack.use.anvil"))
             {
-                sendMessage(player, Lang.get("stats.anvil", "" + ChatColor.GREEN, Lang.get("yes")));
+                sendMessage(player, Lang.get(player, "stats.anvil", "" + ChatColor.GREEN, Lang.get(player, "yes")));
             }
             if(Perm.has(_world, _player, "vpack.use.materializer"))
             {
-                sendMessage(player, Lang.get("stats.matter", "" + ChatColor.GREEN, Lang.get("yes")));
+                sendMessage(player, Lang.get(player, "stats.matter", "" + ChatColor.GREEN, Lang.get(player, "yes")));
             }
             if(Perm.has(_world, _player, "vpack.use.chest"))
             {
-                sendMessage(player, Lang.get("stats.chest", "" + ChatColor.GREEN, "" + _chests.size()));
+                sendMessage(player, Lang.get(player, "stats.chest", "" + ChatColor.GREEN, "" + _chests.size()));
             }
             if(Perm.has(_world, _player, "vpack.use.furnace"))
             {
-                sendMessage(player, Lang.get("stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size()));
+                sendMessage(player, Lang.get(player, "stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size()));
             }
             if(Perm.has(_world, _player, "vpack.use.brewingstand"))
             {
-                sendMessage(player, Lang.get("stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size()));
+                sendMessage(player, Lang.get(player, "stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size()));
             }
         }
     }
@@ -705,33 +705,33 @@ public class VPack
     {
         if(_hasWorkbench)
         {
-            sendMessage(bukkitPlayer, Lang.get("workbench.max"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "workbench.max"), ChatColor.RED);
             return;
         }
         if(!Money.world(_world).hasTake(_player, priceWorkbenchBuy()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         _hasWorkbench = true;
-        sendMessage(bukkitPlayer, Lang.get("workbench.bought"), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "workbench.bought"), ChatColor.GREEN);
     }
     
     public void openWorkbench(Player bukkitPlayer, boolean free)
     {
         if(!_hasWorkbench)
         {
-            sendMessage(bukkitPlayer, Lang.get("workbench.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "workbench.none"), ChatColor.RED);
             return;
         }
         free = free || !Money.world(_world).enabled();
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         if(!free && !Money.world(_world).hasTake(_player, priceWorkbenchUse()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VWorkbench(player), Lang.get("workbench.name"), 1, 9);
+        Util.openWindow(player, new VWorkbench(player), Lang.get(bukkitPlayer, "workbench.name"), 1, 9);
     }
     
     /** Uncrafter **/
@@ -740,33 +740,33 @@ public class VPack
     {
         if(_hasUncrafter)
         {
-            sendMessage(bukkitPlayer, Lang.get("uncrafter.max"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "uncrafter.max"), ChatColor.RED);
             return;
         }
         if(!Money.world(_world).hasTake(_player, priceUncrafterBuy()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         _hasUncrafter = true;
-        sendMessage(bukkitPlayer, Lang.get("uncrafter.bought"), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "uncrafter.bought"), ChatColor.GREEN);
     }
     
     public void openUncrafter(Player bukkitPlayer, boolean free)
     {
         if(!_hasUncrafter)
         {
-            sendMessage(bukkitPlayer, Lang.get("uncrafter.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "uncrafter.none"), ChatColor.RED);
             return;
         }
         free = free || !Money.world(_world).enabled();
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         if(!free && !Money.world(_world).hasTake(_player, priceUncrafterUse()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VUncrafter(player), Lang.get("uncrafter.name"), 0, 18);
+        Util.openWindow(player, new VUncrafter(player), Lang.get(bukkitPlayer, "uncrafter.name"), 0, 18);
     }
     
     /** Enchanting table **/
@@ -775,40 +775,40 @@ public class VPack
     {
         if(_hasEnchantTable)
         {
-            sendMessage(bukkitPlayer, Lang.get("enchanttable.max"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enchanttable.max"), ChatColor.RED);
             return;
         }
         if(!Money.world(_world).hasTake(_player, priceEnchBuy()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         _hasEnchantTable = true;
-        sendMessage(bukkitPlayer, Lang.get("enchanttable.bought"), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enchanttable.bought"), ChatColor.GREEN);
     }
     
     public void openEnchantTable(Player bukkitPlayer, boolean free)
     {
         if(!_hasEnchantTable)
         {
-            sendMessage(bukkitPlayer, Lang.get("enchanttable.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enchanttable.none"), ChatColor.RED);
             return;
         }
         free = free || !Money.world(_world).enabled();
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         if(!free && !Money.world(_world).hasTake(_player, priceEnchUse()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VEnchantTable(player, _bookshelves), Lang.get("enchanttable.name"), 4, 9);
+        Util.openWindow(player, new VEnchantTable(player, _bookshelves), Lang.get(bukkitPlayer, "enchanttable.name"), 4, 9);
     }
     
     public void buyBookshelf(Player bukkitPlayer, int amount)
     {
         if(_bookshelves >= _maxBookshelves)
         {
-            sendMessage(bukkitPlayer, Lang.get("enchanttable.book.max", "" + _maxBookshelves), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enchanttable.book.max", "" + _maxBookshelves), ChatColor.RED);
             return;
         }
         if(amount > _maxBookshelves - _bookshelves)
@@ -817,11 +817,11 @@ public class VPack
         }
         if(!Money.world(_world).hasTake(_player, priceEnchBook(amount)))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         _bookshelves += amount;
-        sendMessage(bukkitPlayer, (_bookshelves == 1) ? Lang.get("enchanttable.book.one") : Lang.get("enchanttable.book.many", "" + _bookshelves), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, (_bookshelves == 1) ? Lang.get(bukkitPlayer, "enchanttable.book.one") : Lang.get(bukkitPlayer, "enchanttable.book.many", "" + _bookshelves), ChatColor.GREEN);
     }
     
     /** Anvil **/
@@ -830,33 +830,33 @@ public class VPack
     {
         if(_hasAnvil)
         {
-            sendMessage(bukkitPlayer, Lang.get("anvil.max"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "anvil.max"), ChatColor.RED);
             return;
         }
         if(!Money.world(_world).hasTake(_player, priceAnvilBuy()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         _hasAnvil = true;
-        sendMessage(bukkitPlayer, Lang.get("anvil.bought"), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "anvil.bought"), ChatColor.GREEN);
     }
     
     public void openAnvil(Player bukkitPlayer, boolean free)
     {
         if(!_hasAnvil)
         {
-            sendMessage(bukkitPlayer, Lang.get("anvil.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "anvil.none"), ChatColor.RED);
             return;
         }
         free = free || !Money.world(_world).enabled();
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         if(!free && !Money.world(_world).hasTake(_player, priceAnvilUse()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VAnvil(player), Lang.get("anvil.name"), 8, 9);
+        Util.openWindow(player, new VAnvil(player), Lang.get(bukkitPlayer, "anvil.name"), 8, 9);
     }
     
     /** Materializer **/
@@ -865,38 +865,38 @@ public class VPack
     {
         if(_matter != null)
         {
-            sendMessage(bukkitPlayer, Lang.get("matter.max"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "matter.max"), ChatColor.RED);
             return;
         }
         if(!Money.world(_world).hasTake(_player, priceMatterBuy()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         /** FUUU **/
         // _matter = new MatterInv(_world, _player);
         _matter = new TmpMatterInv(_world, _player);
-        sendMessage(bukkitPlayer, Lang.get("matter.bought"), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "matter.bought"), ChatColor.GREEN);
     }
     
     public void openMaterializer(Player player, boolean free)
     {
         if(_matter == null)
         {
-            sendMessage(player, Lang.get("matter.none"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "matter.none"), ChatColor.RED);
             return;
         }
         free = free || !Money.world(_world).enabled();
         EntityPlayer mcPlayer = ((CraftPlayer)player).getHandle(); /** FUUU **/
         if(!free && !Money.world(_world).hasTake(_player, priceAnvilUse()))
         {
-            sendMessage(player, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "money.toofew"), ChatColor.RED);
             return;
         }
         _matter.updateInv();
         /** FUUU ALL THE WAY **/
         //Util.openInv(player, _matter);
-        Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter), Lang.get("matter.name"), 0, 54);
+        Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter), Lang.get(player, "matter.name"), 0, 54);
     }
     
     /** Chest **/
@@ -906,19 +906,19 @@ public class VPack
         int max = Config.getInt(_world, _player, "tools", "chest", "max", true);
         if((_chests.size() + amount > max) && (max != -1))
         {
-            sendMessage(bukkitPlayer, Lang.get("chest.max", "" + max), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.max", "" + max), ChatColor.RED);
             return;
         }
         if(!Money.world(_world).hasTake(_player, priceChestBuy(amount)))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         for(int i = 0; i < amount; i++)
         {
             _chests.put((Integer)(_chests.size() + 1), new VInv(getChestSize()));
         }
-        sendMessage(bukkitPlayer, (_chests.size() == 1) ? Lang.get("chest.bought.one") : Lang.get("chest.bought.many", "" + _chests.size()), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, (_chests.size() == 1) ? Lang.get(bukkitPlayer, "chest.bought.one") : Lang.get(bukkitPlayer, "chest.bought.many", "" + _chests.size()), ChatColor.GREEN);
     }
     
     public void openChest(Player bukkitPlayer, int nr, boolean free)
@@ -927,17 +927,17 @@ public class VPack
         VInv inv = _chests.get((Integer)nr);
         if(inv == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("chest.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
             return;
         }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         if(!free && !Money.world(_world).hasTake(_player, priceChestUse()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         VChest container = new VChest(player, inv);
-        Util.openWindow(player, container, Lang.get("chest.name", "" + nr), 0, getChestSize() * 9);
+        Util.openWindow(player, container, Lang.get(bukkitPlayer, "chest.name", "" + nr), 0, getChestSize() * 9);
     }
     
     public void dropChest(Player bukkitPlayer, int nr)
@@ -945,7 +945,7 @@ public class VPack
         VInv inv = _chests.get((Integer)nr);
         if(inv == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("chest.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
             return;
         }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
@@ -965,11 +965,11 @@ public class VPack
         VInv inv = _chests.get((Integer)nr);
         if(inv == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("chest.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
             return;
         }
         _chests.put((Integer)nr, new VInv(getChestSize()));
-        sendMessage(bukkitPlayer, Lang.get("chest.trashed", "" + nr), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.trashed", "" + nr), ChatColor.GREEN);
     }
     
     /** Furnace **/
@@ -979,19 +979,19 @@ public class VPack
         int max = Config.getInt(_world, _player, "tools", "furnace", "max", true);
         if((_furnaces.size() + amount > max) && (max != -1))
         {
-            sendMessage(bukkitPlayer, Lang.get("furnace.max", "" + max), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.max", "" + max), ChatColor.RED);
             return;
         }
         if(!Money.world(_world).hasTake(_player, priceFurnaceBuy(amount)))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         for(int i = 0; i < amount; i++)
         {
             _furnaces.put((Integer)(_furnaces.size() + 1), new VTEFurnace(this));
         }
-        sendMessage(bukkitPlayer, (_furnaces.size() == 1) ? Lang.get("furnace.bought.one") : Lang.get("furnace.bought.many", "" + _furnaces.size()), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, (_furnaces.size() == 1) ? Lang.get(bukkitPlayer, "furnace.bought.one") : Lang.get(bukkitPlayer, "furnace.bought.many", "" + _furnaces.size()), ChatColor.GREEN);
     }
     
     public void openFurnace(Player bukkitPlayer, int nr, boolean free)
@@ -1000,16 +1000,16 @@ public class VPack
         VTEFurnace fur = _furnaces.get((Integer)nr);
         if(fur == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("furnace.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.none"), ChatColor.RED);
             return;
         }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         if(!free && !Money.world(_world).hasTake(_player, priceFurnaceUse()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VFurnace(player, fur), Lang.get("furnace.name", "" + nr), 2, 3);
+        Util.openWindow(player, new VFurnace(player, fur), Lang.get(bukkitPlayer, "furnace.name", "" + nr), 2, 3);
     }
     
     public void linkFurnace(Player bukkitPlayer, int furnaceNR, int chestNR, boolean free)
@@ -1018,12 +1018,12 @@ public class VPack
         VTEFurnace fur = _furnaces.get((Integer)furnaceNR);
         if(fur == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("furnace.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.none"), ChatColor.RED);
             return;
         }
         if(_chests.get((Integer)chestNR) == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("chest.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
             return;
         }
         if(!free && (fur.link <= 0))
@@ -1032,7 +1032,7 @@ public class VPack
             {
                 if(!Money.world(_world).hasTake(_player, priceFurnaceLink()))
                 {
-                    sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+                    sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
                     return;
                 }
             }
@@ -1042,7 +1042,7 @@ public class VPack
             }
         }
         fur.link = chestNR;
-        sendMessage(bukkitPlayer, Lang.get("furnace.linked", "" + furnaceNR, "" + chestNR), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.linked", "" + furnaceNR, "" + chestNR), ChatColor.GREEN);
     }
     
     public void unlinkFurnace(Player bukkitPlayer, int furnaceNR, boolean free)
@@ -1051,12 +1051,12 @@ public class VPack
         VTEFurnace fur = _furnaces.get((Integer)furnaceNR);
         if(fur == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("furnace.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.none"), ChatColor.RED);
             return;
         }
         if(fur.link <= 0)
         {
-            sendMessage(bukkitPlayer, Lang.get("furnace.nolink"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.nolink"), ChatColor.RED);
             return;
         }
         if(!free)
@@ -1064,7 +1064,7 @@ public class VPack
             _fLinks++;
         }
         fur.link = 0;
-        sendMessage(bukkitPlayer, Lang.get("furnace.unlinked", "" + furnaceNR), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.unlinked", "" + furnaceNR), ChatColor.GREEN);
     }
     
     /** Brewing stand **/
@@ -1074,19 +1074,19 @@ public class VPack
         int max = Config.getInt(_world, _player, "tools", "brewingstand", "max", true);
         if((_brews.size() + amount > max) && (max != -1))
         {
-            sendMessage(bukkitPlayer, Lang.get("brewingstand.max", "" + max), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.max", "" + max), ChatColor.RED);
             return;
         }
         if(!Money.world(_world).hasTake(_player, priceBrewBuy(amount)))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         for(int i = 0; i < amount; i++)
         {
             _brews.put((Integer)(_brews.size() + 1), new VTEBrewingstand(this));
         }
-        sendMessage(bukkitPlayer, (_brews.size() == 1) ? Lang.get("brewingstand.bought.one") : Lang.get("brewingstand.bought.many", "" + _brews.size()), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, (_brews.size() == 1) ? Lang.get(bukkitPlayer, "brewingstand.bought.one") : Lang.get(bukkitPlayer, "brewingstand.bought.many", "" + _brews.size()), ChatColor.GREEN);
     }
     
     public void openBrewingstand(Player bukkitPlayer, int nr, boolean free)
@@ -1095,16 +1095,16 @@ public class VPack
         VTEBrewingstand brew = _brews.get((Integer)nr);
         if(brew == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("brewingstand.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.none"), ChatColor.RED);
             return;
         }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         if(!free && !Money.world(_world).hasTake(_player, priceBrewUse()))
         {
-            sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VBrewingstand(player, brew), Lang.get("brewingstand.name", "" + nr), 5, 4);
+        Util.openWindow(player, new VBrewingstand(player, brew), Lang.get(bukkitPlayer, "brewingstand.name", "" + nr), 5, 4);
     }
     
     public void linkBrewingstand(Player bukkitPlayer, int brewNR, int chestNR, boolean free)
@@ -1113,12 +1113,12 @@ public class VPack
         VTEBrewingstand brew = _brews.get((Integer)brewNR);
         if(brew == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("brewingstand.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.none"), ChatColor.RED);
             return;
         }
         if(_chests.get((Integer)chestNR) == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("chest.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
             return;
         }
         if(!free && (brew.link <= 0))
@@ -1127,7 +1127,7 @@ public class VPack
             {
                 if(!Money.world(_world).hasTake(_player, priceBrewLink()))
                 {
-                    sendMessage(bukkitPlayer, Lang.get("money.toofew"), ChatColor.RED);
+                    sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
                     return;
                 }
             }
@@ -1137,7 +1137,7 @@ public class VPack
             }
         }
         brew.link = chestNR;
-        sendMessage(bukkitPlayer, Lang.get("brewingstand.linked", "" + brewNR, "" + chestNR), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.linked", "" + brewNR, "" + chestNR), ChatColor.GREEN);
     }
     
     public void unlinkBrewingstand(Player bukkitPlayer, int brewNR, boolean free)
@@ -1146,12 +1146,12 @@ public class VPack
         VTEBrewingstand brew = _brews.get((Integer)brewNR);
         if(brew == null)
         {
-            sendMessage(bukkitPlayer, Lang.get("brewingstand.none"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.none"), ChatColor.RED);
             return;
         }
         if(brew.link <= 0)
         {
-            sendMessage(bukkitPlayer, Lang.get("brewingstand.nolink"), ChatColor.RED);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.nolink"), ChatColor.RED);
             return;
         }
         if(!free)
@@ -1159,7 +1159,7 @@ public class VPack
             _bLinks++;
         }
         brew.link = 0;
-        sendMessage(bukkitPlayer, Lang.get("brewingstand.unlinked", "" + brewNR), ChatColor.GREEN);
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.unlinked", "" + brewNR), ChatColor.GREEN);
     }
     
     /** Trash **/
@@ -1168,7 +1168,7 @@ public class VPack
     {
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         VTrash container = new VTrash(player);
-        Util.openWindow(player, container, Lang.get("trash.name"), 0, 9);
+        Util.openWindow(player, container, Lang.get(bukkitPlayer, "trash.name"), 0, 9);
     }
     
     /** Sending **/
@@ -1182,7 +1182,7 @@ public class VPack
             ItemStack hand = player.inventory.getItemInHand();
             if(hand == null)
             {
-                sendMessage(bukkitPlayer, Lang.get("send.empty"), ChatColor.RED);
+                sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "send.empty"), ChatColor.RED);
                 return;
             }
             items = new ItemStack[]{Util.copy_old(hand)};
@@ -1196,7 +1196,7 @@ public class VPack
             VInv inv = _chests.get((Integer)chestNR);
             if(inv == null)
             {
-                sendMessage(bukkitPlayer, Lang.get("chest.none"), ChatColor.RED);
+                sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
                 return;
             }
             items = Util.copy_old(inv.getContents());
@@ -1211,7 +1211,7 @@ public class VPack
             }
             if(!found)
             {
-                sendMessage(bukkitPlayer, Lang.get("send.empty"), ChatColor.RED);
+                sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "send.empty"), ChatColor.RED);
                 return;
             }
             if(!copy)
@@ -1228,7 +1228,7 @@ public class VPack
                     continue;
                 }
                 sendItem(bukkitPlayer, pack, Util.copy_old(items));
-                sendMessage(bukkitPlayer, Lang.get((chestNR == 0) ? "send.done1" : "send.done2", pack.getPlayer()), ChatColor.GREEN);
+                sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, (chestNR == 0) ? "send.done1" : "send.done2", pack.getPlayer()), ChatColor.GREEN);
             }
         }
         else
@@ -1239,12 +1239,12 @@ public class VPack
     
     private void sendItem(Player bukkitPlayer, VPack pack, ItemStack... items)
     {
-        String message = Lang.get("send.get1", bukkitPlayer.getName());
+        String message = Lang.get(bukkitPlayer, "send.get1", bukkitPlayer.getName());
         ItemStack[] left;
         if(Config.bool("send.drop"))
         {
             left = items;
-            message += " " + Lang.get("send.get4");
+            message += " " + Lang.get(bukkitPlayer, "send.get4");
         }
         else
         {
@@ -1252,15 +1252,15 @@ public class VPack
             String[] touched = Util.getLastStackingIds();
             if(touched.length > 0)
             {
-                message += " " + Lang.get("send.get2", Util.implode(", ", touched));
+                message += " " + Lang.get(bukkitPlayer, "send.get2", Util.implode(", ", touched));
                 if(left.length > 0)
                 {
-                    message += " " + Lang.get("send.get3");
+                    message += " " + Lang.get(bukkitPlayer, "send.get3");
                 }
             }
             else
             {
-                message += " " + Lang.get("send.get4");
+                message += " " + Lang.get(bukkitPlayer, "send.get4");
             }
         }
         if(left.length > 0)

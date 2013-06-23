@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.jar.*;
 import java.nio.charset.Charset;
 import org.bukkit.configuration.file.*;
+import org.bukkit.command.CommandSender;
 
 import static net.drgnome.virtualpack.util.Global.*;
 
@@ -84,20 +85,22 @@ public class Lang
         }
     }
     
-    public static String get(String string, String... replacements)
+    public static String get(CommandSender sender, String string, String... replacements)
     {
-        string = get(string);
-        if(replacements != null)
-        {
-            for(int i = 1; i <= replacements.length; i++)
-            {
-                string = string.replaceAll("%" + i, replacements[i - 1]);
-            }
-        }
-        return string;
+        return getDirect((sender == null) ? "[NoOne]" : sender.getName(), string, replacements);
     }
     
-    public static String get(String string)
+    public static String getDirect(String senderName, String string, String... replacements)
+    {
+        string = get0(string);
+        for(int i = 1; i <= replacements.length; i++)
+        {
+            string = string.replaceAll("%" + i, replacements[i - 1]);
+        }
+        return string.replaceAll("%player", senderName);
+    }
+    
+    private static String get0(String string)
     {
         if((_file != null) && (_file.isSet(string)))
         {

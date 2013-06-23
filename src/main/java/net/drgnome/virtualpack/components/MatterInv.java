@@ -25,7 +25,7 @@ public class MatterInv extends BaseInv
     
     public MatterInv(String worldname, String playername)
     {
-        super(Lang.get("matter.name"), 54);
+        super(Lang.getDirect(playername, "matter.name"), 54);
         _worldname = worldname;
         _playername = playername;
         if(Config.bool("transmutation.enabled"))
@@ -37,7 +37,7 @@ public class MatterInv extends BaseInv
     
     public MatterInv(String worldname, String playername, String[] data)
     {
-        super(Lang.get("matter.name"), 54);
+        super(Lang.getDirect(playername, "matter.name"), 54);
         _worldname = worldname;
         _playername = playername;
         if(data.length > 0)
@@ -122,7 +122,7 @@ public class MatterInv extends BaseInv
     {
         _contents[0] = new ItemStack(399, 1);
         ItemMeta meta = _contents[0].getItemMeta();
-        meta.setDisplayName(_prefix + Util.parseColors(Config.string("transmutation.color.stored-name")) + Lang.get("matter.stored"));
+        meta.setDisplayName(_prefix + Util.parseColors(Config.string("transmutation.color.stored-name")) + Lang.getDirect(_playername, "matter.stored"));
         meta.setLore(Util.createList(Util.parseColors(Config.string("transmutation.color.stored-value")) + Util.formatDouble(_value)));
         _contents[0].setItemMeta(meta);
     }

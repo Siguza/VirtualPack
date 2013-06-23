@@ -75,7 +75,7 @@ public class VCommands implements CommandExecutor
         }
         catch(Throwable t)
         {
-            sendMessage(sender, Lang.get("command.error"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "command.error"), ChatColor.RED);
             t.printStackTrace();
         }
         return true;
@@ -89,7 +89,7 @@ public class VCommands implements CommandExecutor
         }
         if(_plugin.isReloading())
         {
-            sendMessage(sender, Lang.get("loading.single", Config.bool("load-multithreaded") ? Lang.get("loading.multi", _plugin.getLoadingProgress()) : ""), ChatColor.YELLOW);
+            sendMessage(sender, Lang.get(sender, "loading.single", Config.bool("load-multithreaded") ? Lang.get(sender, "loading.multi", _plugin.getLoadingProgress()) : ""), ChatColor.YELLOW);
             return;
         }
         else if(command.equals(VPlugin._components[0])) // Main
@@ -99,18 +99,18 @@ public class VCommands implements CommandExecutor
         }
         else if(!(sender instanceof Player))
         {
-            sendMessage(sender, Lang.get("use.player"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "use.player"), ChatColor.RED);
             return;
         }
         else if(!Perm.has(sender, "vpack.use"))
         {
-            sendMessage(sender, Lang.get("use.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "use.perm"), ChatColor.RED);
             return;
         }
         Player player = (Player)sender;
         if(!Config.bool(player.getWorld().getName(), "enabled"))
         {
-            sendMessage(player, Lang.get("world.disabled"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "world.disabled"), ChatColor.RED);
         }
         else
         {
@@ -126,18 +126,18 @@ public class VCommands implements CommandExecutor
             Player p = Bukkit.getPlayer(player.getName());
             if((p == null) || !(p instanceof CraftPlayer))
             {
-                sendMessage(player, Lang.get("vpack.nocraftplayer"), ChatColor.RED);
+                sendMessage(player, Lang.get(player, "vpack.nocraftplayer"), ChatColor.RED);
                 return;
             }
             player = p;
         }
         if((player.getGameMode() == GameMode.CREATIVE) && (!Config.bool(player.getWorld().getName(), "allow-creative")) && (!admin) && (!Perm.has(player, "vpack.bypass.creative")))
         {
-            sendMessage(player, Lang.get("vpack.nocreative"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "vpack.nocreative"), ChatColor.RED);
         }
         else if(!Money.world(player.getWorld().getName()).enabled() && (args.length >= 1) && args[0].equalsIgnoreCase("buy"))
         {
-            sendMessage(player, Lang.get("vpack.ecodisabled"), ChatColor.YELLOW);
+            sendMessage(player, Lang.get(player, "vpack.ecodisabled"), ChatColor.YELLOW);
         }
         else if(command.equals(VPlugin._components[1])) // Workbench
         {
@@ -181,7 +181,7 @@ public class VCommands implements CommandExecutor
         }
         else // Unknown command
         {
-            sendMessage(player, Lang.get("argument.unknown"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "argument.unknown"), ChatColor.RED);
         }
     }
     
@@ -199,7 +199,7 @@ public class VCommands implements CommandExecutor
         args = Util.cut(args, 1);
         if(command.equals("version"))
         {
-            sendMessage(sender, Lang.get("version", VPlugin._version), ChatColor.BLUE);
+            sendMessage(sender, Lang.get(sender, "version", VPlugin._version), ChatColor.BLUE);
             return;
         }
         else if(command.equals("admin"))
@@ -219,18 +219,18 @@ public class VCommands implements CommandExecutor
         }
         else if(!Perm.has(sender, "vpack.use"))
         {
-            sendMessage(sender, Lang.get("use.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "use.perm"), ChatColor.RED);
             return;
         }
         else if(!(sender instanceof Player))
         {
-            sendMessage(sender, Lang.get("use.player"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "use.player"), ChatColor.RED);
             return;
         }
         Player player = (Player)sender;
         if(!Config.bool(player.getWorld().getName(), "enabled"))
         {
-            sendMessage(sender, Lang.get("world.disabled"), ChatColor.RED);
+            sendMessage(sender, Lang.get(player, "world.disabled"), ChatColor.RED);
         }
         if(command.equals("stats"))
         {
@@ -252,17 +252,17 @@ public class VCommands implements CommandExecutor
         {
             if(_plugin.checkUpdate())
             {
-                sendMessage(sender, Lang.get("update.msg"), ChatColor.GREEN);
-                sendMessage(sender, Lang.get("update.link"), ChatColor.GOLD);
+                sendMessage(sender, Lang.get(sender, "update.msg"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "update.link"), ChatColor.GOLD);
             }
             else
             {
-                sendMessage(sender, Lang.get("update.no"), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "update.no"), ChatColor.GREEN);
             }
         }
         else
         {
-            sendMessage(sender, Lang.get("update.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "update.perm"), ChatColor.RED);
         }
     }
     
@@ -274,19 +274,19 @@ public class VCommands implements CommandExecutor
         }
         if(longname(args[0]).equals(VPlugin._components[2]))
         {
-            sendMessage(sender, Lang.get("help.uncrafter.title"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("help.uncrafter.description"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "help.uncrafter.title"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "help.uncrafter.description"), ChatColor.AQUA);
         }
         else if(longname(args[0]).equals(VPlugin._components[10]))
         {
-            sendMessage(sender, Lang.get("help.matter.title"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("help.matter.description"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "help.matter.title"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "help.matter.description"), ChatColor.AQUA);
         }
         else if(args[0].equals("link"))
         {
-            sendMessage(sender, Lang.get("help.link.title"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("help.link.description"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("help.link.note"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "help.link.title"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "help.link.description"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "help.link.note"), ChatColor.RED);
         }
         else if(args[0].equals("commands"))
         {
@@ -309,87 +309,87 @@ public class VCommands implements CommandExecutor
             int page = Util.tryParse(args[0], 1);
             List<String> list = Config.list("commands." + VPlugin._components[0]);
             String cmd = (list.size() <= 0) ? "" : list.get(0);
-            sendMessage(sender, Lang.get("help.title"));
-            sendMessage(sender, Lang.get("help.commands", cmd));
+            sendMessage(sender, Lang.get(sender, "help.title"));
+            sendMessage(sender, Lang.get(sender, "help.commands", cmd));
             if(Perm.has(sender, "vpack.admin"))
             {
-                sendMessage(sender, Lang.get("help.admin", cmd), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "help.admin", cmd), ChatColor.RED);
             }
-            sendMessage(sender, Lang.get("help.version", cmd));
+            sendMessage(sender, Lang.get(sender, "help.version", cmd));
             if(Perm.has(sender, "vpack.use"))
             {
                 
-                sendMessage(sender, Lang.get("help.stats", cmd));
-                sendMessage(sender, Lang.get("help.price", cmd));
+                sendMessage(sender, Lang.get(sender, "help.stats", cmd));
+                sendMessage(sender, Lang.get(sender, "help.price", cmd));
             }
             if(Perm.has(sender, "vpack.send"))
             {
-                sendMessage(sender, Lang.get("help.send1", cmd), ChatColor.AQUA);
-                sendMessage(sender, Lang.get("help.send2", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "help.send1", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "help.send2", cmd), ChatColor.AQUA);
             }
             if(Perm.has(sender, "vpack.send.copy"))
             {
-                sendMessage(sender, Lang.get("help.send3", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "help.send3", cmd), ChatColor.AQUA);
             }
             if(Perm.has(sender, "vpack.send.all"))
             {
-                sendMessage(sender, Lang.get("help.send4", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "help.send4", cmd), ChatColor.AQUA);
             }
             if(Perm.has(sender, "vpack.use.workbench"))
             {
-                sendMessage(sender, Lang.get("help.workbench.buy", cmd));
-                sendMessage(sender, Lang.get("help.workbench.use", cmd));
+                sendMessage(sender, Lang.get(sender, "help.workbench.buy", cmd));
+                sendMessage(sender, Lang.get(sender, "help.workbench.use", cmd));
             }
             if(Perm.has(sender, "vpack.use.uncrafter"))
             {
-                sendMessage(sender, Lang.get("help.uncrafter.buy", cmd));
-                sendMessage(sender, Lang.get("help.uncrafter.use", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
+                sendMessage(sender, Lang.get(sender, "help.uncrafter.buy", cmd));
+                sendMessage(sender, Lang.get(sender, "help.uncrafter.use", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
             }
             if(Perm.has(sender, "vpack.use.enchanttable"))
             {
-                sendMessage(sender, Lang.get("help.enchanttable.buy", cmd));
-                sendMessage(sender, Lang.get("help.enchanttable.use", cmd));
-                sendMessage(sender, Lang.get("help.enchanttable.book", cmd));
+                sendMessage(sender, Lang.get(sender, "help.enchanttable.buy", cmd));
+                sendMessage(sender, Lang.get(sender, "help.enchanttable.use", cmd));
+                sendMessage(sender, Lang.get(sender, "help.enchanttable.book", cmd));
             }
             if(Perm.has(sender, "vpack.use.anvil"))
             {
-                sendMessage(sender, Lang.get("help.anvil.buy", cmd));
-                sendMessage(sender, Lang.get("help.anvil.use", cmd));
+                sendMessage(sender, Lang.get(sender, "help.anvil.buy", cmd));
+                sendMessage(sender, Lang.get(sender, "help.anvil.use", cmd));
             }
             if(Perm.has(sender, "vpack.use.materializer") && Config.bool("transmutation.enabled"))
             {
-                sendMessage(sender, Lang.get("help.matter.buy", cmd));
-                sendMessage(sender, Lang.get("help.matter.use", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
-                sendMessage(sender, Lang.get("help.matter.list", cmd));
+                sendMessage(sender, Lang.get(sender, "help.matter.buy", cmd));
+                sendMessage(sender, Lang.get(sender, "help.matter.use", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
+                sendMessage(sender, Lang.get(sender, "help.matter.list", cmd));
             }
             if(Perm.has(sender, "vpack.use.chest"))
             {
-                sendMessage(sender, Lang.get("help.chest.buy", cmd));
-                sendMessage(sender, Lang.get("help.chest.use", cmd));
-                sendMessage(sender, Lang.get("help.chest.drop", cmd));
-                sendMessage(sender, Lang.get("help.chest.trash", cmd));
+                sendMessage(sender, Lang.get(sender, "help.chest.buy", cmd));
+                sendMessage(sender, Lang.get(sender, "help.chest.use", cmd));
+                sendMessage(sender, Lang.get(sender, "help.chest.drop", cmd));
+                sendMessage(sender, Lang.get(sender, "help.chest.trash", cmd));
             }
             if(Perm.has(sender, "vpack.use.furnace"))
             {
-                sendMessage(sender, Lang.get("help.furnace.buy", cmd));
-                sendMessage(sender, Lang.get("help.furnace.use", cmd));
-                sendMessage(sender, Lang.get("help.furnace.link", cmd));
-                sendMessage(sender, Lang.get("help.furnace.unlink", cmd));
-                sendMessage(sender, Lang.get("help.link.info", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
+                sendMessage(sender, Lang.get(sender, "help.furnace.buy", cmd));
+                sendMessage(sender, Lang.get(sender, "help.furnace.use", cmd));
+                sendMessage(sender, Lang.get(sender, "help.furnace.link", cmd));
+                sendMessage(sender, Lang.get(sender, "help.furnace.unlink", cmd));
+                sendMessage(sender, Lang.get(sender, "help.link.info", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
             }
             if(Perm.has(sender, "vpack.use.brewingstand"))
             {
-                sendMessage(sender, Lang.get("help.brewingstand.buy", cmd));
-                sendMessage(sender, Lang.get("help.brewingstand.use", cmd));
-                sendMessage(sender, Lang.get("help.brewingstand.link", cmd));
-                sendMessage(sender, Lang.get("help.brewingstand.unlink", cmd));
-                sendMessage(sender, Lang.get("help.link.info", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
+                sendMessage(sender, Lang.get(sender, "help.brewingstand.buy", cmd));
+                sendMessage(sender, Lang.get(sender, "help.brewingstand.use", cmd));
+                sendMessage(sender, Lang.get(sender, "help.brewingstand.link", cmd));
+                sendMessage(sender, Lang.get(sender, "help.brewingstand.unlink", cmd));
+                sendMessage(sender, Lang.get(sender, "help.link.info", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
             }
             if(Perm.has(sender, "vpack.use.trash"))
             {
-                sendMessage(sender, Lang.get("help.trash", cmd));
+                sendMessage(sender, Lang.get(sender, "help.trash", cmd));
             }
-            sendMessage(sender, Lang.get("help.more", ""));
+            sendMessage(sender, Lang.get(sender, "help.more", ""));
             sender.sendMessage(ChatColor.GOLD + "http://dev.bukkit.org/server-mods/virtualpack/pages/commands"); // Thou shall not split my link! :P
         }
     }
@@ -398,50 +398,50 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(sender, "vpack.admin"))
         {
-            sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
             return;
         }
         if((args.length <= 0) || args[0].equalsIgnoreCase("help"))
         {
             List<String> list = Config.list("commands." + VPlugin._components[0]);
             String cmd = (list.size() <= 0) ? "" : list.get(0);
-            sendMessage(sender, Lang.get("admin.help.title"), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.reload", cmd), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.reloaduser", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "admin.help.title"), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "admin.help.reload", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "admin.help.reloaduser", cmd), ChatColor.AQUA);
             if(Config.bool("transmutation.enabled"))
             {
-                sendMessage(sender, Lang.get("admin.help.listmatter", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.listmatter", cmd), ChatColor.AQUA);
             }
-            sendMessage(sender, Lang.get("admin.help.save", cmd), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.savefile", cmd), ChatColor.AQUA);
-            sendMessage(sender, Lang.get("admin.help.loadfile", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "admin.help.save", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "admin.help.savefile", cmd), ChatColor.AQUA);
+            sendMessage(sender, Lang.get(sender, "admin.help.loadfile", cmd), ChatColor.AQUA);
             if(Perm.has(sender, "vpack.admin.cut") && !Config.bool("superperms"))
             {
-                sendMessage(sender, Lang.get("admin.help.cut", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.cut", cmd), ChatColor.AQUA);
             }
             if(Perm.has(sender, "vpack.admin.clean") && !Config.bool("superperms"))
             {
-                sendMessage(sender, Lang.get("admin.help.clean", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.clean", cmd), ChatColor.AQUA);
             }
             if(Perm.has(sender, "vpack.admin.use") || Perm.has(sender, "vpack.admin.give") || Perm.has(sender, "vpack.admin.take") || Perm.has(sender, "vpack.admin.delete"))
             {
-                sendMessage(sender, Lang.get("admin.help.world", cmd), ChatColor.GOLD);
+                sendMessage(sender, Lang.get(sender, "admin.help.world", cmd), ChatColor.GOLD);
             }
             if(Perm.has(sender, "vpack.admin.use"))
             {
-                sendMessage(sender, Lang.get("admin.help.use", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.use", cmd), ChatColor.AQUA);
             }
             if(Perm.has(sender, "vpack.admin.give"))
             {
-                sendMessage(sender, Lang.get("admin.help.give", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.give", cmd), ChatColor.AQUA);
             }
             if(Perm.has(sender, "vpack.admin.take"))
             {
-                sendMessage(sender, Lang.get("admin.help.take", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.take", cmd), ChatColor.AQUA);
             }
             if(Perm.has(sender, "vpack.admin.delete"))
             {
-                sendMessage(sender, Lang.get("admin.help.delete", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.delete", cmd), ChatColor.AQUA);
                 sendMessage(sender, "/" + cmd + " ad erase - REMOVE EVERYTHING", ChatColor.RED);
             }
             return;
@@ -468,7 +468,7 @@ public class VCommands implements CommandExecutor
                         _plugin.getPack(world, args[1]).recalculate();
                     }
                 }
-                sendMessage(sender, Lang.get("admin.reloadeduser", args[1]), ChatColor.YELLOW);
+                sendMessage(sender, Lang.get(sender, "admin.reloadeduser", args[1]), ChatColor.YELLOW);
             }
             else
             {
@@ -477,33 +477,33 @@ public class VCommands implements CommandExecutor
                 _plugin.reloadConfig();
                 _plugin.loadUserData();
                 _plugin.registerThreads();
-                sendMessage(sender, Lang.get("admin.reloaded"), ChatColor.YELLOW);
+                sendMessage(sender, Lang.get(sender, "admin.reloaded"), ChatColor.YELLOW);
             }
             return;
         }
         else if(args[0].equals("save"))
         {
             _plugin.saveUserData();
-            sendMessage(sender, Lang.get("admin.saved"), ChatColor.YELLOW);
+            sendMessage(sender, Lang.get(sender, "admin.saved"), ChatColor.YELLOW);
             return;
         }
         else if(args[0].equals("savefile"))
         {
             _plugin.saveUserData(true);
-            sendMessage(sender, Lang.get("admin.saved"), ChatColor.YELLOW);
+            sendMessage(sender, Lang.get(sender, "admin.saved"), ChatColor.YELLOW);
             return;
         }
         else if(args[0].equals("loadfile"))
         {
             if(!Config.bool("db.use"))
             {
-                sendMessage(sender, Lang.get("admin.mysql"), ChatColor.YELLOW);
+                sendMessage(sender, Lang.get(sender, "admin.mysql"), ChatColor.YELLOW);
                 return;
             }
             _plugin.saveUserData(true, "backup.db");
             _plugin.forceMysqlPort();
             _plugin.loadUserData();
-            sendMessage(sender, Lang.get("admin.loaded"), ChatColor.YELLOW);
+            sendMessage(sender, Lang.get(sender, "admin.loaded"), ChatColor.YELLOW);
             return;
         }
         else if(args[0].equals("listmatter"))
@@ -517,7 +517,7 @@ public class VCommands implements CommandExecutor
             }
             else
             {
-                sendMessage(sender, Lang.get("matter.disabled"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "matter.disabled"), ChatColor.RED);
             }
             return;
         }
@@ -530,7 +530,7 @@ public class VCommands implements CommandExecutor
         {
             if(!Perm.has(sender, "vpack.admin.delete"))
             {
-                sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
                 return;
             }
             List<String> list = Config.list("commands." + VPlugin._components[0]);
@@ -542,7 +542,7 @@ public class VCommands implements CommandExecutor
         {
             if(!Perm.has(sender, "vpack.admin.delete"))
             {
-                sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
                 return;
             }
             _plugin.deleteEverything();
@@ -551,7 +551,7 @@ public class VCommands implements CommandExecutor
         }
         else if(args.length < 2)
         {
-            sendMessage(sender, Lang.get("argument.few"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "argument.few"), ChatColor.RED);
             return;
         }
         else if(args[0].equals("clean"))
@@ -573,7 +573,7 @@ public class VCommands implements CommandExecutor
             }
             else
             {
-                sendMessage(sender, Lang.get("use.world"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "use.world"), ChatColor.RED);
                 return;
             }
         }
@@ -591,20 +591,20 @@ public class VCommands implements CommandExecutor
         {
             if(!Perm.has(sender, "vpack.admin.delete"))
             {
-                sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
                 return;
             }
             if(!_plugin.hasPack(world, args[1]))
             {
-                sendMessage(sender, Lang.get("vpack.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "vpack.none"), ChatColor.RED);
                 return;
             }
             _plugin.setPack(world, args[1], null);
-            sendMessage(sender, Lang.get("admin.delete", args[1]), ChatColor.GREEN);
+            sendMessage(sender, Lang.get(sender, "admin.delete", args[1]), ChatColor.GREEN);
         }
         else if(!(sender instanceof Player))
         {
-            sendMessage(sender, Lang.get("use.player"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "use.player"), ChatColor.RED);
             return;
         }
         Player player = (Player)sender;
@@ -612,19 +612,19 @@ public class VCommands implements CommandExecutor
         {
             if(!Perm.has(player, "vpack.admin.use"))
             {
-                sendMessage(player, Lang.get("admin.perm"), ChatColor.RED);
+                sendMessage(player, Lang.get(player, "admin.perm"), ChatColor.RED);
                 return;
             }
             else if(args.length < 3)
             {
-                sendMessage(player, Lang.get("argument.few"), ChatColor.RED);
+                sendMessage(player, Lang.get(player, "argument.few"), ChatColor.RED);
                 return;
             }
             tools(player, _plugin.getPack(player.getWorld().getName(), args[1]), longname(args[2]), Util.cut(args, 3), true);
         }
         else
         {
-            sendMessage(sender, Lang.get("argument.unknown"), ChatColor.RED);
+            sendMessage(sender, Lang.get(player, "argument.unknown"), ChatColor.RED);
         }
     }
     
@@ -632,12 +632,12 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(sender, "vpack.admin.cut"))
         {
-            sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
             return;
         }
         else if(Config.bool("superperms"))
         {
-            sendMessage(sender, Lang.get("admin.superperms"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "admin.superperms"), ChatColor.RED);
             return;
         }
         boolean force = false;
@@ -651,7 +651,7 @@ public class VCommands implements CommandExecutor
             }
             else
             {
-                sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
                 return;
             }
             args = Util.cut(args, 1);
@@ -660,7 +660,7 @@ public class VCommands implements CommandExecutor
         {
             if(args.length < 2)
             {
-                sendMessage(sender, Lang.get("argument.few"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "argument.few"), ChatColor.RED);
                 return;
             }
             else if(args[0].equalsIgnoreCase("player"))
@@ -673,7 +673,7 @@ public class VCommands implements CommandExecutor
             }
             else
             {
-                sendMessage(sender, Lang.get("argument.unknown"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "argument.unknown"), ChatColor.RED);
                 return;
             }
         }
@@ -695,19 +695,19 @@ public class VCommands implements CommandExecutor
             }
             pack.cut();
         }
-        sendMessage(sender, Lang.get("admin.cut"), ChatColor.GREEN);
+        sendMessage(sender, Lang.get(sender, "admin.cut"), ChatColor.GREEN);
     }
     
     private void clean(CommandSender sender, String[] args)
     {
         if(!Perm.has(sender, "vpack.admin.clean"))
         {
-            sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
             return;
         }
         else if(Config.bool("superperms"))
         {
-            sendMessage(sender, Lang.get("admin.superperms"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "admin.superperms"), ChatColor.RED);
             return;
         }
         try
@@ -725,11 +725,11 @@ public class VCommands implements CommandExecutor
                     _plugin.setPack(pack.getWorld(), player, null);
                 }
             }
-            sendMessage(sender, Lang.get("admin.clean"), ChatColor.GREEN);
+            sendMessage(sender, Lang.get(sender, "admin.clean"), ChatColor.GREEN);
         }
         catch(NumberFormatException e)
         {
-            sendMessage(sender, Lang.get("argument.invalid"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "argument.invalid"), ChatColor.RED);
         }
     }
     
@@ -737,17 +737,17 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(sender, "vpack.admin.give"))
         {
-            sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
             return;
         }
         if(args.length < 2)
         {
-            sendMessage(sender, Lang.get("argument.few"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "argument.few"), ChatColor.RED);
             return;
         }
         if(!_plugin.hasPack(world, args[0]))
         {
-            sendMessage(sender, Lang.get("vpack.none"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "vpack.none"), ChatColor.RED);
             return;
         }
         VPack pack = _plugin.getPack(world, args[0]);
@@ -760,7 +760,7 @@ public class VCommands implements CommandExecutor
             }
             catch(Throwable t)
             {
-                sendMessage(sender, Lang.get("argument.invalid"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "argument.invalid"), ChatColor.RED);
             }
         }
         args[1] = longname(args[1]);
@@ -768,48 +768,48 @@ public class VCommands implements CommandExecutor
         {
             if(pack._hasWorkbench)
             {
-                sendMessage(sender, Lang.get("admin.give.workbench.have"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.give.workbench.have"), ChatColor.RED);
             }
             else
             {
                 pack._hasWorkbench = true;
-                sendMessage(sender, Lang.get("admin.give.workbench.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.give.workbench.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("uncrafter"))
         {
             if(pack._hasUncrafter)
             {
-                sendMessage(sender, Lang.get("admin.give.uncrafter.have"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.give.uncrafter.have"), ChatColor.RED);
             }
             else
             {
                 pack._hasUncrafter = true;
-                sendMessage(sender, Lang.get("admin.give.uncrafter.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.give.uncrafter.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("enchanttable"))
         {
             if(pack._hasEnchantTable)
             {
-                sendMessage(sender, Lang.get("admin.give.enchanttable.have"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.give.enchanttable.have"), ChatColor.RED);
             }
             else
             {
                 pack._hasEnchantTable = true;
-                sendMessage(sender, Lang.get("admin.give.enchanttable.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.give.enchanttable.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("anvil"))
         {
             if(pack._hasAnvil)
             {
-                sendMessage(sender, Lang.get("admin.give.anvil.have"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.give.anvil.have"), ChatColor.RED);
             }
             else
             {
                 pack._hasAnvil = true;
-                sendMessage(sender, Lang.get("admin.give.anvil.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.give.anvil.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("materializer"))
@@ -819,11 +819,11 @@ public class VCommands implements CommandExecutor
                 /** FUUU **/
                 // pack._matter = new MatterInv(pack.getWorld(), pack.getPlayer());
                 pack._matter = new TmpMatterInv(pack.getWorld(), pack.getPlayer());
-                sendMessage(sender, Lang.get("admin.give.matter.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.give.matter.done", args[0]), ChatColor.GREEN);
             }
             else
             {
-                sendMessage(sender, Lang.get("admin.give.matter.have"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.give.matter.have"), ChatColor.RED);
             }
         }
         else if(args[1].equals("chest"))
@@ -832,7 +832,7 @@ public class VCommands implements CommandExecutor
             {
                 pack._chests.put((Integer)(pack._chests.size() + 1), new VInv(pack.getChestSize()));
             }
-            sendMessage(sender, (amount == 1) ? Lang.get("admin.give.chest.one", args[0]) : Lang.get("admin.give.chest.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.give.chest.one", args[0]) : Lang.get(sender, "admin.give.chest.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("furnace"))
         {
@@ -840,7 +840,7 @@ public class VCommands implements CommandExecutor
             {
                 pack._furnaces.put((Integer)(pack._furnaces.size() + 1), new VTEFurnace(pack));
             }
-            sendMessage(sender, (amount == 1) ? Lang.get("admin.give.furnace.one", args[0]) : Lang.get("admin.give.furnace.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.give.furnace.one", args[0]) : Lang.get(sender, "admin.give.furnace.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("brewingstand"))
         {
@@ -848,13 +848,13 @@ public class VCommands implements CommandExecutor
             {
                 pack._brews.put((Integer)(pack._brews.size() + 1), new VTEBrewingstand(pack));
             }
-            sendMessage(sender, (amount == 1) ? Lang.get("admin.give.brewingstand.one", args[0]) : Lang.get("admin.give.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.give.brewingstand.one", args[0]) : Lang.get(sender, "admin.give.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("book"))
         {
             int max = amount + pack._bookshelves > VPack._maxBookshelves ? VPack._maxBookshelves : amount + pack._bookshelves;
             pack._bookshelves += max;
-            sendMessage(sender, (amount == 1) ? Lang.get("admin.give.book.one", args[0]) : Lang.get("admin.give.book.many", args[0], "" + max), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.give.book.one", args[0]) : Lang.get(sender, "admin.give.book.many", args[0], "" + max), ChatColor.GREEN);
         }
     }
 
@@ -862,17 +862,17 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(sender, "vpack.admin.take"))
         {
-            sendMessage(sender, Lang.get("admin.perm"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
             return;
         }
         if(args.length < 2)
         {
-            sendMessage(sender, Lang.get("argument.few"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "argument.few"), ChatColor.RED);
             return;
         }
         if(!_plugin.hasPack(world, args[0]))
         {
-            sendMessage(sender, Lang.get("vpack.none"), ChatColor.RED);
+            sendMessage(sender, Lang.get(sender, "vpack.none"), ChatColor.RED);
         }
         VPack pack = _plugin.getPack(world, args[0]);
         int amount = 1;
@@ -884,7 +884,7 @@ public class VCommands implements CommandExecutor
             }
             catch(Throwable t)
             {
-                sendMessage(sender, Lang.get("argument.invalid"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "argument.invalid"), ChatColor.RED);
             }
         }
         args[1] = longname(args[1]);
@@ -892,60 +892,60 @@ public class VCommands implements CommandExecutor
         {
             if(!pack._hasWorkbench)
             {
-                sendMessage(sender, Lang.get("admin.take.workbench.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.take.workbench.none"), ChatColor.RED);
             }
             else
             {
                 pack._hasWorkbench = false;
-                sendMessage(sender, Lang.get("admin.take.workbench.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.take.workbench.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("uncrafter"))
         {
             if(!pack._hasUncrafter)
             {
-                sendMessage(sender, Lang.get("admin.take.uncrafter.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.take.uncrafter.none"), ChatColor.RED);
             }
             else
             {
                 pack._hasUncrafter = false;
-                sendMessage(sender, Lang.get("admin.take.uncrafter.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.take.uncrafter.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("enchanttable"))
         {
             if(!pack._hasEnchantTable)
             {
-                sendMessage(sender, Lang.get("admin.take.enchanttable.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.take.enchanttable.none"), ChatColor.RED);
             }
             else
             {
                 pack._hasEnchantTable = false;
-                sendMessage(sender, Lang.get("admin.give.enchanttable.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.give.enchanttable.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("anvil"))
         {
             if(!pack._hasAnvil)
             {
-                sendMessage(sender, Lang.get("admin.take.anvil.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.take.anvil.none"), ChatColor.RED);
             }
             else
             {
                 pack._hasAnvil = false;
-                sendMessage(sender, Lang.get("admin.take.anvil.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.take.anvil.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("materializer"))
         {
             if(pack._matter == null)
             {
-                sendMessage(sender, Lang.get("admin.take.matter.none"), ChatColor.RED);
+                sendMessage(sender, Lang.get(sender, "admin.take.matter.none"), ChatColor.RED);
             }
             else
             {
                 pack._matter = null;
-                sendMessage(sender, Lang.get("admin.take.matter.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.take.matter.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("chest"))
@@ -957,7 +957,7 @@ public class VCommands implements CommandExecutor
                     pack._chests.remove((Integer)pack._chests.size());
                 }
             }
-            sendMessage(sender, (amount == 1) ? Lang.get("admin.take.chest.one", args[0]) : Lang.get("admin.take.chest.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.take.chest.one", args[0]) : Lang.get(sender, "admin.take.chest.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("furnace"))
         {
@@ -968,7 +968,7 @@ public class VCommands implements CommandExecutor
                     pack._furnaces.remove((Integer)pack._furnaces.size());
                 }
             }
-            sendMessage(sender, (amount == 1) ? Lang.get("admin.take.furnace.one", args[0]) : Lang.get("admin.take.furnace.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.take.furnace.one", args[0]) : Lang.get(sender, "admin.take.furnace.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("brewingstand"))
         {
@@ -979,13 +979,13 @@ public class VCommands implements CommandExecutor
                     pack._brews.remove((Integer)pack._brews.size());
                 }
             }
-            sendMessage(sender, (amount == 1) ? Lang.get("admin.take.brewingstand.one", args[0]) : Lang.get("admin.take.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.take.brewingstand.one", args[0]) : Lang.get(sender, "admin.take.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("book"))
         {
             int max = pack._bookshelves - amount < 0 ? pack._bookshelves : amount;
             pack._bookshelves -= max;
-            sendMessage(sender, (amount == 1) ? Lang.get("admin.take.book.one", args[0]) : Lang.get("admin.take.book.many", args[0], "" + max), ChatColor.GREEN);
+            sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.take.book.one", args[0]) : Lang.get(sender, "admin.take.book.many", args[0], "" + max), ChatColor.GREEN);
         }
     }
     
@@ -1001,12 +1001,12 @@ public class VCommands implements CommandExecutor
                 }
                 else
                 {
-                    sendMessage(player, Lang.get("stats.usernotfound"), ChatColor.RED);
+                    sendMessage(player, Lang.get(player, "stats.usernotfound"), ChatColor.RED);
                 }
             }
             else
             {
-                sendMessage(player, Lang.get("stats.allow"), ChatColor.RED);
+                sendMessage(player, Lang.get(player, "stats.allow"), ChatColor.RED);
             }
             return;
         }
@@ -1015,7 +1015,7 @@ public class VCommands implements CommandExecutor
     
     private void price(Player player)
     {
-        sendMessage(player, Lang.get("price.title"), ChatColor.AQUA);
+        sendMessage(player, Lang.get(player, "price.title"), ChatColor.AQUA);
         if(Money.world(player.getWorld().getName()).enabled())
         {
             VPack pack = _plugin.getPack(player);
@@ -1023,40 +1023,40 @@ public class VCommands implements CommandExecutor
             final String g = ChatColor.GREEN.toString();
             if(Perm.has(player, "vpack.use.workbench"))
             {
-                sendMessage(player, Lang.get("price.workbench", y, g, "" + pack.priceWorkbenchBuy(), "" + pack.priceWorkbenchUse()));
+                sendMessage(player, Lang.get(player, "price.workbench", y, g, "" + pack.priceWorkbenchBuy(), "" + pack.priceWorkbenchUse()));
             }
             if(Perm.has(player, "vpack.use.uncrafter"))
             {
-                sendMessage(player, Lang.get("price.uncrafter", y, g, "" + pack.priceUncrafterBuy(), "" + pack.priceUncrafterUse()));
+                sendMessage(player, Lang.get(player, "price.uncrafter", y, g, "" + pack.priceUncrafterBuy(), "" + pack.priceUncrafterUse()));
             }
             if(Perm.has(player, "vpack.use.enchanttable"))
             {
-                sendMessage(player, Lang.get("price.enchanttable", y, g, "" + pack.priceEnchBuy(), "" + pack.priceEnchUse(), "" + pack.priceEnchBook(1)));
+                sendMessage(player, Lang.get(player, "price.enchanttable", y, g, "" + pack.priceEnchBuy(), "" + pack.priceEnchUse(), "" + pack.priceEnchBook(1)));
             }
             if(Perm.has(player, "vpack.use.anvil"))
             {
-                sendMessage(player, Lang.get("price.anvil", y, g, "" + pack.priceAnvilBuy(), "" + pack.priceAnvilUse()));
+                sendMessage(player, Lang.get(player, "price.anvil", y, g, "" + pack.priceAnvilBuy(), "" + pack.priceAnvilUse()));
             }
             if(Perm.has(player, "vpack.use.materializer"))
             {
-                sendMessage(player, Lang.get("price.matter", y, g, "" + pack.priceMatterBuy(), "" + pack.priceMatterUse()));
+                sendMessage(player, Lang.get(player, "price.matter", y, g, "" + pack.priceMatterBuy(), "" + pack.priceMatterUse()));
             }
             if(Perm.has(player, "vpack.use.chest"))
             {
-                sendMessage(player, Lang.get("price.chest", y, g, "" + pack.priceChestBuy(1), "" + pack.priceChestUse()));
+                sendMessage(player, Lang.get(player, "price.chest", y, g, "" + pack.priceChestBuy(1), "" + pack.priceChestUse()));
             }
             if(Perm.has(player, "vpack.use.furnace"))
             {
-                sendMessage(player, Lang.get("price.furnace", y, g, "" + pack.priceFurnaceBuy(1), "" + pack.priceFurnaceUse(), "" + pack.priceFurnaceLink()));
+                sendMessage(player, Lang.get(player, "price.furnace", y, g, "" + pack.priceFurnaceBuy(1), "" + pack.priceFurnaceUse(), "" + pack.priceFurnaceLink()));
             }
             if(Perm.has(player, "vpack.use.brewingstand"))
             {
-                sendMessage(player, Lang.get("price.brewingstand", y, g, "" + pack.priceBrewBuy(1), "" + pack.priceBrewUse(), "" + pack.priceBrewLink()));
+                sendMessage(player, Lang.get(player, "price.brewingstand", y, g, "" + pack.priceBrewBuy(1), "" + pack.priceBrewUse(), "" + pack.priceBrewLink()));
             }
         }
         else
         {
-            sendMessage(player, Lang.get("price.free"), ChatColor.AQUA);
+            sendMessage(player, Lang.get(player, "price.free"), ChatColor.AQUA);
         }
     }
     
@@ -1064,7 +1064,7 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.workbench"))
         {
-            sendMessage(player, Lang.get("workbench.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "workbench.perm"), ChatColor.RED);
             return;
         }
         if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
@@ -1079,7 +1079,7 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.uncrafter"))
         {
-            sendMessage(player, Lang.get("uncrafter.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "uncrafter.perm"), ChatColor.RED);
             return;
         }
         if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
@@ -1094,7 +1094,7 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.chest"))
         {
-            sendMessage(player, Lang.get("chest.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "chest.perm"), ChatColor.RED);
             return;
         }
         int i = 1;
@@ -1111,7 +1111,7 @@ public class VCommands implements CommandExecutor
                     }
                     catch(Throwable t)
                     {
-                        sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                        sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                         return;
                     }
                 }
@@ -1137,7 +1137,7 @@ public class VCommands implements CommandExecutor
                 }
                 catch(Throwable t)
                 {
-                    sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                    sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                     return;
                 }
             }
@@ -1149,7 +1149,7 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.furnace"))
         {
-            sendMessage(player, Lang.get("furnace.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "furnace.perm"), ChatColor.RED);
             return;
         }
         int i = 1;
@@ -1166,7 +1166,7 @@ public class VCommands implements CommandExecutor
                     }
                     catch(Throwable t)
                     {
-                        sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                        sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                         return;
                     }
                 }
@@ -1181,7 +1181,7 @@ public class VCommands implements CommandExecutor
                 }
                 catch(Throwable t)
                 {
-                    sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                    sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 }
                 return;
             }
@@ -1193,7 +1193,7 @@ public class VCommands implements CommandExecutor
                 }
                 catch(Throwable t)
                 {
-                    sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                    sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 }
                 return;
             }
@@ -1205,7 +1205,7 @@ public class VCommands implements CommandExecutor
                 }
                 catch(Throwable t)
                 {
-                    sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                    sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                     return;
                 }
             }
@@ -1217,7 +1217,7 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.brewingstand"))
         {
-            sendMessage(player, Lang.get("brewingstand.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "brewingstand.perm"), ChatColor.RED);
             return;
         }
         int i = 1;
@@ -1234,7 +1234,7 @@ public class VCommands implements CommandExecutor
                     }
                     catch(Throwable t)
                     {
-                        sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                        sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                         return;
                     }
                 }
@@ -1249,7 +1249,7 @@ public class VCommands implements CommandExecutor
                 }
                 catch(Throwable t)
                 {
-                    sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                    sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 }
                 return;
             }
@@ -1261,7 +1261,7 @@ public class VCommands implements CommandExecutor
                 }
                 catch(Throwable t)
                 {
-                    sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                    sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 }
                 return;
             }
@@ -1273,7 +1273,7 @@ public class VCommands implements CommandExecutor
                 }
                 catch(Throwable t)
                 {
-                    sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                    sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                     return;
                 }
             }
@@ -1285,7 +1285,7 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.enchanttable"))
         {
-            sendMessage(player, Lang.get("enchanttable.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "enchanttable.perm"), ChatColor.RED);
             return;
         }
         if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
@@ -1301,7 +1301,7 @@ public class VCommands implements CommandExecutor
                     }
                     catch(Throwable t)
                     {
-                        sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                        sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                         return;
                     }
                 }
@@ -1324,12 +1324,12 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.send"))
         {
-            sendMessage(player, Lang.get("send.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "send.perm"), ChatColor.RED);
             return;
         }
         if(args.length <= 0)
         {
-            sendMessage(player, Lang.get("argument.few"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "argument.few"), ChatColor.RED);
             return;
         }
         boolean copy = false;
@@ -1337,7 +1337,7 @@ public class VCommands implements CommandExecutor
         {
             if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.send.copy"))
             {
-                sendMessage(player, Lang.get("send.copy.perm"), ChatColor.RED);
+                sendMessage(player, Lang.get(player, "send.copy.perm"), ChatColor.RED);
                 return;
             }
             args = Util.cut(args, 1);
@@ -1347,7 +1347,7 @@ public class VCommands implements CommandExecutor
         {
             if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.send.all"))
             {
-                sendMessage(player, Lang.get("send.all.perm"), ChatColor.RED);
+                sendMessage(player, Lang.get(player, "send.all.perm"), ChatColor.RED);
                 return;
             }
             copy = true;
@@ -1361,7 +1361,7 @@ public class VCommands implements CommandExecutor
             }
             catch(Throwable t)
             {
-                sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 return;
             }
         }
@@ -1372,7 +1372,7 @@ public class VCommands implements CommandExecutor
     {
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.anvil"))
         {
-            sendMessage(player, Lang.get("anvil.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "anvil.perm"), ChatColor.RED);
             return;
         }
         if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
@@ -1387,12 +1387,12 @@ public class VCommands implements CommandExecutor
     {
         if(!Config.bool("transmutation.enabled"))
         {
-            sendMessage(player, Lang.get("matter.disabled"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "matter.disabled"), ChatColor.RED);
             return;
         }
         if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.materializer"))
         {
-            sendMessage(player, Lang.get("matter.perm"), ChatColor.RED);
+            sendMessage(player, Lang.get(player, "matter.perm"), ChatColor.RED);
             return;
         }
         if(args.length >= 1)
@@ -1417,7 +1417,7 @@ public class VCommands implements CommandExecutor
                     }
                     catch(Throwable t)
                     {
-                        sendMessage(player, Lang.get("argument.invalid"), ChatColor.RED);
+                        sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                     }
                 }
                 for(ValuedItemStack stack : TransmutationHelper.getAll(page - 1))

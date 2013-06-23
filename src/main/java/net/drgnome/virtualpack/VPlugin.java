@@ -120,7 +120,7 @@ public class VPlugin extends JavaPlugin implements Runnable
                 }
                 catch(ClassNotFoundException e)
                 {
-                    _log.severe(Lang.get("protocollib"));
+                    _log.severe(Lang.get(null, "protocollib"));
                 }
             }
         }
@@ -150,7 +150,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             _threadId[4] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadUpdate(), 0L, 72000L);
         }
-        _log.info(Lang.get("vpack.enable", _version));
+        _log.info(Lang.get(null, "vpack.enable", _version));
     }
     
     private boolean registerCommands()
@@ -180,7 +180,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
             if(!found)
             {
-                _log.severe(Lang.get("worldedit"));
+                _log.severe(Lang.get(null, "worldedit"));
                 return false;
             }
         }
@@ -197,7 +197,7 @@ public class VPlugin extends JavaPlugin implements Runnable
                 }
                 for(String c : commands)
                 {
-                    list.add(new CommandInfo(main, Lang.get("cmd." + component), new String[]{c}, this, new String[]{"vpack.use"}));
+                    list.add(new CommandInfo(main, Lang.get(null, "cmd." + component), new String[]{c}, this, new String[]{"vpack.use"}));
                 }
             }
             catch(NullPointerException e)
@@ -212,7 +212,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         catch(Throwable t)
         {
-            _log.severe(Lang.get("worldedit"));
+            _log.severe(Lang.get(null, "worldedit"));
             t.printStackTrace();
         }
         return false;
@@ -279,7 +279,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             catch(Throwable t)
             {
             }
-            _log.info(Lang.get("vpack.disable", _version));
+            _log.info(Lang.get(null, "vpack.disable", _version));
         }
     }
     
@@ -733,7 +733,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             List<String> cmds = Config.list("commands." + VPlugin._components[0]);
             if(cmds.size() > 0)
             {
-                sendMessage(entry.getKey(), Lang.get("send.relieve", cmds.get(0)), ChatColor.RED);
+                sendMessage(entry.getKey(), Lang.get(entry.getKey(), "send.relieve", cmds.get(0)), ChatColor.RED);
             }
         }
     }

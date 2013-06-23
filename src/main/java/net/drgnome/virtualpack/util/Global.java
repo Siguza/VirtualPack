@@ -6,7 +6,7 @@ package net.drgnome.virtualpack.util;
 
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import net.drgnome.virtualpack.VPlugin;
 
 public class Global
@@ -36,6 +36,11 @@ public class Global
         if(prefix == null)
         {
             prefix = "";
+        }
+        if(sender instanceof ConsoleCommandSender)
+        {
+            sender.sendMessage(prefix + message);
+            return;
         }
         int offset = 0;
         int xpos = 0;

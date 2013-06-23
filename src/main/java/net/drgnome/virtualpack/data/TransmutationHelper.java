@@ -66,7 +66,7 @@ public class TransmutationHelper
                     if((val1 != val2) && (val1 > 0) && (val2 > 0))
                     {
                         short meta = recipe.getResult().getDurability();
-                        _log.warning(Lang.get("matter.mismatch", recipe.getResult().getTypeId() + (meta > 0 ? ":" + meta : ""), Util.printDouble(val1), Util.printDouble(val2)));
+                        _log.warning(Lang.get(null, "matter.mismatch", recipe.getResult().getTypeId() + (meta > 0 ? ":" + meta : ""), Util.printDouble(val1), Util.printDouble(val2)));
                     }
                 }
             }
@@ -121,7 +121,7 @@ public class TransmutationHelper
             else
             {
                 short meta = recipe.getResult().getDurability();
-                _log.info(Lang.get("matter.customIngredient", recipe.getResult().getTypeId() + (meta > 0 ? ":" + meta : ""), recipe.getClass().getName()));
+                _log.info(Lang.get(null, "matter.customIngredient", recipe.getResult().getTypeId() + (meta > 0 ? ":" + meta : ""), recipe.getClass().getName()));
                 continue;
             }
             recipes.add(new QuantitativeRecipe(recipe.getResult(), ingredients));

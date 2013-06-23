@@ -127,7 +127,7 @@ public class TransmutationListener extends PacketAdapter
                 double value = TransmutationHelper.getValue(item);
                 if(value > 0)
                 {
-                    lore.add(_prefix + Lang.get("matter.iteminfo", Util.parseColors(Config.string("transmutation.color.name")), ChatColor.RESET.toString(), Util.parseColors(Config.string("transmutation.color.value")), Util.formatDouble(value)));
+                    lore.add(_prefix + Lang.get(null, "matter.iteminfo", Util.parseColors(Config.string("transmutation.color.name")), ChatColor.RESET.toString(), Util.parseColors(Config.string("transmutation.color.value")), Util.formatDouble(value)));
                 }
             }
         }

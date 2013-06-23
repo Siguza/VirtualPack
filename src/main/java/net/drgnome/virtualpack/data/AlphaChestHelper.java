@@ -41,7 +41,7 @@ public class AlphaChestHelper
             }
             if(!found)
             {
-                _log.severe(Lang.get("alphachest"));
+                _log.severe(Lang.get(null, "alphachest"));
                 return;
             }
             load(chests);

@@ -34,7 +34,7 @@ public class Money
         RegisteredServiceProvider eco = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         if(eco == null)
         {
-            _log.warning(Lang.get("vpack.misseco"));
+            _log.warning(Lang.get(null, "vpack.misseco"));
             return false;
         }
         _eco = (Economy)eco.getProvider();
