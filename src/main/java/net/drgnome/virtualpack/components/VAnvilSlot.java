@@ -29,10 +29,7 @@ public class VAnvilSlot extends Slot
 
     public void #FIELD_SLOT_5#(EntityHuman entityhuman, ItemStack itemstack)
     {
-        if(!VAnvil.playerFree(entityhuman))
-        {
-            entityhuman.levelDown(-_anvil.#FIELD_CONTAINERANVIL_5#);
-        }
+        entityhuman.levelDown(VAnvil.playerFree(entityhuman) ? 0 : (-_anvil.#FIELD_CONTAINERANVIL_5#));
         VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(0, null);
         if(VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil) > 0)
         {
