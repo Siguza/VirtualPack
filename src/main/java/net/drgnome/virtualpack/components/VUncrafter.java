@@ -90,6 +90,6 @@ public class VUncrafter extends VContainer
                 return false;
             }
         }
-        return !Config.isBlacklisted(human.world.getWorld().getName(), human.name, "uncrafter", CraftItemStack.asBukkitCopy(item));
+        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getLocalizedName(), "uncrafter", CraftItemStack.asBukkitCopy(item));
     }
 }

@@ -77,7 +77,7 @@ public class TmpMatter extends VContainer implements VGUI
                 int max = Util.min(Util.floor(_inv._value / value), _inv.getItem(slot).getMaxStackSize());
                 org.bukkit.inventory.ItemStack stack = CraftItemStack.asBukkitCopy(_inv.getItem(slot)).clone();
                 stack.setAmount(max);
-                HashMap<Integer, org.bukkit.inventory.ItemStack> map = Bukkit.getPlayer(human.name).getInventory().addItem(stack);
+                HashMap<Integer, org.bukkit.inventory.ItemStack> map = Bukkit.getPlayer(human.getLocalizedName()).getInventory().addItem(stack);
                 if(map.size() > 0)
                 {
                     max -= map.values().iterator().next().getAmount();

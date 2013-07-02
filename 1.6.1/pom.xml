@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>2.5.3</version>
+    <version>2.5.4</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.5.2-R0.1-SNAPSHOT</version>
+            <version>1.6.1-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -56,21 +56,21 @@
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
-            <version>5.5.7-SNAPSHOT</version>
+            <version>5.5.8-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.drgnome.nbtlib</groupId>
             <artifactId>NBTLib</artifactId>
-            <version>0.1</version>
+            <version>0.3</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>2.4.3</version>
+            <version>2.4.5</version>
         </dependency>
     </dependencies>
     <build>
@@ -100,10 +100,10 @@
 							            	<goal>replace</goal>
 							            </goals>
 						            </pluginExecutionFilter>
-							          	<action>
-							            	<execute></execute>
-							         	</action>
-							          	<comment>source: </comment>
+                                    <action>
+                                        <execute></execute>
+                                    </action>
+                                    <comment>source: </comment>
 						        </pluginExecution>
 	                    	</pluginExecutions>
                     	</lifecycleMappingMetadata>
@@ -156,7 +156,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#MC_VERSION#</token>
-                                    <value>1_5_R3</value>
+                                    <value>1_6_R1</value>
                                 </replacement>
                                 <!-- Hello there -->
                                 <replacement>
@@ -177,7 +177,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_BLOCK_5#</token> <!-- StepSound -->
-                                    <value>q</value>
+                                    <value>r</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINER_1#</token> <!-- () -->
@@ -297,23 +297,23 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_1#</token> <!-- () -->
-                                    <value>t</value>
+                                    <value>u</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_2#</token> <!-- () -->
-                                    <value>s</value>
+                                    <value>t</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_3#</token> <!-- () -->
-                                    <value>w</value>
+                                    <value>x</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_4#</token> <!-- () -->
-                                    <value>v</value>
+                                    <value>w</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_5#</token> <!-- () has subtypes -->
-                                    <value>m</value>
+                                    <value>n</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_6#</token> <!-- (ItemStack;ItemStack;)Z -->
@@ -341,7 +341,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_2#</token> <!-- () -->
-                                    <value>w</value>
+                                    <value>x</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_3#</token> <!-- (int) -->
@@ -373,7 +373,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_NBTBASE_1#</token> <!-- st (DataInput) -->
-                                    <value>b</value>
+                                    <value>a</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#</token> <!-- st (byte[]) -->
@@ -396,28 +396,28 @@
                                     <value>RecipesFurnace</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_SLOT_1#</token> <!-- () -->
-                                    <value>d</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_SLOT_2#</token> <!-- (ItemStack, ItemStack) -->
-                                    <value>a</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_SLOT_3#</token> <!-- () -->
+                                    <token>#FIELD_SLOT_1#</token> <!-- ()Z -->
                                     <value>e</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_SLOT_4#</token> <!-- (EntityHuman) -->
+                                    <token>#FIELD_SLOT_2#</token> <!-- (ItemStack;ItemStack;)V -->
                                     <value>a</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_SLOT_5#</token> <!-- (EntityHuman, ItemStack) -->
+                                    <token>#FIELD_SLOT_3#</token> <!-- ()V -->
+                                    <value>f</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_4#</token> <!-- (EntityHuman)Z -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_5#</token> <!-- (EntityHuman, ItemStack)V -->
                                     <value>a</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_TILEENTITY_1#</token> <!-- () -->
-                                    <value>g</value>
+                                    <value>h</value>
                                 </replacement>
                             </replacements>
                         </configuration>

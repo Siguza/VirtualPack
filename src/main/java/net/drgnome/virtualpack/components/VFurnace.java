@@ -60,7 +60,7 @@ public class VFurnace extends ContainerFurnace implements VGUI
     
     private boolean isItemAllowed(EntityHuman human, ItemStack item)
     {
-        return !Config.isBlacklisted(human.world.getWorld().getName(), human.name, "store", CraftItemStack.asBukkitCopy(item));
+        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getLocalizedName(), "store", CraftItemStack.asBukkitCopy(item));
     }
     
     protected void update()

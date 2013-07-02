@@ -316,8 +316,8 @@
                                     <value>m</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_ITEM_6#</token> <!-- () -->
-                                    <value>g</value>
+                                    <token>#FIELD_ITEM_6#</token> <!-- (ItemStack;ItemStack;)Z -->
+                                    <value>a</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMENCHANTEDBOOK_1#</token> <!-- (ItemStack, EnchantmentInstance) -->
@@ -366,6 +366,10 @@
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_9#</token> <!-- (String) -->
                                     <value>c</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_10#</token> <!-- () -->
+                                    <value>g</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_NBTBASE_1#</token> <!-- st (DataInput) -->

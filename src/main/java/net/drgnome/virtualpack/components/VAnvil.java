@@ -91,7 +91,7 @@ public class VAnvil extends ContainerAnvil
             if(itemstack2 != null)
             {
                 flag = itemstack2.id == Item.ENCHANTED_BOOK.id && Item.ENCHANTED_BOOK.#FIELD_ITEMENCHANTEDBOOK_2#(itemstack2).size() > 0;
-                if(itemstack1.#FIELD_ITEM_6#() && Item.byId[itemstack1.id].a(itemstack, itemstack2))
+                if(itemstack1.#FIELD_ITEMSTACK_10#() && Item.byId[itemstack1.id].#FIELD_ITEM_6#(itemstack, itemstack2))
                 {
                     l = Math.min(itemstack1.#FIELD_ITEMSTACK_5#(), itemstack1.#FIELD_ITEMSTACK_6#() / 4);
                     if(l <= 0)
@@ -111,13 +111,13 @@ public class VAnvil extends ContainerAnvil
                 }
                 else
                 {
-                    if(!flag && (itemstack1.id != itemstack2.id || !itemstack1.#FIELD_ITEM_6#()))
+                    if(!flag && (itemstack1.id != itemstack2.id || !itemstack1.#FIELD_ITEMSTACK_10#()))
                     {
                         getInv("#FIELD_CONTAINERANVIL_2#").setItem(0, null);
                         #FIELD_CONTAINERANVIL_5# = 0;
                         return;
                     }
-                    if(itemstack1.#FIELD_ITEM_6#() && !flag)
+                    if(itemstack1.#FIELD_ITEMSTACK_10#() && !flag)
                     {
                         l = itemstack.#FIELD_ITEMSTACK_6#() - itemstack.#FIELD_ITEMSTACK_5#();
                         i1 = itemstack2.#FIELD_ITEMSTACK_6#() - itemstack2.#FIELD_ITEMSTACK_5#();
@@ -205,7 +205,7 @@ public class VAnvil extends ContainerAnvil
             }
             if(_itemName != null && !_itemName.equalsIgnoreCase(itemstack.#FIELD_ITEMSTACK_7#()) && _itemName.length() > 0)
             {
-                j = itemstack.#FIELD_ITEM_6#() ? 7 : itemstack.count * 5;
+                j = itemstack.#FIELD_ITEMSTACK_10#() ? 7 : itemstack.count * 5;
                 i += j;
                 if(itemstack.#FIELD_ITEMSTACK_8#())
                 {
@@ -391,6 +391,6 @@ public class VAnvil extends ContainerAnvil
     
     public static boolean playerFree(EntityHuman entityhuman)
     {
-        return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.name, "vpack.use.anvil.free"));
+        return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getLocalizedName(), "vpack.use.anvil.free"));
     }
 }
