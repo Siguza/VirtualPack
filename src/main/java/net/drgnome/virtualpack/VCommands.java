@@ -131,7 +131,7 @@ public class VCommands implements CommandExecutor
             }
             player = p;
         }
-        if((player.getGameMode() == GameMode.CREATIVE) && (!Config.bool(player.getWorld().getName(), "allow-creative")) && (!admin) && (!Perm.has(player, "vpack.bypass.creative")))
+        if(!admin && (player.getGameMode() == GameMode.CREATIVE) && (!Config.bool(player.getWorld().getName(), "allow-creative")) && (!admin) && (!Perm.has(player, "vpack.bypass.creative")))
         {
             sendMessage(player, Lang.get(player, "vpack.nocreative"), ChatColor.RED);
         }
@@ -745,11 +745,11 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get(sender, "argument.few"), ChatColor.RED);
             return;
         }
-        if(!_plugin.hasPack(world, args[0]))
+        /*if(!_plugin.hasPack(world, args[0]))
         {
             sendMessage(sender, Lang.get(sender, "vpack.none"), ChatColor.RED);
             return;
-        }
+        }*/
         VPack pack = _plugin.getPack(world, args[0]);
         int amount = 1;
         if(args.length >= 3)
@@ -1062,7 +1062,7 @@ public class VCommands implements CommandExecutor
     
     private void workbench(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.workbench"))
+        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.workbench"))
         {
             sendMessage(player, Lang.get(player, "workbench.perm"), ChatColor.RED);
             return;
@@ -1077,7 +1077,7 @@ public class VCommands implements CommandExecutor
     
     private void uncrafter(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.uncrafter"))
+        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.uncrafter"))
         {
             sendMessage(player, Lang.get(player, "uncrafter.perm"), ChatColor.RED);
             return;
@@ -1092,7 +1092,7 @@ public class VCommands implements CommandExecutor
     
     private void chest(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.chest"))
+        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.chest"))
         {
             sendMessage(player, Lang.get(player, "chest.perm"), ChatColor.RED);
             return;
@@ -1147,7 +1147,7 @@ public class VCommands implements CommandExecutor
     
     private void furnace(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.furnace"))
+        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.furnace"))
         {
             sendMessage(player, Lang.get(player, "furnace.perm"), ChatColor.RED);
             return;
@@ -1215,7 +1215,7 @@ public class VCommands implements CommandExecutor
     
     private void brew(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.brewingstand"))
+        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.brewingstand"))
         {
             sendMessage(player, Lang.get(player, "brewingstand.perm"), ChatColor.RED);
             return;
@@ -1283,7 +1283,7 @@ public class VCommands implements CommandExecutor
     
     private void ench(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.enchanttable"))
+        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.enchanttable"))
         {
             sendMessage(player, Lang.get(player, "enchanttable.perm"), ChatColor.RED);
             return;
@@ -1370,7 +1370,7 @@ public class VCommands implements CommandExecutor
     
     private void anvil(Player player, VPack pack, String[] args, boolean admin)
     {
-        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.anvil"))
+        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.anvil"))
         {
             sendMessage(player, Lang.get(player, "anvil.perm"), ChatColor.RED);
             return;
@@ -1390,7 +1390,7 @@ public class VCommands implements CommandExecutor
             sendMessage(player, Lang.get(player, "matter.disabled"), ChatColor.RED);
             return;
         }
-        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.materializer"))
+        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.materializer"))
         {
             sendMessage(player, Lang.get(player, "matter.perm"), ChatColor.RED);
             return;
