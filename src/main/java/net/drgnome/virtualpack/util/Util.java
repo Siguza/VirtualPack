@@ -41,7 +41,9 @@ public class Util
     // Same for Math.floor
     public static int floor(double d)
     {
-        return d < 0 ? (int)d - 1 : (int)d;
+        int i = (int)d;
+        d -= i;
+        return i - (d < 0D ? 1 : 0);
     }
     
     public static boolean hasUpdate(String name, String version)

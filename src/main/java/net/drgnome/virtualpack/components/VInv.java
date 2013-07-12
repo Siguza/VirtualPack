@@ -56,6 +56,14 @@ public class VInv implements IInventory
         contents = new ItemStack[contents.length];
     }
     
+    public void resize(int size)
+    {
+        if(contents.length != size)
+        {
+            contents = Arrays.copyOf(contents, size);
+        }
+    }
+    
     public int getSize()
     {
         return contents.length;

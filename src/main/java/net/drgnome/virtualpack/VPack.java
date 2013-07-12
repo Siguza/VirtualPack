@@ -930,6 +930,8 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
             return;
         }
+        int size = getChestSize() * 9;
+        inv.resize(size);
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         if(!free && !Money.world(_world).hasTake(_player, priceChestUse()))
         {
@@ -937,7 +939,7 @@ public class VPack
             return;
         }
         VChest container = new VChest(player, inv);
-        Util.openWindow(player, container, Lang.get(bukkitPlayer, "chest.name", "" + nr), 0, getChestSize() * 9);
+        Util.openWindow(player, container, Lang.get(bukkitPlayer, "chest.name", "" + nr), 0, size);
     }
     
     public void dropChest(Player bukkitPlayer, int nr)
