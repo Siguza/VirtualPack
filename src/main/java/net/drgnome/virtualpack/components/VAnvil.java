@@ -62,7 +62,7 @@ public class VAnvil extends ContainerAnvil
 
     public void calculate0()
     {
-        final int maxLevel = Config.getInt(_player.getBukkitEntity(), "tools", "anvil", "maxlevel", true);
+        final int maxLevel = Config.getInt(_player.getBukkitEntity(), "tools", "anvil", "maxlevel", Config.MODE_MAX);
         ItemStack itemstack = VAnvil.#FIELD_CONTAINERANVIL_1#(this).getItem(0);
         #FIELD_CONTAINERANVIL_5# = 0;
         int i = 0;

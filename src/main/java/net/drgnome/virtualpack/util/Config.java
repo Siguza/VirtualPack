@@ -15,10 +15,13 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class Config
 {
+    public static final int MODE_MIN = 0;
+    public static final int MODE_MAX = 1;
+    public static final int MODE_INFINITE = 2;
     private static ConfigProxy _proxy;
     private static ArrayList<String> _worlds;
     
-    public static void reload()
+    public static synchronized void reload()
     {
         _proxy = new ConfigProxy(_plugin.getConfig(), _plugin.getDataFolder());
         List<World> list = Bukkit.getWorlds();
@@ -36,17 +39,26 @@ public class Config
     
     public static String world(String world)
     {
-        return _proxy.world(world);
+        synchronized(_proxy)
+        {
+            return _proxy.world(world);
+        }
     }
     
-    public static boolean worldEnabled(String world)
+    public static synchronized boolean worldEnabled(String world)
     {
-        return _worlds.contains(world);
+        synchronized(_worlds)
+        {
+            return _worlds.contains(world);
+        }
     }
     
     public static String[] worlds()
     {
-        return _worlds.toArray(new String[0]);
+        synchronized(_worlds)
+        {
+            return _worlds.toArray(new String[0]);
+        }
     }
     
     public static String string(String string)
@@ -56,7 +68,10 @@ public class Config
     
     public static String string(String world, String string)
     {
-        return _proxy.get(world, string);
+        synchronized(_proxy)
+        {
+            return _proxy.get(world, string);
+        }
     }
     
     public static boolean bool(String string)
@@ -76,7 +91,10 @@ public class Config
     
     public static List<String> list(String world, String string)
     {
-        return _proxy.list(world, string);
+        synchronized(_proxy)
+        {
+            return _proxy.list(world, string);
+        }
     }
     
     public static int getInt(String string)
@@ -104,18 +122,28 @@ public class Config
         }
     }
     
-    public static int getInt(Player player, String prefix, String string, String suffix, boolean max)
+    public static int getInt(Player player, String prefix, String string, String suffix, int mode)
     {
-        return getInt(player.getWorld().getName(), player.getName(), prefix, string, suffix, max);
+        return getInt(player.getWorld().getName(), player.getName(), prefix, string, suffix, mode);
     }
     
-    public static int getInt(String world, String player, String prefix, String string, String suffix, boolean max)
+    public static int getInt(String world, String player, String prefix, String string, String suffix, int mode)
     {
-        return getInt(world, Perm.getGroups(world, player), prefix, string, suffix, max);
+        return getInt(world, Perm.getGroups(world, player), prefix, string, suffix, mode);
     }
     
-    public static int getInt(String world, String[] groups, String prefix, String string, String suffix, boolean max)
+    public static int getInt(String world, String[] groups, String prefix, String string, String suffix, int mode)
     {
+        boolean max, infinite;
+        if(mode >= 1)
+        {
+            max = true;
+            infinite = mode >= 2;
+        }
+        else
+        {
+            max = infinite = false;
+        }
         int value = getInt(world, Util.implode(".", prefix, string, suffix));
         int tmp;
         for(int i = 0; i < groups.length; i++)
@@ -125,6 +153,10 @@ public class Config
             if(isSet(world, path1))
             {
                 tmp = getInt(world, path1);
+                if(infinite && (tmp == -1))
+                {
+                    return -1;
+                }
                 if((tmp > value) == max)
                 {
                     value = tmp;
@@ -133,6 +165,10 @@ public class Config
             if(isSet(world, path2))
             {
                 tmp = getInt(world, path2);
+                if(infinite && (tmp == -1))
+                {
+                    return -1;
+                }
                 if((tmp > value) == max)
                 {
                     value = tmp;
@@ -160,33 +196,43 @@ public class Config
         }
     }
     
-    public static double getDouble(Player player, String prefix, String string, String suffix, boolean max, int digits)
+    public static double getDouble(Player player, String prefix, String string, String suffix, int mode, int digits)
     {
-        return Util.smooth(getDouble(player, prefix, string, suffix, max), digits);
+        return Util.smooth(getDouble(player, prefix, string, suffix, mode), digits);
     }
     
-    public static double getDouble(String world, String player, String prefix, String string, String suffix, boolean max, int digits)
+    public static double getDouble(String world, String player, String prefix, String string, String suffix, int mode, int digits)
     {
-        return Util.smooth(getDouble(world, player, prefix, string, suffix, max), digits);
+        return Util.smooth(getDouble(world, player, prefix, string, suffix, mode), digits);
     }
     
-    public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, boolean max, int digits)
+    public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, int mode, int digits)
     {
-        return Util.smooth(getDouble(world, groups, prefix, string, suffix, max), digits);
+        return Util.smooth(getDouble(world, groups, prefix, string, suffix, mode), digits);
     }
     
-    public static double getDouble(Player player, String prefix, String string, String suffix, boolean max)
+    public static double getDouble(Player player, String prefix, String string, String suffix, int mode)
     {
-        return getDouble(player.getWorld().getName(), player.getName(), prefix, string, suffix, max);
+        return getDouble(player.getWorld().getName(), player.getName(), prefix, string, suffix, mode);
     }
     
-    public static double getDouble(String world, String player, String prefix, String string, String suffix, boolean max)
+    public static double getDouble(String world, String player, String prefix, String string, String suffix, int mode)
     {
-        return getDouble(world, Perm.getGroups(world, player), prefix, string, suffix, max);
+        return getDouble(world, Perm.getGroups(world, player), prefix, string, suffix, mode);
     }
     
-    public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, boolean max)
+    public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, int mode)
     {
+        boolean max, infinite;
+        if(mode >= 1)
+        {
+            max = true;
+            infinite = mode >= 2;
+        }
+        else
+        {
+            max = infinite = false;
+        }
         double value = getDouble(world, Util.implode(".", prefix, string, suffix));
         if(groups != null)
         {
@@ -198,6 +244,10 @@ public class Config
                 if(isSet(world, path1))
                 {
                     tmp = getDouble(world, path1);
+                    if(infinite && (tmp == -1D))
+                    {
+                        return -1D;
+                    }
                     if((tmp > value) == max)
                     {
                         value = tmp;
@@ -206,6 +256,10 @@ public class Config
                 if(isSet(world, path2))
                 {
                     tmp = getDouble(world, path2);
+                    if(infinite && (tmp == -1D))
+                    {
+                        return -1D;
+                    }
                     if((tmp > value) == max)
                     {
                         value = tmp;
@@ -218,7 +272,10 @@ public class Config
     
     private static boolean isSet(String world, String string)
     {
-        return _proxy.isSet(world, string);
+        synchronized(_proxy)
+        {
+            return _proxy.isSet(world, string);
+        }
     }
     
     public static boolean isBlacklisted(Player player, String section, ItemStack item)
@@ -232,7 +289,10 @@ public class Config
         {
             return false;
         }
-        return _proxy.isBlacklisted(section, item);
+        synchronized(_proxy)
+        {
+            return _proxy.isBlacklisted(section, item);
+        }
     }
     
     public static boolean isBlacklisted(String world, String player, String section, ComparativeItemStack item)
@@ -241,11 +301,17 @@ public class Config
         {
             return false;
         }
-        return _proxy.isBlacklisted(section, item);
+        synchronized(_proxy)
+        {
+            return _proxy.isBlacklisted(section, item);
+        }
     }
     
     public static boolean isGodItem(ItemStack item)
     {
-        return _proxy.isGodItem(item);
+        synchronized(_proxy)
+        {
+            return _proxy.isGodItem(item);
+        }
     }
 }

@@ -45,10 +45,17 @@ public class Perm
             boolean has = false;
             if(Config.bool("superperms"))
             {
-                Player player = Bukkit.getPlayerExact(username);
-                if(player != null)
+                Player player;
+                synchronized(Bukkit.class)
                 {
-                    has = player.hasPermission(permission);
+                    player = Bukkit.getPlayerExact(username);
+                }
+                synchronized(player)
+                {
+                    if(player != null)
+                    {
+                        has = player.hasPermission(permission);
+                    }
                 }
             }
             if(!has)
@@ -59,10 +66,16 @@ public class Perm
                 }
                 else
                 {
-                    has = _perm.has(world, username, permission);
+                    synchronized(_perm)
+                    {
+                        has = _perm.has(world, username, permission);
+                    }
                     if(!has && Config.bool("global-perms"))
                     {
-                        has = _perm.has((String)null, username, permission);
+                        synchronized(_perm)
+                        {
+                            has = _perm.has((String)null, username, permission);
+                        }
                     }
                 }
             }
@@ -87,10 +100,19 @@ public class Perm
                 _log.warning("[VirtualPack] Permission instance is null!");
                 return new String[0];
             }
-            String[] groups = _perm.getPlayerGroups(world, username);
+            String[] groups;
+            synchronized(_perm)
+            {
+                groups = _perm.getPlayerGroups(world, username);
+            }
             if(Config.bool("global-perms"))
             {
-                groups = Util.merge(groups, _perm.getPlayerGroups((String)null, username));
+                String[] grp2;
+                synchronized(_perm)
+                {
+                    grp2 = _perm.getPlayerGroups((String)null, username);
+                }
+                groups = Util.merge(groups, grp2);
             }
             return groups;
         }
@@ -113,10 +135,17 @@ public class Perm
                 _log.warning("[VirtualPack] Permission instance is null!");
                 return false;
             }
-            boolean in = _perm.playerInGroup(world, username, group);
+            boolean in;
+            synchronized(_perm)
+            {
+                in = _perm.playerInGroup(world, username, group);
+            }
             if(Config.bool("global-perms") && !in)
             {
-                in = _perm.playerInGroup((String)null, username, group);
+                synchronized(_perm)
+                {
+                    in = _perm.playerInGroup((String)null, username, group);
+                }
             }
             return in;
         }

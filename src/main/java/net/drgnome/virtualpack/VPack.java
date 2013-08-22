@@ -190,12 +190,12 @@ public class VPack
         String[] groups = Perm.getGroups(_world, _player);
         if(Money.world(_world).enabled())
         {
-            _hasWorkbench = _hasWorkbench || (Perm.has(_world, _player, "vpack.use.workbench") && (Config.getDouble(_world, groups, "tools", "workbench", "buy", false) == 0D));
-            _hasUncrafter = _hasUncrafter || (Perm.has(_world, _player, "vpack.use.uncrafter") && (Config.getDouble(_world, groups, "tools", "uncrafter", "buy", false) == 0D));
-            _hasEnchantTable = _hasEnchantTable || (Perm.has(_world, _player, "vpack.use.enchanttable") && (Config.getDouble(_world, groups, "tools", "enchanttable", "buy", false) == 0D));
-            _bookshelves = Util.max(_bookshelves, (_hasEnchantTable && (Config.getDouble(_world, groups, "tools", "enchanttable", "book", false) == 0D)) ? _maxBookshelves : 0);
-            _hasAnvil = _hasAnvil || (Perm.has(_world, _player, "vpack.use.anvil") && (Config.getDouble(_world, groups, "tools", "anvil", "buy", false) == 0D));
-            if(Perm.has(_world, _player, "vpack.use.materializer") && (Config.getDouble(_world, groups, "tools", "anvil", "buy", false) == 0D))
+            _hasWorkbench = _hasWorkbench || (Perm.has(_world, _player, "vpack.use.workbench") && (Config.getDouble(_world, groups, "tools", "workbench", "buy", Config.MODE_MIN) == 0D));
+            _hasUncrafter = _hasUncrafter || (Perm.has(_world, _player, "vpack.use.uncrafter") && (Config.getDouble(_world, groups, "tools", "uncrafter", "buy", Config.MODE_MIN) == 0D));
+            _hasEnchantTable = _hasEnchantTable || (Perm.has(_world, _player, "vpack.use.enchanttable") && (Config.getDouble(_world, groups, "tools", "enchanttable", "buy", Config.MODE_MIN) == 0D));
+            _bookshelves = Util.max(_bookshelves, (_hasEnchantTable && (Config.getDouble(_world, groups, "tools", "enchanttable", "book", Config.MODE_MIN) == 0D)) ? _maxBookshelves : 0);
+            _hasAnvil = _hasAnvil || (Perm.has(_world, _player, "vpack.use.anvil") && (Config.getDouble(_world, groups, "tools", "anvil", "buy", Config.MODE_MIN) == 0D));
+            if(Perm.has(_world, _player, "vpack.use.materializer") && (Config.getDouble(_world, groups, "tools", "anvil", "buy", Config.MODE_MIN) == 0D))
             {
                 /** FUUU **/
                 // _matter = new MatterInv(_world, _player);
@@ -203,7 +203,7 @@ public class VPack
             }
             if(Perm.has(_world, _player, "vpack.use.chest"))
             {
-                int max = Config.getInt(_world, groups, "tools", "chest", "start", true);
+                int max = Config.getInt(_world, groups, "tools", "chest", "start", Config.MODE_MAX);
                 while(_chests.size() < max)
                 {
                     _chests.put(_chests.size() + 1, new VInv(getChestSize()));
@@ -211,7 +211,7 @@ public class VPack
             }
             if(Perm.has(_world, _player, "vpack.use.furnace"))
             {
-                int max = Config.getInt(_world, groups, "tools", "furnace", "start", true);
+                int max = Config.getInt(_world, groups, "tools", "furnace", "start", Config.MODE_MAX);
                 while(_furnaces.size() < max)
                 {
                     _furnaces.put(_furnaces.size() + 1, new VTEFurnace(this));
@@ -219,7 +219,7 @@ public class VPack
             }
             if(Perm.has(_world, _player, "vpack.use.brewingstand"))
             {
-                int max = Config.getInt(_world, groups, "tools", "brewingstand", "start", true);
+                int max = Config.getInt(_world, groups, "tools", "brewingstand", "start", Config.MODE_MAX);
                 while(_brews.size() < max)
                 {
                     _brews.put(_brews.size() + 1, new VTEBrewingstand(this));
@@ -241,7 +241,7 @@ public class VPack
             }
             if(Perm.has(_world, _player, "vpack.use.chest"))
             {
-                int max = Config.getInt(_world, groups, "tools", "chest", "max", true);
+                int max = Config.getInt(_world, groups, "tools", "chest", "max", Config.MODE_MAX);
                 while(_chests.size() < max)
                 {
                     _chests.put(_chests.size() + 1, new VInv(getChestSize()));
@@ -249,7 +249,7 @@ public class VPack
             }
             if(Perm.has(_world, _player, "vpack.use.furnace"))
             {
-                int max = Config.getInt(_world, groups, "tools", "furnace", "max", true);
+                int max = Config.getInt(_world, groups, "tools", "furnace", "max", Config.MODE_MAX);
                 while(_furnaces.size() < max)
                 {
                     _furnaces.put(_furnaces.size() + 1, new VTEFurnace(this));
@@ -257,7 +257,7 @@ public class VPack
             }
             if(Perm.has(_world, _player, "vpack.use.brewingstand"))
             {
-                int max = Config.getInt(_world, groups, "tools", "brewingstand", "max", true);
+                int max = Config.getInt(_world, groups, "tools", "brewingstand", "max", Config.MODE_MAX);
                 while(_brews.size() < max)
                 {
                     _brews.put(_brews.size() + 1, new VTEBrewingstand(this));
@@ -278,8 +278,8 @@ public class VPack
         {
             _matter = null;
         }
-        int max = Perm.has(_world, _player, "vpack.use.chest") ? Config.getInt(_world, groups, "tools", "chest", "max", true) : 0;
-        while(_chests.size() > max)
+        int max = Perm.has(_world, _player, "vpack.use.chest") ? Config.getInt(_world, groups, "tools", "chest", "max", Config.MODE_INFINITE) : 0;
+        while((max != - 1) && (_chests.size() > max))
         {
             for(ItemStack item : _chests.get(_chests.size()).getContents())
             {
@@ -287,8 +287,8 @@ public class VPack
             }
             _chests.remove(_chests.size());
         }
-        max = Perm.has(_world, _player, "vpack.use.furnace") ? Config.getInt(_world, groups, "tools", "furnace", "max", true) : 0;
-        while(_furnaces.size() > max)
+        max = Perm.has(_world, _player, "vpack.use.furnace") ? Config.getInt(_world, groups, "tools", "furnace", "max", Config.MODE_INFINITE) : 0;
+        while((max != - 1) && (_furnaces.size() > max))
         {
             for(ItemStack item : _furnaces.get(_furnaces.size()).getContents())
             {
@@ -296,8 +296,8 @@ public class VPack
             }
             _furnaces.remove(_furnaces.size());
         }
-        max = Perm.has(_world, _player, "vpack.use.brewingstand") ? Config.getInt(_world, groups, "tools", "brewingstand", "max", true) : 0;
-        while(_brews.size() > max)
+        max = Perm.has(_world, _player, "vpack.use.brewingstand") ? Config.getInt(_world, groups, "tools", "brewingstand", "max", Config.MODE_INFINITE) : 0;
+        while((max != - 1) && (_brews.size() > max))
         {
             for(ItemStack item : _brews.get(_brews.size()).getContents())
             {
@@ -460,17 +460,17 @@ public class VPack
             }
             if(Perm.has(_world, _player, "vpack.use.chest"))
             {
-                int i = Config.getInt(_world, _player, "tools", "chest", "max", true);
+                int i = Config.getInt(_world, _player, "tools", "chest", "max", Config.MODE_INFINITE);
                 sendMessage(player, Lang.get(player, "stats.chest", "" + ChatColor.GREEN, "" + _chests.size() + (i != -1 ? "/" + i : "")));
             }
             if(Perm.has(_world, _player, "vpack.use.furnace"))
             {
-                int i = Config.getInt(_world, _player, "tools", "furnace", "max", true);
+                int i = Config.getInt(_world, _player, "tools", "furnace", "max", Config.MODE_INFINITE);
                 sendMessage(player, Lang.get(player, "stats.furnace", "" + ChatColor.GREEN, "" + _furnaces.size() + (i != -1 ? "/" + i : "")) + (Lang.get(player, "stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _fLinks)));
             }
             if(Perm.has(_world, _player, "vpack.use.brewingstand"))
             {
-                int i = Config.getInt(_world, _player, "tools", "brewingstand", "max", true);
+                int i = Config.getInt(_world, _player, "tools", "brewingstand", "max", Config.MODE_INFINITE);
                 sendMessage(player, Lang.get(player, "stats.brewingstand", "" + ChatColor.GREEN, "" + _brews.size() + (i != -1 ? "/" + i : "")) + (Lang.get(player, "stats.link", "" + ChatColor.WHITE, "" + ChatColor.GREEN, "" + _bLinks)));
             }
         }
@@ -564,38 +564,38 @@ public class VPack
     
     public double priceWorkbenchBuy()
     {
-        return Config.getDouble(_world, _player, "tools", "workbench", "buy", false, 2);
+        return Config.getDouble(_world, _player, "tools", "workbench", "buy", Config.MODE_MIN, 2);
     }
     
     public double priceWorkbenchUse()
     {
-        return Config.getDouble(_world, _player, "tools", "workbench", "use", false, 2);
+        return Config.getDouble(_world, _player, "tools", "workbench", "use", Config.MODE_MIN, 2);
     }
     
     public double priceUncrafterBuy()
     {
-        return Config.getDouble(_world, _player, "tools", "uncrafter", "buy", false, 2);
+        return Config.getDouble(_world, _player, "tools", "uncrafter", "buy", Config.MODE_MIN, 2);
     }
     
     public double priceUncrafterUse()
     {
-        return Config.getDouble(_world, _player, "tools", "uncrafter", "use", false, 2);
+        return Config.getDouble(_world, _player, "tools", "uncrafter", "use", Config.MODE_MIN, 2);
     }
     
     public double priceEnchBuy()
     {
-        return Config.getDouble(_world, _player, "tools", "enchanttable", "buy", false, 2);
+        return Config.getDouble(_world, _player, "tools", "enchanttable", "buy", Config.MODE_MIN, 2);
     }
     
     public double priceEnchUse()
     {
-        return Config.getDouble(_world, _player, "tools", "enchanttable", "use", false, 2);
+        return Config.getDouble(_world, _player, "tools", "enchanttable", "use", Config.MODE_MIN, 2);
     }
     
     public double priceEnchBook(int amount)
     {
-        double base = Config.getDouble(_world, _player, "tools", "enchanttable", "book", false);
-        double factor = Config.getDouble(_world, _player, "tools", "enchanttable", "multiply", false);
+        double base = Config.getDouble(_world, _player, "tools", "enchanttable", "book", Config.MODE_MIN);
+        double factor = Config.getDouble(_world, _player, "tools", "enchanttable", "multiply", Config.MODE_MIN);
         double price = 0;
         for(int i = 0; i < amount; i++)
         {
@@ -606,28 +606,28 @@ public class VPack
     
     public double priceAnvilBuy()
     {
-        return Config.getDouble(_world, _player, "tools", "anvil", "buy", false, 2);
+        return Config.getDouble(_world, _player, "tools", "anvil", "buy", Config.MODE_MIN, 2);
     }
     
     public double priceAnvilUse()
     {
-        return Config.getDouble(_world, _player, "tools", "anvil", "use", false, 2);
+        return Config.getDouble(_world, _player, "tools", "anvil", "use", Config.MODE_MIN, 2);
     }
     
     public double priceMatterBuy()
     {
-        return Config.getDouble(_world, _player, "tools", "materializer", "buy", false, 2);
+        return Config.getDouble(_world, _player, "tools", "materializer", "buy", Config.MODE_MIN, 2);
     }
     
     public double priceMatterUse()
     {
-        return Config.getDouble(_world, _player, "tools", "materializer", "use", false, 2);
+        return Config.getDouble(_world, _player, "tools", "materializer", "use", Config.MODE_MIN, 2);
     }
     
     public double priceChestBuy(int amount)
     {
-        double base = Config.getDouble(_world, _player, "tools", "chest", "buy", false);
-        double factor = Config.getDouble(_world, _player, "tools", "chest", "multiply", false);
+        double base = Config.getDouble(_world, _player, "tools", "chest", "buy", Config.MODE_MIN);
+        double factor = Config.getDouble(_world, _player, "tools", "chest", "multiply", Config.MODE_MIN);
         double price = 0;
         for(int i = 0; i < amount; i++)
         {
@@ -638,13 +638,13 @@ public class VPack
     
     public double priceChestUse()
     {
-        return Config.getDouble(_world, _player, "tools", "chest", "use", false, 2);
+        return Config.getDouble(_world, _player, "tools", "chest", "use", Config.MODE_MIN, 2);
     }
     
     public double priceFurnaceBuy(int amount)
     {
-        double base = Config.getDouble(_world, _player, "tools", "furnace", "buy", false);
-        double factor = Config.getDouble(_world, _player, "tools", "furnace", "multiply", false);
+        double base = Config.getDouble(_world, _player, "tools", "furnace", "buy", Config.MODE_MIN);
+        double factor = Config.getDouble(_world, _player, "tools", "furnace", "multiply", Config.MODE_MIN);
         double price = 0;
         for(int i = 0; i < amount; i++)
         {
@@ -655,18 +655,18 @@ public class VPack
     
     public double priceFurnaceUse()
     {
-        return Config.getDouble(_world, _player, "tools", "furnace", "use", false, 2);
+        return Config.getDouble(_world, _player, "tools", "furnace", "use", Config.MODE_MIN, 2);
     }
     
     public double priceFurnaceLink()
     {
-        return Config.getDouble(_world, _player, "tools", "furnace", "link", false, 2);
+        return Config.getDouble(_world, _player, "tools", "furnace", "link", Config.MODE_MIN, 2);
     }
     
     public double priceBrewBuy(int amount)
     {
-        double base = Config.getDouble(_world, _player, "tools", "brewingstand", "buy", false);
-        double factor = Config.getDouble(_world, _player, "tools", "brewingstand", "multiply", false);
+        double base = Config.getDouble(_world, _player, "tools", "brewingstand", "buy", Config.MODE_MIN);
+        double factor = Config.getDouble(_world, _player, "tools", "brewingstand", "multiply", Config.MODE_MIN);
         double price = 0;
         for(int i = 0; i < amount; i++)
         {
@@ -677,17 +677,17 @@ public class VPack
     
     public double priceBrewUse()
     {
-        return Config.getDouble(_world, _player, "tools", "brewingstand", "use", false, 2);
+        return Config.getDouble(_world, _player, "tools", "brewingstand", "use", Config.MODE_MIN, 2);
     }
     
     public double priceBrewLink()
     {
-        return Config.getDouble(_world, _player, "tools", "brewingstand", "link", false, 2);
+        return Config.getDouble(_world, _player, "tools", "brewingstand", "link", Config.MODE_MIN, 2);
     }
     
     public int getChestSize()
     {
-        int s = Config.getInt(_world, _player, "tools", "chest", "size", true);
+        int s = Config.getInt(_world, _player, "tools", "chest", "size", Config.MODE_MAX);
         if(s < 1)
         {
             s = 6;
@@ -903,7 +903,7 @@ public class VPack
     
     public void buyChest(Player bukkitPlayer, int amount)
     {
-        int max = Config.getInt(_world, _player, "tools", "chest", "max", true);
+        int max = Config.getInt(_world, _player, "tools", "chest", "max", Config.MODE_INFINITE);
         if((_chests.size() + amount > max) && (max != -1))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.max", "" + max), ChatColor.RED);
@@ -978,7 +978,7 @@ public class VPack
     
     public void buyFurnace(Player bukkitPlayer, int amount)
     {
-        int max = Config.getInt(_world, _player, "tools", "furnace", "max", true);
+        int max = Config.getInt(_world, _player, "tools", "furnace", "max", Config.MODE_INFINITE);
         if((_furnaces.size() + amount > max) && (max != -1))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.max", "" + max), ChatColor.RED);
@@ -1073,7 +1073,7 @@ public class VPack
     
     public void buyBrewingstand(Player bukkitPlayer, int amount)
     {
-        int max = Config.getInt(_world, _player, "tools", "brewingstand", "max", true);
+        int max = Config.getInt(_world, _player, "tools", "brewingstand", "max", Config.MODE_INFINITE);
         if((_brews.size() + amount > max) && (max != -1))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.max", "" + max), ChatColor.RED);
