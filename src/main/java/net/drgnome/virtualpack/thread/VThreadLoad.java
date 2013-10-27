@@ -27,6 +27,9 @@ public class VThreadLoad extends Thread
         {
             t.printStackTrace();
         }
-        _plugin._loadThreads.remove(this);
+        synchronized(_plugin._loadThreads)
+        {
+            _plugin._loadThreads.remove(this);
+        }
     }
 }

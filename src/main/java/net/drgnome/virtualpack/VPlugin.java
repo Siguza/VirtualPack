@@ -573,7 +573,10 @@ public class VPlugin extends JavaPlugin implements Runnable
             {
                 _numLoadThreads++;
                 VThreadLoad loadThread = new VThreadLoad(data);
-                _loadThreads.add(loadThread);
+                synchronized(_loadThreads)
+                {
+                    _loadThreads.add(loadThread);
+                }
                 loadThread.start();
             }
         }
@@ -801,7 +804,12 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public String getLoadingProgress()
     {
-        return "" + Util.smooth((double)(_numLoadThreads - _loadThreads.size()) * 100D / (double)_plugin._numLoadThreads, 2);
+        int size;
+        synchronized(_loadThreads)
+        {
+            size = _loadThreads.size();
+        }
+        return "" + Util.smooth((double)(_numLoadThreads - size) * 100D / (double)_numLoadThreads, 2);
     }
     
     public boolean isReloading()
@@ -811,7 +819,12 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     private boolean isActuallyReloading()
     {
-        return !_loadThreads.isEmpty() || ((_initThread != null) && !_initThread.done());
+        boolean isDone;
+        synchronized(_loadThreads)
+        {
+            isDone = _loadThreads.isEmpty();
+        }
+        return !isDone || ((_initThread != null) && !_initThread.done());
     }
     
     private boolean canReload()
@@ -822,7 +835,10 @@ public class VPlugin extends JavaPlugin implements Runnable
     void deleteEverything()
     {
         _loadSuccess = true;
-        _loadThreads = new ArrayList<VThreadLoad>();
+        synchronized(_loadThreads)
+        {
+            _loadThreads = new ArrayList<VThreadLoad>();
+        }
         _numLoadThreads = 0;
         _saveRequested = false;
         _loadRequested = false;
