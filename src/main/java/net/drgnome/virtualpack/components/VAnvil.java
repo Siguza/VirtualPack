@@ -7,6 +7,7 @@ package net.drgnome.virtualpack.components;
 import java.util.*;
 import java.lang.reflect.*;
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.*;
 import net.drgnome.virtualpack.util.*;
 
@@ -90,8 +91,8 @@ public class VAnvil extends ContainerAnvil
             Enchantment enchantment;
             if(itemstack2 != null)
             {
-                flag = itemstack2.id == Item.ENCHANTED_BOOK.id && Item.ENCHANTED_BOOK.#FIELD_ITEMENCHANTEDBOOK_2#(itemstack2).size() > 0;
-                if(itemstack1.#FIELD_ITEMSTACK_10#() && Item.byId[itemstack1.id].#FIELD_ITEM_6#(itemstack, itemstack2))
+                flag = Item.#FIELD_ITEM_7#(itemstack2.getItem()) == Material.ENCHANTED_BOOK.getId() && ((ItemEnchantedBook)Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId())).#FIELD_ITEMENCHANTEDBOOK_2#(itemstack2).size() > 0;
+                if(itemstack1.#FIELD_ITEMSTACK_10#() && itemstack1.getItem().#FIELD_ITEM_6#(itemstack, itemstack2))
                 {
                     l = Math.min(itemstack1.#FIELD_ITEMSTACK_5#(), itemstack1.#FIELD_ITEMSTACK_6#() / 4);
                     if(l <= 0)
@@ -111,7 +112,7 @@ public class VAnvil extends ContainerAnvil
                 }
                 else
                 {
-                    if(!flag && (itemstack1.id != itemstack2.id || !itemstack1.#FIELD_ITEMSTACK_10#()))
+                    if(!flag && (Item.#FIELD_ITEM_7#(itemstack1.getItem()) != Item.#FIELD_ITEM_7#(itemstack2.getItem()) || !itemstack1.#FIELD_ITEMSTACK_10#()))
                     {
                         getInv("#FIELD_CONTAINERANVIL_2#").setItem(0, null);
                         #FIELD_CONTAINERANVIL_5# = 0;
@@ -155,7 +156,7 @@ public class VAnvil extends ContainerAnvil
                         l1 = j2;
                         int k2 = l1 - k1;
                         boolean flag1 = enchantment.canEnchant(itemstack);
-                        if(playerFree(_player) || (itemstack.id == ItemEnchantedBook.ENCHANTED_BOOK.id))
+                        if(playerFree(_player) || (Item.#FIELD_ITEM_7#(itemstack.getItem()) == Material.ENCHANTED_BOOK.getId()))
                         {
                             flag1 = true;
                         }
@@ -203,11 +204,11 @@ public class VAnvil extends ContainerAnvil
                     }
                 }
             }
-            if(_itemName != null && !_itemName.equalsIgnoreCase(itemstack.#FIELD_ITEMSTACK_7#()) && _itemName.length() > 0)
+            if(_itemName != null && !_itemName.equalsIgnoreCase(itemstack.getName()) && _itemName.length() > 0)
             {
                 j = itemstack.#FIELD_ITEMSTACK_10#() ? 7 : itemstack.count * 5;
                 i += j;
-                if(itemstack.#FIELD_ITEMSTACK_8#())
+                if(itemstack.hasName())
                 {
                     k += j / 2;
                 }
@@ -271,7 +272,7 @@ public class VAnvil extends ContainerAnvil
                 {
                     i1 = itemstack2.getRepairCost();
                 }
-                if(itemstack1.#FIELD_ITEMSTACK_8#())
+                if(itemstack1.hasName())
                 {
                     i1 -= 9;
                 }
@@ -295,7 +296,7 @@ public class VAnvil extends ContainerAnvil
             ItemStack itemstack = VAnvil.#FIELD_CONTAINERANVIL_1#(this).splitWithoutUpdate(i);
             if(itemstack != null)
             {
-                entityhuman.drop(itemstack);
+                entityhuman.drop(itemstack, false); // What does this "false" do?
             }
         }
     }
@@ -391,6 +392,6 @@ public class VAnvil extends ContainerAnvil
     
     public static boolean playerFree(EntityHuman entityhuman)
     {
-        return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getLocalizedName(), "vpack.use.anvil.free"));
+        return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getName(), "vpack.use.anvil.free"));
     }
 }

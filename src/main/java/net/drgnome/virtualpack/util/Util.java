@@ -23,7 +23,7 @@ public class Util
     private static boolean _lastStack;
     private static String[] _lastStackIds;
     
-    // Math.round? Too damn slow!
+    // Because Math.round is too slow in Java 6
     public static int round(double d)
     {
         int i = (int)d;
@@ -227,7 +227,7 @@ public class Util
     
     public static boolean areEqual(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
     {
-        return (item1.id == item2.id) && (item1.count == item2.count) && (item1.getData() == item2.getData());
+        return (Item.#FIELD_ITEM_7#(item1.getItem()) == Item.#FIELD_ITEM_7#(item2.getItem())) && (item1.count == item2.count) && (item1.getData() == item2.getData());
     }
     
     public static int tryParse(String s, int i)
@@ -253,42 +253,6 @@ public class Util
             return d;
         }
     }
-    
-    /*public static double parseBigDouble(String s)
-    {
-        System.out.println(s);
-        System.out.println((new BigDecimal(s)).toPlainString());
-        double d = 0D;
-        String[] parts = s.split("\\.");
-        for(int i = 0; i < parts[0].length(); i++)
-        {
-            try
-            {
-                d += Double.parseDouble(parts[0].substring(parts[0].length() - (i + 1), parts[0].length() - i)) * (double)Math.pow(10, i);
-            }
-            catch(NumberFormatException e)
-            {
-                e.printStackTrace();
-                return 0D;
-            }
-        }
-        if(parts.length > 1)
-        {
-            for(int i = 0; i < parts[1].length(); i++)
-            {
-                try
-                {
-                    d += Double.parseDouble(parts[1].substring(i, i + 1)) * (double)Math.pow(10, -(i + 1));
-                }
-                catch(NumberFormatException e)
-                {
-                    e.printStackTrace();
-                    return 0D;
-                }
-            }
-        }
-        return d;
-    }*/
     
     public static String implode(String glue, String... parts)
     {
@@ -353,7 +317,6 @@ public class Util
         {
             return 0D;
         }
-        // return (new BigDecimal(s)).setScale(2).doubleValue();
     }
     
     public static int max(int... values)
@@ -388,7 +351,7 @@ public class Util
         {
             return null;
         }
-        return net.minecraft.server.v#MC_VERSION#.ItemStack.#FIELD_ITEMSTACK_1#(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string)));
+        return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string)));
     }
     
     public static String itemStackToString(net.minecraft.server.v#MC_VERSION#.ItemStack item)
@@ -482,7 +445,7 @@ public class Util
         {
             name = name.substring(0, 32);
         }
-        player.playerConnection.sendPacket(new Packet100OpenWindow(1, id, name, size, true));
+        player.playerConnection.sendPacket(new PacketPlayOutOpenWindow(1, id, name, size, true));
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);

@@ -43,7 +43,7 @@ public class VUncrafter extends VContainer
             ItemStack itemstack = container.splitWithoutUpdate(i);
             if(itemstack != null)
             {
-                entityhuman.drop(itemstack);
+                entityhuman.drop(itemstack, false); // Whatever "false" does
             }
         }
     }
@@ -90,6 +90,6 @@ public class VUncrafter extends VContainer
                 return false;
             }
         }
-        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getLocalizedName(), "uncrafter", CraftItemStack.asBukkitCopy(item));
+        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getName(), "uncrafter", CraftItemStack.asBukkitCopy(item));
     }
 }

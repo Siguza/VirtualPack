@@ -120,12 +120,12 @@ public class VInv implements IInventory
         return lastUpdate;
     }
     
-    public String getName()
+    public String getInventoryName()
     {
         return "Blubb";
     }
     
-    public boolean c() // Has name?
+    public boolean #FIELD_IINVENTORY_4#() // Has name?
     {
         return true;
     }

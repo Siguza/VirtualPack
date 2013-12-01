@@ -328,7 +328,7 @@ public class VPack
         {
             for(ItemStack i : inv.getContents())
             {
-                p.drop(i);
+                p.drop(i, false); // I have no idea what the "false" does here
             }
         }
     }
@@ -956,7 +956,7 @@ public class VPack
             ItemStack item = inv.getItem(i);
             if(item != null)
             {
-                player.drop(Util.copy_old(item));
+                player.drop(Util.copy_old(item), false); // I have no idea what the "false" does here
                 inv.setItem(i, null);
             }
         }
@@ -1315,7 +1315,7 @@ public class VPack
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         for(ItemStack item : _left.toArray(new ItemStack[0]))
         {
-            player.drop(item);
+            player.drop(item, false); // I have no idea what the "false" does here
         }
     }
 }

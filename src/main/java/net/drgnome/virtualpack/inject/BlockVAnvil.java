@@ -5,27 +5,28 @@
 package net.drgnome.virtualpack.inject;
 
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v#MC_VERSION#.event.CraftEventFactory;
 import net.drgnome.virtualpack.components.VAnvil;
 import net.drgnome.virtualpack.util.Util;
 
 public class BlockVAnvil extends BlockAnvil
 {
-    public static final int _id = 145;
+    public static final int _id = Material.ANVIL.getId();
     
     public static void inject()
     {
-        Block.byId[_id] = null;
         new BlockVAnvil();
     }
     
     public BlockVAnvil()
     {
-        super(_id);
+        super();
         #FIELD_BLOCK_1#(5.0F);
         #FIELD_BLOCK_2#(Block.#FIELD_BLOCK_5#);
         #FIELD_BLOCK_3#(2000.0F);
         #FIELD_BLOCK_4#("anvil");
+        Block.REGISTRY.#FIELD_REGISTRYMATERIALS_1#(this);
     }
     
     public boolean interact(World world, int x, int y, int z, EntityHuman human, int i1, float f1, float f2, float f3)

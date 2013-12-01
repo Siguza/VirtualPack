@@ -6,6 +6,7 @@ package net.drgnome.virtualpack.components;
 
 import java.util.*;
 import java.lang.reflect.*;
+import org.bukkit.Material;
 import net.minecraft.server.v#MC_VERSION#.*;
 import net.drgnome.virtualpack.util.*;
 
@@ -30,9 +31,9 @@ public class VUncrafterInv extends VInv
                 ItemStack[] back = new ItemStack[0];
                 if(i == -1)
                 {
-                    if(item.id == 403)
+                    if(Item.#FIELD_ITEM_7#(item.getItem()) == Material.ENCHANTED_BOOK.getId())
                     {
-                        back = new ItemStack[]{new ItemStack(340, item.count, item.getData())};
+                        back = new ItemStack[]{new ItemStack(Item.#FIELD_ITEM_8#(Material.BOOK.getId()), item.count, item.getData())};
                     }
                     else
                     {
@@ -41,18 +42,18 @@ public class VUncrafterInv extends VInv
                         {
                             continue;
                         }
-                        else if((!Item.byId[item.id].#FIELD_ITEM_5#() && (item.getData() != 0)) || !Config.bool("uncraft-enchanted"))
+                        else if((!item.getItem().#FIELD_ITEM_5#() && (item.getData() != 0)) || !Config.bool("uncraft-enchanted"))
                         {
                             break;
                         }
                         back = new ItemStack[ench.size() + 1];
                         back[0] = Util.copy_old(item);
-                        back[0].getTag().#FIELD_NBTTAGCOMPOUND_1#("ench");
+                        back[0].getTag().remove("ench");
                         for(int j = 0; j < ench.size(); j++)
                         {
-                            back[j + 1] = new ItemStack(403, 1, 0);
-                            NBTTagCompound tag = new NBTTagCompound("tag");
-                            NBTTagList elist = new NBTTagList("StoredEnchantments");
+                            back[j + 1] = new ItemStack(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()), 1, 0);
+                            NBTTagCompound tag = new NBTTagCompound();
+                            NBTTagList elist = new NBTTagList();
                             elist.add(ench.get(j));
                             tag.set("StoredEnchantments", elist);
                             back[j + 1].setTag(tag);
@@ -73,7 +74,7 @@ public class VUncrafterInv extends VInv
                         continue;
                     }
                     result = Util.copy_old(recipe.#FIELD_IRECIPE_1#()); // Derpnote
-                    if((result == null) || (result.id != item.id) || (result.getData() != item.getData()))
+                    if((result == null) || (Item.#FIELD_ITEM_7#(result.getItem()) != Item.#FIELD_ITEM_7#(item.getItem())) || (result.getData() != item.getData()))
                     {
                         continue;
                     }
@@ -133,7 +134,6 @@ public class VUncrafterInv extends VInv
                         back[j].setData(0);
                     }
                 }
-                /** NEW **/
                 ItemStack[] test = new ItemStack[9];
                 for(int j = 0; j < test.length; j++)
                 {
@@ -146,7 +146,7 @@ public class VUncrafterInv extends VInv
                     success = true;
                     for(int j = 0; j < back.length; j++)
                     {
-                        if((back[j] == null) || (Item.byId[back[j].id].#FIELD_ITEM_1#())) // Derpnote
+                        if((back[j] == null) || (back[j].getItem().#FIELD_ITEM_1#())) // Derpnote
                         {
                             continue;
                         }
@@ -160,7 +160,7 @@ public class VUncrafterInv extends VInv
                                 success = true;
                                 break;
                             }
-                            else if((test1[k].id == back[j].id) && (test1[k].getData() == back[j].getData()) && (test1[k].count < Item.byId[test1[k].id].getMaxStackSize()))
+                            else if((Item.#FIELD_ITEM_7#(test1[k].getItem()) == Item.#FIELD_ITEM_7#(back[j].getItem())) && (test1[k].getData() == back[j].getData()) && (test1[k].count < test1[k].getItem().getMaxStackSize()))
                             {
                                 test1[k].count += 1;
                                 success = true;
@@ -186,52 +186,6 @@ public class VUncrafterInv extends VInv
                     super.setItem(j + 9, test[j]);
                 }
                 break;
-                /*ItemStack[] test = new ItemStack[9];
-                for(int j = 0; j < test.length; j++)
-                {
-                    test[j] = Util.copy_old(getItem(j + 9));
-                }
-                boolean success = false;
-                ItemStack[] test1 = Util.copy_old(test);
-                for(; item.count >= result.count; item.count -= result.count)
-                {
-                    success = true;
-                    for(int j = 0; j < back.length; j++)
-                    {
-                        if((back[j] == null) || (Item.byId[back[j].id].#FIELD_ITEM_1#())) // Derpnote
-                        {
-                            continue;
-                        }
-                        success = false;
-                        for(int k = 0; k < test1.length; k++)
-                        {
-                            
-                            if(test1[k] == null)
-                            {
-                                test1[k] = Util.copy_old(back[j]);
-                                test1[k].count = 1;
-                                success = true;
-                                break;
-                            }
-                            else if((test1[k].id == back[j].id) && (test1[k].getData() == back[j].getData()) && (test1[k].count < Item.byId[test1[k].id].getMaxStackSize()))
-                            {
-                                test1[k].count += 1;
-                                success = true;
-                                break;
-                            }
-                        }
-                        if(!success)
-                        {
-                            break;
-                        }
-                    }
-                    test = Util.copy_old(test1);
-                }
-                for(int j = 0; j < test.length; j++)
-                {
-                    super.setItem(j + 9, test[j]);
-                }
-                break;*/
             }
         }
         if((item != null) && (item.count <= 0))

@@ -6,6 +6,7 @@ package net.drgnome.virtualpack.components;
 
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.Material;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
@@ -69,7 +70,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     public void tick(int ticks)
     {
         checkLink();
-        int newID = items[3] == null ? 0 : items[3].id;
+        int newID = items[3] == null ? 0 : Item.#FIELD_ITEM_7#(items[3].getItem());
         // Item changed?
         if(newID != lastID)
         {
@@ -283,7 +284,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                 continue;
             }
             // So then, is it a potion?
-            if(items[i].id == Item.POTION.id)
+            if(Item.#FIELD_ITEM_7#(items[i].getItem()) == Material.POTION.getId())
             {
                 // Make sure we don't get negative data values
                 int meta = items[i].getData();
@@ -294,8 +295,8 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                     return true;
                 }
                 // Lists of effects
-                List list = Item.POTION.#FIELD_ITEMPOTION_2#(meta); // Derpnote
-                List list1 = Item.POTION.#FIELD_ITEMPOTION_2#(result); // Derpnote
+                List list = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(meta); // Derpnote
+                List list1 = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(result); // Derpnote
                 // Just copied this part from TileEntityBrewingStand.o()
                 if(((meta <= 0) || (list != list1)) && ((list == null) || ((!list.equals(list1)) && (list1 != null))) && (meta != result))
                 {
@@ -329,7 +330,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                 continue;
             }
             // Is it a potion then?
-            if(items[i].id == Item.POTION.id)
+            if(Item.#FIELD_ITEM_7#(items[i].getItem()) == Material.POTION.getId())
             {
                 int meta = items[i].getData() < 0 ? 0 : items[i].getData();
                 int result = getPotionMeta(meta, items[3]) < 0 ? 0 : getPotionMeta(meta, items[3]);
@@ -340,8 +341,8 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                     continue;
                 }
                 // Lists of effects
-                List list = Item.POTION.#FIELD_ITEMPOTION_2#(meta); // Derpnote
-                List list1 = Item.POTION.#FIELD_ITEMPOTION_2#(result); // Derpnote
+                List list = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(meta); // Derpnote
+                List list1 = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(result); // Derpnote
                 if(((meta <= 0) || (list != list1)) && ((list == null) || ((!list.equals(list1)) && (list1 != null))) && (meta != result))
                 {
                     items[i].setData(result);
@@ -355,9 +356,9 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             }
         }
         // Is the ingredient a container?
-        if(Item.byId[items[3].id].#FIELD_ITEM_1#()) // Derpnote
+        if(items[3].getItem().#FIELD_ITEM_1#()) // Derpnote
         {
-            items[3] = new ItemStack(Item.byId[items[3].id].#FIELD_ITEM_2#()); // Derpnote
+            items[3] = new ItemStack(items[3].getItem().#FIELD_ITEM_2#()); // Derpnote
         }
         // Or not?
         else
@@ -378,7 +379,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             return false;
         }
         // CUSTOM INGREDIENTS HERE
-        return Item.byId[item.id].#FIELD_ITEM_3#(); // Derpnote
+        return item.getItem().#FIELD_ITEM_3#(item); // Derpnote
     }
     
     private boolean isBrewable(ItemStack item, ItemStack ingredient)
@@ -403,9 +404,10 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             return potion;
         }
         // CUSTOM RESULTS HERE
-        if((Item.byId[ingredient.id].#FIELD_ITEM_3#()) && (potion.id == Item.POTION.id)) // Derpnote
+        Item type = ingredient.getItem();
+        if(type.#FIELD_ITEM_3#(ingredient) && (Item.#FIELD_ITEM_7#(potion.getItem()) == Material.POTION.getId())) // Derpnote
         {
-            return new ItemStack(potion.id, potion.count, PotionBrewer.#FIELD_POTIONBREWER_1#(potion.getData(), Item.byId[ingredient.id].#FIELD_ITEM_4#())); // Derpnote
+            return new ItemStack(potion.getItem(), potion.count, PotionBrewer.#FIELD_POTIONBREWER_1#(potion.getData(), type.#FIELD_ITEM_4#(ingredient))); // Derpnote
         }
         return potion;
     }
@@ -417,9 +419,10 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             return i;
         }
         // Cryptic names, Y U NO MAKE SENSE?
-        if(Item.byId[item.id].#FIELD_ITEM_3#()) // Derpnote
+        Item type = item.getItem();
+        if(type.#FIELD_ITEM_3#(item)) // Derpnote
         {
-            return PotionBrewer.a(i, Item.byId[item.id].#FIELD_ITEM_4#()); // Derpnote
+            return PotionBrewer.a(i, type.#FIELD_ITEM_4#(item)); // Derpnote
         }
         return i;
     }
