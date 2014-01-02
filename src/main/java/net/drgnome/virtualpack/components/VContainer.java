@@ -5,6 +5,8 @@
 package net.drgnome.virtualpack.components;
 
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.Bukkit;
+import static net.drgnome.virtualpack.util.Global._plugin;
 
 public abstract class VContainer extends ContainerChest
 {
@@ -42,8 +44,18 @@ public abstract class VContainer extends ContainerChest
         return (slot >= 27) ? (slot - 27) : (slot + 9);
     }
     
-    protected void update()
+    protected final void update()
     {
-        player.updateInventory(player.activeContainer);
+        update(this.player);
+    }
+    
+    public static void update(final EntityPlayer player)
+    {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(_plugin, new Runnable() {
+            public void run()
+            {
+                player.updateInventory(player.activeContainer);
+            }
+        });
     }
 }

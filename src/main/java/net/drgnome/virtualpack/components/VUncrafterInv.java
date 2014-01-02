@@ -12,15 +12,20 @@ import net.drgnome.virtualpack.util.*;
 
 public class VUncrafterInv extends VInv
 {
-    public VUncrafterInv()
+    private final EntityPlayer _player;
+    
+    public VUncrafterInv(EntityPlayer player)
     {
         super(2);
+        _player = player;
     }
     
     public void setItem(int slot, ItemStack item)
     {
+        boolean update = false;
         if((item != null) && (slot < 9))
         {
+            update = true;
             List list = CraftingManager.getInstance().getRecipes();
             Object tmp;
             Object tmp2;
@@ -193,5 +198,9 @@ public class VUncrafterInv extends VInv
             item = null;
         }
         super.setItem(slot, Util.copy_old(item));
+        if(update)
+        {
+            VContainer.update(_player);
+        }
     }
 }

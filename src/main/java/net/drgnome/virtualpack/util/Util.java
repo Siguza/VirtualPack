@@ -11,6 +11,7 @@ import java.util.*;
 import java.math.BigDecimal;
 import java.lang.reflect.*;
 import javax.xml.bind.DatatypeConverter;
+import org.json.simple.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -46,36 +47,31 @@ public class Util
         return i - (d < 0D ? 1 : 0);
     }
     
-    public static boolean hasUpdate(String name, String version)
+    public static boolean hasUpdate(int projectID, String version)
     {
         try
         {
-            HttpURLConnection con = (HttpURLConnection)(new URL("http://dev.drgnome.net/version.php?t=" + name)).openConnection();            
+            HttpURLConnection con = (HttpURLConnection)(new URL("https://api.curseforge.com/servermods/files?projectIds=" + projectID)).openConnection();
             con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; JVM)");                        
+            con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; JVM)");
             con.setRequestProperty("Pragma", "no-cache");
             con.connect();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String line = null;
-            StringBuilder stringb = new StringBuilder();
-            if((line = reader.readLine()) != null)
-            {
-                stringb.append(line);
-            }
-            String vdigits[] = version.toLowerCase().split("\\.");
-            String cdigits[] = stringb.toString().toLowerCase().split("\\.");
+            JSONArray json = (JSONArray)JSONValue.parse(new InputStreamReader(con.getInputStream()));
+            String[] cdigits = ((String)((JSONObject)json.get(json.size() - 1)).get("name")).toLowerCase().split("\\.");
+            String[] vdigits = version.toLowerCase().split("\\.");
             int max = vdigits.length > cdigits.length ? cdigits.length : vdigits.length;
-            int a = 0;
-            int b = 0;
+            int a;
+            int b;
             for(int i = 0; i < max; i++)
             {
+                a = b = 0;
                 try
                 {
                     a = Integer.parseInt(cdigits[i]);
                 }
                 catch(Throwable t1)
                 {
-                    char c[] = cdigits[i].toCharArray();
+                    char[] c = cdigits[i].toCharArray();
                     for(int j = 0; j < c.length; j++)
                     {
                         a += (c[j] << ((c.length - (j + 1)) * 8));
@@ -87,7 +83,7 @@ public class Util
                 }
                 catch(Throwable t1)
                 {
-                    char c[] = vdigits[i].toCharArray();
+                    char[] c = vdigits[i].toCharArray();
                     for(int j = 0; j < c.length; j++)
                     {
                         b += (c[j] << ((c.length - (j + 1)) * 8));

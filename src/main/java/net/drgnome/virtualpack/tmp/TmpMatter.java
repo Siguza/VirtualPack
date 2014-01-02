@@ -57,6 +57,7 @@ public class TmpMatter extends VContainer implements VGUI
     
     public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
     {
+        update();
         if(slot == 0)
         {
             return false;

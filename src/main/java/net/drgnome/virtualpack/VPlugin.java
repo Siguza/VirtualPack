@@ -29,6 +29,7 @@ import static net.drgnome.virtualpack.util.Global.*;
 public class VPlugin extends JavaPlugin implements Runnable
 {
     public static final String _version = "#VERSION#";
+    public static final int _projectID = 37545; // Bukkit
     public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil", "materializer"};
     
     private ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> _packs = new ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>>();
@@ -482,6 +483,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
             AlphaChestHelper.check();
             BackpackHelper.check();
+            ChestKeeperHelper.check();
             VirtualChestHelper.check();
         }
         catch(Throwable t)
@@ -774,7 +776,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public boolean checkUpdate()
     {
-        _update = Util.hasUpdate("vpack", _version);
+        _update = Util.hasUpdate(_projectID, _version);
         return _update;
     }
     

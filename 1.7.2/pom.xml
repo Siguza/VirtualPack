@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>2.5.7</version>
+    <version>2.5.8</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -22,19 +22,18 @@
         </repository>
         <repository>
             <id>vault-repo</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
+            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
-		<repository>
-			<id>siguza-repo</id>
-			<url>http://build.drgnome.net/plugin/repository/everything/</url>
-		</repository>
         <repository>
-            <id>comphenix-rep</id>
-            <name>Comphenix Repository</name>
+            <id>siguza-repo</id>
+            <url>http://build.drgnome.net/plugin/repository/everything/</url>
+        </repository>
+        <repository>
+            <id>comphenix-repo</id>
             <url>http://repo.comphenix.net/content/groups/public/</url>
         </repository>
     </repositories>
@@ -42,14 +41,14 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.7.2-R0.1-SNAPSHOT</version>
+            <version>1.7.2-R0.3-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.2.26-SNAPSHOT</version>
+            <version>1.2.30</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -60,17 +59,17 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>net.drgnome.nbtlib</groupId>
             <artifactId>NBTLib</artifactId>
-            <version>0.3</version>
+            <version>0.3.3</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>2.4.5</version>
+            <version>3.1.0</version>
         </dependency>
     </dependencies>
     <build>
@@ -83,34 +82,34 @@
             </resource>
         </resources>
         <pluginManagement>
-        	<plugins>
-        		<plugin>
-                	<groupId>org.eclipse.m2e</groupId>
-                	<artifactId>lifecycle-mapping</artifactId>
-                	<version>1.0.0</version>
-                	<configuration>
-                    	<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-							            <groupId>com.google.code.maven-replacer-plugin</groupId>
-							            <artifactId>replacer</artifactId>
-							            <versionRange>1.5.1</versionRange>
-							            <goals>
-							            	<goal>replace</goal>
-							            </goals>
-						            </pluginExecutionFilter>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                                        <artifactId>replacer</artifactId>
+                                        <versionRange>1.5.1</versionRange>
+                                        <goals>
+                                            <goal>replace</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
                                     <action>
                                         <execute></execute>
                                     </action>
                                     <comment>source: </comment>
-						        </pluginExecution>
-	                    	</pluginExecutions>
-                    	</lifecycleMappingMetadata>
-                	</configuration>
-          		</plugin>
-        	</plugins>
-    	</pluginManagement>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                  </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
