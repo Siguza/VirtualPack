@@ -30,6 +30,7 @@ public class VCommands implements CommandExecutor
         commandMap.put("v", "version");
         commandMap.put("s", "stats");
         commandMap.put("p", "price");
+        commandMap.put("cd", "cooldown");
         commandMap.put("up", "update");
         commandMap.put("l", "link");
         commandMap.put("u", "unlink");
@@ -240,6 +241,10 @@ public class VCommands implements CommandExecutor
         {
             price(player);
         }
+        else if(command.equals("cooldown"))
+        {
+            cooldown(player);
+        }
         else
         {
             cmd(player, command, args);
@@ -321,6 +326,7 @@ public class VCommands implements CommandExecutor
                 
                 sendMessage(sender, Lang.get(sender, "help.stats", cmd));
                 sendMessage(sender, Lang.get(sender, "help.price", cmd));
+                sendMessage(sender, Lang.get(sender, "help.cooldown", cmd));
             }
             if(Perm.has(sender, "vpack.send"))
             {
@@ -1057,6 +1063,46 @@ public class VCommands implements CommandExecutor
         else
         {
             sendMessage(player, Lang.get(player, "price.free"), ChatColor.AQUA);
+        }
+    }
+    
+    private void cooldown(Player player)
+    {
+        sendMessage(player, Lang.get(player, "cooldown.title"), ChatColor.AQUA);
+        VPack pack = _plugin.getPack(player);
+        final String y = ChatColor.YELLOW.toString();
+        final String g = ChatColor.GREEN.toString();
+        if(Perm.has(player, "vpack.use.workbench"))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.workbench", y, g, "" + Util.round((double)pack.workbenchCooldown() / 1000D)));
+        }
+        if(Perm.has(player, "vpack.use.uncrafter"))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.uncrafter", y, g, "" + Util.round((double)pack.uncrafterCooldown() / 1000D)));
+        }
+        if(Perm.has(player, "vpack.use.enchanttable"))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.enchanttable", y, g, "" + Util.round((double)pack.enchanttableCooldown() / 1000D)));
+        }
+        if(Perm.has(player, "vpack.use.anvil"))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.anvil", y, g, "" + Util.round((double)pack.anvilCooldown() / 1000D)));
+        }
+        if(Perm.has(player, "vpack.use.materializer"))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.materializer", y, g, "" + Util.round((double)pack.materializerCooldown() / 1000D)));
+        }
+        if(Perm.has(player, "vpack.use.chest"))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.chest", y, g, "" + Util.round((double)pack.chestCooldown() / 1000D)));
+        }
+        if(Perm.has(player, "vpack.use.furnace"))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.furnace", y, g, "" + Util.round((double)pack.furnaceCooldown() / 1000D)));
+        }
+        if(Perm.has(player, "vpack.use.brewingstand"))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.brewingstand", y, g, "" + Util.round((double)pack.brewingstandCooldown() / 1000D)));
         }
     }
     

@@ -30,7 +30,7 @@
         </repository>
         <repository>
             <id>siguza-repo</id>
-            <url>http://build.drgnome.net/plugin/repository/everything/</url>
+            <url>http://ci.siguza.net/plugin/repository/everything/</url>
         </repository>
         <repository>
             <id>comphenix-repo</id>

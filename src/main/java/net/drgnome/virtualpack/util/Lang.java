@@ -69,6 +69,10 @@ public class Lang
             {
                 setDef(s[0], s[1]);
             }
+            for(String[] s : Util.readIni(_plugin.getResource("lang/en.lang")))
+            {
+                setDef(s[0], s[1]);
+            }
         }
         catch(Throwable t)
         {

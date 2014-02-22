@@ -34,6 +34,15 @@ public class VPack
     public int _bookshelves = 0;
     private int _fLinks = 0;
     private int _bLinks = 0;
+    // 0 = workbench
+    // 1 = uncrafter
+    // 2 = enchanttable
+    // 3 = anvil
+    // 4 = materializer
+    // 5 = chest
+    // 6 = furnace
+    // 7 = brewingstand
+    private long[] _cooldown = new long[8];
     public HashMap<Integer, VInv> _chests = new HashMap<Integer, VInv>();
     public HashMap<Integer, VTEFurnace> _furnaces = new HashMap<Integer, VTEFurnace>();
     public HashMap<Integer, VTEBrewingstand> _brews = new HashMap<Integer, VTEBrewingstand>();
@@ -685,6 +694,46 @@ public class VPack
         return Config.getDouble(_world, _player, "tools", "brewingstand", "link", Config.MODE_MIN, 2);
     }
     
+    public int workbenchCooldown()
+    {
+        return Config.getInt(_world, _player, "tools", "workbench", "cooldown", Config.MODE_MIN);
+    }
+    
+    public int uncrafterCooldown()
+    {
+        return Config.getInt(_world, _player, "tools", "uncrafter", "cooldown", Config.MODE_MIN);
+    }
+    
+    public int enchanttableCooldown()
+    {
+        return Config.getInt(_world, _player, "tools", "enchanttable", "cooldown", Config.MODE_MIN);
+    }
+    
+    public int anvilCooldown()
+    {
+        return Config.getInt(_world, _player, "tools", "anvil", "cooldown", Config.MODE_MIN);
+    }
+    
+    public int materializerCooldown()
+    {
+        return Config.getInt(_world, _player, "tools", "materializer", "cooldown", Config.MODE_MIN);
+    }
+    
+    public int chestCooldown()
+    {
+        return Config.getInt(_world, _player, "tools", "chest", "cooldown", Config.MODE_MIN);
+    }
+    
+    public int furnaceCooldown()
+    {
+        return Config.getInt(_world, _player, "tools", "furnace", "cooldown", Config.MODE_MIN);
+    }
+    
+    public int brewingstandCooldown()
+    {
+        return Config.getInt(_world, _player, "tools", "brewingstand", "cooldown", Config.MODE_MIN);
+    }
+    
     public int getChestSize()
     {
         int s = Config.getInt(_world, _player, "tools", "chest", "size", Config.MODE_MAX);
@@ -717,21 +766,27 @@ public class VPack
         sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "workbench.bought"), ChatColor.GREEN);
     }
     
-    public void openWorkbench(Player bukkitPlayer, boolean free)
+    public void openWorkbench(Player bukkitPlayer, boolean admin)
     {
         if(!_hasWorkbench)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "workbench.none"), ChatColor.RED);
             return;
         }
-        free = free || !Money.world(_world).enabled();
+        int wait = workbenchCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[0]) / 1000D);
+        if(!admin && (wait >= 0))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
+            return;
+        }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
-        if(!free && !Money.world(_world).hasTake(_player, priceWorkbenchUse()))
+        if(!admin && Money.world(_world).enabled() && !Money.world(_world).hasTake(_player, priceWorkbenchUse()))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         Util.openWindow(player, new VWorkbench(player), Lang.get(bukkitPlayer, "workbench.name"), 1, 9);
+        _cooldown[0] = System.currentTimeMillis();
     }
     
     /** Uncrafter **/
@@ -752,21 +807,27 @@ public class VPack
         sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "uncrafter.bought"), ChatColor.GREEN);
     }
     
-    public void openUncrafter(Player bukkitPlayer, boolean free)
+    public void openUncrafter(Player bukkitPlayer, boolean admin)
     {
         if(!_hasUncrafter)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "uncrafter.none"), ChatColor.RED);
             return;
         }
-        free = free || !Money.world(_world).enabled();
+        int wait = uncrafterCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[1]) / 1000D);
+        if(!admin && (wait >= 0))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
+            return;
+        }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
-        if(!free && !Money.world(_world).hasTake(_player, priceUncrafterUse()))
+        if(!admin && Money.world(_world).enabled() && !Money.world(_world).hasTake(_player, priceUncrafterUse()))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         Util.openWindow(player, new VUncrafter(player), Lang.get(bukkitPlayer, "uncrafter.name"), 0, 18);
+        _cooldown[1] = System.currentTimeMillis();
     }
     
     /** Enchanting table **/
@@ -787,21 +848,27 @@ public class VPack
         sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enchanttable.bought"), ChatColor.GREEN);
     }
     
-    public void openEnchantTable(Player bukkitPlayer, boolean free)
+    public void openEnchantTable(Player bukkitPlayer, boolean admin)
     {
         if(!_hasEnchantTable)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enchanttable.none"), ChatColor.RED);
             return;
         }
-        free = free || !Money.world(_world).enabled();
+        int wait = enchanttableCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[2]) / 1000D);
+        if(!admin && (wait >= 0))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
+            return;
+        }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
-        if(!free && !Money.world(_world).hasTake(_player, priceEnchUse()))
+        if(!admin && Money.world(_world).enabled() && !Money.world(_world).hasTake(_player, priceEnchUse()))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         Util.openWindow(player, new VEnchantTable(player, _bookshelves), Lang.get(bukkitPlayer, "enchanttable.name"), 4, 9);
+        _cooldown[2] = System.currentTimeMillis();
     }
     
     public void buyBookshelf(Player bukkitPlayer, int amount)
@@ -842,21 +909,27 @@ public class VPack
         sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "anvil.bought"), ChatColor.GREEN);
     }
     
-    public void openAnvil(Player bukkitPlayer, boolean free)
+    public void openAnvil(Player bukkitPlayer, boolean admin)
     {
         if(!_hasAnvil)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "anvil.none"), ChatColor.RED);
             return;
         }
-        free = free || !Money.world(_world).enabled();
+        int wait = anvilCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[3]) / 1000D);
+        if(!admin && (wait >= 0))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
+            return;
+        }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
-        if(!free && !Money.world(_world).hasTake(_player, priceAnvilUse()))
+        if(!admin && Money.world(_world).enabled() && !Money.world(_world).hasTake(_player, priceAnvilUse()))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         Util.openWindow(player, new VAnvil(player), Lang.get(bukkitPlayer, "anvil.name"), 8, 9);
+        _cooldown[3] = System.currentTimeMillis();
     }
     
     /** Materializer **/
@@ -879,16 +952,21 @@ public class VPack
         sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "matter.bought"), ChatColor.GREEN);
     }
     
-    public void openMaterializer(Player player, boolean free)
+    public void openMaterializer(Player player, boolean admin)
     {
         if(_matter == null)
         {
             sendMessage(player, Lang.get(player, "matter.none"), ChatColor.RED);
             return;
         }
-        free = free || !Money.world(_world).enabled();
+        int wait = materializerCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[4]) / 1000D);
+        if(!admin && (wait >= 0))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.wait", "" + wait), ChatColor.RED);
+            return;
+        }
         EntityPlayer mcPlayer = ((CraftPlayer)player).getHandle(); /** FUUU **/
-        if(!free && !Money.world(_world).hasTake(_player, priceAnvilUse()))
+        if(!admin && Money.world(_world).enabled() && !Money.world(_world).hasTake(_player, priceAnvilUse()))
         {
             sendMessage(player, Lang.get(player, "money.toofew"), ChatColor.RED);
             return;
@@ -897,6 +975,7 @@ public class VPack
         /** FUUU ALL THE WAY **/
         //Util.openInv(player, _matter);
         Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter), Lang.get(player, "matter.name"), 0, 54);
+        _cooldown[4] = System.currentTimeMillis();
     }
     
     /** Chest **/
@@ -921,25 +1000,31 @@ public class VPack
         sendMessage(bukkitPlayer, (_chests.size() == 1) ? Lang.get(bukkitPlayer, "chest.bought.one") : Lang.get(bukkitPlayer, "chest.bought.many", "" + _chests.size()), ChatColor.GREEN);
     }
     
-    public void openChest(Player bukkitPlayer, int nr, boolean free)
+    public void openChest(Player bukkitPlayer, int nr, boolean admin)
     {
-        free = free || !Money.world(_world).enabled();
         VInv inv = _chests.get((Integer)nr);
         if(inv == null)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
             return;
         }
-        int size = getChestSize() * 9;
-        inv.resize(size);
+        int wait = chestCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[5]) / 1000D);
+        if(!admin && (wait >= 0))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
+            return;
+        }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
-        if(!free && !Money.world(_world).hasTake(_player, priceChestUse()))
+        if(!admin && Money.world(_world).enabled() && !Money.world(_world).hasTake(_player, priceChestUse()))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
+        int size = getChestSize() * 9;
+        inv.resize(size);
         VChest container = new VChest(player, inv);
         Util.openWindow(player, container, Lang.get(bukkitPlayer, "chest.name", "" + nr), 0, size);
+        _cooldown[5] = System.currentTimeMillis();
     }
     
     public void dropChest(Player bukkitPlayer, int nr)
@@ -996,27 +1081,32 @@ public class VPack
         sendMessage(bukkitPlayer, (_furnaces.size() == 1) ? Lang.get(bukkitPlayer, "furnace.bought.one") : Lang.get(bukkitPlayer, "furnace.bought.many", "" + _furnaces.size()), ChatColor.GREEN);
     }
     
-    public void openFurnace(Player bukkitPlayer, int nr, boolean free)
+    public void openFurnace(Player bukkitPlayer, int nr, boolean admin)
     {
-        free = free || !Money.world(_world).enabled();
         VTEFurnace fur = _furnaces.get((Integer)nr);
         if(fur == null)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.none"), ChatColor.RED);
             return;
         }
+        int wait = furnaceCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[6]) / 1000D);
+        if(!admin && (wait >= 0))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
+            return;
+        }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
-        if(!free && !Money.world(_world).hasTake(_player, priceFurnaceUse()))
+        if(!admin && Money.world(_world).enabled() && !Money.world(_world).hasTake(_player, priceFurnaceUse()))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         Util.openWindow(player, new VFurnace(player, fur), Lang.get(bukkitPlayer, "furnace.name", "" + nr), 2, 3);
+        _cooldown[6] = System.currentTimeMillis();
     }
     
-    public void linkFurnace(Player bukkitPlayer, int furnaceNR, int chestNR, boolean free)
+    public void linkFurnace(Player bukkitPlayer, int furnaceNR, int chestNR, boolean admin)
     {
-        free = free || !Money.world(_world).enabled();
         VTEFurnace fur = _furnaces.get((Integer)furnaceNR);
         if(fur == null)
         {
@@ -1028,7 +1118,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
             return;
         }
-        if(!free && (fur.link <= 0))
+        if(!admin && Money.world(_world).enabled() && (fur.link <= 0))
         {
             if(_fLinks <= 0)
             {
@@ -1047,9 +1137,8 @@ public class VPack
         sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.linked", "" + furnaceNR, "" + chestNR), ChatColor.GREEN);
     }
     
-    public void unlinkFurnace(Player bukkitPlayer, int furnaceNR, boolean free)
+    public void unlinkFurnace(Player bukkitPlayer, int furnaceNR, boolean admin)
     {
-        free = free || !Money.world(_world).enabled();
         VTEFurnace fur = _furnaces.get((Integer)furnaceNR);
         if(fur == null)
         {
@@ -1061,7 +1150,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "furnace.nolink"), ChatColor.RED);
             return;
         }
-        if(!free)
+        if(!admin && Money.world(_world).enabled())
         {
             _fLinks++;
         }
@@ -1091,27 +1180,32 @@ public class VPack
         sendMessage(bukkitPlayer, (_brews.size() == 1) ? Lang.get(bukkitPlayer, "brewingstand.bought.one") : Lang.get(bukkitPlayer, "brewingstand.bought.many", "" + _brews.size()), ChatColor.GREEN);
     }
     
-    public void openBrewingstand(Player bukkitPlayer, int nr, boolean free)
+    public void openBrewingstand(Player bukkitPlayer, int nr, boolean admin)
     {
-        free = free || !Money.world(_world).enabled();
         VTEBrewingstand brew = _brews.get((Integer)nr);
         if(brew == null)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.none"), ChatColor.RED);
             return;
         }
+        int wait = brewingstandCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[7]) / 1000D);
+        if(!admin && (wait >= 0))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
+            return;
+        }
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
-        if(!free && !Money.world(_world).hasTake(_player, priceBrewUse()))
+        if(!admin && Money.world(_world).enabled() && !Money.world(_world).hasTake(_player, priceBrewUse()))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
         Util.openWindow(player, new VBrewingstand(player, brew), Lang.get(bukkitPlayer, "brewingstand.name", "" + nr), 5, 4);
+        _cooldown[7] = System.currentTimeMillis();
     }
     
-    public void linkBrewingstand(Player bukkitPlayer, int brewNR, int chestNR, boolean free)
+    public void linkBrewingstand(Player bukkitPlayer, int brewNR, int chestNR, boolean admin)
     {
-        free = free || !Money.world(_world).enabled();
         VTEBrewingstand brew = _brews.get((Integer)brewNR);
         if(brew == null)
         {
@@ -1123,7 +1217,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
             return;
         }
-        if(!free && (brew.link <= 0))
+        if(!admin && Money.world(_world).enabled() && (brew.link <= 0))
         {
             if(_bLinks <= 0)
             {
@@ -1142,9 +1236,8 @@ public class VPack
         sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.linked", "" + brewNR, "" + chestNR), ChatColor.GREEN);
     }
     
-    public void unlinkBrewingstand(Player bukkitPlayer, int brewNR, boolean free)
+    public void unlinkBrewingstand(Player bukkitPlayer, int brewNR, boolean admin)
     {
-        free = free || !Money.world(_world).enabled();
         VTEBrewingstand brew = _brews.get((Integer)brewNR);
         if(brew == null)
         {
@@ -1156,7 +1249,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "brewingstand.nolink"), ChatColor.RED);
             return;
         }
-        if(!free)
+        if(!admin && Money.world(_world).enabled())
         {
             _bLinks++;
         }

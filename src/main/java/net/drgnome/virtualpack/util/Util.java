@@ -52,6 +52,7 @@ public class Util
         try
         {
             HttpURLConnection con = (HttpURLConnection)(new URL("https://api.curseforge.com/servermods/files?projectIds=" + projectID)).openConnection();
+            con.setConnectTimeout(5000);
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; JVM)");
             con.setRequestProperty("Pragma", "no-cache");
