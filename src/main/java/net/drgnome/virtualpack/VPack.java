@@ -1329,7 +1329,7 @@ public class VPack
         else
         {
             sendItem(bukkitPlayer, _plugin.getPack(_world, reciever), items);
-            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, (chestNR == 0) ? "send.done1" : "send.done2", pack.getPlayer()), ChatColor.GREEN);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, (chestNR == 0) ? "send.done1" : "send.done2", reciever), ChatColor.GREEN);
         }
     }
     
