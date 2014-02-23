@@ -56,7 +56,6 @@ help.trash=/%1 t - Open the trash
 help.more=More: %1
 version=VirtualPack %1
 stats.usernotfound=Can't find that user.
-stats.wrong=You're doing it wrong.
 stats.allow=You're no allowed to do that.
 stats.workbench=Workbench: %1%2
 stats.uncrafter=Uncrafter: %1%2

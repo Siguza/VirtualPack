@@ -774,7 +774,7 @@ public class VPack
             return;
         }
         int wait = workbenchCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[0]) / 1000D);
-        if(!admin && (wait >= 0))
+        if(!admin && (wait > 0))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
             return;
@@ -815,7 +815,7 @@ public class VPack
             return;
         }
         int wait = uncrafterCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[1]) / 1000D);
-        if(!admin && (wait >= 0))
+        if(!admin && (wait > 0))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
             return;
@@ -856,7 +856,7 @@ public class VPack
             return;
         }
         int wait = enchanttableCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[2]) / 1000D);
-        if(!admin && (wait >= 0))
+        if(!admin && (wait > 0))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
             return;
@@ -917,7 +917,7 @@ public class VPack
             return;
         }
         int wait = anvilCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[3]) / 1000D);
-        if(!admin && (wait >= 0))
+        if(!admin && (wait > 0))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
             return;
@@ -960,7 +960,7 @@ public class VPack
             return;
         }
         int wait = materializerCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[4]) / 1000D);
-        if(!admin && (wait >= 0))
+        if(!admin && (wait > 0))
         {
             sendMessage(player, Lang.get(player, "cooldown.wait", "" + wait), ChatColor.RED);
             return;
@@ -1009,7 +1009,7 @@ public class VPack
             return;
         }
         int wait = chestCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[5]) / 1000D);
-        if(!admin && (wait >= 0))
+        if(!admin && (wait > 0))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
             return;
@@ -1090,7 +1090,7 @@ public class VPack
             return;
         }
         int wait = furnaceCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[6]) / 1000D);
-        if(!admin && (wait >= 0))
+        if(!admin && (wait > 0))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
             return;
@@ -1189,7 +1189,7 @@ public class VPack
             return;
         }
         int wait = brewingstandCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[7]) / 1000D);
-        if(!admin && (wait >= 0))
+        if(!admin && (wait > 0))
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
             return;
@@ -1329,6 +1329,7 @@ public class VPack
         else
         {
             sendItem(bukkitPlayer, _plugin.getPack(_world, reciever), items);
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, (chestNR == 0) ? "send.done1" : "send.done2", pack.getPlayer()), ChatColor.GREEN);
         }
     }
     
