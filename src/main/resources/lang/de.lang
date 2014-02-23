@@ -247,3 +247,4 @@ cooldown.materializer=%1Materializer: %2%3 Sekunden
 cooldown.chest=%1Kiste: %2%3 Sekunden
 cooldown.furnace=%1Ofen: %2%3 Sekunden
 cooldown.brewingstand=%1Braustand: %2%3 Sekunden
+readonly=Du bist nicht berechtigt, Dinge zu verändern

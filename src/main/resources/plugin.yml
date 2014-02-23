@@ -175,7 +175,7 @@ permissions:
     children:
       vpack.admin.cut.force: true
       vpack.admin.clean: true
-      vpack.admin.use: true
+      vpack.admin.use.edit: true
       vpack.admin.give: true
       vpack.admin.take: true
       vpack.admin.delete: true
@@ -199,9 +199,14 @@ permissions:
       vpack.admin.cut: true
 
   vpack.admin.use:
-    description: "Allows you to access any users VirtualPack"
+    description: "Allows you to open any users VirtualPack, but not to edit"
     children:
       vpack.admin: true
+      
+  vpack.admin.use.edit:
+    description: "Allows you to open and edit any users VirtualPack"
+    children:
+      vpack.admin.use: true
 
   vpack.admin.give:
     description: "Allows you to give users stuff"

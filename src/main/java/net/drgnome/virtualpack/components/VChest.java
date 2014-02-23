@@ -10,13 +10,20 @@ import net.drgnome.virtualpack.util.Config;
 
 public class VChest extends VContainer implements VGUI
 {
-    public VChest(EntityPlayer player, IInventory data)
+    private final boolean _readonly;
+    
+    public VChest(EntityPlayer player, IInventory data, boolean canEdit)
     {
         super(player, data);
+        _readonly = !canEdit;
     }
     
     public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
     {
+        if(_readonly)
+        {
+            return false;
+        }
         if(shift == 1)
         {
             if(slot >= this.container.getSize())

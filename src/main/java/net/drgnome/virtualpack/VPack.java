@@ -952,7 +952,7 @@ public class VPack
         sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "matter.bought"), ChatColor.GREEN);
     }
     
-    public void openMaterializer(Player player, boolean admin)
+    public void openMaterializer(Player player, boolean admin, boolean canEdit)
     {
         if(_matter == null)
         {
@@ -974,7 +974,7 @@ public class VPack
         _matter.updateInv();
         /** FUUU ALL THE WAY **/
         //Util.openInv(player, _matter);
-        Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter), Lang.get(player, "matter.name"), 0, 54);
+        Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter, canEdit), Lang.get(player, "matter.name"), 0, 54);
         _cooldown[4] = System.currentTimeMillis();
     }
     
@@ -1000,7 +1000,7 @@ public class VPack
         sendMessage(bukkitPlayer, (_chests.size() == 1) ? Lang.get(bukkitPlayer, "chest.bought.one") : Lang.get(bukkitPlayer, "chest.bought.many", "" + _chests.size()), ChatColor.GREEN);
     }
     
-    public void openChest(Player bukkitPlayer, int nr, boolean admin)
+    public void openChest(Player bukkitPlayer, int nr, boolean admin, boolean canEdit)
     {
         VInv inv = _chests.get((Integer)nr);
         if(inv == null)
@@ -1022,7 +1022,7 @@ public class VPack
         }
         int size = getChestSize() * 9;
         inv.resize(size);
-        VChest container = new VChest(player, inv);
+        VChest container = new VChest(player, inv, canEdit);
         Util.openWindow(player, container, Lang.get(bukkitPlayer, "chest.name", "" + nr), 0, size);
         _cooldown[5] = System.currentTimeMillis();
     }
@@ -1081,7 +1081,7 @@ public class VPack
         sendMessage(bukkitPlayer, (_furnaces.size() == 1) ? Lang.get(bukkitPlayer, "furnace.bought.one") : Lang.get(bukkitPlayer, "furnace.bought.many", "" + _furnaces.size()), ChatColor.GREEN);
     }
     
-    public void openFurnace(Player bukkitPlayer, int nr, boolean admin)
+    public void openFurnace(Player bukkitPlayer, int nr, boolean admin, boolean canEdit)
     {
         VTEFurnace fur = _furnaces.get((Integer)nr);
         if(fur == null)
@@ -1101,7 +1101,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VFurnace(player, fur), Lang.get(bukkitPlayer, "furnace.name", "" + nr), 2, 3);
+        Util.openWindow(player, new VFurnace(player, fur, canEdit), Lang.get(bukkitPlayer, "furnace.name", "" + nr), 2, 3);
         _cooldown[6] = System.currentTimeMillis();
     }
     
@@ -1180,7 +1180,7 @@ public class VPack
         sendMessage(bukkitPlayer, (_brews.size() == 1) ? Lang.get(bukkitPlayer, "brewingstand.bought.one") : Lang.get(bukkitPlayer, "brewingstand.bought.many", "" + _brews.size()), ChatColor.GREEN);
     }
     
-    public void openBrewingstand(Player bukkitPlayer, int nr, boolean admin)
+    public void openBrewingstand(Player bukkitPlayer, int nr, boolean admin, boolean canEdit)
     {
         VTEBrewingstand brew = _brews.get((Integer)nr);
         if(brew == null)
@@ -1200,7 +1200,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VBrewingstand(player, brew), Lang.get(bukkitPlayer, "brewingstand.name", "" + nr), 5, 4);
+        Util.openWindow(player, new VBrewingstand(player, brew, canEdit), Lang.get(bukkitPlayer, "brewingstand.name", "" + nr), 5, 4);
         _cooldown[7] = System.currentTimeMillis();
     }
     

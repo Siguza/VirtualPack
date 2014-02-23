@@ -12,13 +12,15 @@ public class VBrewingstand extends ContainerBrewingStand implements VGUI
 {
     protected EntityPlayer player;
     protected TileEntityBrewingStand _data;
+    private final boolean _readonly;
     
-    public VBrewingstand(EntityPlayer player, TileEntityBrewingStand data)
+    public VBrewingstand(EntityPlayer player, TileEntityBrewingStand data, boolean canEdit)
     {
         super(player.inventory, data);
         this.checkReachable = false;
         this._data = data;
         this.player = player;
+        this._readonly = !canEdit;
     }
     
     public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
@@ -38,6 +40,10 @@ public class VBrewingstand extends ContainerBrewingStand implements VGUI
     
     public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
     {
+        if(_readonly)
+        {
+            return false;
+        }
         if(shift == 1)
         {
             if(slot >= _data.getSize())

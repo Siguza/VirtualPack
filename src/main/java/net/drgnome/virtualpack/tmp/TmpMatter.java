@@ -16,8 +16,9 @@ import net.drgnome.virtualpack.data.TransmutationHelper;
 public class TmpMatter extends VContainer implements VGUI
 {
     private TmpMatterInv _inv;
+    private final boolean _readonly;
     
-    public TmpMatter(EntityPlayer player, TmpMatterInv inv)
+    public TmpMatter(EntityPlayer player, TmpMatterInv inv, boolean canEdit)
     {
         super(player, inv);
         _inv = inv;
@@ -41,6 +42,7 @@ public class TmpMatter extends VContainer implements VGUI
         {
             #FIELD_CONTAINER_4#(new Slot(player.inventory, i, 8 + i * 18, 125)); // Derpnote
         }
+        _readonly = !canEdit;
     }
     
     public void #FIELD_CONTAINER_5#(EntityHuman entityhuman) // Derpnote
@@ -58,7 +60,7 @@ public class TmpMatter extends VContainer implements VGUI
     public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
     {
         update();
-        if(slot == 0)
+        if(_readonly || (slot == 0))
         {
             return false;
         }

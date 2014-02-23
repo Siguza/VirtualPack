@@ -115,11 +115,11 @@ public class VCommands implements CommandExecutor
         }
         else
         {
-            tools(player, _plugin.getPack(player), command, args, false);
+            tools(player, _plugin.getPack(player), command, args, false, true);
         }
     }
     
-    private void tools(Player player, VPack pack, String command, String args[], boolean admin)
+    private void tools(Player player, VPack pack, String command, String args[], boolean admin, boolean canEdit)
     {
         /** An ugly workaround, to be replaced when VPack is fully using the Bukkit API **/
         if(!(player instanceof CraftPlayer))
@@ -132,7 +132,7 @@ public class VCommands implements CommandExecutor
             }
             player = p;
         }
-        if(!admin && (player.getGameMode() == GameMode.CREATIVE) && (!Config.bool(player.getWorld().getName(), "allow-creative")) && (!admin) && (!Perm.has(player, "vpack.bypass.creative")))
+        if(!admin && (player.getGameMode() == GameMode.CREATIVE) && !Config.bool(player.getWorld().getName(), "allow-creative") && !Perm.has(player, "vpack.bypass.creative"))
         {
             sendMessage(player, Lang.get(player, "vpack.nocreative"), ChatColor.RED);
         }
@@ -142,27 +142,27 @@ public class VCommands implements CommandExecutor
         }
         else if(command.equals(VPlugin._components[1])) // Workbench
         {
-            workbench(player, pack, args, admin);
+            workbench(player, pack, args, admin, canEdit);
         }
         else if(command.equals(VPlugin._components[2])) // Uncrafter
         {
-            uncrafter(player, pack, args, admin);
+            uncrafter(player, pack, args, admin, canEdit);
         }
         else if(command.equals(VPlugin._components[3])) // Chest
         {
-            chest(player, pack, args, admin);
+            chest(player, pack, args, admin, canEdit);
         }
         else if(command.equals(VPlugin._components[4])) // Furnace
         {
-            furnace(player, pack, args, admin);
+            furnace(player, pack, args, admin, canEdit);
         }
         else if(command.equals(VPlugin._components[5])) // Brewing Stand
         {
-            brew(player, pack, args, admin);
+            brew(player, pack, args, admin, canEdit);
         }
         else if(command.equals(VPlugin._components[6])) // Enchanting Table
         {
-            ench(player, pack, args, admin);
+            ench(player, pack, args, admin, canEdit);
         }
         else if(command.equals(VPlugin._components[7])) // Trash
         {
@@ -174,11 +174,11 @@ public class VCommands implements CommandExecutor
         }
         else if(command.equals(VPlugin._components[9])) // Anvil
         {
-            anvil(player, pack, args, admin);
+            anvil(player, pack, args, admin, canEdit);
         }
         else if(command.equals(VPlugin._components[10])) // Materializer
         {
-            matter(player, pack, args, admin);
+            matter(player, pack, args, admin, canEdit);
         }
         else // Unknown command
         {
@@ -626,7 +626,7 @@ public class VCommands implements CommandExecutor
                 sendMessage(player, Lang.get(player, "argument.few"), ChatColor.RED);
                 return;
             }
-            tools(player, _plugin.getPack(player.getWorld().getName(), args[1]), longname(args[2]), Util.cut(args, 3), true);
+            tools(player, _plugin.getPack(player.getWorld().getName(), args[1]), longname(args[2]), Util.cut(args, 3), true, Perm.has(player, "vpack.admin.use.edit"));
         }
         else
         {
@@ -1106,39 +1106,49 @@ public class VCommands implements CommandExecutor
         }
     }
     
-    private void workbench(Player player, VPack pack, String[] args, boolean admin)
+    private void workbench(Player player, VPack pack, String[] args, boolean admin, boolean canEdit)
     {
-        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.workbench"))
+        if(!admin && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.workbench"))
         {
             sendMessage(player, Lang.get(player, "workbench.perm"), ChatColor.RED);
             return;
         }
         if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
         {
+            if(!canEdit)
+            {
+                sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                return;
+            }
             pack.buyWorkbench(player);
             return;
         }
         pack.openWorkbench(player, admin);
     }
     
-    private void uncrafter(Player player, VPack pack, String[] args, boolean admin)
+    private void uncrafter(Player player, VPack pack, String[] args, boolean admin, boolean canEdit)
     {
-        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.uncrafter"))
+        if(!admin && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.uncrafter"))
         {
             sendMessage(player, Lang.get(player, "uncrafter.perm"), ChatColor.RED);
             return;
         }
         if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
         {
+            if(!canEdit)
+            {
+                sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                return;
+            }
             pack.buyUncrafter(player);
             return;
         }
         pack.openUncrafter(player, admin);
     }
     
-    private void chest(Player player, VPack pack, String[] args, boolean admin)
+    private void chest(Player player, VPack pack, String[] args, boolean admin, boolean canEdit)
     {
-        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.chest"))
+        if(!admin && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.chest"))
         {
             sendMessage(player, Lang.get(player, "chest.perm"), ChatColor.RED);
             return;
@@ -1149,6 +1159,11 @@ public class VCommands implements CommandExecutor
             args[0] = args[0].toLowerCase();
             if(args[0].equals("buy") || args[0].equals("drop") || args[0].equals("trash"))
             {
+                if(!canEdit)
+                {
+                    sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                    return;
+                }
                 if(args.length >= 2)
                 {
                     try
@@ -1188,12 +1203,12 @@ public class VCommands implements CommandExecutor
                 }
             }
         }
-        pack.openChest(player, i, admin);
+        pack.openChest(player, i, admin, canEdit);
     }
     
-    private void furnace(Player player, VPack pack, String[] args, boolean admin)
+    private void furnace(Player player, VPack pack, String[] args, boolean admin, boolean canEdit)
     {
-        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.furnace"))
+        if(!admin && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.furnace"))
         {
             sendMessage(player, Lang.get(player, "furnace.perm"), ChatColor.RED);
             return;
@@ -1204,6 +1219,11 @@ public class VCommands implements CommandExecutor
             String par = longname(args[0]);
             if(par.equals("buy"))
             {
+                if(!canEdit)
+                {
+                    sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                    return;
+                }
                 if(args.length >= 2)
                 {
                     try
@@ -1221,6 +1241,11 @@ public class VCommands implements CommandExecutor
             }
             else if(par.equals("link"))
             {
+                if(!canEdit)
+                {
+                    sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                    return;
+                }
                 try
                 {
                     pack.linkFurnace(player, Integer.parseInt(args[1]), Integer.parseInt(args[2]), admin);
@@ -1233,6 +1258,11 @@ public class VCommands implements CommandExecutor
             }
             else if(par.equals("unlink"))
             {
+                if(!canEdit)
+                {
+                    sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                    return;
+                }
                 try
                 {
                     pack.unlinkFurnace(player, Integer.parseInt(args[1]), admin);
@@ -1256,12 +1286,12 @@ public class VCommands implements CommandExecutor
                 }
             }
         }
-        pack.openFurnace(player, i, admin);
+        pack.openFurnace(player, i, admin, canEdit);
     }
     
-    private void brew(Player player, VPack pack, String[] args, boolean admin)
+    private void brew(Player player, VPack pack, String[] args, boolean admin, boolean canEdit)
     {
-        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.brewingstand"))
+        if(!admin && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.brewingstand"))
         {
             sendMessage(player, Lang.get(player, "brewingstand.perm"), ChatColor.RED);
             return;
@@ -1272,6 +1302,11 @@ public class VCommands implements CommandExecutor
             String par = longname(args[0]);
             if(par.equals("buy"))
             {
+                if(!canEdit)
+                {
+                    sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                    return;
+                }
                 if(args.length >= 2)
                 {
                     try
@@ -1289,6 +1324,11 @@ public class VCommands implements CommandExecutor
             }
             else if(par.equals("link"))
             {
+                if(!canEdit)
+                {
+                    sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                    return;
+                }
                 try
                 {
                     pack.linkBrewingstand(player, Integer.parseInt(args[1]), Integer.parseInt(args[2]), admin);
@@ -1301,6 +1341,11 @@ public class VCommands implements CommandExecutor
             }
             else if(par.equals("unlink"))
             {
+                if(!canEdit)
+                {
+                    sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                    return;
+                }
                 try
                 {
                     pack.unlinkBrewingstand(player, Integer.parseInt(args[1]), admin);
@@ -1324,18 +1369,23 @@ public class VCommands implements CommandExecutor
                 }
             }
         }
-        pack.openBrewingstand(player, i, admin);
+        pack.openBrewingstand(player, i, admin, canEdit);
     }
     
-    private void ench(Player player, VPack pack, String[] args, boolean admin)
+    private void ench(Player player, VPack pack, String[] args, boolean admin, boolean canEdit)
     {
-        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.enchanttable"))
+        if(!admin && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.enchanttable"))
         {
             sendMessage(player, Lang.get(player, "enchanttable.perm"), ChatColor.RED);
             return;
         }
         if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
         {
+            if(!canEdit)
+            {
+                sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                return;
+            }
             if((args.length >= 2) && (args[1].equalsIgnoreCase("b")))
             {
                 int amount = 1;
@@ -1368,7 +1418,7 @@ public class VCommands implements CommandExecutor
     
     private void send(Player player, VPack pack, String[] args)
     {
-        if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.send"))
+        if(!Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.send"))
         {
             sendMessage(player, Lang.get(player, "send.perm"), ChatColor.RED);
             return;
@@ -1381,7 +1431,7 @@ public class VCommands implements CommandExecutor
         boolean copy = false;
         if(args[0].equalsIgnoreCase("-copy"))
         {
-            if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.send.copy"))
+            if(!Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.send.copy"))
             {
                 sendMessage(player, Lang.get(player, "send.copy.perm"), ChatColor.RED);
                 return;
@@ -1391,7 +1441,7 @@ public class VCommands implements CommandExecutor
         }
         else if(args[0].equalsIgnoreCase("-all"))
         {
-            if(!Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.send.all"))
+            if(!Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.send.all"))
             {
                 sendMessage(player, Lang.get(player, "send.all.perm"), ChatColor.RED);
                 return;
@@ -1414,29 +1464,34 @@ public class VCommands implements CommandExecutor
         pack.sendItem(player, args[0], i, copy);
     }
     
-    private void anvil(Player player, VPack pack, String[] args, boolean admin)
+    private void anvil(Player player, VPack pack, String[] args, boolean admin, boolean canEdit)
     {
-        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.anvil"))
+        if(!admin && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.anvil"))
         {
             sendMessage(player, Lang.get(player, "anvil.perm"), ChatColor.RED);
             return;
         }
         if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
         {
+            if(!canEdit)
+            {
+                sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                return;
+            }
             pack.buyAnvil(player);
             return;
         }
         pack.openAnvil(player, admin);
     }
     
-    private void matter(Player player, VPack pack, String[] args, boolean admin)
+    private void matter(Player player, VPack pack, String[] args, boolean admin, boolean canEdit)
     {
         if(!Config.bool("transmutation.enabled"))
         {
             sendMessage(player, Lang.get(player, "matter.disabled"), ChatColor.RED);
             return;
         }
-        if(!admin && !Perm.has(player.getWorld().getName(), pack.getPlayer(), "vpack.use.materializer"))
+        if(!admin && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.materializer"))
         {
             sendMessage(player, Lang.get(player, "matter.perm"), ChatColor.RED);
             return;
@@ -1445,6 +1500,11 @@ public class VCommands implements CommandExecutor
         {
             if(args[0].equalsIgnoreCase("buy"))
             {
+                if(!canEdit)
+                {
+                    sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                    return;
+                }
                 pack.buyMaterializer(player);
                 return;
             }
@@ -1473,6 +1533,6 @@ public class VCommands implements CommandExecutor
                 return;
             }
         }
-        pack.openMaterializer(player, admin);
+        pack.openMaterializer(player, admin, canEdit);
     }
 }

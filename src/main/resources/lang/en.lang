@@ -247,3 +247,4 @@ cooldown.materializer=%1Materializer: %2%3 seconds
 cooldown.chest=%1Chest: %2%3 seconds
 cooldown.furnace=%1Furnace: %2%3 seconds
 cooldown.brewingstand=%1Brewing stand: %2%3 seconds
+readonly=You have read-only access
