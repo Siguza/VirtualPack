@@ -23,6 +23,7 @@ help.commands=/%1 help commands - Show the available commands
 help.version=/%1 v - Version
 help.stats=/%1 s - Show stats
 help.price=/%1 p - Show prices
+help.cooldown=%1 cd - Show cooldowns
 help.send1=/%1 send (player) - Send the item in your hand to a player
 help.send2=/%1 send (player) (x) - Send all the contents of your chest nr. x to a player
 help.send3=/%1 send -copy (player) [x] - Copy the item(s) and send it to a player
