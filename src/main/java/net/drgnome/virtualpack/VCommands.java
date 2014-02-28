@@ -43,6 +43,7 @@ public class VCommands implements CommandExecutor
         commandMap.put("t", VPlugin._components[7]);
         commandMap.put("a", VPlugin._components[9]);
         commandMap.put("m", VPlugin._components[10]);
+        commandMap.put("ec", VPlugin._components[11]);
     }
     
     public static String alias(String command)
@@ -179,6 +180,10 @@ public class VCommands implements CommandExecutor
         else if(command.equals(VPlugin._components[10])) // Materializer
         {
             matter(player, pack, args, admin, canEdit);
+        }
+        else if(command.equals(VPlugin._components[11])) // Enderchest
+        {
+            enderchest(player, pack, args, admin, canEdit);
         }
         else // Unknown command
         {
@@ -350,6 +355,11 @@ public class VCommands implements CommandExecutor
             {
                 sendMessage(sender, Lang.get(sender, "help.uncrafter.buy", cmd));
                 sendMessage(sender, Lang.get(sender, "help.uncrafter.use", cmd, "" + ChatColor.AQUA, "" + ChatColor.WHITE));
+            }
+            if(Perm.has(sender, "vpack.use.enderchest"))
+            {
+                sendMessage(sender, Lang.get(sender, "help.enderchest.buy", cmd));
+                sendMessage(sender, Lang.get(sender, "help.enderchest.use", cmd));
             }
             if(Perm.has(sender, "vpack.use.enchanttable"))
             {
@@ -794,6 +804,18 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get(sender, "admin.give.uncrafter.done", args[0]), ChatColor.GREEN);
             }
         }
+        else if(args[1].equals("enderchest"))
+        {
+            if(pack._hasEnderchest)
+            {
+                sendMessage(sender, Lang.get(sender, "admin.give.enderchest.have"), ChatColor.RED);
+            }
+            else
+            {
+                pack._hasEnderchest = true;
+                sendMessage(sender, Lang.get(sender, "admin.give.enderchest.done", args[0]), ChatColor.GREEN);
+            }
+        }
         else if(args[1].equals("enchanttable"))
         {
             if(pack._hasEnchantTable)
@@ -918,6 +940,18 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get(sender, "admin.take.uncrafter.done", args[0]), ChatColor.GREEN);
             }
         }
+        else if(args[1].equals("enderchest"))
+        {
+            if(!pack._hasEnderchest)
+            {
+                sendMessage(sender, Lang.get(sender, "admin.take.enderchest.none"), ChatColor.RED);
+            }
+            else
+            {
+                pack._hasEnderchest = false;
+                sendMessage(sender, Lang.get(sender, "admin.take.enderchest.done", args[0]), ChatColor.GREEN);
+            }
+        }
         else if(args[1].equals("enchanttable"))
         {
             if(!pack._hasEnchantTable)
@@ -1035,6 +1069,10 @@ public class VCommands implements CommandExecutor
             {
                 sendMessage(player, Lang.get(player, "price.uncrafter", y, g, "" + pack.priceUncrafterBuy(), "" + pack.priceUncrafterUse()));
             }
+            if(Perm.has(player, "vpack.use.enderchest"))
+            {
+                sendMessage(player, Lang.get(player, "price.enderchest", y, g, "" + pack.priceEnderchestBuy(), "" + pack.priceEnderchestUse()));
+            }
             if(Perm.has(player, "vpack.use.enchanttable"))
             {
                 sendMessage(player, Lang.get(player, "price.enchanttable", y, g, "" + pack.priceEnchBuy(), "" + pack.priceEnchUse(), "" + pack.priceEnchBook(1)));
@@ -1079,6 +1117,10 @@ public class VCommands implements CommandExecutor
         if(Perm.has(player, "vpack.use.uncrafter"))
         {
             sendMessage(player, Lang.get(player, "cooldown.uncrafter", y, g, "" + Util.round((double)pack.uncrafterCooldown() / 1000D)));
+        }
+        if(Perm.has(player, "vpack.use.enderchest"))
+        {
+            sendMessage(player, Lang.get(player, "cooldown.enderchest", y, g, "" + Util.round((double)pack.enderchestCooldown() / 1000D)));
         }
         if(Perm.has(player, "vpack.use.enchanttable"))
         {
@@ -1534,5 +1576,25 @@ public class VCommands implements CommandExecutor
             }
         }
         pack.openMaterializer(player, admin, canEdit);
+    }
+    
+    private void enderchest(Player player, VPack pack, String[] args, boolean admin, boolean canEdit)
+    {
+        if(!admin && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.enderchest"))
+        {
+            sendMessage(player, Lang.get(player, "enderchest.perm"), ChatColor.RED);
+            return;
+        }
+        if((args.length >= 1) && (args[0].equalsIgnoreCase("buy")))
+        {
+            if(!canEdit)
+            {
+                sendMessage(player, Lang.get(player, "readonly"), ChatColor.RED);
+                return;
+            }
+            pack.buyEnderchest(player);
+            return;
+        }
+        pack.openEnderchest(player, admin, canEdit);
     }
 }

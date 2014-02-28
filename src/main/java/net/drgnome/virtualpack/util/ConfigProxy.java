@@ -146,6 +146,7 @@ public class ConfigProxy
         setDef("commands." + VPlugin._components[8], Util.createList("send"));
         setDef("commands." + VPlugin._components[9], Util.createList("an", "anvil"));
         setDef("commands." + VPlugin._components[10], Util.createList("mat", "matter"));
+        setDef("commands." + VPlugin._components[11], Util.createList("ec", "enderchest"));
         setDef("tools.workbench.buy", "20000");
         setDef("tools.workbench.use", "0");
         setDef("tools.workbench.cooldown", "0");

@@ -42,6 +42,11 @@ permissions:
     children:
       vpack.use: true
 
+  vpack.use.enderchest:
+    description: "Allows the use of the VirtualPack enderchest"
+    children:
+      vpack.use: true
+
   vpack.use.enchanttable:
     description: "Allows the use of the VirtualPack enchantment table"
     children:
@@ -87,6 +92,7 @@ permissions:
     children:
       vpack.keep.workbench: true
       vpack.keep.uncrafter: true
+      vpack.keep.enderchest: true
       vpack.keep.enchanttable: true
       vpack.keep.anvil: true
       vpack.keep.materializer: true
@@ -98,6 +104,9 @@ permissions:
     description: "Keep the workbench on death"
 
   vpack.keep.uncrafter:
+    description: "Keep the uncrafter on death"
+    
+  vpack.keep.enderchest:
     description: "Keep the uncrafter on death"
 
   vpack.keep.enchanttable:

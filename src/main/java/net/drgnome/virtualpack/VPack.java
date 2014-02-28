@@ -4,14 +4,17 @@
 
 package net.drgnome.virtualpack;
 
+import java.io.*;
 import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v#MC_VERSION#.CraftServer;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
+import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.server.v#MC_VERSION#.*;
 import net.drgnome.virtualpack.components.*;
 import net.drgnome.virtualpack.util.*;
@@ -28,6 +31,7 @@ public class VPack
     public boolean _hasUncrafter = false;
     public boolean _hasEnchantTable = false;
     public boolean _hasAnvil = false;
+    public boolean _hasEnderchest = false;
     /** FUUU **/
     // public MatterInv _matter = null;
     public TmpMatterInv _matter = null;
@@ -42,7 +46,8 @@ public class VPack
     // 5 = chest
     // 6 = furnace
     // 7 = brewingstand
-    private long[] _cooldown = new long[8];
+    // 8 = enderchest
+    private long[] _cooldown = new long[9];
     public HashMap<Integer, VInv> _chests = new HashMap<Integer, VInv>();
     public HashMap<Integer, VTEFurnace> _furnaces = new HashMap<Integer, VTEFurnace>();
     public HashMap<Integer, VTEBrewingstand> _brews = new HashMap<Integer, VTEBrewingstand>();
@@ -74,6 +79,10 @@ public class VPack
             else if(a[0].equals("u"))
             {
                 _hasUncrafter = a[1].equals("1") || _hasUncrafter;
+            }
+            else if(a[0].equals("ec"))
+            {
+                _hasEnderchest = a[1].equals("1") || _hasEnderchest;
             }
             else if(a[0].equals("e"))
             {
@@ -138,6 +147,7 @@ public class VPack
         ArrayList<String> list = new ArrayList<String>();
         list.add("w" + _separator[1] + (_hasWorkbench ? "1" : "0"));
         list.add("u" + _separator[1] + (_hasUncrafter ? "1" : "0"));
+        list.add("ec" + _separator[1] + (_hasEnderchest ? "1" : "0"));
         list.add(Util.implode(_separator[1], "e", _hasEnchantTable ? "1" : "0", "" + _bookshelves));
         list.add("av" + _separator[1] + (_hasAnvil ? "1" : "0"));
         list.add("m" + _separator[1] + (_matter == null ? "0" : "1") + (_matter == null ? "" : (_separator[1] + Util.implode(_separator[1], _matter.serialize()))));
@@ -201,6 +211,7 @@ public class VPack
         {
             _hasWorkbench = _hasWorkbench || (Perm.has(_world, _player, "vpack.use.workbench") && (Config.getDouble(_world, groups, "tools", "workbench", "buy", Config.MODE_MIN) == 0D));
             _hasUncrafter = _hasUncrafter || (Perm.has(_world, _player, "vpack.use.uncrafter") && (Config.getDouble(_world, groups, "tools", "uncrafter", "buy", Config.MODE_MIN) == 0D));
+            _hasEnderchest = _hasEnderchest || (Perm.has(_world, _player, "vpack.use.enderchest") && (Config.getDouble(_world, groups, "tools", "enderchest", "buy", Config.MODE_MIN) == 0D));
             _hasEnchantTable = _hasEnchantTable || (Perm.has(_world, _player, "vpack.use.enchanttable") && (Config.getDouble(_world, groups, "tools", "enchanttable", "buy", Config.MODE_MIN) == 0D));
             _bookshelves = Util.max(_bookshelves, (_hasEnchantTable && (Config.getDouble(_world, groups, "tools", "enchanttable", "book", Config.MODE_MIN) == 0D)) ? _maxBookshelves : 0);
             _hasAnvil = _hasAnvil || (Perm.has(_world, _player, "vpack.use.anvil") && (Config.getDouble(_world, groups, "tools", "anvil", "buy", Config.MODE_MIN) == 0D));
@@ -239,6 +250,7 @@ public class VPack
         {
             _hasWorkbench = _hasWorkbench || Perm.has(_world, _player, "vpack.use.workbench");
             _hasUncrafter = _hasUncrafter || Perm.has(_world, _player, "vpack.use.uncrafter");
+            _hasEnderchest = _hasEnderchest || Perm.has(_world, _player, "vpack.use.enderchest");
             _hasEnchantTable = _hasEnchantTable || Perm.has(_world, _player, "vpack.use.enchanttable");
             _bookshelves = Util.max(_bookshelves, _hasEnchantTable ? _maxBookshelves : 0);
             _hasAnvil = _hasAnvil || Perm.has(_world, _player, "vpack.use.anvil");
@@ -398,6 +410,10 @@ public class VPack
         {
             _hasUncrafter = false;
         }
+        if(!Perm.has(_world, _player, "vpack.keep.enderchest"))
+        {
+            _hasEnderchest = false;
+        }
         if(!Perm.has(_world, _player, "vpack.keep.enchanttable"))
         {
             _hasEnchantTable = false;
@@ -454,6 +470,10 @@ public class VPack
             if(Perm.has(_world, _player, "vpack.use.uncrafter"))
             {
                 sendMessage(player, Lang.get(player, "stats.uncrafter", "" + ChatColor.GREEN, _hasUncrafter ? Lang.get(player, "yes") : Lang.get(player, "no")));
+            }
+            if(Perm.has(_world, _player, "vpack.use.enderchest"))
+            {
+                sendMessage(player, Lang.get(player, "stats.enderchest", "" + ChatColor.GREEN, _hasEnderchest ? Lang.get(player, "yes") : Lang.get(player, "no")));
             }
             if(Perm.has(_world, _player, "vpack.use.enchanttable"))
             {
@@ -591,6 +611,16 @@ public class VPack
         return Config.getDouble(_world, _player, "tools", "uncrafter", "use", Config.MODE_MIN, 2);
     }
     
+    public double priceEnderchestBuy()
+    {
+        return Config.getDouble(_world, _player, "tools", "enderchest", "buy", Config.MODE_MIN, 2);
+    }
+    
+    public double priceEnderchestUse()
+    {
+        return Config.getDouble(_world, _player, "tools", "enderchest", "use", Config.MODE_MIN, 2);
+    }
+    
     public double priceEnchBuy()
     {
         return Config.getDouble(_world, _player, "tools", "enchanttable", "buy", Config.MODE_MIN, 2);
@@ -704,6 +734,11 @@ public class VPack
         return Config.getInt(_world, _player, "tools", "uncrafter", "cooldown", Config.MODE_MIN);
     }
     
+    public int enderchestCooldown()
+    {
+        return Config.getInt(_world, _player, "tools", "enderchest", "cooldown", Config.MODE_MIN);
+    }
+    
     public int enchanttableCooldown()
     {
         return Config.getInt(_world, _player, "tools", "enchanttable", "cooldown", Config.MODE_MIN);
@@ -786,7 +821,10 @@ public class VPack
             return;
         }
         Util.openWindow(player, new VWorkbench(player), Lang.get(bukkitPlayer, "workbench.name"), 1, 9);
-        _cooldown[0] = System.currentTimeMillis();
+        if(!admin)
+        {
+            _cooldown[0] = System.currentTimeMillis();
+        }
     }
     
     /** Uncrafter **/
@@ -827,7 +865,105 @@ public class VPack
             return;
         }
         Util.openWindow(player, new VUncrafter(player), Lang.get(bukkitPlayer, "uncrafter.name"), 0, 18);
-        _cooldown[1] = System.currentTimeMillis();
+        if(!admin)
+        {
+            _cooldown[1] = System.currentTimeMillis();
+        }
+    }
+    
+    /** Enderchest **/
+    
+    public void buyEnderchest(Player bukkitPlayer)
+    {
+        if(_hasEnderchest)
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enderchest.max"), ChatColor.RED);
+            return;
+        }
+        if(!Money.world(_world).hasTake(_player, priceEnderchestBuy()))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
+            return;
+        }
+        _hasEnderchest = true;
+        sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enderchest.bought"), ChatColor.GREEN);
+    }
+    
+    public void openEnderchest(Player bukkitPlayer, boolean admin, boolean canEdit)
+    {
+        if(!_hasEnderchest)
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enderchest.none"), ChatColor.RED);
+            return;
+        }
+        int wait = enderchestCooldown() - (int)Util.round((double)(System.currentTimeMillis() - _cooldown[8]) / 1000D);
+        if(!admin && (wait > 0))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "cooldown.wait", "" + wait), ChatColor.RED);
+            return;
+        }
+        EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
+        if(!admin && Money.world(_world).enabled() && !Money.world(_world).hasTake(_player, priceEnderchestUse()))
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
+            return;
+        }
+        VEnderchest ec;
+        try
+        {
+            Player p = Bukkit.getPlayer(_player);
+            EntityPlayer mcp;
+            if(p == null)
+            {
+                File dir = new File(Bukkit.getWorlds().get(0).getWorldFolder(), "players");
+                if(!dir.exists())
+                {
+                    throw new Exception();
+                }
+                String name = null;
+                for(File f : dir.listFiles())
+                {
+                    String fname = f.getName();
+                    if(fname.endsWith(".dat"))
+                    {
+                        fname = fname.substring(0, fname.length() - 4);
+                        if(fname.equalsIgnoreCase(_player))
+                        {
+                            name = fname;
+                            break;
+                        }
+                    }
+                }
+                if(name == null)
+                {
+                    throw new Exception();
+                }
+                MinecraftServer server = ((CraftServer)Bukkit.getServer()).getServer();
+                GameProfile profile = new GameProfile(null, name);
+                mcp = new EntityPlayer(server, server.getWorldServer(0), profile, new PlayerInteractManager(server.getWorldServer(0)));
+                if(mcp == null)
+                {
+                    throw new Exception();
+                }
+                p = mcp.getBukkitEntity();
+                p.loadData();
+            }
+            else
+            {
+                mcp = ((CraftPlayer)p).getHandle();
+            }
+            ec = new VEnderchest(player, mcp.getEnderChest(), p, canEdit);
+        }
+        catch(Exception e)
+        {
+            sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enderchest.fail"), ChatColor.RED);
+            return;
+        }
+        Util.openWindow(player, ec, Lang.get(bukkitPlayer, "enderchest.name"), 0, 27);
+        if(!admin)
+        {
+            _cooldown[8] = System.currentTimeMillis();
+        }
     }
     
     /** Enchanting table **/
@@ -868,7 +1004,10 @@ public class VPack
             return;
         }
         Util.openWindow(player, new VEnchantTable(player, _bookshelves), Lang.get(bukkitPlayer, "enchanttable.name"), 4, 9);
-        _cooldown[2] = System.currentTimeMillis();
+        if(!admin)
+        {
+            _cooldown[2] = System.currentTimeMillis();
+        }
     }
     
     public void buyBookshelf(Player bukkitPlayer, int amount)
@@ -929,7 +1068,10 @@ public class VPack
             return;
         }
         Util.openWindow(player, new VAnvil(player), Lang.get(bukkitPlayer, "anvil.name"), 8, 9);
-        _cooldown[3] = System.currentTimeMillis();
+        if(!admin)
+        {
+            _cooldown[3] = System.currentTimeMillis();
+        }
     }
     
     /** Materializer **/
@@ -975,7 +1117,10 @@ public class VPack
         /** FUUU ALL THE WAY **/
         //Util.openInv(player, _matter);
         Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter, canEdit), Lang.get(player, "matter.name"), 0, 54);
-        _cooldown[4] = System.currentTimeMillis();
+        if(!admin)
+        {
+            _cooldown[4] = System.currentTimeMillis();
+        }
     }
     
     /** Chest **/
@@ -1024,7 +1169,10 @@ public class VPack
         inv.resize(size);
         VChest container = new VChest(player, inv, canEdit);
         Util.openWindow(player, container, Lang.get(bukkitPlayer, "chest.name", "" + nr), 0, size);
-        _cooldown[5] = System.currentTimeMillis();
+        if(!admin)
+        {
+            _cooldown[5] = System.currentTimeMillis();
+        }
     }
     
     public void dropChest(Player bukkitPlayer, int nr)
@@ -1102,7 +1250,10 @@ public class VPack
             return;
         }
         Util.openWindow(player, new VFurnace(player, fur, canEdit), Lang.get(bukkitPlayer, "furnace.name", "" + nr), 2, 3);
-        _cooldown[6] = System.currentTimeMillis();
+        if(!admin)
+        {
+            _cooldown[6] = System.currentTimeMillis();
+        }
     }
     
     public void linkFurnace(Player bukkitPlayer, int furnaceNR, int chestNR, boolean admin)
@@ -1201,7 +1352,10 @@ public class VPack
             return;
         }
         Util.openWindow(player, new VBrewingstand(player, brew, canEdit), Lang.get(bukkitPlayer, "brewingstand.name", "" + nr), 5, 4);
-        _cooldown[7] = System.currentTimeMillis();
+        if(!admin)
+        {
+            _cooldown[7] = System.currentTimeMillis();
+        }
     }
     
     public void linkBrewingstand(Player bukkitPlayer, int brewNR, int chestNR, boolean admin)
