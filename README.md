@@ -1,7 +1,6 @@
-VirtualPack
-===========
+# VirtualPack 3.0
 
-Bukkit Plugin &quot;VirtualPack&quot;.
+Rewritten from the core.
 
-* [Bukkit page](http://dev.bukkit.org/bukkit-plugins/virtualpack/)
+* [Bukkit page](http://dev.bukkit.org/bukkit-plugins/virtualpack/) (Documentation)
 * [Dev builds (CI)](http://ci.siguza.net/job/VirtualPack/)
