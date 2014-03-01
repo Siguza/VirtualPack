@@ -15,6 +15,7 @@ public class VInv implements IInventory
 {
     private ItemStack[] contents = new ItemStack[0];
     private long lastUpdate;
+    private int _maxStack = 64;
     
     public VInv(int rows)
     {
@@ -132,11 +133,12 @@ public class VInv implements IInventory
     
     public int getMaxStackSize()
     {
-        return 64;
+        return _maxStack;
     }
     
     public void setMaxStackSize(int i)
     {
+        _maxStack = i;
     }
     
     public boolean #FIELD_IINVENTORY_1#(EntityHuman entityhuman) // Derpnote
