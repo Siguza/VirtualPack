@@ -153,6 +153,9 @@ public class ConfigProxy
         setDef("tools.uncrafter.buy", "30000");
         setDef("tools.uncrafter.use", "0");
         setDef("tools.uncrafter.cooldown", "0");
+        setDef("tools.enderchest.buy", "30000");
+        setDef("tools.enderchest.use", "0");
+        setDef("tools.enderchest.cooldown", "0");
         setDef("tools.enchanttable.multiply", "1");
         setDef("tools.enchanttable.buy", "30000");
         setDef("tools.enchanttable.use", "0");
