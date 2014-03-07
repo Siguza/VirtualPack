@@ -25,6 +25,7 @@ permissions:
       vpack.use: true
       vpack.use.workbench: true
       vpack.use.uncrafter: true
+      vpack.use.enderchest: true
       vpack.use.enchanttable: true
       vpack.use.anvil: true
       vpack.use.materializer: true
@@ -86,6 +87,46 @@ permissions:
     description: "Allows the use of the VirtualPack brewing stands"
     children:
       vpack.use: true
+
+  vpack.sign.all:
+    description: "Allows the use of all VirtualPack features"
+    children:
+      vpack.sign.workbench: true
+      vpack.sign.uncrafter: truetrue
+      vpack.sign.enderchest: true
+      vpack.sign.enchanttable: true
+      vpack.sign.anvil: true
+      vpack.sign.materializer: true
+      vpack.sign.chest: true
+      vpack.sign.furnace: true
+      vpack.sign.brewingstand: true
+
+  vpack.sign.workbench:
+    description: "Allows the use of the VirtualPack workbench via sign"
+
+  vpack.sign.uncrafter:
+    description: "Allows the use of the VirtualPack uncrafter via sign"
+
+  vpack.sign.enderchest:
+    description: "Allows the use of the VirtualPack enderchest via sign"
+
+  vpack.sign.enchanttable:
+    description: "Allows the use of the VirtualPack enchantment table via sign"
+
+  vpack.sign.anvil:
+    description: "Allows the use of the VirtualPack anvil via sign"
+
+  vpack.sign.materializer:
+    description: "Allows the use of the VirtualPack materializer via sign"
+
+  vpack.sign.chest:
+    description: "Allows the use of the VirtualPack chests via sign"
+
+  vpack.sign.furnace:
+    description: "Allows the use of the VirtualPack furnaces via sign"
+
+  vpack.sign.brewingstand:
+    description: "Allows the use of the VirtualPack brewing stands via sign"
 
   vpack.keep.all:
     description: "Everything is kept upon death"
@@ -182,15 +223,22 @@ permissions:
   vpack.admin.all:
     description: "All Admin permissions for VirtualPack"
     children:
+      vpack.admin.createsign: true
       vpack.admin.cut.force: true
       vpack.admin.clean: true
       vpack.admin.use.edit: true
       vpack.admin.give: true
       vpack.admin.take: true
+      vpack.admin.forceopen: true
       vpack.admin.delete: true
       vpack.stats: true
       vpack.update: true
       vpack.bypass.all: true
+
+  vpack.admin.createsign:
+    description: "Allows you to create VPack signs"
+    children:
+      vpack.admin: true
 
   vpack.admin.cut:
     description: "Allows you to remove tools that are over the maximum in the config"
@@ -224,6 +272,11 @@ permissions:
 
   vpack.admin.take:
     description: "Allows you to take stuff away from users"
+    children:
+      vpack.admin: true
+
+  vpack.admin.forceopen:
+    description: "Allows you to force another player to open a VirtualPack component"
     children:
       vpack.admin: true
 

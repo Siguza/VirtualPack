@@ -32,6 +32,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     public static final int _projectID = 37545; // Bukkit
     public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil", "materializer", "enderchest"};
     
+    static final VCommands _commandHandler = new VCommands();
     private ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> _packs = new ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>>();
     private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
     public ArrayList<VThreadLoad> _loadThreads = new ArrayList<VThreadLoad>();
@@ -208,7 +209,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         try
         {
-            _reg = new CommandRegistration(this, new VCommands());
+            _reg = new CommandRegistration(this, _commandHandler);
             return _reg.register(list);
         }
         catch(Throwable t)
