@@ -92,7 +92,7 @@ permissions:
     description: "Allows the use of all VirtualPack features"
     children:
       vpack.sign.workbench: true
-      vpack.sign.uncrafter: truetrue
+      vpack.sign.uncrafter: true
       vpack.sign.enderchest: true
       vpack.sign.enchanttable: true
       vpack.sign.anvil: true

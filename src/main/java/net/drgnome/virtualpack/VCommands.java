@@ -1067,7 +1067,7 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get(sender, "notonline"), ChatColor.RED);
             return;
         }
-        tools(p, pack, VPlugin._components[0], args, false, true, 1);
+        tools(p, pack, longname(args[1]), Util.cut(args, 2), false, true, 1);
     }
     
     private void stats(Player player, String[] args)
