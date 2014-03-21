@@ -106,6 +106,7 @@ public class VPack
             {
                 count[0]++;
                 _chests.put(count[0], new VInv(getChestSize(), Util.cut(a, 1)));
+                net.drgnome.virtualpack.Debug.loadChest(_world, _player, count[0], line);
             }
             else if(a[0].equals("f"))
             {
@@ -153,9 +154,13 @@ public class VPack
         list.add("m" + _separator[1] + (_matter == null ? "0" : "1") + (_matter == null ? "" : (_separator[1] + Util.implode(_separator[1], _matter.serialize()))));
         list.add("fl" + _separator[1] + _fLinks);
         list.add("bl" + _separator[1] + _bLinks);
+        int debugc = 0;
         for(VInv inv : _chests.values().toArray(new VInv[0]))
         {
-            list.add("c" + _separator[1] + Util.implode(_separator[1], inv.save()));
+            String s = "c" + _separator[1] + Util.implode(_separator[1], inv.save());
+            list.add(s);
+            debugc++;
+            net.drgnome.virtualpack.Debug.saveChest(_world, _player, debugc, s);
         }
         for(VTEFurnace fur : _furnaces.values().toArray(new VTEFurnace[0]))
         {

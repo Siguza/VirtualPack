@@ -77,6 +77,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         checkFiles();
         Config.reload();
+        Debug.init();
         if(Config.bool("inject.anvil"))
         {
             BlockVAnvil.inject();
