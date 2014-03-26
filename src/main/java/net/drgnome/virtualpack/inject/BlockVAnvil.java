@@ -26,7 +26,7 @@ public class BlockVAnvil extends BlockAnvil
         #FIELD_BLOCK_2#(Block.#FIELD_BLOCK_5#);
         #FIELD_BLOCK_3#(2000.0F);
         #FIELD_BLOCK_4#("anvil");
-        Block.REGISTRY.#FIELD_REGISTRYMATERIALS_1#(this);
+        Block.REGISTRY.#FIELD_REGISTRYMATERIALS_1#(145, "anvil", this);
     }
     
     public boolean interact(World world, int x, int y, int z, EntityHuman human, int i1, float f1, float f2, float f3)
