@@ -348,7 +348,7 @@ public class Util
         {
             return null;
         }
-        return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string)));
+        return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string), NBTReadLimiter.#FIELD_NBTREADLIMITER_1#));
     }
     
     public static String itemStackToString(net.minecraft.server.v#MC_VERSION#.ItemStack item)
