@@ -4,6 +4,7 @@
 
 package net.drgnome.virtualpack.util;
 
+import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -14,10 +15,46 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class Perm
 {
+    private static Thread _mainThread;
+    private static final Object _internalLock = new Object();
+    private static final ArrayList<Object> _waits = new ArrayList<Object>();
+    private static int _tCount;
     private static Permission _perm;
+    
+    public static void tick()
+    {
+        while(_waits.size() > 0)
+        {
+            Object[] list;
+            synchronized(_waits)
+            {
+                list = _waits.toArray();
+                _waits.clear();
+                _tCount = list.length;
+            }
+            for(Object o : list)
+            {
+                synchronized(o)
+                {
+                    o.notifyAll();
+                }
+            }
+            synchronized(_internalLock)
+            {
+                try
+                {
+                    _internalLock.wait();
+                }
+                catch(InterruptedException e)
+                {
+                }
+            }
+        }
+    }
     
     public static boolean init()
     {
+        _mainThread = Thread.currentThread();
         RegisteredServiceProvider perm = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
         if(perm == null)
         {
@@ -38,13 +75,57 @@ public class Perm
         return true;
     }
     
+    // Code executed between "lock();" and "unlock();" is guaranteed to be executed in sync with the main thread
+    
+    private static void lock()
+    {
+        if(Thread.currentThread().equals(_mainThread))
+        {
+            return;
+        }
+        Object o = new Object();
+        synchronized(_waits)
+        {
+            _waits.add(o);
+        }
+        synchronized(o)
+        {
+            try
+            {
+                o.wait();
+            }
+            catch(InterruptedException e)
+            {
+            }
+        }
+    }
+    
+    private static void unlock()
+    {
+        if(Thread.currentThread().equals(_mainThread))
+        {
+            return;
+        }
+        _tCount--;
+        if(_tCount == 0)
+        {
+            synchronized(_internalLock)
+            {
+                _internalLock.notifyAll();
+            }
+        }
+    }
+    
     public static boolean has(String world, String username, String permission)
     {
         try
         {
             boolean has = false;
+            boolean locked = false;
             if(Config.bool("superperms"))
             {
+                lock();
+                locked = true;
                 Player player;
                 synchronized(Bukkit.class)
                 {
@@ -66,6 +147,11 @@ public class Perm
                 }
                 else
                 {
+                    if(!locked)
+                    {
+                        lock();
+                        locked = true;
+                    }
                     synchronized(_perm)
                     {
                         has = _perm.has(world, username, permission);
@@ -78,6 +164,10 @@ public class Perm
                         }
                     }
                 }
+            }
+            if(locked)
+            {
+                unlock();
             }
             return has;
         }
@@ -101,6 +191,7 @@ public class Perm
                 return new String[0];
             }
             String[] groups;
+            lock();
             synchronized(_perm)
             {
                 groups = _perm.getPlayerGroups(world, username);
@@ -114,6 +205,7 @@ public class Perm
                 }
                 groups = Util.merge(groups, grp2);
             }
+            unlock();
             return groups;
         }
         catch(UnsupportedOperationException e) {}
@@ -136,6 +228,7 @@ public class Perm
                 return false;
             }
             boolean in;
+            lock();
             synchronized(_perm)
             {
                 in = _perm.playerInGroup(world, username, group);
@@ -147,6 +240,7 @@ public class Perm
                     in = _perm.playerInGroup((String)null, username, group);
                 }
             }
+            unlock();
             return in;
         }
         catch(UnsupportedOperationException e) {}

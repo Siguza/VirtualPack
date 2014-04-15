@@ -105,6 +105,13 @@ public class VPlugin extends JavaPlugin implements Runnable
             getPluginLoader().disablePlugin(this);
             return;
         }
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
+        {
+            public void run()
+            {
+                Perm.tick();
+            }
+        }, 0L, 1L);
         getServer().getPluginManager().registerEvents(new VEvents(), this);
         if(!registerCommands())
         {
@@ -250,6 +257,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     {
         super.onDisable();
         getServer().getScheduler().cancelTasks(this);
+        Perm.tick();
         if(Config.bool("transmutation.enabled") && Config.bool("transmutation.show-value"))
         {
             try
