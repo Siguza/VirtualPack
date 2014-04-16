@@ -105,13 +105,6 @@ public class VPlugin extends JavaPlugin implements Runnable
             getPluginLoader().disablePlugin(this);
             return;
         }
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
-        {
-            public void run()
-            {
-                Perm.tick();
-            }
-        }, 0L, 1L);
         getServer().getPluginManager().registerEvents(new VEvents(), this);
         if(!registerCommands())
         {
@@ -257,7 +250,6 @@ public class VPlugin extends JavaPlugin implements Runnable
     {
         super.onDisable();
         getServer().getScheduler().cancelTasks(this);
-        Perm.tick();
         if(Config.bool("transmutation.enabled") && Config.bool("transmutation.show-value"))
         {
             try
@@ -594,9 +586,21 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         else
         {
-            for(String[] data : list)
+            if(Config.bool("debug-load"))
             {
-                setPack(data[0], data[1], new VPack(data[0], data[1], data[2].split(_separator[0])));
+                int i = 0;
+                for(String[] data : list)
+                {
+                    setPack(data[0], data[1], new VPack(data[0], data[1], data[2].split(_separator[0])));
+                    System.out.println("[VPack/Debug] Loaded pack " + (++i) + "/" + list.size());
+                }
+            }
+            else
+            {
+                for(String[] data : list)
+                {
+                    setPack(data[0], data[1], new VPack(data[0], data[1], data[2].split(_separator[0])));
+                }
             }
         }
         _loadSuccess = true;

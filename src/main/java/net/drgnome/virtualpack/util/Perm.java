@@ -4,7 +4,7 @@
 
 package net.drgnome.virtualpack.util;
 
-import java.util.*;
+import java.util.ConcurrentModificationException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -15,46 +15,10 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class Perm
 {
-    private static Thread _mainThread;
-    private static final Object _internalLock = new Object();
-    private static final ArrayList<Object> _waits = new ArrayList<Object>();
-    private static int _tCount;
     private static Permission _perm;
-    
-    public static void tick()
-    {
-        while(_waits.size() > 0)
-        {
-            Object[] list;
-            synchronized(_waits)
-            {
-                list = _waits.toArray();
-                _waits.clear();
-                _tCount = list.length;
-            }
-            for(Object o : list)
-            {
-                synchronized(o)
-                {
-                    o.notifyAll();
-                }
-            }
-            synchronized(_internalLock)
-            {
-                try
-                {
-                    _internalLock.wait();
-                }
-                catch(InterruptedException e)
-                {
-                }
-            }
-        }
-    }
     
     public static boolean init()
     {
-        _mainThread = Thread.currentThread();
         RegisteredServiceProvider perm = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
         if(perm == null)
         {
@@ -75,180 +39,165 @@ public class Perm
         return true;
     }
     
-    // Code executed between "lock();" and "unlock();" is guaranteed to be executed in sync with the main thread
-    
-    private static void lock()
+    public static boolean has(String world, String username, String permission)
     {
-        if(Thread.currentThread().equals(_mainThread))
-        {
-            return;
-        }
-        Object o = new Object();
-        synchronized(_waits)
-        {
-            _waits.add(o);
-        }
-        synchronized(o)
+        while(true)
         {
             try
             {
-                o.wait();
-            }
-            catch(InterruptedException e)
-            {
-            }
-        }
-    }
-    
-    private static void unlock()
-    {
-        if(Thread.currentThread().equals(_mainThread))
-        {
-            return;
-        }
-        _tCount--;
-        if(_tCount == 0)
-        {
-            synchronized(_internalLock)
-            {
-                _internalLock.notifyAll();
-            }
-        }
-    }
-    
-    public static boolean has(String world, String username, String permission)
-    {
-        try
-        {
-            boolean has = false;
-            boolean locked = false;
-            if(Config.bool("superperms"))
-            {
-                lock();
-                locked = true;
-                Player player;
-                synchronized(Bukkit.class)
+                boolean has = false;
+                if(Config.bool("superperms"))
                 {
-                    player = Bukkit.getPlayerExact(username);
-                }
-                synchronized(player)
-                {
-                    if(player != null)
+                    Player player;
+                    synchronized(Bukkit.class)
                     {
-                        has = player.hasPermission(permission);
+                        player = Bukkit.getPlayerExact(username);
                     }
-                }
-            }
-            if(!has)
-            {
-                if(_perm == null)
-                {
-                    _log.warning("[VirtualPack] Permission instance is null!");
-                }
-                else
-                {
-                    if(!locked)
+                    synchronized(player)
                     {
-                        lock();
-                        locked = true;
-                    }
-                    synchronized(_perm)
-                    {
-                        has = _perm.has(world, username, permission);
-                    }
-                    if(!has && Config.bool("global-perms"))
-                    {
-                        synchronized(_perm)
+                        if(player != null)
                         {
-                            has = _perm.has((String)null, username, permission);
+                            has = player.hasPermission(permission);
                         }
                     }
                 }
+                if(!has)
+                {
+                    if(_perm == null)
+                    {
+                        _log.warning("[VirtualPack] Permission instance is null!");
+                    }
+                    else
+                    {
+                        synchronized(_perm)
+                        {
+                            has = _perm.has(world, username, permission);
+                        }
+                        if(!has && Config.bool("global-perms"))
+                        {
+                            synchronized(_perm)
+                            {
+                                has = _perm.has((String)null, username, permission);
+                            }
+                        }
+                    }
+                }
+                return has;
             }
-            if(locked)
+            catch(ConcurrentModificationException e)
             {
-                unlock();
+                continue;
             }
-            return has;
-        }
-        catch(UnsupportedOperationException e) {}
-        catch(NullPointerException e) {}
-        catch(Throwable t)
-        {
-            warn();
-            t.printStackTrace();
+            catch(UnsupportedOperationException e)
+            {
+                break;
+            }
+            catch(NullPointerException e)
+            {
+                break;
+            }
+            catch(Throwable t)
+            {
+                warn();
+                t.printStackTrace();
+                break;
+            }
         }
         return false;
     }
     
     public static String[] getGroups(String world, String username)
     {
-        try
+        while(true)
         {
-            if(_perm == null)
+            try
             {
-                _log.warning("[VirtualPack] Permission instance is null!");
-                return new String[0];
-            }
-            String[] groups;
-            lock();
-            synchronized(_perm)
-            {
-                groups = _perm.getPlayerGroups(world, username);
-            }
-            if(Config.bool("global-perms"))
-            {
-                String[] grp2;
+                if(_perm == null)
+                {
+                    _log.warning("[VirtualPack] Permission instance is null!");
+                    return new String[0];
+                }
+                String[] groups;
                 synchronized(_perm)
                 {
-                    grp2 = _perm.getPlayerGroups((String)null, username);
+                    groups = _perm.getPlayerGroups(world, username);
                 }
-                groups = Util.merge(groups, grp2);
+                if(Config.bool("global-perms"))
+                {
+                    String[] grp2;
+                    synchronized(_perm)
+                    {
+                        grp2 = _perm.getPlayerGroups((String)null, username);
+                    }
+                    groups = Util.merge(groups, grp2);
+                }
+                return groups;
             }
-            unlock();
-            return groups;
-        }
-        catch(UnsupportedOperationException e) {}
-        catch(NullPointerException e) {}
-        catch(Throwable t)
-        {
-            warn();
-            t.printStackTrace();
+            catch(ConcurrentModificationException e)
+            {
+                continue;
+            }
+            catch(UnsupportedOperationException e)
+            {
+                break;
+            }
+            catch(NullPointerException e)
+            {
+                break;
+            }
+            catch(Throwable t)
+            {
+                warn();
+                t.printStackTrace();
+                break;
+            }
         }
         return new String[0];
     }
     
     public static boolean inGroup(String world, String username, String group)
     {
-        try
+        while(true)
         {
-            if(_perm == null)
+            try
             {
-                _log.warning("[VirtualPack] Permission instance is null!");
-                return false;
-            }
-            boolean in;
-            lock();
-            synchronized(_perm)
-            {
-                in = _perm.playerInGroup(world, username, group);
-            }
-            if(Config.bool("global-perms") && !in)
-            {
+                if(_perm == null)
+                {
+                    _log.warning("[VirtualPack] Permission instance is null!");
+                    return false;
+                }
+                boolean in;
                 synchronized(_perm)
                 {
-                    in = _perm.playerInGroup((String)null, username, group);
+                    in = _perm.playerInGroup(world, username, group);
                 }
+                if(Config.bool("global-perms") && !in)
+                {
+                    synchronized(_perm)
+                    {
+                        in = _perm.playerInGroup((String)null, username, group);
+                    }
+                }
+                return in;
             }
-            unlock();
-            return in;
-        }
-        catch(UnsupportedOperationException e) {}
-        catch(NullPointerException e) {}
-        catch(Throwable t)
-        {
-            warn();
-            t.printStackTrace();
+            catch(ConcurrentModificationException e)
+            {
+                continue;
+            }
+            catch(UnsupportedOperationException e)
+            {
+                break;
+            }
+            catch(NullPointerException e)
+            {
+                break;
+            }
+            catch(Throwable t)
+            {
+                warn();
+                t.printStackTrace();
+                break;
+            }
         }
         return false;
     }
