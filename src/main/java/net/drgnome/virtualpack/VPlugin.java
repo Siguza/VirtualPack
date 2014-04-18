@@ -261,28 +261,57 @@ public class VPlugin extends JavaPlugin implements Runnable
             {
             }
         }
-        if(!isReloading())
+        try
         {
-            saveUserData();
-            try 
-            {
-                _saveThread.join();
-            } 
-            catch(InterruptedException e) 
-            {
-                _log.log(Level.WARNING, "[VirtualPack] Save interrupted: {0}", e.getMessage());
-            }
-            catch(Throwable t)
-            {
-            }
+            _reg.unregisterCommands();
+        }
+        catch(Throwable t)
+        {
+        }
+        if((_initThread != null) && !_initThread.done())
+        {
             try
             {
-                _reg.unregisterCommands();
+                _initThread.join();
             }
-            catch(Throwable t)
+            catch(InterruptedException e)
             {
+                _log.log(Level.WARNING, "[VirtualPack] Interrupted: " + e.getMessage());
             }
-            _log.info(Lang.get(null, "vpack.disable", _version));
+        }
+        if((_initThread != null) && !_initThread.done())
+        {
+            try
+            {
+                _initThread.join();
+            }
+            catch(InterruptedException e)
+            {
+                _log.log(Level.WARNING, "[VirtualPack] Waiting for ThreadInit interrupted: " + e.getMessage());
+            }
+        }
+        while(_loadThreads.size() > 0)
+        {
+            try
+            {
+                _loadThreads.get(0).join();
+            }
+            catch(InterruptedException e)
+            {
+                _log.log(Level.WARNING, "[VirtualPack] Waiting for ThreadLoad interrupted: " + e.getMessage());
+            }
+        }
+        if((_saveThread == null) || _saveThread.done())
+        {
+            saveUserData();
+        }
+        try
+        {
+            _saveThread.join();
+        }
+        catch(InterruptedException e)
+        {
+            _log.log(Level.WARNING, "[VirtualPack] Waiting for ThreadSave interrupted: " + e.getMessage());
         }
     }
     
