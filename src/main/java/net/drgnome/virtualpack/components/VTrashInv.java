@@ -6,14 +6,15 @@ package net.drgnome.virtualpack.components;
 
 import net.minecraft.server.v#MC_VERSION#.*;
 
-public class VTrashInv extends VInv
+public class VTrashInv extends VInv implements VProcessing
 {
     public VTrashInv()
     {
         super(1);
     }
     
-    public void setItem(int slot, ItemStack item)
+    public void process()
     {
+        clear();
     }
 }

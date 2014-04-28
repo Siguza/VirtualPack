@@ -9,10 +9,36 @@ import java.lang.reflect.*;
 import org.bukkit.Material;
 import net.minecraft.server.v#MC_VERSION#.*;
 import net.drgnome.virtualpack.util.*;
+import static net.drgnome.virtualpack.util.Global.*;
 
-public class VUncrafterInv extends VInv
+public class VUncrafterInv extends VInv implements VProcessing
 {
+    private static final List _recipes = CraftingManager.getInstance().getRecipes();
+    private static final Field[] _fields = new Field[2];
     private final EntityPlayer _player;
+    private ArrayList<Integer> _slotUpdate = new ArrayList<Integer>();
+    
+    static
+    {
+        try
+        {
+            _fields[0] = ShapelessRecipes.class.getDeclaredField("ingredients");
+            _fields[0].setAccessible(true);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            _fields[1] = ShapedRecipes.class.getDeclaredField("items");
+            _fields[1].setAccessible(true);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
     
     public VUncrafterInv(EntityPlayer player)
     {
@@ -22,37 +48,53 @@ public class VUncrafterInv extends VInv
     
     public void setItem(int slot, ItemStack item)
     {
-        boolean update = false;
-        if((item != null) && (slot < 9))
+        if((slot >= 0) && (slot < 9))
         {
-            update = true;
-            List list = CraftingManager.getInstance().getRecipes();
-            Object tmp;
-            Object tmp2;
-            IRecipe recipe;
-            ItemStack result;
-            for(int i = -1; i < list.size(); i++)
+            _slotUpdate.add(slot);
+        }
+        super.setItem(slot, item);
+    }
+    
+    public void process()
+    {
+        for(Integer i : _slotUpdate)
+        {
+            processSlot(i);
+        }
+        _slotUpdate.clear();
+    }
+    
+    private void processSlot(int slot)
+    {
+        ItemStack old;
+        ItemStack result;
+        Object tmp;
+        IRecipe recipe;
+        if(contents[slot] != null)
+        {
+            old = Util.copy_old(contents[slot]);
+            for(int i = -1; i < _recipes.size(); i++)
             {
-                ItemStack[] back = new ItemStack[0];
+                ItemStack[] back = null;
                 if(i == -1)
                 {
-                    if(Item.#FIELD_ITEM_7#(item.getItem()) == Material.ENCHANTED_BOOK.getId())
+                    if(Item.#FIELD_ITEM_7#(old.getItem()) == Material.ENCHANTED_BOOK.getId())
                     {
-                        back = new ItemStack[]{new ItemStack(Item.#FIELD_ITEM_8#(Material.BOOK.getId()), item.count, item.getData())};
+                        back = new ItemStack[]{new ItemStack(Item.#FIELD_ITEM_8#(Material.BOOK.getId()), old.count, old.getData())};
                     }
                     else
                     {
-                        NBTTagList ench = item.getEnchantments();
-                        if((ench == null) || (ench.size() <= 0))
+                        NBTTagList ench = old.getEnchantments();
+                        if((ench == null) || (ench.size() == 0))
                         {
                             continue;
                         }
-                        else if((!item.getItem().#FIELD_ITEM_5#() && (item.getData() != 0)) || !Config.bool("uncraft-enchanted"))
+                        else if((!old.getItem().#FIELD_ITEM_5#() && (old.getData() != 0)) || !Config.bool("uncraft-enchanted"))
                         {
                             break;
                         }
                         back = new ItemStack[ench.size() + 1];
-                        back[0] = Util.copy_old(item);
+                        back[0] = Util.copy_old(old);
                         back[0].getTag().remove("ench");
                         for(int j = 0; j < ench.size(); j++)
                         {
@@ -64,72 +106,33 @@ public class VUncrafterInv extends VInv
                             back[j + 1].setTag(tag);
                         }
                     }
-                    result = Util.copy_old(item);
+                    result = Util.copy_old(old);
                 }
                 else
                 {
-                    tmp = list.get(i);
-                    if(!(tmp instanceof IRecipe))
+                    tmp = _recipes.get(i);
+                    if((tmp == null) || !(tmp instanceof IRecipe))
                     {
                         continue;
                     }
                     recipe = (IRecipe)tmp;
-                    if(recipe == null)
-                    {
-                        continue;
-                    }
                     result = Util.copy_old(recipe.#FIELD_IRECIPE_1#()); // Derpnote
-                    if((result == null) || (Item.#FIELD_ITEM_7#(result.getItem()) != Item.#FIELD_ITEM_7#(item.getItem())) || (result.getData() != item.getData()))
+                    if((result == null) || (Item.#FIELD_ITEM_7#(result.getItem()) != Item.#FIELD_ITEM_7#(old.getItem())) || (result.getData() != old.getData()))
                     {
                         continue;
                     }
-                    if(recipe instanceof ShapedRecipes)
+                    if(recipe instanceof ShapelessRecipes)
                     {
-                        try
-                        {
-                            Field field = ShapedRecipes.class.getDeclaredField("items");
-                            field.setAccessible(true);
-                            tmp2 = field.get(recipe);
-                            if(!(tmp2 instanceof ItemStack[]))
-                            {
-                                break;
-                            }
-                            ItemStack[] tmp3 = (ItemStack[])tmp2;
-                            back = new ItemStack[tmp3.length];
-                            for(int j = 0; j < tmp3.length; j++)
-                            {
-                                back[j] = Util.copy_old(tmp3[j]);
-                            }
-                        }
-                        catch(Throwable t)
-                        {
-                            t.printStackTrace();
-                            break;
-                        }
+                        back = Util.copy_old(((List<ItemStack>)access(0, recipe)).toArray(new ItemStack[0]));
                     }
-                    else if(recipe instanceof ShapelessRecipes)
+                    else if(recipe instanceof ShapedRecipes)
                     {
-                        try
-                        {
-                            Field field = ShapelessRecipes.class.getDeclaredField("ingredients");
-                            field.setAccessible(true);
-                            tmp2 = field.get(recipe);
-                            if(!(tmp2 instanceof List))
-                            {
-                                break;
-                            }
-                            Object[] obj = ((List)tmp2).toArray();
-                            back = new ItemStack[obj.length];
-                            for(int j = 0; j < obj.length; j++)
-                            {
-                                back[j] = Util.copy_old((ItemStack)obj[j]);
-                            }
-                        }
-                        catch(Throwable t)
-                        {
-                            t.printStackTrace();
-                            break;
-                        }
+                        back = Util.copy_old((ItemStack[])access(1, recipe));
+                    }
+                    else
+                    {
+                        _log.warning("[VirtualPack] Uncrafter: Skipping unknown recipe type: " + recipe.getClass().getName());
+                        continue;
                     }
                 }
                 for(int j = 0; j < back.length; j++)
@@ -142,40 +145,36 @@ public class VUncrafterInv extends VInv
                 ItemStack[] test = new ItemStack[9];
                 for(int j = 0; j < test.length; j++)
                 {
-                    test[j] = Util.copy_old(getItem(j + 9));
+                    test[j] = Util.copy_old(contents[j + 9]);
                 }
                 ItemStack[] test1 = Util.copy_old(test);
                 boolean success;
-                for(; item.count >= result.count; item.count -= result.count)
+                for(; old.count >= result.count; old.count -= result.count)
                 {
                     success = true;
+                    outside:
                     for(int j = 0; j < back.length; j++)
                     {
                         if((back[j] == null) || (back[j].getItem().#FIELD_ITEM_1#())) // Derpnote
                         {
                             continue;
                         }
-                        success = false;
                         for(int k = 0; k < test1.length; k++)
                         {
                             if(test1[k] == null)
                             {
                                 test1[k] = Util.copy_old(back[j]);
                                 test1[k].count = 1;
-                                success = true;
-                                break;
+                                continue outside;
                             }
                             else if((Item.#FIELD_ITEM_7#(test1[k].getItem()) == Item.#FIELD_ITEM_7#(back[j].getItem())) && (test1[k].getData() == back[j].getData()) && (test1[k].count < test1[k].getItem().getMaxStackSize()))
                             {
                                 test1[k].count += 1;
-                                success = true;
-                                break;
+                                continue outside;
                             }
                         }
-                        if(!success)
-                        {
-                            break;
-                        }
+                        success = false;
+                        break;
                     }
                     if(success)
                     {
@@ -188,19 +187,31 @@ public class VUncrafterInv extends VInv
                 }
                 for(int j = 0; j < test.length; j++)
                 {
-                    super.setItem(j + 9, test[j]);
+                    contents[j + 9] = test[j];
+                }
+                if(old.count == 0)
+                {
+                    contents[slot] = null;
+                }
+                else
+                {
+                    contents[slot].count = old.count;
                 }
                 break;
             }
         }
-        if((item != null) && (item.count <= 0))
+    }
+    
+    private static Object access(int i, Object handle)
+    {
+        try
         {
-            item = null;
+            return _fields[i].get(handle);
         }
-        super.setItem(slot, Util.copy_old(item));
-        if(update)
+        catch(Exception e)
         {
-            VContainer.update(_player);
+            e.printStackTrace();
         }
+        return null;
     }
 }

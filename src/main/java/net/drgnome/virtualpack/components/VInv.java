@@ -13,7 +13,7 @@ import net.drgnome.virtualpack.util.*;
 
 public class VInv implements IInventory
 {
-    private ItemStack[] contents = new ItemStack[0];
+    protected ItemStack[] contents = new ItemStack[0];
     private long lastUpdate;
     private int _maxStack = 64;
     

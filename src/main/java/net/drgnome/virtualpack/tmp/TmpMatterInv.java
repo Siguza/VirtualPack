@@ -13,13 +13,14 @@ import net.drgnome.virtualpack.item.*;
 import net.drgnome.virtualpack.components.*;
 import net.drgnome.virtualpack.data.TransmutationHelper;
 
-public class TmpMatterInv extends VInv
+public class TmpMatterInv extends VInv implements VProcessing
 {
     protected ArrayList<ComparativeItemStack> _unlocked = new ArrayList<ComparativeItemStack>();
     protected boolean _allUnlocked = false;
     public double _value = 0D;
     protected String _worldname;
     protected String _playername;
+    private ArrayList<Integer> _slotUpdate = new ArrayList<Integer>();
     
     public TmpMatterInv(String worldname, String playername)
     {
@@ -76,30 +77,41 @@ public class TmpMatterInv extends VInv
         return list.toArray(new String[0]);
     }
     
-    public void setItem(int index, ItemStack item)
+    public void setItem(int slot, ItemStack item)
     {
-        if((index > 0) && (index < 9))
+        if((slot >= 1) && (slot < 9))
         {
-            if(index == 8)
+            _slotUpdate.add(slot);
+        }
+        super.setItem(slot, item);
+    }
+    
+    public void process()
+    {
+        for(Integer i : _slotUpdate)
+        {
+            processSlot(i);
+        }
+        _slotUpdate.clear();
+    }
+    
+    private void processSlot(int slot)
+    {
+        if(slot == 8)
+        {
+            updateInv();
+            return;
+        }
+        org.bukkit.inventory.ItemStack mirror = CraftItemStack.asBukkitCopy(contents[slot]);
+        double value = TransmutationHelper.getValue(mirror);
+        if((value > 0) && ((mirror.getType().getMaxDurability() <= 0) || (mirror.getDurability() == 0)))
+        {
+            if(unlock(contents[slot]))
             {
-                super.setItem(index, item);
-                updateInv();
-                return;
+                _value += value * (double)contents[slot].count;
             }
-            org.bukkit.inventory.ItemStack mirror = CraftItemStack.asBukkitCopy(item);
-            double value = TransmutationHelper.getValue(mirror);
-            if((value > 0) && ((mirror.getType().getMaxDurability() <= 0) || (mirror.getDurability() == 0)))
-            {
-                if(unlock(item))
-                {
-                    _value += value * (double)item.count;
-                }
-                updateInfo();
-            }
-            else
-            {
-                super.setItem(index, item);
-            }
+            contents[slot] = null;
+            updateInfo();
         }
     }
     

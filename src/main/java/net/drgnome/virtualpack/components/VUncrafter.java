@@ -14,7 +14,7 @@ public class VUncrafter extends VContainer
     public VUncrafter(EntityPlayer player)
     {
         super(player, new VUncrafterInv(player));
-        #FIELD_CONTAINER_2# = new ArrayList(); // Derpnote
+        /*#FIELD_CONTAINER_2# = new ArrayList(); // Derpnote
         #FIELD_CONTAINER_3# = new ArrayList(); // Derpnote
         for(int i = 0; i < 2; i++)
         {
@@ -33,7 +33,7 @@ public class VUncrafter extends VContainer
         for(int i = 0; i < 9; i++)
         {
             #FIELD_CONTAINER_4#(new Slot(player.inventory, i, 8 + i * 18, 125)); // Derpnote
-        }
+        }*/
     }
     
     public void #FIELD_CONTAINER_5#(EntityHuman entityhuman) // Derpnote

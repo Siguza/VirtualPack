@@ -25,6 +25,11 @@ public abstract class VContainer extends ContainerChest
         if(allowClick(slot, mouse, shift, human))
         {
             item = super.clickItem(slot, mouse, shift, human);
+            if(this.container instanceof VProcessing)
+            {
+                ((VProcessing)this.container).process();
+                update();
+            }
         }
         else
         {
@@ -51,7 +56,8 @@ public abstract class VContainer extends ContainerChest
     
     public static void update(final EntityPlayer player)
     {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(_plugin, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(_plugin, new Runnable()
+        {
             public void run()
             {
                 player.updateInventory(player.activeContainer);
