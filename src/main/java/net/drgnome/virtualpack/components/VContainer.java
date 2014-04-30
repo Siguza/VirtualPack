@@ -28,14 +28,13 @@ public abstract class VContainer extends ContainerChest
             if(this.container instanceof VProcessing)
             {
                 ((VProcessing)this.container).process();
-                update();
             }
         }
         else
         {
             item = human.inventory.getCarried();
-            update();
         }
+        update();
         return item;
     }
     
