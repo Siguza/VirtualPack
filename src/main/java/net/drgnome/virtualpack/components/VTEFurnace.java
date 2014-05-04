@@ -95,7 +95,7 @@ public class VTEFurnace extends TileEntityFurnace
             meltSpeed = getMeltSpeed(contents[0]);
         }
         // So, can we now finally burn?
-        if(canBurn() && !isBurning() && (getFuelTime(contents[1]) > 0))
+        if(canHasBURN() && !isBurning() && (getFuelTime(contents[1]) > 0))
         {
             // I have no idea what "ticksForCurrentFuel" is good for, but it works fine like this
             burnTime = ticksForCurrentFuel = getFuelTime(contents[1]);
@@ -133,7 +133,7 @@ public class VTEFurnace extends TileEntityFurnace
             }
         }
         // If it's not burning, we reset the burning progress!
-        else if(!canBurn())
+        else if(!canHasBURN())
         {
             myCookTime = 0.0D;
         }
@@ -150,7 +150,7 @@ public class VTEFurnace extends TileEntityFurnace
         }
         VInv inv = vpack.getInv(link);
         // If we can't burn at the moment, we need different stuff
-        if(!canBurn())
+        if(!canHasBURN())
         {
             // Do we need a different ingredient?
             boolean get0 = false;
@@ -188,7 +188,7 @@ public class VTEFurnace extends TileEntityFurnace
                 }
             }
             // Now, if there is any reason we can't burn, we're done and put the output item away (if there is any)
-            if(!canBurn() && (contents[2] != null))
+            if(!canHasBURN() && (contents[2] != null))
             {
                 // Lets search for a place we can put our stuff
                 ItemStack item;
@@ -222,7 +222,7 @@ public class VTEFurnace extends TileEntityFurnace
             }
         }
         // Now, if we finally can burn, but we don't have fuel, then go and get some!
-        if(canBurn() && !isBurning() && (getFuelTime(contents[1]) <= 0))
+        if(canHasBURN() && !isBurning() && (getFuelTime(contents[1]) <= 0))
         {
             // Search for fuel
             ItemStack item;
@@ -255,13 +255,13 @@ public class VTEFurnace extends TileEntityFurnace
     
     public boolean isFine()
     {
-        return ((myCookTime > 0.0D) || (getFuelTime(contents[1]) > 0)) && canBurn();
+        return ((myCookTime > 0.0D) || (getFuelTime(contents[1]) > 0)) && canHasBURN();
     }
     
     // This needs a little addition
     public boolean isBurning()
     {
-        return (burnTime > 0) && (burnSpeed > 0.0D) && canBurn();
+        return (burnTime > 0) && (burnSpeed > 0.0D) && canHasBURN();
     }
     
     private ItemStack getBurnResult(ItemStack item)
@@ -313,7 +313,7 @@ public class VTEFurnace extends TileEntityFurnace
         return 1.0D;
     }
     
-    private boolean canBurn()
+    private boolean canHasBURN()
     {
         // No ingredient, no recipe
         if(contents[0] == null)
@@ -347,7 +347,7 @@ public class VTEFurnace extends TileEntityFurnace
     public void burn()
     {
         // Can't burn? Goodbye
-        if(!canBurn())
+        if(!canHasBURN())
         {
             return;
         }
