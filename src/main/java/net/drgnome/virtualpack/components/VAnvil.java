@@ -39,7 +39,7 @@ public class VAnvil extends ContainerAnvil
             }
         }
     }
-    
+
     public VAnvil(EntityPlayer entityplayer, int x, int y, int z)
     {
         super(entityplayer.inventory, entityplayer.world, x, y, z, entityplayer);
@@ -54,7 +54,7 @@ public class VAnvil extends ContainerAnvil
             #FIELD_CONTAINERANVIL_4#();
         }
     }
-    
+
     public void #FIELD_CONTAINERANVIL_4#()
     {
         calculate0();
@@ -364,12 +364,12 @@ public class VAnvil extends ContainerAnvil
     {
         return anvil._exp;
     }
-    
+
     public IInventory getInv(String name)
     {
         return getInv(this, name);
     }
-    
+
     public static IInventory getInv(VAnvil anvil, String name)
     {
         try
@@ -384,14 +384,14 @@ public class VAnvil extends ContainerAnvil
             return null;
         }
     }
-    
+
     public void updatePlayerInventory()
     {
         _player.updateInventory(_player.activeContainer);
     }
-    
+
     public static boolean playerFree(EntityHuman entityhuman)
     {
-        return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getName(), "vpack.use.anvil.free"));
+        return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getUniqueID(), "vpack.use.anvil.free"));
     }
 }

@@ -18,8 +18,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 //import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.entity.Player;
-import net.drgnome.virtualpack.components.BaseInv;
-import net.drgnome.virtualpack.components.BaseView;
 import net.drgnome.virtualpack.util.*;
 
 import static net.drgnome.virtualpack.util.Global.*;
@@ -39,7 +37,7 @@ public class VEvents implements Listener
             _plugin.handleDeath(player);
         }
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void handlePlayerLogin(PlayerLoginEvent event)
     {
@@ -53,7 +51,7 @@ public class VEvents implements Listener
             _plugin.getPack(world, player.getName()).processSent();
         }
     }
-    
+
     // Since it doesn't work anyway...
     /*@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void handleGUIClose(InventoryCloseEvent event)
@@ -64,7 +62,7 @@ public class VEvents implements Listener
         }
         ((BaseInv)event.getInventory()).onClose(event.getPlayer());
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void handleGUIClick(InventoryClickEvent event)
     {
@@ -73,7 +71,7 @@ public class VEvents implements Listener
             event.setCancelled(true);
         }
     }*/
-    
+
     // vpack.admin.createsign
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void handleSignPlace(SignChangeEvent event)
@@ -86,7 +84,7 @@ public class VEvents implements Listener
             event.getBlock().breakNaturally();
         }
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void handleSignClick(PlayerInteractEvent event)
     {

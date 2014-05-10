@@ -11,13 +11,13 @@ import net.drgnome.virtualpack.util.Config;
 public class VChest extends VContainer implements VGUI
 {
     private final boolean _readonly;
-    
+
     public VChest(EntityPlayer player, IInventory data, boolean canEdit)
     {
         super(player, data);
         _readonly = !canEdit;
     }
-    
+
     public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
     {
         if(_readonly)
@@ -38,9 +38,9 @@ public class VChest extends VContainer implements VGUI
         }
         return true;
     }
-    
+
     private boolean isItemAllowed(EntityHuman human, ItemStack item)
     {
-        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getName(), "store", CraftItemStack.asBukkitCopy(item));
+        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getUniqueID(), "store", CraftItemStack.asBukkitCopy(item));
     }
 }

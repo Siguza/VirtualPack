@@ -14,13 +14,13 @@ import com.comphenix.protocol.events.*;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import net.drgnome.virtualpack.util.*;
-import net.drgnome.virtualpack.components.MatterInv;
+import net.drgnome.virtualpack.tmp.TmpMatterInv;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class TransmutationListener extends PacketAdapter
 {
     public static final String _prefix = Util.parseColors("backdoor");
-    
+
     public static void register()
     {
         HashSet<Integer> set = new HashSet<Integer>();
@@ -36,27 +36,27 @@ public class TransmutationListener extends PacketAdapter
         }
         ProtocolLibrary.getProtocolManager().addPacketListener(new TransmutationListener(set));
     }
-    
+
     public static void unregister()
     {
         ProtocolLibrary.getProtocolManager().removePacketListeners(_plugin);
     }
-    
+
     public TransmutationListener(Set<Integer> set)
     {
         super(_plugin, ConnectionSide.BOTH, ListenerPriority.HIGHEST, set);
     }
-    
+
     public void onPacketReceiving(PacketEvent event)
     {
         handlePacket(event, false);
     }
-    
+
     public void onPacketSending(PacketEvent event)
     {
         handlePacket(event, true);
     }
-    
+
     private void handlePacket(PacketEvent event, boolean send)
     {
         if((event == null) || event.isCancelled() || (event.getPacket() == null))
@@ -96,7 +96,7 @@ public class TransmutationListener extends PacketAdapter
             }
         }
     }
-    
+
     private ItemStack[] applyChange(ItemStack[] origItems, boolean send)
     {
         if(origItems == null)
@@ -110,7 +110,7 @@ public class TransmutationListener extends PacketAdapter
         }
         return items;
     }
-    
+
     private ItemStack applyChange(ItemStack origItem, boolean send)
     {
         if(origItem == null)
@@ -122,7 +122,7 @@ public class TransmutationListener extends PacketAdapter
         List<String> lore = meta.hasLore() ? meta.getLore() : (new ArrayList<String>());
         if(send)
         {
-            if(!meta.hasDisplayName() || !meta.getDisplayName().startsWith(MatterInv._prefix))
+            if(!meta.hasDisplayName() || !meta.getDisplayName().startsWith(TmpMatterInv._prefix))
             {
                 double value = TransmutationHelper.getValue(item);
                 if(value > 0)

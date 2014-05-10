@@ -13,7 +13,7 @@ public class VFurnace extends ContainerFurnace implements VGUI
     protected EntityPlayer player;
     protected TileEntityFurnace _data;
     private final boolean _readonly;
-    
+
     public VFurnace(EntityPlayer player, TileEntityFurnace data, boolean canEdit)
     {
         super(player.inventory, data);
@@ -22,7 +22,7 @@ public class VFurnace extends ContainerFurnace implements VGUI
         this.player = player;
         this._readonly = !canEdit;
     }
-    
+
     public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
     {
         ItemStack item;
@@ -37,7 +37,7 @@ public class VFurnace extends ContainerFurnace implements VGUI
         }
         return item;
     }
-    
+
     public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
     {
         if(_readonly)
@@ -58,17 +58,17 @@ public class VFurnace extends ContainerFurnace implements VGUI
         }
         return true;
     }
-    
+
     protected int toInventorySlot(int slot)
     {
         return (slot >= 27) ? (slot - 27) : (slot + 9);
     }
-    
+
     private boolean isItemAllowed(EntityHuman human, ItemStack item)
     {
-        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getName(), "store", CraftItemStack.asBukkitCopy(item));
+        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getUniqueID(), "store", CraftItemStack.asBukkitCopy(item));
     }
-    
+
     protected void update()
     {
         player.updateInventory(player.activeContainer);

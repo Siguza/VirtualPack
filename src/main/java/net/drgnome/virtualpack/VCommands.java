@@ -45,7 +45,7 @@ public class VCommands implements CommandExecutor
         commandMap.put("m", VPlugin._components[10]);
         commandMap.put("ec", VPlugin._components[11]);
     }
-    
+
     public static String alias(String command)
     {
         for(String component : VPlugin._components)
@@ -58,7 +58,7 @@ public class VCommands implements CommandExecutor
         }
         return "";
     }
-    
+
     public static String longname(String command)
     {
         command = command.toLowerCase();
@@ -68,7 +68,7 @@ public class VCommands implements CommandExecutor
         }
         return command;
     }
-    
+
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
         try
@@ -82,7 +82,7 @@ public class VCommands implements CommandExecutor
         }
         return true;
     }
-    
+
     private void cmd(CommandSender sender, String command, String[] args)
     {
         if(sender instanceof Player)
@@ -119,7 +119,7 @@ public class VCommands implements CommandExecutor
             tools(player, _plugin.getPack(player), command, args, false, true, 0);
         }
     }
-    
+
     // Modes:
     // 0 = normal
     // 1 = force command
@@ -194,7 +194,7 @@ public class VCommands implements CommandExecutor
             sendMessage(player, Lang.get(player, "argument.unknown"), ChatColor.RED);
         }
     }
-    
+
     private void main(CommandSender sender, String[] args)
     {
         if(args.length <= 0)
@@ -259,7 +259,7 @@ public class VCommands implements CommandExecutor
             cmd(player, command, args);
         }
     }
-    
+
     private void update(CommandSender sender)
     {
         if(Perm.has(sender, "vpack.update"))
@@ -279,7 +279,7 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get(sender, "update.perm"), ChatColor.RED);
         }
     }
-    
+
     private void help(CommandSender sender, String[] args)
     {
         if(args.length <= 0)
@@ -332,7 +332,7 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get(sender, "help.version", cmd));
             if(Perm.has(sender, "vpack.use"))
             {
-                
+
                 sendMessage(sender, Lang.get(sender, "help.stats", cmd));
                 sendMessage(sender, Lang.get(sender, "help.price", cmd));
                 sendMessage(sender, Lang.get(sender, "help.cooldown", cmd));
@@ -413,7 +413,7 @@ public class VCommands implements CommandExecutor
             sender.sendMessage(ChatColor.GOLD + "http://dev.bukkit.org/server-mods/virtualpack/pages/commands"); // Thou shall not split my link! :P
         }
     }
-    
+
     private void admin(CommandSender sender, String[] args)
     {
         if(!Perm.has(sender, "vpack.admin"))
@@ -656,7 +656,7 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get(player, "argument.unknown"), ChatColor.RED);
         }
     }
-    
+
     private void cut(CommandSender sender, String[] args)
     {
         if(!Perm.has(sender, "vpack.admin.cut"))
@@ -709,7 +709,7 @@ public class VCommands implements CommandExecutor
         for(VPack pack : _plugin.getAllPacks())
         {
             String w = pack.getWorld();
-            String p = pack.getPlayer();
+            UUID p = pack.getPlayer();
             if(Perm.has(w, p, "vpack.bypass.cut") && !force)
             {
                 continue;
@@ -718,7 +718,7 @@ public class VCommands implements CommandExecutor
             {
                 _plugin.setPack(w, p, null);
             }
-            if(((player != null) && !player.equalsIgnoreCase(p)) || ((group != null) && !Perm.inGroup(w, p, group)))
+            if(((player != null) && !Bukkit.getOfflinePlayer(p).getName().equalsIgnoreCase(player)) || ((group != null) && !Perm.inGroup(w, p, group)))
             {
                 continue;
             }
@@ -726,7 +726,7 @@ public class VCommands implements CommandExecutor
         }
         sendMessage(sender, Lang.get(sender, "admin.cut"), ChatColor.GREEN);
     }
-    
+
     private void clean(CommandSender sender, String[] args)
     {
         if(!Perm.has(sender, "vpack.admin.clean"))
@@ -744,7 +744,7 @@ public class VCommands implements CommandExecutor
             Date limit = new Date((new Date()).getTime() - (Long.parseLong(args[0]) * 86400000L));
             for(VPack pack : _plugin.getAllPacks())
             {
-                String player = pack.getPlayer();
+                UUID player = pack.getPlayer();
                 if(Perm.has(pack.getWorld(), player, "vpack.bypass.clean"))
                 {
                     continue;
@@ -761,7 +761,7 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, Lang.get(sender, "argument.invalid"), ChatColor.RED);
         }
     }
-    
+
     private void give(String world, CommandSender sender, String[] args)
     {
         if(!Perm.has(sender, "vpack.admin.give"))
@@ -1042,7 +1042,7 @@ public class VCommands implements CommandExecutor
             sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.take.book.one", args[0]) : Lang.get(sender, "admin.take.book.many", args[0], "" + max), ChatColor.GREEN);
         }
     }
-    
+
     private void forceopen(String world, CommandSender sender, String[] args)
     {
         if(!Perm.has(sender, "vpack.admin.forceopen"))
@@ -1069,7 +1069,7 @@ public class VCommands implements CommandExecutor
         }
         tools(p, pack, longname(args[1]), Util.cut(args, 2), false, true, 1);
     }
-    
+
     private void stats(Player player, String[] args)
     {
         if(args.length >= 1)
@@ -1093,7 +1093,7 @@ public class VCommands implements CommandExecutor
         }
         _plugin.getPack(player).printStats(player);
     }
-    
+
     private void price(Player player)
     {
         sendMessage(player, Lang.get(player, "price.title"), ChatColor.AQUA);
@@ -1144,7 +1144,7 @@ public class VCommands implements CommandExecutor
             sendMessage(player, Lang.get(player, "price.free"), ChatColor.AQUA);
         }
     }
-    
+
     private void cooldown(Player player)
     {
         sendMessage(player, Lang.get(player, "cooldown.title"), ChatColor.AQUA);
@@ -1188,7 +1188,7 @@ public class VCommands implements CommandExecutor
             sendMessage(player, Lang.get(player, "cooldown.brewingstand", y, g, "" + Util.round((double)pack.brewingstandCooldown() / 1000D)));
         }
     }
-    
+
     private void workbench(Player player, VPack pack, String[] args, boolean admin, boolean canEdit, int mode)
     {
         if(!admin && (((mode == 0) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.workbench")) || ((mode == 2) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.sign.workbench"))))
@@ -1208,7 +1208,7 @@ public class VCommands implements CommandExecutor
         }
         pack.openWorkbench(player, admin);
     }
-    
+
     private void uncrafter(Player player, VPack pack, String[] args, boolean admin, boolean canEdit, int mode)
     {
         if(!admin && (((mode == 0) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.uncrafter")) || ((mode == 2) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.sign.uncrafter"))))
@@ -1228,7 +1228,7 @@ public class VCommands implements CommandExecutor
         }
         pack.openUncrafter(player, admin);
     }
-    
+
     private void chest(Player player, VPack pack, String[] args, boolean admin, boolean canEdit, int mode)
     {
         if(!admin && (((mode == 0) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.chest")) || ((mode == 2) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.sign.chest"))))
@@ -1288,7 +1288,7 @@ public class VCommands implements CommandExecutor
         }
         pack.openChest(player, i, admin, canEdit);
     }
-    
+
     private void furnace(Player player, VPack pack, String[] args, boolean admin, boolean canEdit, int mode)
     {
         if(!admin && (((mode == 0) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.furnace")) || ((mode == 2) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.sign.furnace"))))
@@ -1371,7 +1371,7 @@ public class VCommands implements CommandExecutor
         }
         pack.openFurnace(player, i, admin, canEdit);
     }
-    
+
     private void brew(Player player, VPack pack, String[] args, boolean admin, boolean canEdit, int mode)
     {
         if(!admin && (((mode == 0) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.brewingstand")) || ((mode == 2) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.sign.brewingstand"))))
@@ -1454,7 +1454,7 @@ public class VCommands implements CommandExecutor
         }
         pack.openBrewingstand(player, i, admin, canEdit);
     }
-    
+
     private void ench(Player player, VPack pack, String[] args, boolean admin, boolean canEdit, int mode)
     {
         if(!admin && (((mode == 0) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.enchanttable")) || ((mode == 2) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.sign.enchanttable"))))
@@ -1493,12 +1493,12 @@ public class VCommands implements CommandExecutor
         }
         pack.openEnchantTable(player, admin);
     }
-    
+
     private void trash(Player player, VPack pack)
     {
         pack.openTrash(player);
     }
-    
+
     private void send(Player player, VPack pack, String[] args)
     {
         if(!Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.send"))
@@ -1546,7 +1546,7 @@ public class VCommands implements CommandExecutor
         }
         pack.sendItem(player, args[0], i, copy);
     }
-    
+
     private void anvil(Player player, VPack pack, String[] args, boolean admin, boolean canEdit, int mode)
     {
         if(!admin && (((mode == 0) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.anvil")) || ((mode == 2) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.sign.anvil"))))
@@ -1566,7 +1566,7 @@ public class VCommands implements CommandExecutor
         }
         pack.openAnvil(player, admin);
     }
-    
+
     private void matter(Player player, VPack pack, String[] args, boolean admin, boolean canEdit, int mode)
     {
         if(!Config.bool("transmutation.enabled"))
@@ -1618,7 +1618,7 @@ public class VCommands implements CommandExecutor
         }
         pack.openMaterializer(player, admin, canEdit);
     }
-    
+
     private void enderchest(Player player, VPack pack, String[] args, boolean admin, boolean canEdit, int mode)
     {
         if(!admin && (((mode == 0) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.use.enderchest")) || ((mode == 2) && !Perm.has(pack.getWorld(), pack.getPlayer(), "vpack.sign.enderchest"))))

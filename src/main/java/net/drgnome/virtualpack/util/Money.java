@@ -16,7 +16,7 @@ public class Money
     private static HashMap<String, Money> map;
     private static Economy _eco;
     private final boolean _enabled;
-    
+
     public static boolean init()
     {
         map = new HashMap<String, Money>();
@@ -40,29 +40,29 @@ public class Money
         _eco = (Economy)eco.getProvider();
         return true;
     }
-    
+
     public static Money world(String world)
     {
         Money money = map.get(world);
         return money == null ? new NullMoney() : money;
     }
-    
+
     private Money()
     {
         _enabled = false;
     }
-    
+
     private Money(String world)
     {
         _enabled = Config.bool(world, "economy");
     }
-    
+
     public boolean enabled()
     {
         return _enabled;
     }
-    
-    public boolean has(String username, double amount)
+
+    public boolean has(UUID uuid, double amount)
     {
         if(!_enabled || (amount == 0.0D))
         {
@@ -72,28 +72,28 @@ public class Money
         {
             return false;
         }
-        return _eco.has(username, amount);
+        return _eco.has(Bukkit.getOfflinePlayer(uuid).getName(), amount);
     }
-    
-    public void take(String username, double amount)
+
+    public void take(UUID uuid, double amount)
     {
         if(!_enabled || (amount == 0.0D) || (_eco == null))
         {
             return;
         }
-        _eco.withdrawPlayer(username, amount);
+        _eco.withdrawPlayer(Bukkit.getOfflinePlayer(uuid).getName(), amount);
     }
-    
-    public boolean hasTake(String username, double amount)
+
+    public boolean hasTake(UUID uuid, double amount)
     {
-        if(has(username, amount))
+        if(has(uuid, amount))
         {
-            take(username, amount);
+            take(uuid, amount);
             return true;
         }
         return false;
     }
-    
+
     // Rather link to false than crash with a NullPointerException
     public static class NullMoney extends Money
     {
@@ -101,22 +101,22 @@ public class Money
         {
             super();
         }
-        
+
         public boolean enabled()
         {
             return false;
         }
-        
-        public boolean has(String username, double amount)
+
+        public boolean has(UUID uuid, double amount)
         {
             return false;
         }
-        
-        public void take(String username, double amount)
+
+        public void take(UUID uuid, double amount)
         {
         }
-        
-        public boolean hasTake(String username, double amount)
+
+        public boolean hasTake(UUID uuid, double amount)
         {
             return false;
         }

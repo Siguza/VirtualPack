@@ -33,7 +33,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil", "materializer", "enderchest"};
     
     static final VCommands _commandHandler = new VCommands();
-    private ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> _packs = new ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>>();
+    private ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>> _packs = new ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>>();
     private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
     public ArrayList<VThreadLoad> _loadThreads = new ArrayList<VThreadLoad>();
     private int _numLoadThreads = 0;
@@ -322,22 +322,27 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public boolean hasPack(String world, String player)
     {
+        return hasPack(world, Util.getUUID(player));
+    }
+    
+    public boolean hasPack(String world, UUID player)
+    {
         world = Config.world(world);
-        ConcurrentHashMap<String, VPack> map = _packs.get(world);
+        ConcurrentHashMap<UUID, VPack> map = _packs.get(world);
         if(map == null)
         {
             return false;
         }
-        return map.containsKey(player.toLowerCase());
+        return map.containsKey(player);
     }
     
     public VPack[] getAllPacks()
     {
         ArrayList<VPack> list = new ArrayList<VPack>();
-        Iterator<ConcurrentHashMap<String, VPack>> iterator = _packs.values().iterator();
+        Iterator<ConcurrentHashMap<UUID, VPack>> iterator = _packs.values().iterator();
         while(iterator.hasNext())
         {
-            ConcurrentHashMap<String, VPack> map = iterator.next();
+            ConcurrentHashMap<UUID, VPack> map = iterator.next();
             if(map == null)
             {
                 continue;
@@ -359,23 +364,27 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public VPack getPack(Player player)
     {
-        return getPack(player.getWorld().getName(), player.getName());
+        return getPack(player.getWorld().getName(), player.getUniqueId());
     }
     
     public VPack getPack(String world, String player)
+    {
+        return getPack(world, Util.getUUID(player));
+    }
+    
+    public VPack getPack(String world, UUID player)
     {
         if(!Config.bool(world, "enabled"))
         {
             return null;
         }
         world = Config.world(world);
-        ConcurrentHashMap<String, VPack> map = _packs.get(world);
+        ConcurrentHashMap<UUID, VPack> map = _packs.get(world);
         if(map == null)
         {
-            map = new ConcurrentHashMap<String, VPack>();
+            map = new ConcurrentHashMap<UUID, VPack>();
             _packs.put(world, map);
         }
-        player = player.toLowerCase();
         VPack pack = map.get(player);
         if(pack == null)
         {
@@ -387,33 +396,38 @@ public class VPlugin extends JavaPlugin implements Runnable
     
     public void setPack(Player player, VPack pack)
     {
-        setPack(player.getWorld().getName(), player.getName(), pack);
+        setPack(player.getWorld().getName(), player.getUniqueId(), pack);
     }
     
     public void setPack(String world, String player, VPack pack)
+    {
+        setPack(world, Util.getUUID(player), pack);
+    }
+    
+    public void setPack(String world, UUID player, VPack pack)
     {
         if(!Config.bool(world, "enabled"))
         {
             return;
         }
         world = Config.world(world);
-        ConcurrentHashMap<String, VPack> map = _packs.get(world);
+        ConcurrentHashMap<UUID, VPack> map = _packs.get(world);
         if(map == null)
         {
             if(pack == null)
             {
                 return;
             }
-            map = new ConcurrentHashMap<String, VPack>();
+            map = new ConcurrentHashMap<UUID, VPack>();
             _packs.put(world, map);
         }
         if(pack == null)
         {
-            map.remove(player.toLowerCase());
+            map.remove(player);
         }
         else
         {
-            map.put(player.toLowerCase(), pack);
+            map.put(player, pack);
         }
     }
     
@@ -798,10 +812,10 @@ public class VPlugin extends JavaPlugin implements Runnable
     public void run()
     {
         int ticks = Config.getInt("tick.interval");
-        Iterator<ConcurrentHashMap<String, VPack>> iterator = _packs.values().iterator();
+        Iterator<ConcurrentHashMap<UUID, VPack>> iterator = _packs.values().iterator();
         while(iterator.hasNext())
         {
-            ConcurrentHashMap<String, VPack> map = iterator.next();
+            ConcurrentHashMap<UUID, VPack> map = iterator.next();
             if(map == null)
             {
                 continue;
@@ -887,7 +901,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         _numLoadThreads = 0;
         _saveRequested = false;
         _loadRequested = false;
-        _packs = new ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>>();
+        _packs = new ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>>();
         _annoyPlayers = new HashMap<Player, ArrayList<String>>();
     }
 }

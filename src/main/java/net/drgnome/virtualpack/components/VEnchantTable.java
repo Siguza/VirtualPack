@@ -19,14 +19,14 @@ public class VEnchantTable extends ContainerEnchantTable
 {
     private Random rand = new Random();
     private int bookshelves;
-    
+
     public VEnchantTable(EntityPlayer player, int bookshelves)
     {
         super(player.inventory, player.world, 0, 0, 0);
         this.checkReachable = false;
         this.bookshelves = bookshelves;
     }
-    
+
     public void #FIELD_CONTAINER_6#(IInventory iinventory)
     {
         if(iinventory == this.enchantSlots)
@@ -67,11 +67,11 @@ public class VEnchantTable extends ContainerEnchantTable
             }
         }
     }
-    
+
     public boolean #FIELD_CONTAINERENCHANTTABLE_2#(EntityHuman entityhuman, int i)
     {
         ItemStack itemstack = this.enchantSlots.getItem(0);
-        if(this.costs[i] > 0 && itemstack != null && (entityhuman.expLevel >= this.costs[i] || entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getName(), "vpack.use.enchanttable.free")))
+        if(this.costs[i] > 0 && itemstack != null && (entityhuman.expLevel >= this.costs[i] || entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getUniqueID(), "vpack.use.enchanttable.free")))
         {
             List list = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_2#(this.rand, itemstack, this.costs[i]);
             boolean flag = Item.#FIELD_ITEM_7#(itemstack.getItem()) == Material.BOOK.getId();
@@ -103,7 +103,7 @@ public class VEnchantTable extends ContainerEnchantTable
                     level = costs[i];
                     map = enchants;
                 }
-                if((level > entityhuman.expLevel && !entityhuman.abilities.canInstantlyBuild && !Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getName(), "vpack.use.enchanttable.free")) || enchants.isEmpty())
+                if((level > entityhuman.expLevel && !entityhuman.abilities.canInstantlyBuild && !Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getUniqueID(), "vpack.use.enchanttable.free")) || enchants.isEmpty())
                 {
                     return false;
                 }
@@ -136,7 +136,7 @@ public class VEnchantTable extends ContainerEnchantTable
                     }
                 }
                 // Only down level if we've applied the enchantments
-                if(applied && !entityhuman.abilities.canInstantlyBuild && !Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getName(), "vpack.use.enchanttable.free"))
+                if(applied && !entityhuman.abilities.canInstantlyBuild && !Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getUniqueID(), "vpack.use.enchanttable.free"))
                 {
                     entityhuman.levelDown(-level);
                 }
@@ -150,7 +150,7 @@ public class VEnchantTable extends ContainerEnchantTable
             return false;
         }
     }
-    
+
     private Player getPlayer()
     {
         try

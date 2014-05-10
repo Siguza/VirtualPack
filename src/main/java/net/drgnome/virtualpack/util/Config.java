@@ -20,7 +20,7 @@ public class Config
     public static final int MODE_INFINITE = 2;
     private static ConfigProxy _proxy;
     private static ArrayList<String> _worlds;
-    
+
     public static synchronized void reload()
     {
         _proxy = new ConfigProxy(_plugin.getConfig(), _plugin.getDataFolder());
@@ -36,7 +36,7 @@ public class Config
             }
         }
     }
-    
+
     public static String world(String world)
     {
         synchronized(_proxy)
@@ -44,7 +44,7 @@ public class Config
             return _proxy.world(world);
         }
     }
-    
+
     public static synchronized boolean worldEnabled(String world)
     {
         synchronized(_worlds)
@@ -52,7 +52,7 @@ public class Config
             return _worlds.contains(world);
         }
     }
-    
+
     public static String[] worlds()
     {
         synchronized(_worlds)
@@ -60,12 +60,12 @@ public class Config
             return _worlds.toArray(new String[0]);
         }
     }
-    
+
     public static String string(String string)
     {
         return string("*", string);
     }
-    
+
     public static String string(String world, String string)
     {
         synchronized(_proxy)
@@ -73,22 +73,22 @@ public class Config
             return _proxy.get(world, string);
         }
     }
-    
+
     public static boolean bool(String string)
     {
         return bool("*", string);
     }
-    
+
     public static boolean bool(String world, String string)
     {
         return string(world, string).equalsIgnoreCase("true");
     }
-    
+
     public static List<String> list(String string)
     {
         return list("*", string);
     }
-    
+
     public static List<String> list(String world, String string)
     {
         synchronized(_proxy)
@@ -96,12 +96,12 @@ public class Config
             return _proxy.list(world, string);
         }
     }
-    
+
     public static int getInt(String string)
     {
         return getInt("*", string);
     }
-    
+
     public static int getInt(String world, String string)
     {
         String value = string(world, string);
@@ -121,17 +121,18 @@ public class Config
             }
         }
     }
-    
+
     public static int getInt(Player player, String prefix, String string, String suffix, int mode)
     {
-        return getInt(player.getWorld().getName(), player.getName(), prefix, string, suffix, mode);
+        String w = player.getWorld().getName();
+        return getInt(w, Perm.getGroups(w, player), prefix, string, suffix, mode);
     }
-    
-    public static int getInt(String world, String player, String prefix, String string, String suffix, int mode)
+
+    public static int getInt(String world, UUID uuid, String prefix, String string, String suffix, int mode)
     {
-        return getInt(world, Perm.getGroups(world, player), prefix, string, suffix, mode);
+        return getInt(world, Perm.getGroups(world, uuid), prefix, string, suffix, mode);
     }
-    
+
     public static int getInt(String world, String[] groups, String prefix, String string, String suffix, int mode)
     {
         boolean max, infinite;
@@ -177,12 +178,12 @@ public class Config
         }
         return value;
     }
-    
+
     public static double getDouble(String string)
     {
         return getDouble("*", string);
     }
-    
+
     public static double getDouble(String world, String string)
     {
         String value = string(world, string);
@@ -195,32 +196,33 @@ public class Config
             return 0D;
         }
     }
-    
+
     public static double getDouble(Player player, String prefix, String string, String suffix, int mode, int digits)
     {
         return Util.smooth(getDouble(player, prefix, string, suffix, mode), digits);
     }
-    
-    public static double getDouble(String world, String player, String prefix, String string, String suffix, int mode, int digits)
+
+    public static double getDouble(String world, UUID uuid, String prefix, String string, String suffix, int mode, int digits)
     {
-        return Util.smooth(getDouble(world, player, prefix, string, suffix, mode), digits);
+        return Util.smooth(getDouble(world, uuid, prefix, string, suffix, mode), digits);
     }
-    
+
     public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, int mode, int digits)
     {
         return Util.smooth(getDouble(world, groups, prefix, string, suffix, mode), digits);
     }
-    
+
     public static double getDouble(Player player, String prefix, String string, String suffix, int mode)
     {
-        return getDouble(player.getWorld().getName(), player.getName(), prefix, string, suffix, mode);
+        String w = player.getWorld().getName();
+        return getDouble(w, Perm.getGroups(w, player), prefix, string, suffix, mode);
     }
-    
-    public static double getDouble(String world, String player, String prefix, String string, String suffix, int mode)
+
+    public static double getDouble(String world, UUID uuid, String prefix, String string, String suffix, int mode)
     {
-        return getDouble(world, Perm.getGroups(world, player), prefix, string, suffix, mode);
+        return getDouble(world, Perm.getGroups(world, uuid), prefix, string, suffix, mode);
     }
-    
+
     public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, int mode)
     {
         boolean max, infinite;
@@ -269,7 +271,7 @@ public class Config
         }
         return value;
     }
-    
+
     private static boolean isSet(String world, String string)
     {
         synchronized(_proxy)
@@ -277,15 +279,10 @@ public class Config
             return _proxy.isSet(world, string);
         }
     }
-    
+
     public static boolean isBlacklisted(Player player, String section, ItemStack item)
     {
-        return isBlacklisted(player.getWorld().getName(), player.getName(), section, item);
-    }
-    
-    public static boolean isBlacklisted(String world, String player, String section, ItemStack item)
-    {
-        if(Perm.has(world, player, "vpack.bypass.blacklist." + section))
+        if(Perm.has(player.getWorld().getName(), player, "vpack.bypass.blacklist." + section))
         {
             return false;
         }
@@ -294,10 +291,10 @@ public class Config
             return _proxy.isBlacklisted(section, item);
         }
     }
-    
-    public static boolean isBlacklisted(String world, String player, String section, ComparativeItemStack item)
+
+    public static boolean isBlacklisted(String world, UUID uuid, String section, ItemStack item)
     {
-        if(Perm.has(world, player, "vpack.bypass.blacklist." + section))
+        if(Perm.has(world, uuid, "vpack.bypass.blacklist." + section))
         {
             return false;
         }
@@ -306,7 +303,19 @@ public class Config
             return _proxy.isBlacklisted(section, item);
         }
     }
-    
+
+    public static boolean isBlacklisted(String world, UUID uuid, String section, ComparativeItemStack item)
+    {
+        if(Perm.has(world, uuid, "vpack.bypass.blacklist." + section))
+        {
+            return false;
+        }
+        synchronized(_proxy)
+        {
+            return _proxy.isBlacklisted(section, item);
+        }
+    }
+
     public static boolean isGodItem(ItemStack item)
     {
         synchronized(_proxy)

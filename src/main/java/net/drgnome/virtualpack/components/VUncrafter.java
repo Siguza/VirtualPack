@@ -35,7 +35,7 @@ public class VUncrafter extends VContainer
             #FIELD_CONTAINER_4#(new Slot(player.inventory, i, 8 + i * 18, 125)); // Derpnote
         }*/
     }
-    
+
     public void #FIELD_CONTAINER_5#(EntityHuman entityhuman) // Derpnote
     {
         for(int i = 0; i < 18; i++)
@@ -47,7 +47,7 @@ public class VUncrafter extends VContainer
             }
         }
     }
-    
+
     public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
     {
         if(shift == 1)
@@ -75,7 +75,7 @@ public class VUncrafter extends VContainer
         }
         return super.allowClick(slot, mouse, shift, human);
     }
-    
+
     private boolean isItemAllowed(EntityHuman human, ItemStack item)
     {
         if(item == null)
@@ -90,6 +90,6 @@ public class VUncrafter extends VContainer
                 return false;
             }
         }
-        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getName(), "uncrafter", CraftItemStack.asBukkitCopy(item));
+        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getUniqueID(), "uncrafter", CraftItemStack.asBukkitCopy(item));
     }
 }

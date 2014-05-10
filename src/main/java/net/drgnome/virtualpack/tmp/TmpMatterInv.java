@@ -6,6 +6,7 @@ package net.drgnome.virtualpack.tmp;
 
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
@@ -15,14 +16,15 @@ import net.drgnome.virtualpack.data.TransmutationHelper;
 
 public class TmpMatterInv extends VInv implements VProcessing
 {
+    public static final String _prefix = Util.parseColors("afar");
     protected ArrayList<ComparativeItemStack> _unlocked = new ArrayList<ComparativeItemStack>();
     protected boolean _allUnlocked = false;
     public double _value = 0D;
     protected String _worldname;
-    protected String _playername;
+    protected UUID _playername;
     private ArrayList<Integer> _slotUpdate = new ArrayList<Integer>();
-    
-    public TmpMatterInv(String worldname, String playername)
+
+    public TmpMatterInv(String worldname, UUID playername)
     {
         super(54);
         _worldname = worldname;
@@ -33,8 +35,8 @@ public class TmpMatterInv extends VInv implements VProcessing
             updateInv();
         }
     }
-    
-    public TmpMatterInv(String worldname, String playername, String[] data)
+
+    public TmpMatterInv(String worldname, UUID playername, String[] data)
     {
         super(54);
         _worldname = worldname;
@@ -58,7 +60,7 @@ public class TmpMatterInv extends VInv implements VProcessing
             updateInv();
         }
     }
-    
+
     public String[] serialize()
     {
         ArrayList<String> list = new ArrayList<String>();
@@ -76,7 +78,7 @@ public class TmpMatterInv extends VInv implements VProcessing
         }
         return list.toArray(new String[0]);
     }
-    
+
     public void setItem(int slot, ItemStack item)
     {
         if((slot >= 1) && (slot < 9))
@@ -85,7 +87,7 @@ public class TmpMatterInv extends VInv implements VProcessing
         }
         super.setItem(slot, item);
     }
-    
+
     public void process()
     {
         for(Integer i : _slotUpdate)
@@ -94,7 +96,7 @@ public class TmpMatterInv extends VInv implements VProcessing
         }
         _slotUpdate.clear();
     }
-    
+
     private void processSlot(int slot)
     {
         if(slot == 8)
@@ -114,17 +116,17 @@ public class TmpMatterInv extends VInv implements VProcessing
             updateInfo();
         }
     }
-    
+
     public void updateInfo()
     {
         org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(399, 1);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(MatterInv._prefix + Util.parseColors(Config.string("transmutation.color.stored-name")) + Lang.getDirect(_playername, "matter.stored"));
+        meta.setDisplayName(_prefix + Util.parseColors(Config.string("transmutation.color.stored-name")) + Lang.getDirect(Bukkit.getOfflinePlayer(_playername).getName(), "matter.stored"));
         meta.setLore(Util.createList(Util.parseColors(Config.string("transmutation.color.stored-value")) + Util.formatDouble(_value)));
         item.setItemMeta(meta);
         super.setItem(0, CraftItemStack.asNMSCopy(item));
     }
-    
+
     public void updateInv()
     {
         ValuedItemStack[] items = _allUnlocked ? TransmutationHelper.getAllFiltered(_worldname, _playername) : TransmutationHelper.getAllFiltered(_worldname, _playername, _unlocked.toArray(new ComparativeItemStack[0]));
@@ -156,7 +158,7 @@ public class TmpMatterInv extends VInv implements VProcessing
             super.setItem(i, CraftItemStack.asNMSCopy(items[i + off - 9].createStack(1)));
         }
     }
-    
+
     private boolean unlock(ItemStack mcitem)
     {
         org.bukkit.inventory.ItemStack item = CraftItemStack.asBukkitCopy(mcitem);
@@ -181,7 +183,7 @@ public class TmpMatterInv extends VInv implements VProcessing
         updateInv();
         return true;
     }
-    
+
     public void reset()
     {
         _allUnlocked = false;

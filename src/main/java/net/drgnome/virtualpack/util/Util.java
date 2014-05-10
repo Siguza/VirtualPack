@@ -13,17 +13,16 @@ import java.lang.reflect.*;
 import javax.xml.bind.DatatypeConverter;
 import org.json.simple.*;
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import net.drgnome.virtualpack.components.BaseInv;
-import net.drgnome.virtualpack.components.BaseView;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class Util
 {
     private static boolean _lastStack;
     private static String[] _lastStackIds;
-    
+
     // Because Math.round is too slow in Java 6
     public static int round(double d)
     {
@@ -31,14 +30,14 @@ public class Util
         d -= i;
         return i + (d >= 0.5 ? 1 : (d <= -0.5 ? -1 : 0));
     }
-    
+
     public static double roundBig(double d)
     {
         long i = (long)d;
         d -= i;
         return i + (d >= 0.5 ? 1 : (d <= -0.5 ? -1 : 0));
     }
-    
+
     // Same for Math.floor
     public static int floor(double d)
     {
@@ -46,7 +45,7 @@ public class Util
         d -= i;
         return i - (d < 0D ? 1 : 0);
     }
-    
+
     public static boolean hasUpdate(int projectID, String version)
     {
         try
@@ -109,12 +108,12 @@ public class Util
         }
         return false;
     }
-    
+
     public static <T> T[] createGenericArray(Class<T> clazz)
     {
         return createGenericArray(clazz, 0);
     }
-    
+
     public static <T> T[] createGenericArray(Class<T> clazz, int... size)
     {
         for(int i = 0; i < size.length; i++)
@@ -134,7 +133,7 @@ public class Util
             return (T[])null;
         }
     }
-    
+
     public static <T extends Cloneable> T copy(T object)
     {
         if(object != null)
@@ -152,7 +151,7 @@ public class Util
         }
         return null;
     }
-    
+
     public static <T extends Cloneable> T[] copy(T... objects)
     {
         ArrayList<T> list = new ArrayList<T>();
@@ -162,12 +161,12 @@ public class Util
         }
         return list.toArray(createGenericArray((Class<T>)objects.getClass().getComponentType()));
     }
-    
+
     public static net.minecraft.server.v#MC_VERSION#.ItemStack copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item)
     {
         return item == null ? null : item.cloneItemStack();
     }
-    
+
     public static net.minecraft.server.v#MC_VERSION#.ItemStack[] copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item[])
     {
         net.minecraft.server.v#MC_VERSION#.ItemStack it[] = new net.minecraft.server.v#MC_VERSION#.ItemStack[item.length];
@@ -177,7 +176,7 @@ public class Util
         }
         return it;
     }
-    
+
     public static <T> T[] cut(T[] objects, int start)
     {
         T[] array = createGenericArray((Class<T>)objects.getClass().getComponentType(), objects.length - start);
@@ -187,7 +186,7 @@ public class Util
         }
         return array;
     }
-    
+
     public static <T> T[] merge(T[]... objects)
     {
         ArrayList<T> list = new ArrayList<T>();
@@ -211,7 +210,7 @@ public class Util
         }
         return list.toArray((T[])Array.newInstance(objects[0].getClass().getComponentType(), list.size()));
     }
-    
+
     public static <T> ArrayList<T> createList(T... array)
     {
         ArrayList<T> list = new ArrayList<T>();
@@ -221,12 +220,12 @@ public class Util
         }
         return list;
     }
-    
+
     public static boolean areEqual(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
     {
         return (Item.#FIELD_ITEM_7#(item1.getItem()) == Item.#FIELD_ITEM_7#(item2.getItem())) && (item1.count == item2.count) && (item1.getData() == item2.getData());
     }
-    
+
     public static int tryParse(String s, int i)
     {
         try
@@ -238,7 +237,7 @@ public class Util
             return i;
         }
     }
-    
+
     public static double tryParse(String s, double d)
     {
         try
@@ -250,7 +249,7 @@ public class Util
             return d;
         }
     }
-    
+
     public static String implode(String glue, String... parts)
     {
         if((glue == null) || (parts.length <= 0))
@@ -264,29 +263,29 @@ public class Util
         }
         return string;
     }
-    
+
     public static double smooth(double d, int digits)
     {
         double factor = Math.pow(10, digits);
         return round(d * factor) / factor;
     }
-    
+
     public static double smoothBig(double d, int digits)
     {
         double factor = Math.pow(10, digits);
         return roundBig(d * factor) / factor;
     }
-    
+
     public static String printDoublePlain(double d)
     {
         return BigDecimal.valueOf(d).toPlainString();
     }
-    
+
     public static String printDouble(double d)
     {
         return BigDecimal.valueOf(smoothBig(d, 3)).toPlainString();
     }
-    
+
     public static String formatDouble(double d)
     {
         String[] plain = printDouble(d).split("\\.");
@@ -303,7 +302,7 @@ public class Util
         }
         return formatted;
     }
-    
+
     public static double parseBigDouble(String s)
     {
         try
@@ -315,7 +314,7 @@ public class Util
             return 0D;
         }
     }
-    
+
     public static int max(int... values)
     {
         int tmp = values[0];
@@ -328,7 +327,7 @@ public class Util
         }
         return tmp;
     }
-    
+
     public static int min(int... values)
     {
         int tmp = values[0];
@@ -341,7 +340,7 @@ public class Util
         }
         return tmp;
     }
-    
+
     public static net.minecraft.server.v#MC_VERSION#.ItemStack stringToItemStack(String string)
     {
         if((string == null) || (string.length() == 0))
@@ -350,7 +349,7 @@ public class Util
         }
         return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string), NBTReadLimiter.#FIELD_NBTREADLIMITER_1#));
     }
-    
+
     public static String itemStackToString(net.minecraft.server.v#MC_VERSION#.ItemStack item)
     {
         if(item == null)
@@ -359,7 +358,7 @@ public class Util
         }
         return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound())));
     }
-    
+
     public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
     {
         _lastStack = false;
@@ -386,7 +385,7 @@ public class Util
         item2.count -= max;
         return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, (item2.count <= 0) ? null : item2};
     }
-    
+
     public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(IInventory[] invs, net.minecraft.server.v#MC_VERSION#.ItemStack... items)
     {
         boolean[] stacked = new boolean[invs.length];
@@ -430,12 +429,12 @@ public class Util
         _lastStackIds = touched.toArray(new String[0]);
         return left.toArray(new net.minecraft.server.v#MC_VERSION#.ItemStack[0]);
     }
-    
+
     public static String[] getLastStackingIds()
     {
         return _lastStackIds;
     }
-    
+
     public static void openWindow(EntityPlayer player, Container container, String name, int id, int size)
     {
         if(name.length() > 32)
@@ -447,12 +446,7 @@ public class Util
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);
     }
-    
-    public static void openInv(Player player, BaseInv inv)
-    {
-        player.openInventory(new BaseView(player, inv));
-    }
-    
+
     public static boolean loadJar(File file)
     {
         ClassLoader loader = _plugin.getClass().getClassLoader();
@@ -480,22 +474,22 @@ public class Util
         }
         return true;
     }
-    
+
     public static String base64en(String string)
     {
         return DatatypeConverter.printBase64Binary(string.getBytes());
     }
-    
+
     public static String base64de(String string)
     {
         return new String(DatatypeConverter.parseBase64Binary(string));
     }
-    
+
     public static String[][] readIni(File file) throws FileNotFoundException, IOException
     {
         return readIni(new FileInputStream(file));
     }
-    
+
     public static String[][] readIni(InputStream stream) throws IOException
     {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
@@ -511,7 +505,7 @@ public class Util
         }
         return list.toArray(new String[0][]);
     }
-    
+
     public static String parseColors(String chars)
     {
         String colors = "";
@@ -520,5 +514,10 @@ public class Util
             colors += ChatColor.getByChar(c).toString();
         }
         return colors;
+    }
+
+    public static UUID getUUID(String player)
+    {
+        return player.startsWith("*") ? UUID.fromString(player.substring(1)) : Bukkit.getOfflinePlayer(player).getUniqueId();
     }
 }

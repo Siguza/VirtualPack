@@ -15,7 +15,7 @@ import static net.drgnome.virtualpack.util.Global.*;
 public class TransmutationHelper
 {
     private static ArrayList<ValuedItemStack> _list;
-    
+
     public static void init()
     {
         _list = new ArrayList<ValuedItemStack>();
@@ -77,7 +77,7 @@ public class TransmutationHelper
             t.printStackTrace();
         }
     }
-    
+
     private static ArrayList<QuantitativeRecipe> getAllRecipes()
     {
         ArrayList<Recipe> base = new ArrayList<Recipe>();
@@ -128,7 +128,7 @@ public class TransmutationHelper
         }
         return recipes;
     }
-    
+
     private static void addToMap(Map<ComparativeItemStack, Integer> map, ItemStack item)
     {
         if(item == null)
@@ -153,7 +153,7 @@ public class TransmutationHelper
             map.put(key, map.get(key) + 1);
         }
     }
-    
+
     private static boolean addMapping(QuantitativeRecipe recipe)
     {
         ItemStack result = recipe.getResult();
@@ -169,7 +169,7 @@ public class TransmutationHelper
         _list.add(new ValuedItemStack(result, value / (double)result.getAmount()));
         return true;
     }
-    
+
     private static double calculateValue(HashMap<ComparativeItemStack, Integer> map)
     {
         double value = 0D;
@@ -190,7 +190,7 @@ public class TransmutationHelper
         }
         return value;
     }
-    
+
     private static void sort()
     {
         ArrayList<ValuedItemStack> tmpList = _list;
@@ -212,7 +212,7 @@ public class TransmutationHelper
             }
         }
     }
-    
+
     private static boolean isDefined(ItemStack item)
     {
         for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
@@ -224,7 +224,7 @@ public class TransmutationHelper
         }
         return false;
     }
-    
+
     private static boolean isDefined(ComparativeItemStack item)
     {
         for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
@@ -236,7 +236,7 @@ public class TransmutationHelper
         }
         return false;
     }
-    
+
     private static boolean isMapped(ItemStack item)
     {
         for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
@@ -248,7 +248,7 @@ public class TransmutationHelper
         }
         return false;
     }
-    
+
     private static boolean isMapped(ComparativeItemStack item)
     {
         for(ValuedItemStack stack : _list.toArray(new ValuedItemStack[0]))
@@ -260,7 +260,7 @@ public class TransmutationHelper
         }
         return false;
     }
-    
+
     public static double getValue(ItemStack item)
     {
         if(item == null)
@@ -276,7 +276,7 @@ public class TransmutationHelper
         }
         return 0D;
     }
-    
+
     public static double getValue(ComparativeItemStack item)
     {
         if(item == null)
@@ -292,12 +292,12 @@ public class TransmutationHelper
         }
         return 0D;
     }
-    
+
     public static ValuedItemStack[] getAll()
     {
         return _list.toArray(new ValuedItemStack[0]);
     }
-    
+
     public static ValuedItemStack[] getAll(int start)
     {
         start *= 20;
@@ -317,13 +317,13 @@ public class TransmutationHelper
         }
         return list.toArray(new ValuedItemStack[0]);
     }
-    
-    public static ValuedItemStack[] getAllFiltered(String world, String player)
+
+    public static ValuedItemStack[] getAllFiltered(String world, UUID player)
     {
         return filter(world, player, _list);
     }
-    
-    public static ValuedItemStack[] getAllFiltered(String world, String player, ComparativeItemStack[] unlocked)
+
+    public static ValuedItemStack[] getAllFiltered(String world, UUID player, ComparativeItemStack[] unlocked)
     {
         ArrayList<ValuedItemStack> list = new ArrayList<ValuedItemStack>();
         for(ValuedItemStack stack : _list)
@@ -339,8 +339,8 @@ public class TransmutationHelper
         }
         return filter(world, player, list);
     }
-    
-    private static ValuedItemStack[] filter(String world, String player, ArrayList<ValuedItemStack> list)
+
+    private static ValuedItemStack[] filter(String world, UUID player, ArrayList<ValuedItemStack> list)
     {
         for(ValuedItemStack stack : list.toArray(new ValuedItemStack[0]))
         {
