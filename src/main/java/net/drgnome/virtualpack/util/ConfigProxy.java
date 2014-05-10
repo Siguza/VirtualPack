@@ -20,7 +20,7 @@ public class ConfigProxy
     private HashMap<String, YamlConfiguration> _worlds = new HashMap<String, YamlConfiguration>();
     private HashMap<String, ConfigBlacklist> _blacklists = new HashMap<String, ConfigBlacklist>();
     private ArrayList<ComparativeItemStack> _godItems = new ArrayList<ComparativeItemStack>();
-    
+
     public ConfigProxy(FileConfiguration global, File dir)
     {
         _global = global;
@@ -101,7 +101,7 @@ public class ConfigProxy
             _godItems.add(new ComparativeItemStack(s));
         }
     }
-    
+
     private void setDefs()
     {
         setDef("version", _configversion);
@@ -119,6 +119,8 @@ public class ConfigProxy
         setDef("tick.interval", "10");
         setDef("on-death", "keep");
         setDef("economy", "true");
+        setDef("brewevent.mode", "1");
+        setDef("brewevent.ignorecancelled", "false");
         setDef("allow-creative", "false");
         setDef("uncraft-enchanted", "true");
         setDef("events.use", "true");
@@ -200,7 +202,7 @@ public class ConfigProxy
         setDef("blacklist.materializer.whitelist", "false");
         setDef("blacklist.materializer.list", new ArrayList<String>());
     }
-    
+
     private void setDef(String path, Object value)
     {
         if(!_global.isSet(path))
@@ -208,7 +210,7 @@ public class ConfigProxy
             _global.set(path, value);
         }
     }
-    
+
     public String get(String world, String string)
     {
         if(!world.equals("*") && _worlds.containsKey(world))
@@ -225,7 +227,7 @@ public class ConfigProxy
         }
         return "";
     }
-    
+
     public List<String> list(String world, String string)
     {
         if(!world.equals("*") && _worlds.containsKey(world))
@@ -242,17 +244,17 @@ public class ConfigProxy
         }
         return null;
     }
-    
+
     public String world(String world)
     {
         return _worlds.containsKey(world) ? _worlds.get(world).getString("world") : "*";
     }
-    
+
     public boolean isSet(String world, String string)
     {
         return (!world.equals("*") && _worlds.containsKey(world)) ? _worlds.get(world).isSet(string) : _global.isSet(string);
     }
-    
+
     public boolean isBlacklisted(String section, ItemStack item)
     {
         ConfigBlacklist blacklist = _blacklists.get(section.toLowerCase());
@@ -262,7 +264,7 @@ public class ConfigProxy
         }
         return blacklist.isBlacklisted(item);
     }
-    
+
     public boolean isBlacklisted(String section, ComparativeItemStack item)
     {
         ConfigBlacklist blacklist = _blacklists.get(section.toLowerCase());
@@ -272,7 +274,7 @@ public class ConfigProxy
         }
         return blacklist.isBlacklisted(item);
     }
-    
+
     public boolean isGodItem(ItemStack item)
     {
         if(item == null)
