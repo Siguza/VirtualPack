@@ -920,7 +920,7 @@ public class VPack
             EntityPlayer mcp;
             if(p == null)
             {
-                File dir = new File(Bukkit.getWorlds().get(0).getWorldFolder(), "players");
+                File dir = new File(Bukkit.getWorlds().get(0).getWorldFolder(), "playerdata");
                 if(!dir.exists())
                 {
                     throw new Exception();
