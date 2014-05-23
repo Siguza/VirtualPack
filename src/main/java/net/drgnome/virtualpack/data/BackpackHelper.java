@@ -32,14 +32,14 @@ public class BackpackHelper
             {
                 packs.renameTo(new File(packs.getParentFile(), "backpacks_old"));
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 _log.warning("[VirtualPack] Couldn't rename Backpack data folder!");
             }
             _log.info("[VirtualPack] Backpack data loaded.");
         }
     }
-    
+
     private static void load(File dataFolder)
     {
         String world = dataFolder.getName();
@@ -62,7 +62,7 @@ public class BackpackHelper
             _log.info("[VirtualPack] (Backpack) Loaded " + playerName + "'s backpack in world " + world);
 		}
     }
-    
+
     private static VInv loadFile(File file, int chestSize)
     {
         try
@@ -77,16 +77,16 @@ public class BackpackHelper
                 {
                     items[Integer.parseInt(key.substring(5))] = CraftItemStack.asNMSCopy(map.getItemStack(key + ".ItemStack"));
                 }
-                catch(Throwable t1)
+                catch(Exception e1)
                 {
                     continue;
                 }
             }
             return new VInv(chestSize, items);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }

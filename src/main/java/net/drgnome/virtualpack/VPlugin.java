@@ -31,7 +31,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     public static final String _version = "#VERSION#";
     public static final int _projectID = 37545; // Bukkit
     public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil", "materializer", "enderchest"};
-    
+
     static final VCommands _commandHandler = new VCommands();
     private ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>> _packs = new ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>>();
     private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
@@ -48,26 +48,26 @@ public class VPlugin extends JavaPlugin implements Runnable
     private CommandRegistration _reg;
     private boolean _starting = true;
     int[] _threadId = new int[6];
-    
+
     public VPlugin()
     {
         super();
         _plugin = this;
     }
-    
+
     public Connection mysql()
     {
         try
         {
             return DriverManager.getConnection(Config.string("db.url"), Config.string("db.user"), Config.string("db.pw"));
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
             return null;
         }
     }
-    
+
     public synchronized void init()
     {
         if(_threadId[5] != 0)
@@ -95,9 +95,9 @@ public class VPlugin extends JavaPlugin implements Runnable
                 _portMysql = !row.next();
                 db.close();
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
-                t.printStackTrace();
+                e.printStackTrace();
             }
         }
         if(!Perm.init() || !Money.init())
@@ -130,7 +130,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         loadUserData();
         registerThreads();
     }
-    
+
     public void registerThreads()
     {
         _threadId[0] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadLoadManager(), 0L, 1L);
@@ -155,14 +155,14 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         _log.info(Lang.get(null, "vpack.enable", _version));
     }
-    
+
     private boolean registerCommands()
     {
         try
         {
             Class clazz = Class.forName("com.sk89q.bukkit.util.CommandRegistration");
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             boolean found = false;
             for(File file : getDataFolder().listFiles())
@@ -213,14 +213,14 @@ public class VPlugin extends JavaPlugin implements Runnable
             _reg = new CommandRegistration(this, _commandHandler);
             return _reg.register(list);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             _log.severe(Lang.get(null, "worldedit"));
-            t.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
-    
+
     public void onEnable()
     {
         super.onEnable();
@@ -239,13 +239,13 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             init();
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             warn();
-            t.printStackTrace();
+            e.printStackTrace();
         }
     }
-    
+
     public void onDisable()
     {
         super.onDisable();
@@ -265,41 +265,13 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             _reg.unregisterCommands();
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
         }
-        if((_initThread != null) && !_initThread.done())
+        // If the plugin is still loading, there's nothing to save
+        if((_initThread != null) && !_initThread.done() || _loadThreads.size() > 0)
         {
-            try
-            {
-                _initThread.join();
-            }
-            catch(InterruptedException e)
-            {
-                _log.log(Level.WARNING, "[VirtualPack] Interrupted: " + e.getMessage());
-            }
-        }
-        if((_initThread != null) && !_initThread.done())
-        {
-            try
-            {
-                _initThread.join();
-            }
-            catch(InterruptedException e)
-            {
-                _log.log(Level.WARNING, "[VirtualPack] Waiting for ThreadInit interrupted: " + e.getMessage());
-            }
-        }
-        while(_loadThreads.size() > 0)
-        {
-            try
-            {
-                _loadThreads.get(0).join();
-            }
-            catch(InterruptedException e)
-            {
-                _log.log(Level.WARNING, "[VirtualPack] Waiting for ThreadLoad interrupted: " + e.getMessage());
-            }
+            return;
         }
         if((_saveThread == null) || _saveThread.done())
         {
@@ -314,17 +286,17 @@ public class VPlugin extends JavaPlugin implements Runnable
             _log.log(Level.WARNING, "[VirtualPack] Waiting for ThreadSave interrupted: " + e.getMessage());
         }
     }
-    
+
     public boolean hasPack(Player player)
     {
         return hasPack(player.getWorld().getName(), player.getName());
     }
-    
+
     public boolean hasPack(String world, String player)
     {
         return hasPack(world, Util.getUUID(player));
     }
-    
+
     public boolean hasPack(String world, UUID player)
     {
         world = Config.world(world);
@@ -335,7 +307,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         return map.containsKey(player);
     }
-    
+
     public VPack[] getAllPacks()
     {
         ArrayList<VPack> list = new ArrayList<VPack>();
@@ -351,7 +323,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         return list.toArray(new VPack[0]);
     }
-    
+
     public VPack[] getPacks(String world)
     {
         if(!Config.bool(world, "enabled"))
@@ -361,17 +333,17 @@ public class VPlugin extends JavaPlugin implements Runnable
         world = Config.world(world);
         return _packs.get(world).values().toArray(new VPack[0]);
     }
-    
+
     public VPack getPack(Player player)
     {
         return getPack(player.getWorld().getName(), player.getUniqueId());
     }
-    
+
     public VPack getPack(String world, String player)
     {
         return getPack(world, Util.getUUID(player));
     }
-    
+
     public VPack getPack(String world, UUID player)
     {
         if(!Config.bool(world, "enabled"))
@@ -393,17 +365,17 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         return pack;
     }
-    
+
     public void setPack(Player player, VPack pack)
     {
         setPack(player.getWorld().getName(), player.getUniqueId(), pack);
     }
-    
+
     public void setPack(String world, String player, VPack pack)
     {
         setPack(world, Util.getUUID(player), pack);
     }
-    
+
     public void setPack(String world, UUID player, VPack pack)
     {
         if(!Config.bool(world, "enabled"))
@@ -430,17 +402,17 @@ public class VPlugin extends JavaPlugin implements Runnable
             map.put(player, pack);
         }
     }
-    
+
     public void saveUserData()
     {
         saveUserData(false);
     }
-    
+
     public void saveUserData(boolean forcefile)
     {
         saveUserData(forcefile, "data.db");
     }
-    
+
     public void saveUserData(boolean forcefile, String filename)
     {
         if(!_loadSuccess)
@@ -459,10 +431,10 @@ public class VPlugin extends JavaPlugin implements Runnable
             {
                 _saveThread = new VThreadSave(_packs);
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 warn();
-                t.printStackTrace();
+                e.printStackTrace();
                 return;
             }
         }
@@ -473,7 +445,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         _saveThread.start();
         _saveRequested = false;
     }
-    
+
     public void loadUserData()
     {
         if(Config.bool("load-multithreaded") || Config.string("load-multithreaded").equalsIgnoreCase("semi"))
@@ -491,7 +463,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             loadUserData0();
         }
     }
-    
+
     public synchronized void loadUserData0()
     {
         _loadRequested = true;
@@ -531,16 +503,16 @@ public class VPlugin extends JavaPlugin implements Runnable
             ChestKeeperHelper.check();
             VirtualChestHelper.check();
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             _log.severe("[VirtualPack] COULD NOT LOAD USER DATA!");
-            t.printStackTrace();
+            e.printStackTrace();
             _loadSuccess = false;
         }
         _loadRequested = false;
     }
-    
-    private void loadMysql() throws Throwable
+
+    private void loadMysql() throws Exception
     {
         Connection db = DriverManager.getConnection(Config.string("db.url"), Config.string("db.user"), Config.string("db.pw"));
         int version = 0;
@@ -579,8 +551,8 @@ public class VPlugin extends JavaPlugin implements Runnable
         db.close();
         load(list);
     }
-    
-    private void loadFlatfile() throws Throwable
+
+    private void loadFlatfile() throws Exception
     {
         BufferedReader file = new BufferedReader(new FileReader(new File(getDataFolder(), "data.db")));
         int version = 0;
@@ -610,7 +582,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         file.close();
         load(list);
     }
-    
+
     private void load(List<String[]> list)
     {
         if(Config.bool("load-multithreaded"))
@@ -648,12 +620,12 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         _loadSuccess = true;
     }
-    
+
     public void forceMysqlPort()
     {
         _portMysql = true;
     }
-    
+
     public void handleDeath(Player player)
     {
         if(!hasPack(player))
@@ -674,7 +646,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             getPack(player).reset();
         }
     }
-    
+
     public void reloadConfig()
     {
         super.reloadConfig();
@@ -693,7 +665,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
         }
     }
-    
+
     private void checkFiles()
     {
         try
@@ -713,12 +685,12 @@ public class VPlugin extends JavaPlugin implements Runnable
                 }
             }
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
         }
     }
-    
+
     private void checkMatterFile()
     {
         try
@@ -739,12 +711,12 @@ public class VPlugin extends JavaPlugin implements Runnable
                 }
             }
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
         }
     }
-    
+
     public void runLoad()
     {
         if(_loadRequested)
@@ -777,13 +749,13 @@ public class VPlugin extends JavaPlugin implements Runnable
             saveUserData();
         }
     }
-    
+
     public void runSave()
     {
         _log.info("[VirtualPack] Saving user data...");
         saveUserData();
     }
-    
+
     public void runAnnoy()
     {
         for(Map.Entry<Player, ArrayList<String>> entry : _annoyPlayers.entrySet())
@@ -799,7 +771,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
         }
     }
-    
+
     public void runUpdate()
     {
         if(checkUpdate())
@@ -808,7 +780,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             _threadId[4] = 0;
         }
     }
-    
+
     public void run()
     {
         int ticks = Config.getInt("tick.interval");
@@ -830,18 +802,18 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
         }
     }
-    
+
     public boolean checkUpdate()
     {
         _update = Util.hasUpdate(_projectID, _version);
         return _update;
     }
-    
+
     public boolean hasUpdate()
     {
         return _update;
     }
-    
+
     public void annoyPlayer(Player player, String[] messages)
     {
         ArrayList<String> list = _annoyPlayers.get(player);
@@ -855,12 +827,12 @@ public class VPlugin extends JavaPlugin implements Runnable
             list.add(msg);
         }
     }
-    
+
     public void stopAnnoyingPlayer(Player player)
     {
         _annoyPlayers.remove(player);
     }
-    
+
     public String getLoadingProgress()
     {
         int size;
@@ -870,12 +842,12 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         return "" + Util.smooth((double)(_numLoadThreads - size) * 100D / (double)_numLoadThreads, 2);
     }
-    
+
     public boolean isReloading()
     {
         return _loadRequested || isActuallyReloading();
     }
-    
+
     private boolean isActuallyReloading()
     {
         boolean isDone;
@@ -885,12 +857,12 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         return !isDone || ((_initThread != null) && !_initThread.done());
     }
-    
+
     private boolean canReload()
     {
         return ((_saveThread == null) || _saveThread.done()) && !isActuallyReloading();
     }
-    
+
     void deleteEverything()
     {
         _loadSuccess = true;

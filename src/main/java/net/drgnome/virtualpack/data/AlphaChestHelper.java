@@ -47,7 +47,7 @@ public class AlphaChestHelper
             load(chests);
         }
     }
-    
+
     private static void load(File dataFolder)
     {
         _log.info("[VirtualPack] Converting AlphaChest database...");
@@ -66,15 +66,15 @@ public class AlphaChestHelper
                 _log.info("[VirtualPack] (AlphaChest) Loaded " + entry.getKey() + "'s chest");
             }
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
         }
         try
         {
             dataFolder.renameTo(new File(dataFolder.getParentFile(), "chests_old"));
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             _log.warning("[VirtualPack] Couldn't rename AlphaChest data folder!");
         }

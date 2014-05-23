@@ -30,9 +30,9 @@ public class ConfigProxy
             {
                 _global.save(new File(dir, "config_" + _configversion + ".yml"));
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
-                t.printStackTrace();
+                e.printStackTrace();
             }
             for(String s : _global.getKeys(false).toArray(new String[0]))
             {
@@ -54,9 +54,9 @@ public class ConfigProxy
                 {
                     yaml.load(file);
                 }
-                catch(Throwable t)
+                catch(Exception e)
                 {
-                    t.printStackTrace();
+                    e.printStackTrace();
                 }
                 yaml.set("world", world);
                 _worlds.put(world, yaml);

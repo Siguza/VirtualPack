@@ -17,7 +17,7 @@ public class VThreadSave extends Thread
     private boolean _mysql;
     private File _file;
     private ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>> _packs;
-    
+
     public VThreadSave(File file, ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>> packs)
     {
         super();
@@ -25,14 +25,14 @@ public class VThreadSave extends Thread
         _file = file;
         _packs = packs;
     }
-    
+
     public VThreadSave(ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>> packs)
     {
         super();
         _mysql = true;
         _packs = packs;
     }
-    
+
     public void run()
     {
         try
@@ -83,13 +83,13 @@ public class VThreadSave extends Thread
                 writer.close();
             }
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             warn();
-            t.printStackTrace();
+            e.printStackTrace();
         }
     }
-    
+
     public boolean done()
     {
         return this.getState() == State.TERMINATED;

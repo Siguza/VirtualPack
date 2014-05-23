@@ -18,7 +18,7 @@ import static net.drgnome.virtualpack.util.Global.*;
 public class ChestKeeperHelper
 {
     private static Field[] _fields = null;
-    
+
     public static void check()
     {
         File chests = new File(_plugin.getDataFolder(), "chestkeeper");
@@ -49,7 +49,7 @@ public class ChestKeeperHelper
             load(chests);
         }
     }
-    
+
     private static void load(File dataFolder)
     {
         _log.info("[VirtualPack] Converting ChestKeeper database...");
@@ -65,10 +65,10 @@ public class ChestKeeperHelper
                     f.setAccessible(true);
                 }
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 _log.severe("[VirtualPack] Failed to load ChestKeeper database!");
-                t.printStackTrace();
+                e.printStackTrace();
                 return;
             }
         }
@@ -97,13 +97,13 @@ public class ChestKeeperHelper
         {
             dataFolder.renameTo(new File(dataFolder.getParentFile(), "chestkeeper_old"));
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             _log.warning("[VirtualPack] Couldn't rename ChestKeeper data folder!");
         }
         _log.info("[VirtualPack] ChestKeeper data loaded.");
     }
-    
+
     private static VInv[] loadFile(File file, int chestSize)
     {
         try
@@ -120,9 +120,9 @@ public class ChestKeeperHelper
             }
             return invlist.toArray(new VInv[0]);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }

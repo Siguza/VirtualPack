@@ -32,9 +32,9 @@ public class VAnvil extends ContainerAnvil
                     break;
                 }
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
-                t.printStackTrace();
+                e.printStackTrace();
                 break;
             }
         }
@@ -378,9 +378,9 @@ public class VAnvil extends ContainerAnvil
             f.setAccessible(true);
             return (IInventory)f.get(anvil);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
             return null;
         }
     }

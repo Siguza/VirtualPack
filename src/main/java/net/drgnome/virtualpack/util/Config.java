@@ -109,13 +109,13 @@ public class Config
         {
             return Integer.parseInt(value);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             try
             {
                 return Util.round(Double.parseDouble(value));
             }
-            catch(Throwable t2)
+            catch(Exception e1)
             {
                 return 0;
             }
@@ -191,7 +191,7 @@ public class Config
         {
             return Double.parseDouble(value);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             return 0D;
         }

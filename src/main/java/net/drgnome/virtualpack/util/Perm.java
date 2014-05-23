@@ -108,10 +108,10 @@ public class Perm
             {
                 break;
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 warn();
-                t.printStackTrace();
+                e.printStackTrace();
                 break;
             }
         }
@@ -167,10 +167,10 @@ public class Perm
             {
                 break;
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 warn();
-                t.printStackTrace();
+                e.printStackTrace();
                 break;
             }
         }
@@ -224,10 +224,10 @@ public class Perm
             {
                 break;
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 warn();
-                t.printStackTrace();
+                e.printStackTrace();
                 break;
             }
         }

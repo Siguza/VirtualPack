@@ -13,17 +13,17 @@ public class ComparativeItemStack
     protected static short _defaultMeta = 0;
     protected int _id;
     protected short _meta;
-    
+
     public static boolean hasSubtypes(int id)
     {
         return hasSubtypes(Material.getMaterial(id));
     }
-    
+
     public static boolean hasSubtypes(Material m)
     {
         return (m == null) || m.isBlock() || (m.getMaxDurability() == 0);
     }
-    
+
     public ComparativeItemStack(String data)
     {
         _meta = _defaultMeta;
@@ -44,24 +44,24 @@ public class ComparativeItemStack
         {
             _id = Integer.parseInt(data);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             Material m = Material.getMaterial(data.toUpperCase());
             _id = (m == null) ? 0 : m.getId();
         }
     }
-    
+
     public ComparativeItemStack(ItemStack item)
     {
         this(item == null ? 0 : item.getTypeId(), item == null ? _defaultMeta : item.getDurability());
     }
-    
+
     public ComparativeItemStack(int id, short meta)
     {
         _id = id;
         _meta = meta;
     }
-    
+
     public boolean matches(ItemStack item)
     {
         if(item == null)
@@ -70,7 +70,7 @@ public class ComparativeItemStack
         }
         return (item.getTypeId() == _id) && ((_meta == -1) || (item.getDurability() == -1) || (!hasSubtypes(_id)) || (_meta == item.getDurability()));
     }
-    
+
     public boolean matches(ComparativeItemStack stack)
     {
         if(stack == null)
@@ -79,12 +79,12 @@ public class ComparativeItemStack
         }
         return (stack._id == _id) && ((_meta == -1) || (stack._meta == -1) || (!hasSubtypes(_id)) || (_meta == stack._meta));
     }
-    
+
     public int getId()
     {
         return _id;
     }
-    
+
     public ItemStack createStack(int stackSize)
     {
         if(stackSize <= 0)
@@ -94,7 +94,7 @@ public class ComparativeItemStack
         int maxStack = Material.getMaterial(_id).getMaxStackSize();
         return new ItemStack(_id, stackSize > maxStack ? maxStack : stackSize, _meta < 0 ? 0 : _meta);
     }
-    
+
     public String serialize()
     {
         return (_id + ":" + (_meta == -1 ? "*" : _meta));

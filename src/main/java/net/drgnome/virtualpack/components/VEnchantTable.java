@@ -159,7 +159,7 @@ public class VEnchantTable extends ContainerEnchantTable
             f.setAccessible(true);
             return (Player)f.get(this);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             return null;
         }

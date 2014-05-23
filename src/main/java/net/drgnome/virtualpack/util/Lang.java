@@ -18,13 +18,13 @@ public class Lang
     public static final String _langVersion = "5";
     private static YamlConfiguration _file = new YamlConfiguration();
     private static File _dir;
-    
+
     public static void init()
     {
         _dir = _plugin.getDataFolder();
         reload();
     }
-    
+
     public static void reload()
     {
         try
@@ -51,13 +51,13 @@ public class Lang
             setDefs();
             _file.save(file);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             warn();
-            t.printStackTrace();
+            e.printStackTrace();
         }
     }
-    
+
     // Set all default values
     private static void setDefs()
     {
@@ -74,12 +74,12 @@ public class Lang
                 setDef(s[0], s[1]);
             }
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
         }
     }
-    
+
     // Set a default value
     private static void setDef(String path, String value)
     {
@@ -88,12 +88,12 @@ public class Lang
             _file.set(path, value);
         }
     }
-    
+
     public static String get(CommandSender sender, String string, String... replacements)
     {
         return getDirect((sender == null) ? "[NoOne]" : sender.getName(), string, replacements);
     }
-    
+
     public static String getDirect(String senderName, String string, String... replacements)
     {
         string = get0(string);
@@ -103,7 +103,7 @@ public class Lang
         }
         return string.replaceAll("%player", senderName);
     }
-    
+
     private static String get0(String string)
     {
         if((_file != null) && (_file.isSet(string)))

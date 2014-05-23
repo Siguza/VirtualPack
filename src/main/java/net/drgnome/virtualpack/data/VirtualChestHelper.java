@@ -18,7 +18,7 @@ public class VirtualChestHelper
 {
     private static Method _method1;
     private static Method _method2;
-    
+
     public static void check()
     {
         File chests = new File(_plugin.getDataFolder(), "vchests");
@@ -49,7 +49,7 @@ public class VirtualChestHelper
             load(chests);
         }
     }
-    
+
     private static void load(File dataFolder)
     {
         _log.info("[VirtualPack] Converting VirtualChest database...");
@@ -63,10 +63,10 @@ public class VirtualChestHelper
             _method2 = Class.forName("com.aranai.virtualchest.ItemStackSave").getDeclaredMethod("getItemStack");
             _method2.setAccessible(true);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             _log.severe("[VirtualPack] Failed to load VirtualChest database!");
-            t.printStackTrace();
+            e.printStackTrace();
             return;
         }
         String world = Config.string("import-world").length() > 0 ? Config.string("import-world") : "*";
@@ -94,13 +94,13 @@ public class VirtualChestHelper
         {
             dataFolder.renameTo(new File(dataFolder.getParentFile(), "vchests_old"));
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             _log.warning("[VirtualPack] Couldn't rename VirtualChest data folder!");
         }
         _log.info("[VirtualPack] VirtualChest data loaded.");
     }
-    
+
     private static VInv[] loadFile(File file, int chestSize)
     {
         try
@@ -119,9 +119,9 @@ public class VirtualChestHelper
             }
             return invlist.toArray(new VInv[0]);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }

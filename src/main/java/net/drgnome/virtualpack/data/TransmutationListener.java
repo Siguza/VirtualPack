@@ -73,10 +73,10 @@ public class TransmutationListener extends PacketAdapter
                     mod1.writeSafely(i, applyChange(mod1.readSafely(i), send));
                 }
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 _log.warning("[VirtualPack] Nothing severe, but can't modify outgoing item stacks. (1)");
-                t.printStackTrace();
+                e.printStackTrace();
             }
         }
         StructureModifier<ItemStack[]> mod2 = event.getPacket().getItemArrayModifier();
@@ -89,10 +89,10 @@ public class TransmutationListener extends PacketAdapter
                     mod2.writeSafely(i, applyChange(mod2.readSafely(i), send));
                 }
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 _log.warning("[VirtualPack] Nothing severe, but can't modify outgoing item stacks. (2)");
-                t.printStackTrace();
+                e.printStackTrace();
             }
         }
     }

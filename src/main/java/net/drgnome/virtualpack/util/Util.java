@@ -69,7 +69,7 @@ public class Util
                 {
                     a = Integer.parseInt(cdigits[i]);
                 }
-                catch(Throwable t1)
+                catch(Exception e1)
                 {
                     char[] c = cdigits[i].toCharArray();
                     for(int j = 0; j < c.length; j++)
@@ -81,7 +81,7 @@ public class Util
                 {
                     b = Integer.parseInt(vdigits[i]);
                 }
-                catch(Throwable t1)
+                catch(Exception e1)
                 {
                     char[] c = vdigits[i].toCharArray();
                     for(int j = 0; j < c.length; j++)
@@ -103,7 +103,7 @@ public class Util
                 }
             }
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
         }
         return false;
@@ -127,9 +127,9 @@ public class Util
         {
             return (T[])(Array.newInstance(clazz, size));
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
             return (T[])null;
         }
     }
@@ -144,9 +144,9 @@ public class Util
                 m.setAccessible(true);
                 return (T)m.invoke(object);
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
-                t.printStackTrace();
+                e.printStackTrace();
             }
         }
         return null;
@@ -232,7 +232,7 @@ public class Util
         {
             return Integer.parseInt(s);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             return i;
         }
@@ -244,7 +244,7 @@ public class Util
         {
             return Double.parseDouble(s);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             return d;
         }
@@ -309,7 +309,7 @@ public class Util
         {
             return (new BigDecimal(s)).doubleValue();
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             return 0D;
         }
@@ -459,10 +459,10 @@ public class Util
                 m.setAccessible(true);
                 m.invoke(cl, file.toURI().toURL());
             }
-            catch(Throwable t1)
+            catch(Exception e)
             {
                 warn();
-                t1.printStackTrace();
+                e.printStackTrace();
                 return false;
             }
         }

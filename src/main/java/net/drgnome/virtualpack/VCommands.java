@@ -75,10 +75,10 @@ public class VCommands implements CommandExecutor
         {
             cmd(sender, alias(label), args);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             sendMessage(sender, Lang.get(sender, "command.error"), ChatColor.RED);
-            t.printStackTrace();
+            e.printStackTrace();
         }
         return true;
     }
@@ -787,7 +787,7 @@ public class VCommands implements CommandExecutor
             {
                 amount = Integer.parseInt(args[2]);
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 sendMessage(sender, Lang.get(sender, "argument.invalid"), ChatColor.RED);
             }
@@ -924,7 +924,7 @@ public class VCommands implements CommandExecutor
             {
                 amount = Integer.parseInt(args[2]);
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 sendMessage(sender, Lang.get(sender, "argument.invalid"), ChatColor.RED);
             }
@@ -1253,7 +1253,7 @@ public class VCommands implements CommandExecutor
                     {
                         i = Integer.parseInt(args[1]);
                     }
-                    catch(Throwable t)
+                    catch(Exception e)
                     {
                         sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                         return;
@@ -1279,7 +1279,7 @@ public class VCommands implements CommandExecutor
                 {
                     i = Integer.parseInt(args[0]);
                 }
-                catch(Throwable t)
+                catch(Exception e)
                 {
                     sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                     return;
@@ -1313,7 +1313,7 @@ public class VCommands implements CommandExecutor
                     {
                         i = Integer.parseInt(args[1]);
                     }
-                    catch(Throwable t)
+                    catch(Exception e)
                     {
                         sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                         return;
@@ -1333,7 +1333,7 @@ public class VCommands implements CommandExecutor
                 {
                     pack.linkFurnace(player, Integer.parseInt(args[1]), Integer.parseInt(args[2]), admin);
                 }
-                catch(Throwable t)
+                catch(Exception e)
                 {
                     sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 }
@@ -1350,7 +1350,7 @@ public class VCommands implements CommandExecutor
                 {
                     pack.unlinkFurnace(player, Integer.parseInt(args[1]), admin);
                 }
-                catch(Throwable t)
+                catch(Exception e)
                 {
                     sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 }
@@ -1362,7 +1362,7 @@ public class VCommands implements CommandExecutor
                 {
                     i = Integer.parseInt(args[0]);
                 }
-                catch(Throwable t)
+                catch(Exception e)
                 {
                     sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                     return;
@@ -1396,7 +1396,7 @@ public class VCommands implements CommandExecutor
                     {
                         i = Integer.parseInt(args[1]);
                     }
-                    catch(Throwable t)
+                    catch(Exception e)
                     {
                         sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                         return;
@@ -1416,7 +1416,7 @@ public class VCommands implements CommandExecutor
                 {
                     pack.linkBrewingstand(player, Integer.parseInt(args[1]), Integer.parseInt(args[2]), admin);
                 }
-                catch(Throwable t)
+                catch(Exception e)
                 {
                     sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 }
@@ -1433,7 +1433,7 @@ public class VCommands implements CommandExecutor
                 {
                     pack.unlinkBrewingstand(player, Integer.parseInt(args[1]), admin);
                 }
-                catch(Throwable t)
+                catch(Exception e)
                 {
                     sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 }
@@ -1445,7 +1445,7 @@ public class VCommands implements CommandExecutor
                 {
                     i = Integer.parseInt(args[0]);
                 }
-                catch(Throwable t)
+                catch(Exception e)
                 {
                     sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                     return;
@@ -1478,7 +1478,7 @@ public class VCommands implements CommandExecutor
                     {
                         amount = Integer.parseInt(args[2]);
                     }
-                    catch(Throwable t)
+                    catch(Exception e)
                     {
                         sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                         return;
@@ -1538,7 +1538,7 @@ public class VCommands implements CommandExecutor
             {
                 i = Integer.parseInt(args[1]);
             }
-            catch(Throwable t)
+            catch(Exception e)
             {
                 sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                 return;
@@ -1604,7 +1604,7 @@ public class VCommands implements CommandExecutor
                             page = 1;
                         }
                     }
-                    catch(Throwable t)
+                    catch(Exception e)
                     {
                         sendMessage(player, Lang.get(player, "argument.invalid"), ChatColor.RED);
                     }

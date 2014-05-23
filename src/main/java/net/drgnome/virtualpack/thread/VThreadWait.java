@@ -21,10 +21,10 @@ public class VThreadWait extends Thread
         {
             _plugin.init();
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             warn();
-            t.printStackTrace();
+            e.printStackTrace();
         }
     }
 }

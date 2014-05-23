@@ -32,7 +32,7 @@ public class TransmutationHelper
                         value = 0;
                     }
                 }
-                catch(Throwable t)
+                catch(Exception e)
                 {
                     value = 0D;
                 }
@@ -72,9 +72,9 @@ public class TransmutationHelper
             }
             sort();
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
         }
     }
 

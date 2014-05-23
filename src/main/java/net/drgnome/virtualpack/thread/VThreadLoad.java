@@ -11,21 +11,21 @@ import static net.drgnome.virtualpack.util.Global.*;
 public class VThreadLoad extends Thread
 {
     String[] _data;
-    
+
     public VThreadLoad(String[] data)
     {
         _data = data;
     }
-    
+
     public void run()
     {
         try
         {
             _plugin.setPack(_data[0], _data[1], new VPack(_data[0], _data[1], _data[2].split(_separator[0])));
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
-            t.printStackTrace();
+            e.printStackTrace();
         }
         synchronized(_plugin._loadThreads)
         {
