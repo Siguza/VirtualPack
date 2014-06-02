@@ -100,11 +100,7 @@ public class Perm
             {
                 continue;
             }
-            catch(UnsupportedOperationException e)
-            {
-                break;
-            }
-            catch(NullPointerException e)
+            catch(RuntimeException e)
             {
                 break;
             }
@@ -159,11 +155,7 @@ public class Perm
             {
                 continue;
             }
-            catch(UnsupportedOperationException e)
-            {
-                break;
-            }
-            catch(NullPointerException e)
+            catch(RuntimeException e)
             {
                 break;
             }
@@ -216,11 +208,7 @@ public class Perm
             {
                 continue;
             }
-            catch(UnsupportedOperationException e)
-            {
-                break;
-            }
-            catch(NullPointerException e)
+            catch(RuntimeException e)
             {
                 break;
             }
