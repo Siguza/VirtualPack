@@ -10,18 +10,27 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class VThreadLoad extends Thread
 {
-    String[] _data;
+    public static boolean _debug;
+    public static int _num;
+    public static int _total;
+    private String[] _data;
+    private boolean _lazy;
 
-    public VThreadLoad(String[] data)
+    public VThreadLoad(String[] data, boolean lazy)
     {
         _data = data;
+        _lazy = lazy;
     }
 
     public void run()
     {
         try
         {
-            _plugin.setPack(_data[0], _data[1], new VPack(_data[0], _data[1], _data[2].split(_separator[0])));
+            _plugin.setPack(_data[0], _data[1], new VPack(_data[0], _data[1], _data[2], _lazy));
+            if(_debug)
+            {
+                System.out.println("[VPack/Debug] Loaded pack " + (_num++) + "/" + _total);
+            }
         }
         catch(Exception e)
         {
@@ -30,6 +39,7 @@ public class VThreadLoad extends Thread
         synchronized(_plugin._loadThreads)
         {
             _plugin._loadThreads.remove(this);
+            _plugin._numActiveLoadThreads--;
         }
     }
 }

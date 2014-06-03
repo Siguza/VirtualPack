@@ -37,6 +37,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
     public ArrayList<VThreadLoad> _loadThreads = new ArrayList<VThreadLoad>();
     private int _numLoadThreads = 0;
+    public int _numActiveLoadThreads = 0;
     private int _loadTick = 0;
     private boolean _update = false;
     private boolean _saveRequested = false;
@@ -585,36 +586,55 @@ public class VPlugin extends JavaPlugin implements Runnable
 
     private void load(List<String[]> list)
     {
+        boolean lazy = Config.bool("lazy-loading-hack");
         if(Config.bool("load-multithreaded"))
         {
+            int max = Config.getInt("max-threads");
             _numLoadThreads = 0;
+            _numActiveLoadThreads = 0;
+            VThreadLoad._debug = Config.bool("debug-load");
+            VThreadLoad._num = 0;
+            VThreadLoad._total = list.size();
             for(String[] data : list)
             {
+                while(_numActiveLoadThreads >= max)
+                {
+                    try
+                    {
+                        Thread.sleep(2000);
+                    }
+                    catch(Exception e)
+                    {
+                    }
+                }
                 _numLoadThreads++;
-                VThreadLoad loadThread = new VThreadLoad(data);
+                _numActiveLoadThreads++;
+                VThreadLoad loadThread = new VThreadLoad(data, lazy);
                 synchronized(_loadThreads)
                 {
                     _loadThreads.add(loadThread);
                 }
                 loadThread.start();
             }
+
         }
         else
         {
             if(Config.bool("debug-load"))
             {
                 int i = 0;
+                int total = list.size();
                 for(String[] data : list)
                 {
-                    setPack(data[0], data[1], new VPack(data[0], data[1], data[2].split(_separator[0])));
-                    System.out.println("[VPack/Debug] Loaded pack " + (++i) + "/" + list.size());
+                    setPack(data[0], data[1], new VPack(data[0], data[1], data[2], lazy));
+                    System.out.println("[VPack/Debug] Loaded pack " + (++i) + "/" + total);
                 }
             }
             else
             {
                 for(String[] data : list)
                 {
-                    setPack(data[0], data[1], new VPack(data[0], data[1], data[2].split(_separator[0])));
+                    setPack(data[0], data[1], new VPack(data[0], data[1], data[2], lazy));
                 }
             }
         }

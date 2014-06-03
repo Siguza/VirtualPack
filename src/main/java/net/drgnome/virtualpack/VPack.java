@@ -27,15 +27,15 @@ public class VPack
     public static final int _maxBookshelves = 15;
     private final String _world;
     private final UUID _player;
-    public boolean _hasWorkbench = false;
-    public boolean _hasUncrafter = false;
-    public boolean _hasEnchantTable = false;
-    public boolean _hasAnvil = false;
-    public boolean _hasEnderchest = false;
+    private boolean _hasWorkbench = false;
+    private boolean _hasUncrafter = false;
+    private boolean _hasEnchantTable = false;
+    private boolean _hasAnvil = false;
+    private boolean _hasEnderchest = false;
     /** FUUU **/
     // public MatterInv _matter = null;
-    public TmpMatterInv _matter = null;
-    public int _bookshelves = 0;
+    private TmpMatterInv _matter = null;
+    private int _bookshelves = 0;
     private int _fLinks = 0;
     private int _bLinks = 0;
     // 0 = workbench
@@ -48,22 +48,43 @@ public class VPack
     // 7 = brewingstand
     // 8 = enderchest
     private long[] _cooldown = new long[9];
-    public HashMap<Integer, VInv> _chests = new HashMap<Integer, VInv>();
-    public HashMap<Integer, VTEFurnace> _furnaces = new HashMap<Integer, VTEFurnace>();
-    public HashMap<Integer, VTEBrewingstand> _brews = new HashMap<Integer, VTEBrewingstand>();
-    public ArrayList<ItemStack> _left = new ArrayList<ItemStack>();
-    public ArrayList<String> _messages = new ArrayList<String>();
+    private HashMap<Integer, VInv> _chests = new HashMap<Integer, VInv>();
+    private HashMap<Integer, VTEFurnace> _furnaces = new HashMap<Integer, VTEFurnace>();
+    private HashMap<Integer, VTEBrewingstand> _brews = new HashMap<Integer, VTEBrewingstand>();
+    private ArrayList<ItemStack> _left = new ArrayList<ItemStack>();
+    private ArrayList<String> _messages = new ArrayList<String>();
+    private String _data;
+    private boolean _initted;
 
     public VPack(String world, UUID player)
     {
         _world = world;
         _player = player;
+        _initted = true;
         recalculate();
     }
 
-    public VPack(String world, String player, String data[])
+    public VPack(String world, String player, String data, boolean lazy)
     {
-        this(world, Util.getUUID(player));
+        _world = world;
+        _player = Util.getUUID(player);
+        _data = data;
+        if(!lazy)
+        {
+            System.out.println("slow!");
+            init();
+        }
+    }
+
+    private void init()
+    {
+        if(_initted)
+        {
+            return;
+        }
+        _initted = true;
+        recalculate();
+        String[] data = _data.split(_separator[0]);
         int[] count = {0, 0, 0};
         for(String line : data)
         {
@@ -145,6 +166,10 @@ public class VPack
 
     public String save()
     {
+        if(!_initted)
+        {
+            return _data;
+        }
         ArrayList<String> list = new ArrayList<String>();
         list.add("w" + _separator[1] + (_hasWorkbench ? "1" : "0"));
         list.add("u" + _separator[1] + (_hasUncrafter ? "1" : "0"));
@@ -199,6 +224,10 @@ public class VPack
 
     public void tick(int ticks)
     {
+        if(!_initted)
+        {
+            return;
+        }
         for(VTEFurnace fur : _furnaces.values().toArray(new VTEFurnace[0]))
         {
             fur.tick(ticks);
@@ -211,6 +240,11 @@ public class VPack
 
     public void recalculate()
     {
+        if(!_initted)
+        {
+            init();
+            return;
+        }
         String[] groups = Perm.getGroups(_world, _player);
         if(Money.world(_world).enabled())
         {
@@ -294,6 +328,7 @@ public class VPack
 
     public void cut()
     {
+        init();
         String[] groups = Perm.getGroups(_world, _player);
         _hasWorkbench = _hasWorkbench && Perm.has(_world, _player, "vpack.use.workbench");
         _hasUncrafter = _hasUncrafter && Perm.has(_world, _player, "vpack.use.uncrafter");
@@ -336,6 +371,7 @@ public class VPack
 
     public void drop(Player player)
     {
+        init();
         EntityPlayer p = ((CraftPlayer)player).getHandle();
         ArrayList<IInventory> list = new ArrayList<IInventory>();
         if(!Perm.has(_world, _player, "vpack.keep.chest"))
@@ -361,6 +397,7 @@ public class VPack
 
     public void wipe()
     {
+        init();
         if(!Perm.has(_world, _player, "vpack.keep.enchanttable"))
         {
             _bookshelves = 0;
@@ -407,6 +444,7 @@ public class VPack
 
     public void reset()
     {
+        init();
         if(!Perm.has(_world, _player, "vpack.keep.workbench"))
         {
             _hasWorkbench = false;
@@ -466,6 +504,7 @@ public class VPack
 
     public void printStats(Player player)
     {
+        init();
         if(Money.world(_world).enabled())
         {
             if(Perm.has(_world, _player, "vpack.use.workbench"))
@@ -545,23 +584,99 @@ public class VPack
         }
     }
 
+    public boolean hasWorkbench()
+    {
+        init();
+        return _hasWorkbench;
+    }
+
+    public boolean hasUncrafter()
+    {
+        init();
+        return _hasUncrafter;
+    }
+
+    public boolean hasEnchantTable()
+    {
+        init();
+        return _hasEnchantTable;
+    }
+
+    public boolean hasAnvil()
+    {
+        init();
+        return _hasAnvil;
+    }
+
+    public boolean hasEnderchest()
+    {
+        init();
+        return _hasEnderchest;
+    }
+
+    public boolean hasMatter()
+    {
+        init();
+        return _matter != null;
+    }
+
+    public void setHasWorkbench(boolean flag)
+    {
+        init();
+        _hasWorkbench = flag;
+    }
+
+    public void setHasUncrafter(boolean flag)
+    {
+        init();
+        _hasUncrafter = flag;
+    }
+
+    public void setHasEnchantTable(boolean flag)
+    {
+        init();
+        _hasEnchantTable = flag;
+    }
+
+    public void setHasAnvil(boolean flag)
+    {
+        init();
+        _hasAnvil = flag;
+    }
+
+    public void setHasEnderchest(boolean flag)
+    {
+        init();
+        _hasEnderchest = flag;
+    }
+
+    public void setMatter(TmpMatterInv matter)
+    {
+        init();
+        _matter = matter;
+    }
+
     public VInv[] getInvs()
     {
+        init();
         return _chests.values().toArray(new VInv[0]);
     }
 
     public VInv getInv(int i)
     {
+        init();
         return _chests.get((Integer)i);
     }
 
     public void addInv(VInv inv)
     {
+        init();
         _chests.put((Integer)(_chests.size() + 1), inv);
     }
 
     public void addInv(Inventory bukkitInv)
     {
+        init();
         if(bukkitInv == null)
         {
             addInv(new VInv(getChestSize()));
@@ -576,68 +691,135 @@ public class VPack
         addInv(new VInv(getChestSize(), items));
     }
 
+    public void addFurnace(VTEFurnace vte)
+    {
+        init();
+        _furnaces.put((Integer)(_furnaces.size() + 1), vte);
+    }
+
+    public void addBrew(VTEBrewingstand vte)
+    {
+        init();
+        _brews.put((Integer)(_brews.size() + 1), vte);
+    }
+
     public int numBookshelves()
     {
+        init();
         return _bookshelves;
+    }
+
+    public void setNumBookshelves(int num)
+    {
+        init();
+        _bookshelves = num;
     }
 
     public int numChests()
     {
+        init();
         return _chests.size();
     }
 
     public int numFurnaces()
     {
+        init();
         return _furnaces.size();
     }
 
     public int numBrews()
     {
+        init();
         return _brews.size();
+    }
+
+    public void removeChests(int num)
+    {
+        init();
+        for(int i = 0; i < num; i++)
+        {
+            if(_chests.containsKey((Integer)_chests.size()))
+            {
+                _chests.remove((Integer)_chests.size());
+            }
+        }
+    }
+
+    public void removeFurnaces(int num)
+    {
+        init();
+        for(int i = 0; i < num; i++)
+        {
+            if(_furnaces.containsKey((Integer)_furnaces.size()))
+            {
+                _furnaces.remove((Integer)_furnaces.size());
+            }
+        }
+    }
+
+    public void removeBrews(int num)
+    {
+        init();
+        for(int i = 0; i < num; i++)
+        {
+            if(_brews.containsKey((Integer)_brews.size()))
+            {
+                _brews.remove((Integer)_brews.size());
+            }
+        }
     }
 
     public double priceWorkbenchBuy()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "workbench", "buy", Config.MODE_MIN, 2);
     }
 
     public double priceWorkbenchUse()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "workbench", "use", Config.MODE_MIN, 2);
     }
 
     public double priceUncrafterBuy()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "uncrafter", "buy", Config.MODE_MIN, 2);
     }
 
     public double priceUncrafterUse()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "uncrafter", "use", Config.MODE_MIN, 2);
     }
 
     public double priceEnderchestBuy()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "enderchest", "buy", Config.MODE_MIN, 2);
     }
 
     public double priceEnderchestUse()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "enderchest", "use", Config.MODE_MIN, 2);
     }
 
     public double priceEnchBuy()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "enchanttable", "buy", Config.MODE_MIN, 2);
     }
 
     public double priceEnchUse()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "enchanttable", "use", Config.MODE_MIN, 2);
     }
 
     public double priceEnchBook(int amount)
     {
+        init();
         double base = Config.getDouble(_world, _player, "tools", "enchanttable", "book", Config.MODE_MIN);
         double factor = Config.getDouble(_world, _player, "tools", "enchanttable", "multiply", Config.MODE_MIN);
         double price = 0;
@@ -650,26 +832,31 @@ public class VPack
 
     public double priceAnvilBuy()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "anvil", "buy", Config.MODE_MIN, 2);
     }
 
     public double priceAnvilUse()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "anvil", "use", Config.MODE_MIN, 2);
     }
 
     public double priceMatterBuy()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "materializer", "buy", Config.MODE_MIN, 2);
     }
 
     public double priceMatterUse()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "materializer", "use", Config.MODE_MIN, 2);
     }
 
     public double priceChestBuy(int amount)
     {
+        init();
         double base = Config.getDouble(_world, _player, "tools", "chest", "buy", Config.MODE_MIN);
         double factor = Config.getDouble(_world, _player, "tools", "chest", "multiply", Config.MODE_MIN);
         double price = 0;
@@ -682,11 +869,13 @@ public class VPack
 
     public double priceChestUse()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "chest", "use", Config.MODE_MIN, 2);
     }
 
     public double priceFurnaceBuy(int amount)
     {
+        init();
         double base = Config.getDouble(_world, _player, "tools", "furnace", "buy", Config.MODE_MIN);
         double factor = Config.getDouble(_world, _player, "tools", "furnace", "multiply", Config.MODE_MIN);
         double price = 0;
@@ -699,16 +888,19 @@ public class VPack
 
     public double priceFurnaceUse()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "furnace", "use", Config.MODE_MIN, 2);
     }
 
     public double priceFurnaceLink()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "furnace", "link", Config.MODE_MIN, 2);
     }
 
     public double priceBrewBuy(int amount)
     {
+        init();
         double base = Config.getDouble(_world, _player, "tools", "brewingstand", "buy", Config.MODE_MIN);
         double factor = Config.getDouble(_world, _player, "tools", "brewingstand", "multiply", Config.MODE_MIN);
         double price = 0;
@@ -721,61 +913,73 @@ public class VPack
 
     public double priceBrewUse()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "brewingstand", "use", Config.MODE_MIN, 2);
     }
 
     public double priceBrewLink()
     {
+        init();
         return Config.getDouble(_world, _player, "tools", "brewingstand", "link", Config.MODE_MIN, 2);
     }
 
     public int workbenchCooldown()
     {
+        init();
         return Config.getInt(_world, _player, "tools", "workbench", "cooldown", Config.MODE_MIN);
     }
 
     public int uncrafterCooldown()
     {
+        init();
         return Config.getInt(_world, _player, "tools", "uncrafter", "cooldown", Config.MODE_MIN);
     }
 
     public int enderchestCooldown()
     {
+        init();
         return Config.getInt(_world, _player, "tools", "enderchest", "cooldown", Config.MODE_MIN);
     }
 
     public int enchanttableCooldown()
     {
+        init();
         return Config.getInt(_world, _player, "tools", "enchanttable", "cooldown", Config.MODE_MIN);
     }
 
     public int anvilCooldown()
     {
+        init();
         return Config.getInt(_world, _player, "tools", "anvil", "cooldown", Config.MODE_MIN);
     }
 
     public int materializerCooldown()
     {
+        init();
         return Config.getInt(_world, _player, "tools", "materializer", "cooldown", Config.MODE_MIN);
     }
 
     public int chestCooldown()
     {
+        init();
         return Config.getInt(_world, _player, "tools", "chest", "cooldown", Config.MODE_MIN);
     }
 
     public int furnaceCooldown()
     {
+        init();
         return Config.getInt(_world, _player, "tools", "furnace", "cooldown", Config.MODE_MIN);
     }
 
     public int brewingstandCooldown()
     {
+        init();
         return Config.getInt(_world, _player, "tools", "brewingstand", "cooldown", Config.MODE_MIN);
     }
 
     public int getChestSize()
     {
+        init();
         int s = Config.getInt(_world, _player, "tools", "chest", "size", Config.MODE_MAX);
         if(s < 1)
         {
@@ -792,6 +996,7 @@ public class VPack
 
     public void buyWorkbench(Player bukkitPlayer)
     {
+        init();
         if(_hasWorkbench)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "workbench.max"), ChatColor.RED);
@@ -808,6 +1013,7 @@ public class VPack
 
     public void openWorkbench(Player bukkitPlayer, boolean admin)
     {
+        init();
         if(!_hasWorkbench)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "workbench.none"), ChatColor.RED);
@@ -836,6 +1042,7 @@ public class VPack
 
     public void buyUncrafter(Player bukkitPlayer)
     {
+        init();
         if(_hasUncrafter)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "uncrafter.max"), ChatColor.RED);
@@ -852,6 +1059,7 @@ public class VPack
 
     public void openUncrafter(Player bukkitPlayer, boolean admin)
     {
+        init();
         if(!_hasUncrafter)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "uncrafter.none"), ChatColor.RED);
@@ -880,6 +1088,7 @@ public class VPack
 
     public void buyEnderchest(Player bukkitPlayer)
     {
+        init();
         if(_hasEnderchest)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enderchest.max"), ChatColor.RED);
@@ -896,6 +1105,7 @@ public class VPack
 
     public void openEnderchest(Player bukkitPlayer, boolean admin, boolean canEdit)
     {
+        init();
         if(!_hasEnderchest)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enderchest.none"), ChatColor.RED);
@@ -975,6 +1185,7 @@ public class VPack
 
     public void buyEnchantTable(Player bukkitPlayer)
     {
+        init();
         if(_hasEnchantTable)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enchanttable.max"), ChatColor.RED);
@@ -991,6 +1202,7 @@ public class VPack
 
     public void openEnchantTable(Player bukkitPlayer, boolean admin)
     {
+        init();
         if(!_hasEnchantTable)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enchanttable.none"), ChatColor.RED);
@@ -1017,6 +1229,7 @@ public class VPack
 
     public void buyBookshelf(Player bukkitPlayer, int amount)
     {
+        init();
         if(_bookshelves >= _maxBookshelves)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enchanttable.book.max", "" + _maxBookshelves), ChatColor.RED);
@@ -1039,6 +1252,7 @@ public class VPack
 
     public void buyAnvil(Player bukkitPlayer)
     {
+        init();
         if(_hasAnvil)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "anvil.max"), ChatColor.RED);
@@ -1055,6 +1269,7 @@ public class VPack
 
     public void openAnvil(Player bukkitPlayer, boolean admin)
     {
+        init();
         if(!_hasAnvil)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "anvil.none"), ChatColor.RED);
@@ -1083,6 +1298,7 @@ public class VPack
 
     public void buyMaterializer(Player bukkitPlayer)
     {
+        init();
         if(_matter != null)
         {
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "matter.max"), ChatColor.RED);
@@ -1101,6 +1317,7 @@ public class VPack
 
     public void openMaterializer(Player player, boolean admin, boolean canEdit)
     {
+        init();
         if(_matter == null)
         {
             sendMessage(player, Lang.get(player, "matter.none"), ChatColor.RED);
@@ -1132,6 +1349,7 @@ public class VPack
 
     public void buyChest(Player bukkitPlayer, int amount)
     {
+        init();
         int max = Config.getInt(_world, _player, "tools", "chest", "max", Config.MODE_INFINITE);
         if((_chests.size() + amount > max) && (max != -1))
         {
@@ -1152,6 +1370,7 @@ public class VPack
 
     public void openChest(Player bukkitPlayer, int nr, boolean admin, boolean canEdit)
     {
+        init();
         VInv inv = _chests.get((Integer)nr);
         if(inv == null)
         {
@@ -1182,6 +1401,7 @@ public class VPack
 
     public void dropChest(Player bukkitPlayer, int nr)
     {
+        init();
         VInv inv = _chests.get((Integer)nr);
         if(inv == null)
         {
@@ -1202,6 +1422,7 @@ public class VPack
 
     public void trashChest(Player bukkitPlayer, int nr)
     {
+        init();
         VInv inv = _chests.get((Integer)nr);
         if(inv == null)
         {
@@ -1216,6 +1437,7 @@ public class VPack
 
     public void buyFurnace(Player bukkitPlayer, int amount)
     {
+        init();
         int max = Config.getInt(_world, _player, "tools", "furnace", "max", Config.MODE_INFINITE);
         if((_furnaces.size() + amount > max) && (max != -1))
         {
@@ -1236,6 +1458,7 @@ public class VPack
 
     public void openFurnace(Player bukkitPlayer, int nr, boolean admin, boolean canEdit)
     {
+        init();
         VTEFurnace fur = _furnaces.get((Integer)nr);
         if(fur == null)
         {
@@ -1263,6 +1486,7 @@ public class VPack
 
     public void linkFurnace(Player bukkitPlayer, int furnaceNR, int chestNR, boolean admin)
     {
+        init();
         VTEFurnace fur = _furnaces.get((Integer)furnaceNR);
         if(fur == null)
         {
@@ -1295,6 +1519,7 @@ public class VPack
 
     public void unlinkFurnace(Player bukkitPlayer, int furnaceNR, boolean admin)
     {
+        init();
         VTEFurnace fur = _furnaces.get((Integer)furnaceNR);
         if(fur == null)
         {
@@ -1318,6 +1543,7 @@ public class VPack
 
     public void buyBrewingstand(Player bukkitPlayer, int amount)
     {
+        init();
         int max = Config.getInt(_world, _player, "tools", "brewingstand", "max", Config.MODE_INFINITE);
         if((_brews.size() + amount > max) && (max != -1))
         {
@@ -1338,6 +1564,7 @@ public class VPack
 
     public void openBrewingstand(Player bukkitPlayer, int nr, boolean admin, boolean canEdit)
     {
+        init();
         VTEBrewingstand brew = _brews.get((Integer)nr);
         if(brew == null)
         {
@@ -1365,6 +1592,7 @@ public class VPack
 
     public void linkBrewingstand(Player bukkitPlayer, int brewNR, int chestNR, boolean admin)
     {
+        init();
         VTEBrewingstand brew = _brews.get((Integer)brewNR);
         if(brew == null)
         {
@@ -1397,6 +1625,7 @@ public class VPack
 
     public void unlinkBrewingstand(Player bukkitPlayer, int brewNR, boolean admin)
     {
+        init();
         VTEBrewingstand brew = _brews.get((Integer)brewNR);
         if(brew == null)
         {
@@ -1420,6 +1649,7 @@ public class VPack
 
     public void openTrash(Player bukkitPlayer)
     {
+        init();
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         VTrash container = new VTrash(player);
         Util.openWindow(player, container, Lang.get(bukkitPlayer, "trash.name"), 0, 9);
@@ -1429,6 +1659,7 @@ public class VPack
 
     public void sendItem(Player bukkitPlayer, String reciever, int chestNR, boolean copy)
     {
+        init();
         ItemStack[] items;
         if(chestNR == 0)
         {
@@ -1531,6 +1762,7 @@ public class VPack
 
     public void processSent()
     {
+        init();
         Player bukkitPlayer = Bukkit.getPlayer(_player);
         if(bukkitPlayer == null)
         {

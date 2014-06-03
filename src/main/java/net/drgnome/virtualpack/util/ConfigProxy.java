@@ -109,7 +109,9 @@ public class ConfigProxy
         setDef("language", "en");
         setDef("debug-log", "false");
         setDef("debug-load", "false");
+        setDef("lazy-loading-hack", "false");
         setDef("load-multithreaded", "false");
+        setDef("max-threads", "100");
         setDef("reload-on-failure", "0");
         setDef("import-world", "");
         setDef("check-update", "true");

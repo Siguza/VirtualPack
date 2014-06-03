@@ -795,71 +795,71 @@ public class VCommands implements CommandExecutor
         args[1] = longname(args[1]);
         if(args[1].equals("workbench"))
         {
-            if(pack._hasWorkbench)
+            if(pack.hasWorkbench())
             {
                 sendMessage(sender, Lang.get(sender, "admin.give.workbench.have"), ChatColor.RED);
             }
             else
             {
-                pack._hasWorkbench = true;
+                pack.setHasWorkbench(true);
                 sendMessage(sender, Lang.get(sender, "admin.give.workbench.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("uncrafter"))
         {
-            if(pack._hasUncrafter)
+            if(pack.hasUncrafter())
             {
                 sendMessage(sender, Lang.get(sender, "admin.give.uncrafter.have"), ChatColor.RED);
             }
             else
             {
-                pack._hasUncrafter = true;
+                pack.setHasUncrafter(true);
                 sendMessage(sender, Lang.get(sender, "admin.give.uncrafter.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("enderchest"))
         {
-            if(pack._hasEnderchest)
+            if(pack.hasEnderchest())
             {
                 sendMessage(sender, Lang.get(sender, "admin.give.enderchest.have"), ChatColor.RED);
             }
             else
             {
-                pack._hasEnderchest = true;
+                pack.setHasEnderchest(true);
                 sendMessage(sender, Lang.get(sender, "admin.give.enderchest.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("enchanttable"))
         {
-            if(pack._hasEnchantTable)
+            if(pack.hasEnchantTable())
             {
                 sendMessage(sender, Lang.get(sender, "admin.give.enchanttable.have"), ChatColor.RED);
             }
             else
             {
-                pack._hasEnchantTable = true;
+                pack.setHasEnchantTable(true);
                 sendMessage(sender, Lang.get(sender, "admin.give.enchanttable.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("anvil"))
         {
-            if(pack._hasAnvil)
+            if(pack.hasAnvil())
             {
                 sendMessage(sender, Lang.get(sender, "admin.give.anvil.have"), ChatColor.RED);
             }
             else
             {
-                pack._hasAnvil = true;
+                pack.setHasAnvil(true);
                 sendMessage(sender, Lang.get(sender, "admin.give.anvil.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("materializer"))
         {
-            if(pack._matter == null)
+            if(!pack.hasMatter())
             {
                 /** FUUU **/
                 // pack._matter = new MatterInv(pack.getWorld(), pack.getPlayer());
-                pack._matter = new TmpMatterInv(pack.getWorld(), pack.getPlayer());
+                pack.setMatter(new TmpMatterInv(pack.getWorld(), pack.getPlayer()));
                 sendMessage(sender, Lang.get(sender, "admin.give.matter.done", args[0]), ChatColor.GREEN);
             }
             else
@@ -871,7 +871,7 @@ public class VCommands implements CommandExecutor
         {
             for(int i = 0; i < amount; i++)
             {
-                pack._chests.put((Integer)(pack._chests.size() + 1), new VInv(pack.getChestSize()));
+                pack.addInv(new VInv(pack.getChestSize()));
             }
             sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.give.chest.one", args[0]) : Lang.get(sender, "admin.give.chest.many", args[0], "" + amount), ChatColor.GREEN);
         }
@@ -879,7 +879,7 @@ public class VCommands implements CommandExecutor
         {
             for(int i = 0; i < amount; i++)
             {
-                pack._furnaces.put((Integer)(pack._furnaces.size() + 1), new VTEFurnace(pack));
+                pack.addFurnace(new VTEFurnace(pack));
             }
             sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.give.furnace.one", args[0]) : Lang.get(sender, "admin.give.furnace.many", args[0], "" + amount), ChatColor.GREEN);
         }
@@ -887,14 +887,15 @@ public class VCommands implements CommandExecutor
         {
             for(int i = 0; i < amount; i++)
             {
-                pack._brews.put((Integer)(pack._brews.size() + 1), new VTEBrewingstand(pack));
+                pack.addBrew(new VTEBrewingstand(pack));
             }
             sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.give.brewingstand.one", args[0]) : Lang.get(sender, "admin.give.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("book"))
         {
-            int max = amount + pack._bookshelves > VPack._maxBookshelves ? VPack._maxBookshelves : amount + pack._bookshelves;
-            pack._bookshelves += max;
+            int b = pack.numBookshelves();
+            int max = amount + b > VPack._maxBookshelves ? VPack._maxBookshelves : amount + b;
+            pack.setNumBookshelves(max + b);
             sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.give.book.one", args[0]) : Lang.get(sender, "admin.give.book.many", args[0], "" + max), ChatColor.GREEN);
         }
     }
@@ -932,113 +933,96 @@ public class VCommands implements CommandExecutor
         args[1] = longname(args[1]);
         if(args[1].equals("workbench"))
         {
-            if(!pack._hasWorkbench)
+            if(!pack.hasWorkbench())
             {
                 sendMessage(sender, Lang.get(sender, "admin.take.workbench.none"), ChatColor.RED);
             }
             else
             {
-                pack._hasWorkbench = false;
+                pack.setHasWorkbench(false);
                 sendMessage(sender, Lang.get(sender, "admin.take.workbench.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("uncrafter"))
         {
-            if(!pack._hasUncrafter)
+            if(!pack.hasUncrafter())
             {
                 sendMessage(sender, Lang.get(sender, "admin.take.uncrafter.none"), ChatColor.RED);
             }
             else
             {
-                pack._hasUncrafter = false;
+                pack.setHasUncrafter(false);
                 sendMessage(sender, Lang.get(sender, "admin.take.uncrafter.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("enderchest"))
         {
-            if(!pack._hasEnderchest)
+            if(!pack.hasEnderchest())
             {
                 sendMessage(sender, Lang.get(sender, "admin.take.enderchest.none"), ChatColor.RED);
             }
             else
             {
-                pack._hasEnderchest = false;
+                pack.setHasEnderchest(false);
                 sendMessage(sender, Lang.get(sender, "admin.take.enderchest.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("enchanttable"))
         {
-            if(!pack._hasEnchantTable)
+            if(!pack.hasEnchantTable())
             {
                 sendMessage(sender, Lang.get(sender, "admin.take.enchanttable.none"), ChatColor.RED);
             }
             else
             {
-                pack._hasEnchantTable = false;
+                pack.setHasEnchantTable(false);
                 sendMessage(sender, Lang.get(sender, "admin.give.enchanttable.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("anvil"))
         {
-            if(!pack._hasAnvil)
+            if(!pack.hasAnvil())
             {
                 sendMessage(sender, Lang.get(sender, "admin.take.anvil.none"), ChatColor.RED);
             }
             else
             {
-                pack._hasAnvil = false;
+                pack.setHasAnvil(false);
                 sendMessage(sender, Lang.get(sender, "admin.take.anvil.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("materializer"))
         {
-            if(pack._matter == null)
+            if(!pack.hasMatter())
             {
                 sendMessage(sender, Lang.get(sender, "admin.take.matter.none"), ChatColor.RED);
             }
             else
             {
-                pack._matter = null;
+                pack.setMatter(null);
                 sendMessage(sender, Lang.get(sender, "admin.take.matter.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("chest"))
         {
-            for(int i = 0; i < amount; i++)
-            {
-                if(pack._chests.containsKey((Integer)pack._chests.size()))
-                {
-                    pack._chests.remove((Integer)pack._chests.size());
-                }
-            }
+            pack.removeChests(amount);
             sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.take.chest.one", args[0]) : Lang.get(sender, "admin.take.chest.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("furnace"))
         {
-            for(int i = 0; i < amount; i++)
-            {
-                if(pack._furnaces.containsKey((Integer)pack._furnaces.size()))
-                {
-                    pack._furnaces.remove((Integer)pack._furnaces.size());
-                }
-            }
+            pack.removeFurnaces(amount);
             sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.take.furnace.one", args[0]) : Lang.get(sender, "admin.take.furnace.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("brewingstand"))
         {
-            for(int i = 0; i < amount; i++)
-            {
-                if(pack._brews.containsKey((Integer)pack._brews.size()))
-                {
-                    pack._brews.remove((Integer)pack._brews.size());
-                }
-            }
+            pack.removeBrews(amount);
             sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.take.brewingstand.one", args[0]) : Lang.get(sender, "admin.take.brewingstand.many", args[0], "" + amount), ChatColor.GREEN);
         }
         else if(args[1].equals("book"))
         {
-            int max = pack._bookshelves - amount < 0 ? pack._bookshelves : amount;
-            pack._bookshelves -= max;
+            int b = pack.numBookshelves();
+            int max = b - amount < 0 ? b : amount;
+            pack.setNumBookshelves(b - max);
             sendMessage(sender, (amount == 1) ? Lang.get(sender, "admin.take.book.one", args[0]) : Lang.get(sender, "admin.take.book.many", args[0], "" + max), ChatColor.GREEN);
         }
     }
