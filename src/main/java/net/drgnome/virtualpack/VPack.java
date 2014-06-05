@@ -71,7 +71,6 @@ public class VPack
         _data = data;
         if(!lazy)
         {
-            System.out.println("slow!");
             init();
         }
     }
