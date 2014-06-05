@@ -454,6 +454,7 @@ public class VCommands implements CommandExecutor
             if(Perm.has(sender, "vpack.admin.give"))
             {
                 sendMessage(sender, Lang.get(sender, "admin.help.give", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.give-min", cmd), ChatColor.AQUA);
             }
             if(Perm.has(sender, "vpack.admin.take"))
             {
@@ -601,9 +602,9 @@ public class VCommands implements CommandExecutor
                 return;
             }
         }
-        if(args[0].equals("give"))
+        if(args[0].equals("give") || args[0].equals("give-min"))
         {
-            give(world, sender, Util.cut(args, 1));
+            give(world, sender, Util.cut(args, 1), args[0].equals("give-min"));
             return;
         }
         else if(args[0].equals("take"))
@@ -762,7 +763,7 @@ public class VCommands implements CommandExecutor
         }
     }
 
-    private void give(String world, CommandSender sender, String[] args)
+    private void give(String world, CommandSender sender, String[] args, boolean min)
     {
         if(!Perm.has(sender, "vpack.admin.give"))
         {
@@ -869,6 +870,15 @@ public class VCommands implements CommandExecutor
         }
         else if(args[1].equals("chest"))
         {
+            if(min)
+            {
+                amount -= pack.numChests();
+                if(amount <= 0)
+                {
+                    sendMessage(sender, Lang.get(sender, "admin.give.enough", args[0]), ChatColor.GREEN);
+                    return;
+                }
+            }
             for(int i = 0; i < amount; i++)
             {
                 pack.addInv(new VInv(pack.getChestSize()));
@@ -877,6 +887,15 @@ public class VCommands implements CommandExecutor
         }
         else if(args[1].equals("furnace"))
         {
+            if(min)
+            {
+                amount -= pack.numFurnaces();
+                if(amount <= 0)
+                {
+                    sendMessage(sender, Lang.get(sender, "admin.give.enough", args[0]), ChatColor.GREEN);
+                    return;
+                }
+            }
             for(int i = 0; i < amount; i++)
             {
                 pack.addFurnace(new VTEFurnace(pack));
@@ -885,6 +904,15 @@ public class VCommands implements CommandExecutor
         }
         else if(args[1].equals("brewingstand"))
         {
+            if(min)
+            {
+                amount -= pack.numBrews();
+                if(amount <= 0)
+                {
+                    sendMessage(sender, Lang.get(sender, "admin.give.enough", args[0]), ChatColor.GREEN);
+                    return;
+                }
+            }
             for(int i = 0; i < amount; i++)
             {
                 pack.addBrew(new VTEBrewingstand(pack));
