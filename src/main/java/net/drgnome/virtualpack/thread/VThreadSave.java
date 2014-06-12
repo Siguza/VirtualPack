@@ -49,26 +49,41 @@ public class VThreadSave extends Thread
             String[][] data = list.toArray(new String[0][]);
             if(_mysql)
             {
+                // The "commented out version" does not work because it does not remove packs that do no longer exist.
+                // If this can be solved other than by the statement in line 59, implement it below and remove line 59. 
                 Connection db = DriverManager.getConnection(Config.string("db.url"), Config.string("db.user"), Config.string("db.pw"));
                 String table = Config.string("db.table");
                 try
                 {
-                    ResultSet row = db.prepareStatement("SELECT * FROM `" + table + "`").executeQuery();
-                    row.getString("world");
+                    db.prepareStatement("SELECT `world` FROM `" + table + "` LIMIT 1").execute();
                     db.prepareStatement("DELETE FROM `" + table + "`").execute();
                 }
                 catch(SQLException e)
                 {
                     db.prepareStatement("DROP TABLE `" + table + "`").execute();
-                    db.prepareStatement("CREATE TABLE IF NOT EXISTS `" + table + "` (`world` varchar(255) NOT NULL, `user` varchar(255) NOT NULL, `data` longtext NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;").execute();
+                    db.prepareStatement("CREATE TABLE `" + table + "` (`world` varchar(255) NOT NULL, `user` varchar(255) NOT NULL, `data` longtext NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;").execute();
                 }
+                /*PreparedStatement check = db.prepareStatement("SELECT COUNT(`user`) as `num` FROM `" + table + "` WHERE `world` = ? AND `user` = ?");
+                PreparedStatement update = db.prepareStatement("UPDATE `" + table + "` SET `data` = ? WHERE `world` = ? AND `user` = ?");*/
+                PreparedStatement insert = db.prepareStatement("INSERT INTO `" + table + "` (`world`, `user`, `data`) VALUES(?, ?, ?)");
                 for(String[] line : data)
                 {
-                    PreparedStatement query = db.prepareStatement("INSERT INTO `" + table + "` (`world`, `user`, `data`) VALUES(?, ?, ?)");
-                    query.setString(1, line[0]);
-                    query.setString(2, line[1]);
-                    query.setString(3, line[2]);
-                    query.execute();
+                    /*check.setString(1, line[0]);
+                    check.setString(2, line[1]);
+                    if(check.executeQuery().getInt("num") > 0)
+                    {
+                        update.setString(1, line[2]);
+                        update.setString(2, line[0]);
+                        update.setString(3, line[1]);
+                        update.execute();
+                    }
+                    else
+                    {*/
+                        insert.setString(1, line[0]);
+                        insert.setString(2, line[1]);
+                        insert.setString(3, line[2]);
+                        insert.execute();
+                    //}
                 }
                 db.close();
             }
