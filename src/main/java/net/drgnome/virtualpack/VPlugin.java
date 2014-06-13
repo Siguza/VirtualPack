@@ -12,9 +12,12 @@ import java.util.jar.*;
 import java.util.logging.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.sql.*;
+import net.minecraft.util.com.mojang.authlib.*;
 import net.minecraft.server.v#MC_VERSION#.EntityPlayer;
+import net.minecraft.server.v#MC_VERSION#.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
@@ -33,7 +36,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     public static final String[] _components = {"main", "workbench", "uncrafter", "chest", "furnace", "brewingstand", "enchanttable", "trash", "send", "anvil", "materializer", "enderchest"};
 
     static final VCommands _commandHandler = new VCommands();
-    private ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>> _packs = new ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>>();
+    private ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> _packs = new ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>>();
     private HashMap<Player, ArrayList<String>> _annoyPlayers = new HashMap<Player, ArrayList<String>>();
     public ArrayList<VThreadLoad> _loadThreads = new ArrayList<VThreadLoad>();
     private int _numLoadThreads = 0;
@@ -49,6 +52,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     private CommandRegistration _reg;
     private boolean _starting = true;
     int[] _threadId = new int[6];
+    private boolean _uuids = true;
 
     public VPlugin()
     {
@@ -85,6 +89,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         Lang.init();
         saveConfig();
+        _uuids = Config.bool("use-uuids");
         if(Config.bool("db.use"))
         {
             try
@@ -288,34 +293,13 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
     }
 
-    public boolean hasPack(Player player)
-    {
-        return hasPack(player.getWorld().getName(), player.getName());
-    }
-
-    public boolean hasPack(String world, String player)
-    {
-        return hasPack(world, Util.getUUID(player));
-    }
-
-    public boolean hasPack(String world, UUID player)
-    {
-        world = Config.world(world);
-        ConcurrentHashMap<UUID, VPack> map = _packs.get(world);
-        if(map == null)
-        {
-            return false;
-        }
-        return map.containsKey(player);
-    }
-
     public VPack[] getAllPacks()
     {
         ArrayList<VPack> list = new ArrayList<VPack>();
-        Iterator<ConcurrentHashMap<UUID, VPack>> iterator = _packs.values().iterator();
+        Iterator<ConcurrentHashMap<String, VPack>> iterator = _packs.values().iterator();
         while(iterator.hasNext())
         {
-            ConcurrentHashMap<UUID, VPack> map = iterator.next();
+            ConcurrentHashMap<String, VPack> map = iterator.next();
             if(map == null)
             {
                 continue;
@@ -335,73 +319,274 @@ public class VPlugin extends JavaPlugin implements Runnable
         return _packs.get(world).values().toArray(new VPack[0]);
     }
 
+    private String idPlayer(Player player)
+    {
+        return _uuids ? "*" + player.getUniqueId().toString() : player.getName().toLowerCase();
+    }
+
+    private String idOffline(String name)
+    {
+        return _uuids ? "*" + Bukkit.getOfflinePlayer(name).getUniqueId().toString() : name.toLowerCase();
+    }
+
+    private String[] possibleIds(String name)
+    {
+        CallbackCache cache = new CallbackCache();
+        MinecraftServer.getServer().getGameProfileRepository().findProfilesByNames(new String[]{name}, Agent.MINECRAFT, cache);
+        String[] s = new String[4];
+        s[0] = name.toLowerCase();
+        s[1] = cache.result == null ? null : "*" + cache.result.toString();
+        s[2] = "*" + UUID.nameUUIDFromBytes(("OfflinePlayer:" + s[0]).getBytes(java.nio.charset.Charset.forName("UTF-8"))).toString();
+        s[3] = "*" + UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(java.nio.charset.Charset.forName("UTF-8"))).toString();
+        return s;
+    }
+
+    public boolean tryRestore(String world, Player player)
+    {
+        ConcurrentHashMap<String, VPack> map = _packs.get(Config.world(world));
+        if(map == null)
+        {
+            return false;
+        }
+        String id = idPlayer(player);
+        String[] u = possibleIds(player.getName());
+        if(u[1] != null && !u[1].equals(id) && map.containsKey(u[1]))
+        {
+            map.put(id, map.get(u[1]));
+            map.remove(u[1]);
+            return true;
+        }
+        if(!u[0].equals(id) && map.containsKey(u[0]))
+        {
+            map.put(id, map.get(u[0]));
+            map.remove(u[0]);
+            return true;
+        }
+        if(!u[2].equals(id) && map.containsKey(u[2]))
+        {
+            map.put(id, map.get(u[2]));
+            map.remove(u[2]);
+            return true;
+        }
+        if(!u[3].equals(u[2]) && !u[3].equals(id) && map.containsKey(u[3]))
+        {
+            map.put(id, map.get(u[3]));
+            map.remove(u[3]);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasPack(Player player)
+    {
+        return hasPack(player.getWorld().getName(), player);
+    }
+
+    public boolean hasPack(String world, Player player)
+    {
+        if(!Config.bool(world, "enabled"))
+        {
+            return false;
+        }
+        world = Config.world(world);
+        ConcurrentHashMap<String, VPack> map = _packs.get(world);
+        if(map == null)
+        {
+            return false;
+        }
+        boolean has = map.containsKey(idPlayer(player));
+        if(!has)
+        {
+            has = tryRestore(world, player);
+        }
+        return has;
+    }
+
+    public boolean hasPack(String world, String player)
+    {
+        Player p = Bukkit.getPlayer(player);
+        if(p != null)
+        {
+            return hasPack(world, p);
+        }
+        if(!Config.bool(world, "enabled"))
+        {
+            return false;
+        }
+        ConcurrentHashMap<String, VPack> map = _packs.get(Config.world(world));
+        if(map == null)
+        {
+            return false;
+        }
+        if(map.containsKey(idOffline(player)))
+        {
+            return true;
+        }
+        for(String u : possibleIds(player))
+        {
+            if(u == null)
+            {
+                continue;
+            }
+            if(map.containsKey(u))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public VPack getPack(Player player)
     {
-        return getPack(player.getWorld().getName(), player.getUniqueId());
+        return getPack(player.getWorld().getName(), player);
     }
 
-    public VPack getPack(String world, String player)
-    {
-        return getPack(world, Util.getUUID(player));
-    }
-
-    public VPack getPack(String world, UUID player)
+    public VPack getPack(String world, Player player)
     {
         if(!Config.bool(world, "enabled"))
         {
             return null;
         }
         world = Config.world(world);
-        ConcurrentHashMap<UUID, VPack> map = _packs.get(world);
+        ConcurrentHashMap<String, VPack> map = _packs.get(world);
         if(map == null)
         {
-            map = new ConcurrentHashMap<UUID, VPack>();
+            map = new ConcurrentHashMap<String, VPack>();
             _packs.put(world, map);
         }
-        VPack pack = map.get(player);
+        String id = idPlayer(player);
+        VPack pack = map.get(id);
         if(pack == null)
         {
-            pack = new VPack(world, player);
-            map.put(player, pack);
+            if(tryRestore(world, player))
+            {
+                pack = map.get(id);
+            }
+            else
+            {
+                pack = new VPack(world, player);
+                map.put(id, pack);
+            }
+        }
+        return pack;
+    }
+
+    public VPack getPack(String world, String player)
+    {
+        Player p = Bukkit.getPlayer(player);
+        if(p != null)
+        {
+            return getPack(world, p);
+        }
+        if(!Config.bool(world, "enabled"))
+        {
+            return null;
+        }
+        world = Config.world(world);
+        ConcurrentHashMap<String, VPack> map = _packs.get(world);
+        if(map == null)
+        {
+            map = new ConcurrentHashMap<String, VPack>();
+            _packs.put(world, map);
+        }
+        String id = idOffline(player);
+        VPack pack = map.get(id);
+        if(pack == null)
+        {
+            for(String u : possibleIds(player))
+            {
+                if(u == null)
+                {
+                    continue;
+                }
+                pack = map.get(u);
+                if(pack != null)
+                {
+                    break;
+                }
+            }
+            if(pack == null)
+            {
+                pack = new VPack(world, player);
+                map.put(id, pack);
+            }
         }
         return pack;
     }
 
     public void setPack(Player player, VPack pack)
     {
-        setPack(player.getWorld().getName(), player.getUniqueId(), pack);
+        setPack(player.getWorld().getName(), player, pack);
     }
 
-    public void setPack(String world, String player, VPack pack)
-    {
-        setPack(world, Util.getUUID(player), pack);
-    }
-
-    public void setPack(String world, UUID player, VPack pack)
+    public void setPack(String world, Player player, VPack pack)
     {
         if(!Config.bool(world, "enabled"))
         {
             return;
         }
         world = Config.world(world);
-        ConcurrentHashMap<UUID, VPack> map = _packs.get(world);
+        ConcurrentHashMap<String, VPack> map = _packs.get(world);
         if(map == null)
         {
-            if(pack == null)
-            {
-                return;
-            }
-            map = new ConcurrentHashMap<UUID, VPack>();
+            map = new ConcurrentHashMap<String, VPack>();
             _packs.put(world, map);
         }
+        String id = idPlayer(player);
         if(pack == null)
         {
-            map.remove(player);
+            map.remove(id);
         }
         else
         {
-            map.put(player, pack);
+            map.put(id, pack);
         }
+    }
+
+    public void setPack(String world, String player, VPack pack)
+    {
+        Player p = Bukkit.getPlayer(player);
+        if(p != null)
+        {
+            setPack(world, p, pack);
+            return;
+        }
+        if(!Config.bool(world, "enabled"))
+        {
+            return;
+        }
+        world = Config.world(world);
+        ConcurrentHashMap<String, VPack> map = _packs.get(world);
+        if(map == null)
+        {
+            map = new ConcurrentHashMap<String, VPack>();
+            _packs.put(world, map);
+        }
+        String id = idOffline(player);
+        if(pack == null)
+        {
+            map.remove(id);
+        }
+        else
+        {
+            map.put(id, pack);
+        }
+    }
+
+    public void setPackRaw(String world, String player, VPack pack)
+    {
+        if(!Config.bool(world, "enabled"))
+        {
+            return;
+        }
+        world = Config.world(world);
+        ConcurrentHashMap<String, VPack> map = _packs.get(world);
+        if(map == null)
+        {
+            map = new ConcurrentHashMap<String, VPack>();
+            _packs.put(world, map);
+        }
+        map.put(player, pack);
     }
 
     public void saveUserData()
@@ -626,7 +811,7 @@ public class VPlugin extends JavaPlugin implements Runnable
                 int total = list.size();
                 for(String[] data : list)
                 {
-                    setPack(data[0], data[1], new VPack(data[0], data[1], data[2], lazy));
+                    setPackRaw(data[0], data[1], new VPack(data[0], data[1], data[2], lazy));
                     System.out.println("[VPack/Debug] Loaded pack " + (++i) + "/" + total);
                 }
             }
@@ -634,7 +819,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             {
                 for(String[] data : list)
                 {
-                    setPack(data[0], data[1], new VPack(data[0], data[1], data[2], lazy));
+                    setPackRaw(data[0], data[1], new VPack(data[0], data[1], data[2], lazy));
                 }
             }
         }
@@ -672,6 +857,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         super.reloadConfig();
         Config.reload();
         saveConfig();
+        _uuids = Config.bool("use-uuids");
         if(_starting)
         {
             _starting = false;
@@ -804,10 +990,10 @@ public class VPlugin extends JavaPlugin implements Runnable
     public void run()
     {
         int ticks = Config.getInt("tick.interval");
-        Iterator<ConcurrentHashMap<UUID, VPack>> iterator = _packs.values().iterator();
+        Iterator<ConcurrentHashMap<String, VPack>> iterator = _packs.values().iterator();
         while(iterator.hasNext())
         {
-            ConcurrentHashMap<UUID, VPack> map = iterator.next();
+            ConcurrentHashMap<String, VPack> map = iterator.next();
             if(map == null)
             {
                 continue;
@@ -893,7 +1079,21 @@ public class VPlugin extends JavaPlugin implements Runnable
         _numLoadThreads = 0;
         _saveRequested = false;
         _loadRequested = false;
-        _packs = new ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>>();
+        _packs = new ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>>();
         _annoyPlayers = new HashMap<Player, ArrayList<String>>();
+    }
+
+    private static class CallbackCache implements ProfileLookupCallback
+    {
+        public UUID result = null;
+
+        public void onProfileLookupSucceeded(GameProfile profile)
+        {
+            result = profile.getId();
+        }
+
+        public void onProfileLookupFailed(GameProfile profile, Exception e)
+        {
+        }
     }
 }

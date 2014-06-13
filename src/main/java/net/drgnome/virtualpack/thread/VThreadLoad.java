@@ -26,7 +26,7 @@ public class VThreadLoad extends Thread
     {
         try
         {
-            _plugin.setPack(_data[0], _data[1], new VPack(_data[0], _data[1], _data[2], _lazy));
+            _plugin.setPackRaw(_data[0], _data[1], new VPack(_data[0], _data[1], _data[2], _lazy));
             if(_debug)
             {
                 System.out.println("[VPack/Debug] Loaded pack " + (_num++) + "/" + _total);

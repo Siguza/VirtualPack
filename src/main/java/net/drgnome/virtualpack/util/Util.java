@@ -15,7 +15,10 @@ import org.json.simple.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.v#MC_VERSION#.CraftServer;
+import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class Util
@@ -516,8 +519,18 @@ public class Util
         return colors;
     }
 
-    public static UUID getUUID(String player)
+    /*public static UUID getUUID(String player)
     {
         return player.startsWith("*") ? UUID.fromString(player.substring(1)) : Bukkit.getOfflinePlayer(player).getUniqueId();
+    }*/
+
+    public static OfflinePlayer getPlayer(String id)
+    {
+        OfflinePlayer op = id.startsWith("*") ? Bukkit.getOfflinePlayer(UUID.fromString(id.substring(1))) : Bukkit.getOfflinePlayer(id);
+        if(op instanceof CraftPlayer)
+        {
+            op = ((CraftServer)Bukkit.getServer()).getOfflinePlayer(((CraftPlayer)op).getProfile());
+        }
+        return op;
     }
 }

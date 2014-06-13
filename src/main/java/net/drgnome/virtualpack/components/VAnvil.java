@@ -8,6 +8,7 @@ import java.util.*;
 import java.lang.reflect.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.*;
 import net.drgnome.virtualpack.util.*;
 
@@ -392,6 +393,6 @@ public class VAnvil extends ContainerAnvil
 
     public static boolean playerFree(EntityHuman entityhuman)
     {
-        return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), entityhuman.getUniqueID(), "vpack.use.anvil.free"));
+        return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), (Player)entityhuman.getBukkitEntity(), "vpack.use.anvil.free"));
     }
 }

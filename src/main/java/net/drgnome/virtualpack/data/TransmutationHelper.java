@@ -7,6 +7,7 @@ package net.drgnome.virtualpack.data;
 import java.io.*;
 import java.util.*;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.*;
 import net.drgnome.virtualpack.item.*;
 import net.drgnome.virtualpack.util.*;
@@ -318,12 +319,12 @@ public class TransmutationHelper
         return list.toArray(new ValuedItemStack[0]);
     }
 
-    public static ValuedItemStack[] getAllFiltered(String world, UUID player)
+    public static ValuedItemStack[] getAllFiltered(String world, OfflinePlayer op)
     {
-        return filter(world, player, _list);
+        return filter(world, op, _list);
     }
 
-    public static ValuedItemStack[] getAllFiltered(String world, UUID player, ComparativeItemStack[] unlocked)
+    public static ValuedItemStack[] getAllFiltered(String world, OfflinePlayer op, ComparativeItemStack[] unlocked)
     {
         ArrayList<ValuedItemStack> list = new ArrayList<ValuedItemStack>();
         for(ValuedItemStack stack : _list)
@@ -337,14 +338,14 @@ public class TransmutationHelper
                 }
             }
         }
-        return filter(world, player, list);
+        return filter(world, op, list);
     }
 
-    private static ValuedItemStack[] filter(String world, UUID player, ArrayList<ValuedItemStack> list)
+    private static ValuedItemStack[] filter(String world, OfflinePlayer op, ArrayList<ValuedItemStack> list)
     {
         for(ValuedItemStack stack : list.toArray(new ValuedItemStack[0]))
         {
-            if(Config.isBlacklisted(world, player, "materializer", stack))
+            if(Config.isBlacklisted(world, op, "materializer", stack))
             {
                 list.remove(stack);
             }

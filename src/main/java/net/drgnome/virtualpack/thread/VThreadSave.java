@@ -16,9 +16,9 @@ public class VThreadSave extends Thread
 {
     private boolean _mysql;
     private File _file;
-    private ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>> _packs;
+    private ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> _packs;
 
-    public VThreadSave(File file, ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>> packs)
+    public VThreadSave(File file, ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> packs)
     {
         super();
         _mysql = false;
@@ -26,7 +26,7 @@ public class VThreadSave extends Thread
         _packs = packs;
     }
 
-    public VThreadSave(ConcurrentHashMap<String, ConcurrentHashMap<UUID, VPack>> packs)
+    public VThreadSave(ConcurrentHashMap<String, ConcurrentHashMap<String, VPack>> packs)
     {
         super();
         _mysql = true;
@@ -38,19 +38,19 @@ public class VThreadSave extends Thread
         try
         {
             ArrayList<String[]> list = new ArrayList<String[]>();
-            for(Map.Entry<String, ConcurrentHashMap<UUID, VPack>> entry1 : _packs.entrySet())
+            for(Map.Entry<String, ConcurrentHashMap<String, VPack>> entry1 : _packs.entrySet())
             {
                 String world = entry1.getKey();
-                for(Map.Entry<UUID, VPack> entry2 : entry1.getValue().entrySet())
+                for(Map.Entry<String, VPack> entry2 : entry1.getValue().entrySet())
                 {
-                    list.add(new String[]{world, "*" + entry2.getKey().toString(), entry2.getValue().save()});
+                    list.add(new String[]{world, entry2.getKey(), entry2.getValue().save()});
                 }
             }
             String[][] data = list.toArray(new String[0][]);
             if(_mysql)
             {
                 // The "commented out version" does not work because it does not remove packs that do no longer exist.
-                // If this can be solved other than by the statement in line 59, implement it below and remove line 59. 
+                // If this can be solved other than by the statement in line 59, implement it below and remove line 59.
                 Connection db = DriverManager.getConnection(Config.string("db.url"), Config.string("db.user"), Config.string("db.pw"));
                 String table = Config.string("db.table");
                 try

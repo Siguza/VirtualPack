@@ -6,6 +6,7 @@ package net.drgnome.virtualpack.util;
 
 import java.util.*;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.economy.Economy;
 
@@ -62,7 +63,7 @@ public class Money
         return _enabled;
     }
 
-    public boolean has(UUID uuid, double amount)
+    public boolean has(OfflinePlayer op, double amount)
     {
         if(!_enabled || (amount == 0.0D))
         {
@@ -72,23 +73,23 @@ public class Money
         {
             return false;
         }
-        return _eco.has(Bukkit.getOfflinePlayer(uuid).getName(), amount);
+        return _eco.has(op.getName(), amount);
     }
 
-    public void take(UUID uuid, double amount)
+    public void take(OfflinePlayer op, double amount)
     {
         if(!_enabled || (amount == 0.0D) || (_eco == null))
         {
             return;
         }
-        _eco.withdrawPlayer(Bukkit.getOfflinePlayer(uuid).getName(), amount);
+        _eco.withdrawPlayer(op.getName(), amount);
     }
 
-    public boolean hasTake(UUID uuid, double amount)
+    public boolean hasTake(OfflinePlayer op, double amount)
     {
-        if(has(uuid, amount))
+        if(has(op, amount))
         {
-            take(uuid, amount);
+            take(op, amount);
             return true;
         }
         return false;
@@ -107,16 +108,16 @@ public class Money
             return false;
         }
 
-        public boolean has(UUID uuid, double amount)
+        public boolean has(OfflinePlayer op, double amount)
         {
             return false;
         }
 
-        public void take(UUID uuid, double amount)
+        public void take(OfflinePlayer op, double amount)
         {
         }
 
-        public boolean hasTake(UUID uuid, double amount)
+        public boolean hasTake(OfflinePlayer op, double amount)
         {
             return false;
         }

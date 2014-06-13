@@ -6,6 +6,7 @@ package net.drgnome.virtualpack.components;
 
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.entity.Player;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
 
@@ -90,6 +91,6 @@ public class VUncrafter extends VContainer
                 return false;
             }
         }
-        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getUniqueID(), "uncrafter", CraftItemStack.asBukkitCopy(item));
+        return !Config.isBlacklisted(human.world.getWorld().getName(), (Player)human.getBukkitEntity(), "uncrafter", CraftItemStack.asBukkitCopy(item));
     }
 }

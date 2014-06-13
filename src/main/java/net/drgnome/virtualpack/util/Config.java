@@ -6,6 +6,7 @@ package net.drgnome.virtualpack.util;
 
 import java.util.*;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -128,9 +129,9 @@ public class Config
         return getInt(w, Perm.getGroups(w, player), prefix, string, suffix, mode);
     }
 
-    public static int getInt(String world, UUID uuid, String prefix, String string, String suffix, int mode)
+    public static int getInt(String world, OfflinePlayer op, String prefix, String string, String suffix, int mode)
     {
-        return getInt(world, Perm.getGroups(world, uuid), prefix, string, suffix, mode);
+        return getInt(world, Perm.getGroups(world, op), prefix, string, suffix, mode);
     }
 
     public static int getInt(String world, String[] groups, String prefix, String string, String suffix, int mode)
@@ -202,9 +203,9 @@ public class Config
         return Util.smooth(getDouble(player, prefix, string, suffix, mode), digits);
     }
 
-    public static double getDouble(String world, UUID uuid, String prefix, String string, String suffix, int mode, int digits)
+    public static double getDouble(String world, OfflinePlayer op, String prefix, String string, String suffix, int mode, int digits)
     {
-        return Util.smooth(getDouble(world, uuid, prefix, string, suffix, mode), digits);
+        return Util.smooth(getDouble(world, op, prefix, string, suffix, mode), digits);
     }
 
     public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, int mode, int digits)
@@ -218,9 +219,9 @@ public class Config
         return getDouble(w, Perm.getGroups(w, player), prefix, string, suffix, mode);
     }
 
-    public static double getDouble(String world, UUID uuid, String prefix, String string, String suffix, int mode)
+    public static double getDouble(String world, OfflinePlayer op, String prefix, String string, String suffix, int mode)
     {
-        return getDouble(world, Perm.getGroups(world, uuid), prefix, string, suffix, mode);
+        return getDouble(world, Perm.getGroups(world, op), prefix, string, suffix, mode);
     }
 
     public static double getDouble(String world, String[] groups, String prefix, String string, String suffix, int mode)
@@ -292,9 +293,9 @@ public class Config
         }
     }
 
-    public static boolean isBlacklisted(String world, UUID uuid, String section, ItemStack item)
+    public static boolean isBlacklisted(String world, OfflinePlayer op, String section, ItemStack item)
     {
-        if(Perm.has(world, uuid, "vpack.bypass.blacklist." + section))
+        if(Perm.has(world, op, "vpack.bypass.blacklist." + section))
         {
             return false;
         }
@@ -304,9 +305,9 @@ public class Config
         }
     }
 
-    public static boolean isBlacklisted(String world, UUID uuid, String section, ComparativeItemStack item)
+    public static boolean isBlacklisted(String world, OfflinePlayer op, String section, ComparativeItemStack item)
     {
-        if(Perm.has(world, uuid, "vpack.bypass.blacklist." + section))
+        if(Perm.has(world, op, "vpack.bypass.blacklist." + section))
         {
             return false;
         }

@@ -8,6 +8,7 @@ import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
@@ -254,6 +255,22 @@ public class VCommands implements CommandExecutor
         {
             cooldown(player);
         }
+        else if(command.equals("restore"))
+        {
+            VPack pack = _plugin.hasPack(player) ? _plugin.getPack(player) : null;
+            if(_plugin.tryRestore(player.getWorld().getName(), player))
+            {
+                sendMessage(sender, Lang.get(player, "vpack.restore.success"), ChatColor.GREEN);
+                if(pack != null)
+                {
+                    pack.drop(player);
+                }
+            }
+            else
+            {
+                sendMessage(sender, Lang.get(player, "vpack.restore.fail"), ChatColor.RED);
+            }
+        }
         else
         {
             cmd(player, command, args);
@@ -409,8 +426,9 @@ public class VCommands implements CommandExecutor
             {
                 sendMessage(sender, Lang.get(sender, "help.trash", cmd));
             }
+            sendMessage(sender, Lang.get(sender, "help.restore", cmd), ChatColor.YELLOW);
             sendMessage(sender, Lang.get(sender, "help.more", ""));
-            sender.sendMessage(ChatColor.GOLD + "http://dev.bukkit.org/server-mods/virtualpack/pages/commands"); // Thou shall not split my link! :P
+            sender.sendMessage(ChatColor.GOLD + "http://dev.bukkit.org/bukkit-plugins/virtualpack/pages/commands"); // Thou shall not split my link! :P
         }
     }
 
@@ -469,6 +487,7 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get(sender, "admin.help.delete", cmd), ChatColor.AQUA);
                 sendMessage(sender, "/" + cmd + " ad erase - REMOVE EVERYTHING", ChatColor.RED);
             }
+            sendMessage(sender, Lang.get(sender, "admin.help.restore", cmd), ChatColor.YELLOW);
             return;
         }
         args[0] = args[0].toLowerCase();
@@ -617,6 +636,30 @@ public class VCommands implements CommandExecutor
             forceopen(world, sender, Util.cut(args, 1));
             return;
         }
+        else if(args[0].equals("restore"))
+        {
+            Player player = Bukkit.getPlayer(args[1]);
+            if(player == null)
+            {
+                sendMessage(sender, Lang.get(sender, "vpack.restore.online"), ChatColor.RED);
+                return;
+            }
+            VPack pack = _plugin.hasPack(world, player) ? _plugin.getPack(world, player) : null;
+            if(_plugin.tryRestore(world, player))
+            {
+                sendMessage(sender, Lang.get(sender, "vpack.restore.success2", args[1]), ChatColor.GREEN);
+                sendMessage(player, Lang.get(player, "vpack.restore.success"), ChatColor.GREEN);
+                if(pack != null)
+                {
+                    pack.drop(player);
+                }
+            }
+            else
+            {
+                sendMessage(sender, Lang.get(sender, "vpack.restore.fail"), ChatColor.RED);
+            }
+            return;
+        }
         else if(args[0].equals("delete"))
         {
             if(!Perm.has(sender, "vpack.admin.delete"))
@@ -631,6 +674,7 @@ public class VCommands implements CommandExecutor
             }
             _plugin.setPack(world, args[1], null);
             sendMessage(sender, Lang.get(sender, "admin.delete", args[1]), ChatColor.GREEN);
+            return;
         }
         else if(!(sender instanceof Player))
         {
@@ -710,16 +754,16 @@ public class VCommands implements CommandExecutor
         for(VPack pack : _plugin.getAllPacks())
         {
             String w = pack.getWorld();
-            UUID p = pack.getPlayer();
-            if(Perm.has(w, p, "vpack.bypass.cut") && !force)
+            OfflinePlayer op = pack.getPlayer();
+            if(Perm.has(w, op, "vpack.bypass.cut") && !force)
             {
                 continue;
             }
-            if(!Perm.has(w, p, "vpack.use"))
+            if(!Perm.has(w, op, "vpack.use"))
             {
-                _plugin.setPack(w, p, null);
+                _plugin.setPack(w, op.getName(), null);
             }
-            if(((player != null) && !Bukkit.getOfflinePlayer(p).getName().equalsIgnoreCase(player)) || ((group != null) && !Perm.inGroup(w, p, group)))
+            if(((player != null) && !op.getName().equalsIgnoreCase(player)) || ((group != null) && !Perm.inGroup(w, op, group)))
             {
                 continue;
             }
@@ -745,14 +789,14 @@ public class VCommands implements CommandExecutor
             Date limit = new Date((new Date()).getTime() - (Long.parseLong(args[0]) * 86400000L));
             for(VPack pack : _plugin.getAllPacks())
             {
-                UUID player = pack.getPlayer();
-                if(Perm.has(pack.getWorld(), player, "vpack.bypass.clean"))
+                OfflinePlayer op = pack.getPlayer();
+                if(Perm.has(pack.getWorld(), op, "vpack.bypass.clean"))
                 {
                     continue;
                 }
-                if(limit.after(new Date(Bukkit.getOfflinePlayer(player).getLastPlayed())))
+                if(limit.after(new Date(op.getLastPlayed())))
                 {
-                    _plugin.setPack(pack.getWorld(), player, null);
+                    _plugin.setPack(pack.getWorld(), op.getName(), null);
                 }
             }
             sendMessage(sender, Lang.get(sender, "admin.clean"), ChatColor.GREEN);
@@ -1073,7 +1117,7 @@ public class VCommands implements CommandExecutor
             return;
         }
         VPack pack = _plugin.getPack(world, args[0]);
-        Player p = Bukkit.getPlayer(pack.getPlayer());
+        Player p = pack.getPlayer().getPlayer();
         if(p == null)
         {
             sendMessage(sender, Lang.get(sender, "notonline"), ChatColor.RED);

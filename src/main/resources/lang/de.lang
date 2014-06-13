@@ -269,3 +269,7 @@ readonly=Du bist nicht berechtigt, Dinge zu verändern
 enderchest.fail=Konnte die Endertruhe des Spielers nicht laden.
 notonline=Dieser Spieler ist nicht online.
 vpack.nosignperm=Du bist nicht berechtigt, VirtualPack-Schilder zu benutzen.
+vpack.restore.success=Dein VirtualPack wurde erfolgreich wiederhergestellt.
+vpack.restore.success2=%1's VirtualPack wurde erfolgreich wiederhergestellt.
+vpack.restore.fail=Nichts Wiederherstellbares gefunden.
+vpack.restore.online=Der Spieler muss online sein!

@@ -41,11 +41,6 @@ public class Perm
         return true;
     }
 
-    public static boolean has(String world, UUID uuid, String permission)
-    {
-        return has(world, Bukkit.getOfflinePlayer(uuid), permission);
-    }
-
     public static boolean has(String world, OfflinePlayer op, String permission)
     {
         while(true)
@@ -114,11 +109,6 @@ public class Perm
         return false;
     }
 
-    public static String[] getGroups(String world, UUID uuid)
-    {
-        return getGroups(world, Bukkit.getOfflinePlayer(uuid));
-    }
-
     public static String[] getGroups(String world, OfflinePlayer op)
     {
         while(true)
@@ -167,11 +157,6 @@ public class Perm
             }
         }
         return new String[0];
-    }
-
-    public static boolean inGroup(String world, UUID uuid, String group)
-    {
-        return inGroup(world, Bukkit.getOfflinePlayer(uuid), group);
     }
 
     public static boolean inGroup(String world, OfflinePlayer op, String group)

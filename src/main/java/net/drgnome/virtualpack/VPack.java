@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.command.CommandSender;
@@ -26,7 +27,7 @@ public class VPack
 {
     public static final int _maxBookshelves = 15;
     private final String _world;
-    private final UUID _player;
+    private OfflinePlayer _player;
     private boolean _hasWorkbench = false;
     private boolean _hasUncrafter = false;
     private boolean _hasEnchantTable = false;
@@ -56,18 +57,23 @@ public class VPack
     private String _data;
     private boolean _initted;
 
-    public VPack(String world, UUID player)
+    public VPack(String world, OfflinePlayer player)
     {
         _world = world;
-        _player = player;
+        _player = player instanceof CraftPlayer ? ((CraftServer)Bukkit.getServer()).getOfflinePlayer(((CraftPlayer)player).getProfile()) : player;
         _initted = true;
         recalculate();
     }
 
-    public VPack(String world, String player, String data, boolean lazy)
+    public VPack(String world, String player)
+    {
+        this(world, Bukkit.getOfflinePlayer(player));
+    }
+
+    public VPack(String world, String playerId, String data, boolean lazy)
     {
         _world = world;
-        _player = Util.getUUID(player);
+        _player = Util.getPlayer(playerId);
         _data = data;
         if(!lazy)
         {
@@ -216,7 +222,7 @@ public class VPack
         return _world;
     }
 
-    public UUID getPlayer()
+    public OfflinePlayer getPlayer()
     {
         return _player;
     }
@@ -1125,7 +1131,7 @@ public class VPack
         VEnderchest ec;
         try
         {
-            Player p = Bukkit.getPlayer(_player);
+            Player p = _player.getPlayer();
             EntityPlayer mcp;
             if(p == null)
             {
@@ -1712,7 +1718,7 @@ public class VPack
                     continue;
                 }
                 sendItem(bukkitPlayer, pack, Util.copy_old(items));
-                sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, (chestNR == 0) ? "send.done1" : "send.done2", Bukkit.getOfflinePlayer(pack.getPlayer()).getName()), ChatColor.GREEN);
+                sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, (chestNR == 0) ? "send.done1" : "send.done2", pack.getPlayer().getName()), ChatColor.GREEN);
             }
         }
         else
@@ -1762,7 +1768,7 @@ public class VPack
     public void processSent()
     {
         init();
-        Player bukkitPlayer = Bukkit.getPlayer(_player);
+        Player bukkitPlayer = _player.getPlayer();
         if(bukkitPlayer == null)
         {
             return;
@@ -1787,7 +1793,7 @@ public class VPack
 
     private void processDrops()
     {
-        Player bukkitPlayer = Bukkit.getPlayer(_player);
+        Player bukkitPlayer = _player.getPlayer();
         if(bukkitPlayer != null)
         {
             processDrops(bukkitPlayer);

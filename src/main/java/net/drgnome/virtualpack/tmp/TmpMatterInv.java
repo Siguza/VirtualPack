@@ -7,6 +7,7 @@ package net.drgnome.virtualpack.tmp;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
@@ -21,14 +22,14 @@ public class TmpMatterInv extends VInv implements VProcessing
     protected boolean _allUnlocked = false;
     public double _value = 0D;
     protected String _worldname;
-    protected UUID _playername;
+    protected OfflinePlayer _op;
     private ArrayList<Integer> _slotUpdate = new ArrayList<Integer>();
 
-    public TmpMatterInv(String worldname, UUID playername)
+    public TmpMatterInv(String worldname, OfflinePlayer op)
     {
         super(54);
         _worldname = worldname;
-        _playername = playername;
+        _op = op;
         if(Config.bool("transmutation.enabled"))
         {
             updateInfo();
@@ -36,11 +37,11 @@ public class TmpMatterInv extends VInv implements VProcessing
         }
     }
 
-    public TmpMatterInv(String worldname, UUID playername, String[] data)
+    public TmpMatterInv(String worldname, OfflinePlayer op, String[] data)
     {
         super(54);
         _worldname = worldname;
-        _playername = playername;
+        _op = op;
         if(data.length > 0)
         {
             _value = Util.parseBigDouble(data[0]);
@@ -121,7 +122,7 @@ public class TmpMatterInv extends VInv implements VProcessing
     {
         org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(399, 1);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(_prefix + Util.parseColors(Config.string("transmutation.color.stored-name")) + Lang.getDirect(Bukkit.getOfflinePlayer(_playername).getName(), "matter.stored"));
+        meta.setDisplayName(_prefix + Util.parseColors(Config.string("transmutation.color.stored-name")) + Lang.getDirect(_op.getName(), "matter.stored"));
         meta.setLore(Util.createList(Util.parseColors(Config.string("transmutation.color.stored-value")) + Util.formatDouble(_value)));
         item.setItemMeta(meta);
         super.setItem(0, CraftItemStack.asNMSCopy(item));
@@ -129,7 +130,7 @@ public class TmpMatterInv extends VInv implements VProcessing
 
     public void updateInv()
     {
-        ValuedItemStack[] items = _allUnlocked ? TransmutationHelper.getAllFiltered(_worldname, _playername) : TransmutationHelper.getAllFiltered(_worldname, _playername, _unlocked.toArray(new ComparativeItemStack[0]));
+        ValuedItemStack[] items = _allUnlocked ? TransmutationHelper.getAllFiltered(_worldname, _op) : TransmutationHelper.getAllFiltered(_worldname, _op, _unlocked.toArray(new ComparativeItemStack[0]));
         int off = 0;
         if(super.getItem(8) != null)
         {

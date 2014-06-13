@@ -5,6 +5,7 @@
 package net.drgnome.virtualpack.components;
 
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.entity.Player;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.Config;
 
@@ -66,7 +67,7 @@ public class VFurnace extends ContainerFurnace implements VGUI
 
     private boolean isItemAllowed(EntityHuman human, ItemStack item)
     {
-        return !Config.isBlacklisted(human.world.getWorld().getName(), human.getUniqueID(), "store", CraftItemStack.asBukkitCopy(item));
+        return !Config.isBlacklisted(human.world.getWorld().getName(), (Player)human.getBukkitEntity(), "store", CraftItemStack.asBukkitCopy(item));
     }
 
     protected void update()
