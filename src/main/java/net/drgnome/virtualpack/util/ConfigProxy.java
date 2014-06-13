@@ -105,7 +105,8 @@ public class ConfigProxy
     private void setDefs()
     {
         setDef("version", _configversion);
-        setDef("use-uuids", "true");
+        setDef("uuids.use", "true");
+        setDef("uuids.force-convert", "false");
         setDef("enabled", "true");
         setDef("language", "en");
         setDef("debug-log", "false");

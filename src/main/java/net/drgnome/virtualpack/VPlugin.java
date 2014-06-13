@@ -53,6 +53,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     private boolean _starting = true;
     int[] _threadId = new int[6];
     private boolean _uuids = true;
+    private boolean _uuidsConvert = false;
 
     public VPlugin()
     {
@@ -89,7 +90,8 @@ public class VPlugin extends JavaPlugin implements Runnable
         }
         Lang.init();
         saveConfig();
-        _uuids = Config.bool("use-uuids");
+        _uuids = Config.bool("uuids.use");
+        _uuidsConvert = Config.bool("uuids.force-convert");
         if(Config.bool("db.use"))
         {
             try
@@ -319,6 +321,13 @@ public class VPlugin extends JavaPlugin implements Runnable
         return _packs.get(world).values().toArray(new VPack[0]);
     }
 
+    private String trueUUID(String name)
+    {
+        CallbackCache cache = new CallbackCache();
+        MinecraftServer.getServer().getGameProfileRepository().findProfilesByNames(new String[]{name}, Agent.MINECRAFT, cache);
+        return cache.result == null ? null : "*" + cache.result.toString();
+    }
+
     private String idPlayer(Player player)
     {
         return _uuids ? "*" + player.getUniqueId().toString() : player.getName().toLowerCase();
@@ -331,11 +340,9 @@ public class VPlugin extends JavaPlugin implements Runnable
 
     private String[] possibleIds(String name)
     {
-        CallbackCache cache = new CallbackCache();
-        MinecraftServer.getServer().getGameProfileRepository().findProfilesByNames(new String[]{name}, Agent.MINECRAFT, cache);
         String[] s = new String[4];
         s[0] = name.toLowerCase();
-        s[1] = cache.result == null ? null : "*" + cache.result.toString();
+        s[1] = trueUUID(name);
         s[2] = "*" + UUID.nameUUIDFromBytes(("OfflinePlayer:" + s[0]).getBytes(java.nio.charset.Charset.forName("UTF-8"))).toString();
         s[3] = "*" + UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(java.nio.charset.Charset.forName("UTF-8"))).toString();
         return s;
@@ -578,6 +585,14 @@ public class VPlugin extends JavaPlugin implements Runnable
         if(!Config.bool(world, "enabled"))
         {
             return;
+        }
+        if(_uuids && _uuidsConvert && !player.startsWith("*"))
+        {
+            String uuid = trueUUID(player);
+            if(uuid != null)
+            {
+                player = uuid;
+            }
         }
         world = Config.world(world);
         ConcurrentHashMap<String, VPack> map = _packs.get(world);
@@ -857,7 +872,8 @@ public class VPlugin extends JavaPlugin implements Runnable
         super.reloadConfig();
         Config.reload();
         saveConfig();
-        _uuids = Config.bool("use-uuids");
+        _uuids = Config.bool("uuids.use");
+        _uuidsConvert = Config.bool("uuids.force-convert");
         if(_starting)
         {
             _starting = false;
