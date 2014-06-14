@@ -13,7 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 //import org.bukkit.event.inventory.InventoryClickEvent;
@@ -39,16 +39,18 @@ public class VEvents implements Listener
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void handlePlayerLogin(PlayerLoginEvent event)
+    public void handlePlayerLogin(PlayerJoinEvent event)
     {
         Player player = event.getPlayer();
-        for(String world : Config.worlds())
+        if(Perm.has(player, "vpack.use"))
         {
-            if(!_plugin.hasPack(world, player.getName()))
+            for(String world : Config.worlds())
             {
-                continue;
+                if(_plugin.hasPack(world, player))
+                {
+                    _plugin.getPack(world, player).processSent();
+                }
             }
-            _plugin.getPack(world, player.getName()).processSent();
         }
     }
 
