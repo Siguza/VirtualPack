@@ -32,7 +32,7 @@ public class VEvents implements Listener
             return;
         }
         Player player = (Player)event.getEntity();
-        if(Config.worldEnabled(player.getWorld().getName()))
+        if(Perm.has(player, "vpack.use") && Config.worldEnabled(player.getWorld().getName()))
         {
             _plugin.handleDeath(player);
         }
