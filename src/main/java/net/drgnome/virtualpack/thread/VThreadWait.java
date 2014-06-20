@@ -4,22 +4,26 @@
 
 package net.drgnome.virtualpack.thread;
 
+import java.lang.reflect.Method;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class VThreadWait extends Thread
 {
+    private final Method _m;
+
+    public VThreadWait(Method m)
+    {
+        _m = m;
+    }
+
     public void run()
     {
         try
         {
-            if(((Boolean)(Class.forName("org.anjocaido.groupmanager.GroupManager").getMethod("isLoaded").invoke(null))).booleanValue())
+            if(((Boolean)(_m.invoke(null))).booleanValue())
             {
                 _plugin.init();
             }
-        }
-        catch(ClassNotFoundException e)
-        {
-            _plugin.init();
         }
         catch(Exception e)
         {

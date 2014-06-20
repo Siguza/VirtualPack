@@ -234,13 +234,15 @@ public class VPlugin extends JavaPlugin implements Runnable
         super.onEnable();
         try
         {
-            if(((Boolean)(Class.forName("org.anjocaido.groupmanager.GroupManager").getMethod("isLoaded").invoke(null))).booleanValue())
+            Method m = Class.forName("org.anjocaido.groupmanager.GroupManager").getMethod("isLoaded");
+            m.setAccessible(true);
+            if(((Boolean)(m.invoke(null))).booleanValue())
             {
                 init();
             }
             else
             {
-                _threadId[5] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadWait(), 0L, 1L);
+                _threadId[5] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadWait(m), 0L, 20L);
             }
         }
         catch(ClassNotFoundException e)
@@ -251,6 +253,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             warn();
             e.printStackTrace();
+            init();
         }
     }
 
