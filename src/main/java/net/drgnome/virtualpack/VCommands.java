@@ -1048,7 +1048,7 @@ public class VCommands implements CommandExecutor
             else
             {
                 pack.setHasEnchantTable(false);
-                sendMessage(sender, Lang.get(sender, "admin.give.enchanttable.done", args[0]), ChatColor.GREEN);
+                sendMessage(sender, Lang.get(sender, "admin.take.enchanttable.done", args[0]), ChatColor.GREEN);
             }
         }
         else if(args[1].equals("anvil"))
