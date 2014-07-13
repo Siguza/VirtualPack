@@ -50,12 +50,18 @@ public class VTEFurnace extends TileEntityFurnace
         }
         lastID = contents[0] == null ? 0 : Item.#FIELD_ITEM_7#(contents[0].getItem());
         // If the data array is long enough, we try to parse its entry, and if it's too short or the parsing fails, we'll leave it as it is.
-        burnTime = Util.tryParse(data[3], burnTime);
-        ticksForCurrentFuel = Util.tryParse(data[4], ticksForCurrentFuel);
-        myCookTime = Util.tryParse(data[5], myCookTime);
-        cookTime = Util.round(myCookTime);
-        link = Util.tryParse(data[6], link);
-        burnSpeed = Util.tryParse(data[7], getBurnSpeed(contents[1]));
+        try
+        {
+            burnTime = Util.tryParse(data[3], burnTime);
+            ticksForCurrentFuel = Util.tryParse(data[4], ticksForCurrentFuel);
+            myCookTime = Util.tryParse(data[5], myCookTime);
+            cookTime = Util.round(myCookTime);
+            link = Util.tryParse(data[6], link);
+            burnSpeed = Util.tryParse(data[7], getBurnSpeed(contents[1]));
+        }
+        catch(ArrayIndexOutOfBoundsException e)
+        {
+        }
         meltSpeed = getMeltSpeed(contents[0]); // Note to self: No need to save this
     }
     
@@ -70,7 +76,7 @@ public class VTEFurnace extends TileEntityFurnace
         list.add(Integer.toString(ticksForCurrentFuel));
         list.add(Double.toString(myCookTime));
         list.add(Integer.toString(link));
-        // I save this now, because you could lose burn speed if it's the last fuel item and the server gets restartet
+        // I save this now, because you could lose burn speed if it's the last fuel item and the server gets restarted
         list.add(Double.toString(burnSpeed));
         return list.toArray(new String[0]);
     }
