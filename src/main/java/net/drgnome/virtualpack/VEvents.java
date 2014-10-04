@@ -41,16 +41,25 @@ public class VEvents implements Listener
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void handlePlayerLogin(PlayerJoinEvent event)
     {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         if(Perm.has(player, "vpack.use"))
         {
-            for(String world : Config.worlds())
+            Thread thrd = new Thread()
             {
-                if(_plugin.hasPack(world, player))
+                public void run()
                 {
-                    _plugin.getPack(world, player).processSent();
+                    
+                    for(String world : Config.worlds())
+                    {
+                        if(_plugin.hasPack(world, player))
+                        {
+                            _plugin.getPack(world, player).processSent();
+                        }
+                    }
                 }
-            }
+            };
+            thrd.setPriority(Thread.MIN_PRIORITY);
+            thrd.start();
         }
     }
 
