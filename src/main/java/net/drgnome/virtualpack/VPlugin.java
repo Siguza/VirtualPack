@@ -652,6 +652,11 @@ public class VPlugin extends JavaPlugin implements Runnable
 
     public void loadUserData()
     {
+        if(!canReload())
+        {
+            _loadRequested = true;
+            return;
+        }
         if(Config.bool("load-multithreaded") || Config.string("load-multithreaded").equalsIgnoreCase("semi"))
         {
             if(isActuallyReloading())
@@ -670,7 +675,7 @@ public class VPlugin extends JavaPlugin implements Runnable
 
     public synchronized void loadUserData0()
     {
-        _loadRequested = true;
+        //_loadRequested = true;
         if((_saveThread != null) && !_saveThread.done())
         {
             return;
