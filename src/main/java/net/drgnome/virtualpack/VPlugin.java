@@ -12,7 +12,7 @@ import java.util.jar.*;
 import java.util.logging.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.sql.*;
-import net.minecraft.util.com.mojang.authlib.*;
+import com.mojang.authlib.*;
 import net.minecraft.server.v#MC_VERSION#.EntityPlayer;
 import net.minecraft.server.v#MC_VERSION#.MinecraftServer;
 import org.bukkit.Bukkit;

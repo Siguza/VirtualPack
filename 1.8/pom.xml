@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.virtualpack</groupId>
     <artifactId>VirtualPack</artifactId>
-    <version>2.7.7</version>
+    <version>2.7.8</version>
     <name>VirtualPack</name>
     <description>Bukkit Plugin "VirtualPack".</description>
     <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
@@ -16,10 +16,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <repositories>
-        <repository>
+        <!--<repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
+        </repository>-->
         <repository>
             <id>vault-repo</id>
             <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
@@ -38,12 +38,20 @@
         </repository>
     </repositories>
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
             <version>1.7.10-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
+        </dependency>-->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8-R0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/spigot.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
@@ -155,7 +163,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#MC_VERSION#</token>
-                                    <value>1_7_R4</value>
+                                    <value>1_8_R1</value>
                                 </replacement>
                                 <!-- Hello there -->
                                 <replacement>
@@ -279,16 +287,20 @@
                                     <value>a</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_IINVENTORY_2#</token> <!-- ()V -->
-                                    <value>closeContainer</value>
-                                </replacement>
-                                <replacement>
                                     <token>#FIELD_IINVENTORY_3#</token> <!-- (int, ItemStack)Z -->
                                     <value>b</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_IINVENTORY_4#</token> <!-- ()Z -->
-                                    <value>k_</value>
+                                    <token>#FIELD_IINVENTORY_5#</token> <!-- (int, int)V -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_6#</token> <!-- ()I -->
+                                    <value>g</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_7#</token> <!-- ()V -->
+                                    <value>l</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IRECIPE_1#</token> <!-- ()ItemStack -->
@@ -296,23 +308,23 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_1#</token> <!-- ()Z -->
-                                    <value>u</value>
+                                    <value>r</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_2#</token> <!-- ()Item -->
-                                    <value>t</value>
+                                    <value>q</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_3#</token> <!-- (ItemStack)Z -->
-                                    <value>m</value>
+                                    <value>l</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_ITEM_4#</token> <!-- ()String -->
-                                    <value>i</value>
+                                    <token>#FIELD_ITEM_4#</token> <!-- (ItemStack)String -->
+                                    <value>j</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_ITEM_5#</token> <!-- () -->
-                                    <value>n</value>
+                                    <token>#FIELD_ITEM_5#</token> <!-- ()Z -->
+                                    <value>k</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_6#</token> <!-- (ItemStack, ItemStack)Z -->
@@ -332,15 +344,15 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMENCHANTEDBOOK_2#</token> <!-- (ItemStack)NBTTagList -->
-                                    <value>g</value>
+                                    <value>h</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMPOTION_1#</token> <!-- static (int)Z -->
-                                    <value>g</value>
+                                    <value>f</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMPOTION_2#</token> <!-- (int)List -->
-                                    <value>c</value>
+                                    <value>e</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_2#</token> <!-- ()Z -->

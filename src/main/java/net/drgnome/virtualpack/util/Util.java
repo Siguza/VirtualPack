@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.net.*;
 import java.util.*;
+import java.util.zip.*;
 import java.math.BigDecimal;
 import java.lang.reflect.*;
 import javax.xml.bind.DatatypeConverter;
@@ -350,7 +351,15 @@ public class Util
         {
             return null;
         }
-        return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(DatatypeConverter.parseBase64Binary(string), NBTReadLimiter.#FIELD_NBTREADLIMITER_1#));
+        try
+        {
+            return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(string))))), NBTReadLimiter.#FIELD_NBTREADLIMITER_1#));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String itemStackToString(net.minecraft.server.v#MC_VERSION#.ItemStack item)
@@ -359,7 +368,17 @@ public class Util
         {
             return "";
         }
-        return DatatypeConverter.printBase64Binary(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound())));
+        try
+        {
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound()), (DataOutput)new DataOutputStream(new GZIPOutputStream(b)));
+            return DatatypeConverter.printBase64Binary(b.toByteArray());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
@@ -438,13 +457,13 @@ public class Util
         return _lastStackIds;
     }
 
-    public static void openWindow(EntityPlayer player, Container container, String name, int id, int size)
+    public static void openWindow(EntityPlayer player, Container container, String name, String id, int size)
     {
         if(name.length() > 32)
         {
             name = name.substring(0, 32);
         }
-        player.playerConnection.sendPacket(new PacketPlayOutOpenWindow(1, id, name, size, true));
+        player.playerConnection.sendPacket(new PacketPlayOutOpenWindow(1, id, new ChatComponentText(name), size));
         player.activeContainer = container;
         container.windowId = 1;
         container.addSlotListener((ICrafting)player);

@@ -13,12 +13,12 @@ import net.drgnome.virtualpack.util.Util;
 public class BlockVAnvil extends BlockAnvil
 {
     public static final int _id = Material.ANVIL.getId();
-    
+
     public static void inject()
     {
         new BlockVAnvil();
     }
-    
+
     public BlockVAnvil()
     {
         super();
@@ -28,7 +28,7 @@ public class BlockVAnvil extends BlockAnvil
         #FIELD_BLOCK_4#("anvil");
         Block.REGISTRY.#FIELD_REGISTRYMATERIALS_1#(145, "anvil", this);
     }
-    
+
     public boolean interact(World world, int x, int y, int z, EntityHuman human, int i1, float f1, float f2, float f3)
     {
         if((human instanceof EntityPlayer) && !world.isStatic)
@@ -39,7 +39,7 @@ public class BlockVAnvil extends BlockAnvil
             {
                 return true;
             }
-            Util.openWindow(player, container, "Repairing", 8, 9);
+            Util.openWindow(player, container, "Repairing", "minecraft:anvil", 9);
         }
         return true;
     }

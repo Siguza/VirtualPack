@@ -4,6 +4,7 @@
 
 package net.drgnome.virtualpack.components;
 
+import java.lang.reflect.*;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Material;
@@ -16,6 +17,8 @@ import net.drgnome.virtualpack.util.*;
 // VirtualTileEntityFurnace is way too long, therefore VTE
 public class VTEFurnace extends TileEntityFurnace
 {
+    // ticksForCurrentFuel is private in Spigot
+    private static Field _tfcf;
     // To access the chests
     private VPack vpack;
     private ItemStack[] contents = new ItemStack[3];
@@ -29,16 +32,30 @@ public class VTEFurnace extends TileEntityFurnace
     private int lastID = 0;
     // Increases performance (or should at least)
     private long lastCheck = 0L;
-    
+
+    static
+    {
+        try
+        {
+            _tfcf = TileEntityFurnace.class.getDeclaredField("ticksForCurrentFuel");
+            _tfcf.setAccessible(true);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     // New VTE
     public VTEFurnace(VPack vpack)
     {
         this.vpack = vpack;
         cookTime = 0;
         burnTime = 0;
-        ticksForCurrentFuel = 0;
+        //ticksForCurrentFuel = 0;
+        setTFCF(0);
     }
-    
+
     // Read from save
     public VTEFurnace(VPack vpack, String data[])
     {
@@ -53,7 +70,14 @@ public class VTEFurnace extends TileEntityFurnace
         try
         {
             burnTime = Util.tryParse(data[3], burnTime);
-            ticksForCurrentFuel = Util.tryParse(data[4], ticksForCurrentFuel);
+            //ticksForCurrentFuel = Util.tryParse(data[4], ticksForCurrentFuel);
+            try
+            {
+                setTFCF(Integer.parseInt(data[4]));
+            }
+            catch(NumberFormatException e)
+            {
+            }
             myCookTime = Util.tryParse(data[5], myCookTime);
             cookTime = Util.round(myCookTime);
             link = Util.tryParse(data[6], link);
@@ -64,7 +88,7 @@ public class VTEFurnace extends TileEntityFurnace
         }
         meltSpeed = getMeltSpeed(contents[0]); // Note to self: No need to save this
     }
-    
+
     public String[] save()
     {
         ArrayList<String> list = new ArrayList<String>();
@@ -73,20 +97,21 @@ public class VTEFurnace extends TileEntityFurnace
             list.add(Util.itemStackToString(contents[i]));
         }
         list.add(Integer.toString(burnTime));
-        list.add(Integer.toString(ticksForCurrentFuel));
+        //list.add(Integer.toString(ticksForCurrentFuel));
+        list.add(Integer.toString(getTFCF()));
         list.add(Double.toString(myCookTime));
         list.add(Integer.toString(link));
         // I save this now, because you could lose burn speed if it's the last fuel item and the server gets restarted
         list.add(Double.toString(burnSpeed));
         return list.toArray(new String[0]);
     }
-    
+
     // For compatibility
     public void #FIELD_TILEENTITY_1#() // Derpnote
     {
         tick(1);
     }
-    
+
     public void tick(int ticks)
     {
         checkLink();
@@ -104,7 +129,8 @@ public class VTEFurnace extends TileEntityFurnace
         if(canHasBURN() && !isBurning() && (getFuelTime(contents[1]) > 0))
         {
             // I have no idea what "ticksForCurrentFuel" is good for, but it works fine like this
-            burnTime = ticksForCurrentFuel = getFuelTime(contents[1]);
+            burnTime = /*ticksForCurrentFuel =*/ getFuelTime(contents[1]);
+            setTFCF(burnTime);
             // Before we remove the item: how fast does it burn?
             burnSpeed = getBurnSpeed(contents[1]);
             // If it's a container item (lava bucket), we only consume its contents (not like evil Notch!)
@@ -146,7 +172,7 @@ public class VTEFurnace extends TileEntityFurnace
         // And for the display (I'm using floor rather than round to not cause the client to do shit when we not really reached 200):
         cookTime = Util.floor(myCookTime);
     }
-    
+
     protected void checkLink()
     {
         // If this furnace is linked, then we should see if there's a reason to interact
@@ -258,18 +284,18 @@ public class VTEFurnace extends TileEntityFurnace
             lastCheck = inv.getLastUpdate();
         }
     }
-    
+
     public boolean isFine()
     {
         return ((myCookTime > 0.0D) || (getFuelTime(contents[1]) > 0)) && canHasBURN();
     }
-    
+
     // This needs a little addition
     public boolean isBurning()
     {
         return (burnTime > 0) && (burnSpeed > 0.0D) && canHasBURN();
     }
-    
+
     private ItemStack getBurnResult(ItemStack item)
     {
         if(item == null)
@@ -279,7 +305,7 @@ public class VTEFurnace extends TileEntityFurnace
         // CUSTOM RECIPE HERE
         return RecipesFurnace.getInstance().getResult(item); // Derpnote
     }
-    
+
     private double getMeltSpeed(ItemStack item)
     {
         if(item == null)
@@ -289,7 +315,7 @@ public class VTEFurnace extends TileEntityFurnace
         // CUSTOM RECIPE HERE
         return 1.0D;
     }
-    
+
     private int getFuelTime(ItemStack item)
     {
         if(item == null)
@@ -308,7 +334,7 @@ public class VTEFurnace extends TileEntityFurnace
             return fuelTime(item);
         }
     }
-    
+
     private double getBurnSpeed(ItemStack item)
     {
         if(item == null)
@@ -318,7 +344,7 @@ public class VTEFurnace extends TileEntityFurnace
         // CUSTOM FUEL HERE
         return 1.0D;
     }
-    
+
     private boolean canHasBURN()
     {
         // No ingredient, no recipe
@@ -349,7 +375,7 @@ public class VTEFurnace extends TileEntityFurnace
         }
         return false;
     }
-    
+
     public void burn()
     {
         // Can't burn? Goodbye
@@ -384,24 +410,24 @@ public class VTEFurnace extends TileEntityFurnace
             }
         }
     }
-    
+
     /***** The following methods are only here because they interact with the contents array, which is private *****/
-    
+
     public ItemStack[] getContents()
     {
         return contents;
     }
-    
+
     public int getSize()
     {
         return contents.length;
     }
-    
+
     public ItemStack getItem(int i)
     {
         return contents[i];
     }
-    
+
     public ItemStack splitStack(int i, int j)
     {
         if(contents[i] != null)
@@ -428,7 +454,7 @@ public class VTEFurnace extends TileEntityFurnace
             return null;
         }
     }
-    
+
     public ItemStack splitWithoutUpdate(int i)
     {
         if(contents[i] != null)
@@ -442,7 +468,7 @@ public class VTEFurnace extends TileEntityFurnace
             return null;
         }
     }
-    
+
     public void setItem(int i, ItemStack itemstack)
     {
         contents[i] = itemstack;
@@ -451,26 +477,51 @@ public class VTEFurnace extends TileEntityFurnace
             itemstack.count = getMaxStackSize();
         }
     }
-    
+
+    private void setTFCF(int value)
+    {
+        try
+        {
+            _tfcf.setInt(this, value);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private int getTFCF()
+    {
+        try
+        {
+            return _tfcf.getInt(this);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     // Compatibility
     public InventoryHolder getOwner()
     {
         return null;
     }
-    
+
     public boolean #FIELD_IINVENTORY_1#(EntityHuman entityhuman) // Derpnote
     {
         return true;
     }
-    
+
     public void onOpen(CraftHumanEntity who)
     {
     }
-    
+
     public void onClose(CraftHumanEntity who)
     {
     }
-    
+
     public List<HumanEntity> getViewers()
     {
         return new ArrayList<HumanEntity>();

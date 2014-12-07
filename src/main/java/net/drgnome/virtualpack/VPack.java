@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v#MC_VERSION#.CraftServer;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
-import net.minecraft.util.com.mojang.authlib.GameProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.server.v#MC_VERSION#.*;
 import net.drgnome.virtualpack.components.*;
 import net.drgnome.virtualpack.util.*;
@@ -1036,7 +1036,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VWorkbench(player), Lang.get(bukkitPlayer, "workbench.name"), 1, 9);
+        Util.openWindow(player, new VWorkbench(player), Lang.get(bukkitPlayer, "workbench.name"), "minecraft:crafting_table", 9);
         if(!admin)
         {
             _cooldown[0] = System.currentTimeMillis();
@@ -1082,7 +1082,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VUncrafter(player), Lang.get(bukkitPlayer, "uncrafter.name"), 0, 18);
+        Util.openWindow(player, new VUncrafter(player), Lang.get(bukkitPlayer, "uncrafter.name"), "minecraft:chest", 18);
         if(!admin)
         {
             _cooldown[1] = System.currentTimeMillis();
@@ -1179,7 +1179,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "enderchest.fail"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, ec, Lang.get(bukkitPlayer, "enderchest.name"), 0, 27);
+        Util.openWindow(player, ec, Lang.get(bukkitPlayer, "enderchest.name"), "minecraft:chest", 27);
         if(!admin)
         {
             _cooldown[8] = System.currentTimeMillis();
@@ -1225,7 +1225,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VEnchantTable(player, _bookshelves), Lang.get(bukkitPlayer, "enchanttable.name"), 4, 9);
+        Util.openWindow(player, new VEnchantTable(player, _bookshelves), Lang.get(bukkitPlayer, "enchanttable.name"), "minecraft:enchanting_table", 9);
         if(!admin)
         {
             _cooldown[2] = System.currentTimeMillis();
@@ -1292,7 +1292,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VAnvil(player), Lang.get(bukkitPlayer, "anvil.name"), 8, 9);
+        Util.openWindow(player, new VAnvil(player), Lang.get(bukkitPlayer, "anvil.name"), "minecraft:anvil", 9);
         if(!admin)
         {
             _cooldown[3] = System.currentTimeMillis();
@@ -1343,7 +1343,7 @@ public class VPack
         _matter.updateInv();
         /** FUUU ALL THE WAY **/
         //Util.openInv(player, _matter);
-        Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter, canEdit), Lang.get(player, "matter.name"), 0, 54);
+        Util.openWindow(mcPlayer, new TmpMatter(mcPlayer, _matter, canEdit), Lang.get(player, "matter.name"), "minecraft:chest", 54);
         if(!admin)
         {
             _cooldown[4] = System.currentTimeMillis();
@@ -1397,7 +1397,7 @@ public class VPack
         int size = getChestSize() * 9;
         inv.resize(size);
         VChest container = new VChest(player, inv, canEdit);
-        Util.openWindow(player, container, Lang.get(bukkitPlayer, "chest.name", "" + nr), 0, size);
+        Util.openWindow(player, container, Lang.get(bukkitPlayer, "chest.name", "" + nr), "minecraft:chest", size);
         if(!admin)
         {
             _cooldown[5] = System.currentTimeMillis();
@@ -1482,7 +1482,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VFurnace(player, fur, canEdit), Lang.get(bukkitPlayer, "furnace.name", "" + nr), 2, 3);
+        Util.openWindow(player, new VFurnace(player, fur, canEdit), Lang.get(bukkitPlayer, "furnace.name", "" + nr), "minecraft:furnace", 3);
         if(!admin)
         {
             _cooldown[6] = System.currentTimeMillis();
@@ -1588,7 +1588,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VBrewingstand(player, brew, canEdit), Lang.get(bukkitPlayer, "brewingstand.name", "" + nr), 5, 4);
+        Util.openWindow(player, new VBrewingstand(player, brew, canEdit), Lang.get(bukkitPlayer, "brewingstand.name", "" + nr), "minecraft:brewing_stand", 4);
         if(!admin)
         {
             _cooldown[7] = System.currentTimeMillis();
@@ -1657,7 +1657,7 @@ public class VPack
         init();
         EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
         VTrash container = new VTrash(player);
-        Util.openWindow(player, container, Lang.get(bukkitPlayer, "trash.name"), 0, 9);
+        Util.openWindow(player, container, Lang.get(bukkitPlayer, "trash.name"), "minecraft:chest", 9);
     }
 
     /** Sending **/

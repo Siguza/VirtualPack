@@ -10,7 +10,7 @@ public class VWorkbench extends ContainerWorkbench
 {
     public VWorkbench(EntityPlayer player)
     {
-        super(player.inventory, player.world, 0, 0, 0);
+        super(player.inventory, player.world, new BlockPosition(0, 0, 0));
         this.checkReachable = false;
     }
 }

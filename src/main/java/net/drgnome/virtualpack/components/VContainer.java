@@ -11,14 +11,14 @@ import static net.drgnome.virtualpack.util.Global._plugin;
 public abstract class VContainer extends ContainerChest
 {
     protected EntityPlayer player;
-    
+
     public VContainer(EntityPlayer player, IInventory data)
     {
-        super(player.inventory, data);
+        super(player.inventory, data, player);
         this.checkReachable = false;
         this.player = player;
     }
-    
+
     public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
     {
         ItemStack item;
@@ -37,22 +37,22 @@ public abstract class VContainer extends ContainerChest
         update();
         return item;
     }
-    
+
     public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
     {
         return true;
     }
-    
+
     protected int toInventorySlot(int slot)
     {
         return (slot >= 27) ? (slot - 27) : (slot + 9);
     }
-    
+
     protected final void update()
     {
         update(this.player);
     }
-    
+
     public static void update(final EntityPlayer player)
     {
         Bukkit.getScheduler().scheduleSyncDelayedTask(_plugin, new Runnable()

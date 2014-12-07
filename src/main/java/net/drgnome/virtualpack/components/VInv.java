@@ -16,13 +16,14 @@ public class VInv implements IInventory
     protected ItemStack[] contents = new ItemStack[0];
     private long lastUpdate;
     private int _maxStack = 64;
-    
+    private String _name = "";
+
     public VInv(int rows)
     {
         contents = new ItemStack[rows * 9];
         lastUpdate = System.currentTimeMillis();
     }
-    
+
     public VInv(int rows, String data[])
     {
         this(rows);
@@ -31,7 +32,7 @@ public class VInv implements IInventory
             contents[i] = Util.stringToItemStack(data[i]);
         }
     }
-    
+
     public VInv(int rows, ItemStack[] items)
     {
         this(rows);
@@ -41,7 +42,7 @@ public class VInv implements IInventory
             contents[i] = items[i];
         }
     }
-    
+
     public String[] save()
     {
         String string[] = new String[contents.length];
@@ -51,12 +52,12 @@ public class VInv implements IInventory
         }
         return string;
     }
-    
+
     public void clear()
     {
         contents = new ItemStack[contents.length];
     }
-    
+
     public void resize(int size)
     {
         if(contents.length != size)
@@ -64,17 +65,17 @@ public class VInv implements IInventory
             contents = Arrays.copyOf(contents, size);
         }
     }
-    
+
     public int getSize()
     {
         return contents.length;
     }
-    
+
     public ItemStack getItem(int slot)
     {
         return (slot < contents.length) && (slot >= 0) ? contents[slot] : null;
     }
-    
+
     public ItemStack splitStack(int slot, int size)
     {
         if((slot < contents.length) && (contents[slot] != null))
@@ -94,7 +95,7 @@ public class VInv implements IInventory
         }
         return null;
     }
-    
+
     public ItemStack splitWithoutUpdate(int slot)
     {
         if((slot < contents.length) && (contents[slot] != null))
@@ -105,7 +106,7 @@ public class VInv implements IInventory
         }
         return null;
     }
-    
+
     public void setItem(int slot, ItemStack item)
     {
         contents[slot] = item;
@@ -115,73 +116,102 @@ public class VInv implements IInventory
         }
         lastUpdate = System.currentTimeMillis();
     }
-    
+
     public long getLastUpdate()
     {
         return lastUpdate;
     }
-    
-    public String getInventoryName()
+
+    public String getName()
     {
-        return "Blubb";
+        return _name;
     }
-    
-    public boolean #FIELD_IINVENTORY_4#() // Has name?
+
+    public void setName(String name)
+    {
+        _name = name;
+    }
+
+    public IChatBaseComponent getScoreboardDisplayName()
+    {
+        return new ChatComponentText(_name);
+    }
+
+    public boolean hasCustomName()
     {
         return true;
     }
-    
+
     public int getMaxStackSize()
     {
         return _maxStack;
     }
-    
+
     public void setMaxStackSize(int i)
     {
         _maxStack = i;
     }
-    
+
     public boolean #FIELD_IINVENTORY_1#(EntityHuman entityhuman) // Derpnote
     {
         return true;
     }
-    
+
     public List<HumanEntity> getViewers()
     {
         return new ArrayList<HumanEntity>();
     }
-    
+
     public InventoryHolder getOwner()
     {
         return null;
     }
-    
+
     public ItemStack[] getContents()
     {
         return contents;
     }
-    
+
     public boolean #FIELD_IINVENTORY_3#(int slot, ItemStack item)
     {
         return true;
     }
-    
+
+    public int getProperty(int i)
+    {
+        return 0;
+    }
+
+    public void #FIELD_IINVENTORY_5#(int i, int j)
+    {
+    }
+
+    public int #FIELD_IINVENTORY_6#()
+    {
+        return 0;
+    }
+
+    public void #FIELD_IINVENTORY_7#()
+    {
+        clear();
+    }
+
     public void update()
     {
     }
-    
-    public void #FIELD_IINVENTORY_2#() // Derpnote
+
+    public void closeContainer(EntityHuman human)
     {
     }
-    
-    public void startOpen() // Derpnote
+
+    public void startOpen(EntityHuman human)
     {
     }
-    
+
     public void onOpen(CraftHumanEntity paramCraftHumanEntity)
     {
     }
-    
+
     public void onClose(CraftHumanEntity paramCraftHumanEntity)
     {
     }

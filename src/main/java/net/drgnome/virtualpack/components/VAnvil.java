@@ -20,7 +20,7 @@ public class VAnvil extends ContainerAnvil
 
     public VAnvil(EntityPlayer entityplayer)
     {
-        super(entityplayer.inventory, null, 0, 0, 0, entityplayer);
+        super(entityplayer.inventory, null, new BlockPosition(0, 0, 0), entityplayer);
         checkReachable = false;
         _player = entityplayer;
         for(int i = 0; i < #FIELD_CONTAINER_3#.size(); i++)
@@ -43,7 +43,7 @@ public class VAnvil extends ContainerAnvil
 
     public VAnvil(EntityPlayer entityplayer, int x, int y, int z)
     {
-        super(entityplayer.inventory, entityplayer.world, x, y, z, entityplayer);
+        super(entityplayer.inventory, entityplayer.world, new BlockPosition(x, y, z), entityplayer);
         _player = entityplayer;
     }
 
@@ -141,7 +141,7 @@ public class VAnvil extends ContainerAnvil
                     while(iterator.hasNext())
                     {
                         j1 = ((Integer)iterator.next()).intValue();
-                        enchantment = Enchantment.byId[j1];
+                        enchantment = Enchantment.getById(j1);
                         k1 = map.containsKey(Integer.valueOf(j1)) ? ((Integer)map.get(Integer.valueOf(j1))).intValue() : 0;
                         l1 = ((Integer)map1.get(Integer.valueOf(j1))).intValue();
                         int j2;
@@ -165,7 +165,7 @@ public class VAnvil extends ContainerAnvil
                         while(iterator1.hasNext())
                         {
                             int l2 = ((Integer)iterator1.next()).intValue();
-                            if(l2 != j1 && !enchantment.#FIELD_ENCHANTMENT_1#(Enchantment.byId[l2]))
+                            if(l2 != j1 && !enchantment.#FIELD_ENCHANTMENT_1#(Enchantment.getById(l2)))
                             {
                                 flag1 = false;
                                 i += k2;
@@ -219,7 +219,7 @@ public class VAnvil extends ContainerAnvil
             for(iterator = map.keySet().iterator(); iterator.hasNext(); k += l + k1 * l1)
             {
                 j1 = ((Integer)iterator.next()).intValue();
-                enchantment = Enchantment.byId[j1];
+                enchantment = Enchantment.getById(j1);
                 k1 = ((Integer)map.get(Integer.valueOf(j1))).intValue();
                 l1 = 0;
                 ++l;

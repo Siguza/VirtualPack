@@ -22,7 +22,7 @@ public class VEnchantTable extends ContainerEnchantTable
 
     public VEnchantTable(EntityPlayer player, int bookshelves)
     {
-        super(player.inventory, player.world, 0, 0, 0);
+        super(player.inventory, player.world, new BlockPosition(0, 0, 0));
         this.checkReachable = false;
         this.bookshelves = bookshelves;
     }
@@ -34,7 +34,7 @@ public class VEnchantTable extends ContainerEnchantTable
             ItemStack itemstack = iinventory.getItem(0);
             if(itemstack != null && itemstack.#FIELD_ITEMSTACK_2#())
             {
-                this.#FIELD_CONTAINERENCHANTTABLE_3# = this.rand.nextLong();
+                this.#FIELD_CONTAINERENCHANTTABLE_3# = this.rand.nextInt();
                 for(int i = 0; i < 3; ++i)
                 {
                     this.costs[i] = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_1#(this.rand, i, this.bookshelves, itemstack);
@@ -81,7 +81,7 @@ public class VEnchantTable extends ContainerEnchantTable
                 Map<org.bukkit.enchantments.Enchantment, Integer> enchants = new HashMap<org.bukkit.enchantments.Enchantment, Integer>();
                 for(Object obj : list)
                 {
-                    EnchantmentInstance instance = (EnchantmentInstance)obj;
+                    WeightedRandomEnchant instance = (WeightedRandomEnchant)obj;
                     enchants.put(org.bukkit.enchantments.Enchantment.getById(instance.enchantment.id), instance.level);
                 }
                 int level;
@@ -115,11 +115,11 @@ public class VEnchantTable extends ContainerEnchantTable
                         if(flag)
                         {
                             int enchantId = entry.getKey().getId();
-                            if(Enchantment.byId[enchantId] == null)
+                            if(Enchantment.getById(enchantId) == null)
                             {
                                 continue;
                             }
-                            EnchantmentInstance enchantment = new EnchantmentInstance(enchantId, entry.getValue());
+                            WeightedRandomEnchant enchantment = new WeightedRandomEnchant(Enchantment.getById(enchantId), entry.getValue());
                             ((ItemEnchantedBook)Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId())).#FIELD_ITEMENCHANTEDBOOK_1#(itemstack, enchantment);
                             applied = true;
                             itemstack.setItem(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()));
