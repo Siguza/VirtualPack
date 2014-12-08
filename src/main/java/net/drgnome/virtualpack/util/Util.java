@@ -353,7 +353,7 @@ public class Util
         }
         try
         {
-            return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(string))))), NBTReadLimiter.#FIELD_NBTREADLIMITER_1#));
+            return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(string))));
         }
         catch(Exception e)
         {
@@ -371,7 +371,7 @@ public class Util
         try
         {
             ByteArrayOutputStream b = new ByteArrayOutputStream();
-            NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound()), (DataOutput)new DataOutputStream(new GZIPOutputStream(b)));
+            NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound()), b);
             return DatatypeConverter.printBase64Binary(b.toByteArray());
         }
         catch(Exception e)
