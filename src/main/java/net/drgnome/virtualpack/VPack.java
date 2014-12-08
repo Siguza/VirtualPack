@@ -1036,7 +1036,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VWorkbench(player), Lang.get(bukkitPlayer, "workbench.name"), "minecraft:crafting_table", 9);
+        Util.openWindow(player, new VWorkbench(player), Lang.get(bukkitPlayer, "workbench.name"), "minecraft:crafting_table");
         if(!admin)
         {
             _cooldown[0] = System.currentTimeMillis();
@@ -1225,7 +1225,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VEnchantTable(player, _bookshelves), Lang.get(bukkitPlayer, "enchanttable.name"), "minecraft:enchanting_table", 9);
+        Util.openWindow(player, new VEnchantTable(player, _bookshelves), Lang.get(bukkitPlayer, "enchanttable.name"), "minecraft:enchanting_table");
         if(!admin)
         {
             _cooldown[2] = System.currentTimeMillis();
@@ -1292,7 +1292,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VAnvil(player), Lang.get(bukkitPlayer, "anvil.name"), "minecraft:anvil", 9);
+        Util.openWindow(player, new VAnvil(player), Lang.get(bukkitPlayer, "anvil.name"), "minecraft:anvil");
         if(!admin)
         {
             _cooldown[3] = System.currentTimeMillis();

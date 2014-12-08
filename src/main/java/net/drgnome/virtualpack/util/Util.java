@@ -457,15 +457,29 @@ public class Util
         return _lastStackIds;
     }
 
+    public static void openWindow(EntityPlayer player, Container container, String name, String id)
+    {
+        if(name.length() > 32)
+        {
+            name = name.substring(0, 32);
+        }
+        int containerId = player.nextContainerCounter();
+        player.playerConnection.sendPacket(new PacketPlayOutOpenWindow(containerId, id, new ChatComponentText(name)));
+        player.activeContainer = container;
+        container.windowId = containerId;
+        container.addSlotListener((ICrafting)player);
+    }
+
     public static void openWindow(EntityPlayer player, Container container, String name, String id, int size)
     {
         if(name.length() > 32)
         {
             name = name.substring(0, 32);
         }
-        player.playerConnection.sendPacket(new PacketPlayOutOpenWindow(1, id, new ChatComponentText(name), size));
+        int containerId = player.nextContainerCounter();
+        player.playerConnection.sendPacket(new PacketPlayOutOpenWindow(containerId, id, new ChatComponentText(name), size));
         player.activeContainer = container;
-        container.windowId = 1;
+        container.windowId = containerId;
         container.addSlotListener((ICrafting)player);
     }
 
