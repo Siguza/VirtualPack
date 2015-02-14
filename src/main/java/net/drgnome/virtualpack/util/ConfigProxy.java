@@ -120,6 +120,7 @@ public class ConfigProxy
         setDef("global-perms", "true");
         setDef("superperms", "false");
         setDef("save-interval", "300");
+        setDef("save-message", "true");
         setDef("tick.interval", "10");
         setDef("on-death", "keep");
         setDef("economy", "true");

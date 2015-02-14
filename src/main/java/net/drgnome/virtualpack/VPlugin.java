@@ -982,7 +982,10 @@ public class VPlugin extends JavaPlugin implements Runnable
 
     public void runSave()
     {
-        _log.info("[VirtualPack] Saving user data...");
+        if(Config.bool("save-message"))
+        {
+            _log.info("[VirtualPack] Saving user data...");
+        }
         saveUserData();
     }
 
