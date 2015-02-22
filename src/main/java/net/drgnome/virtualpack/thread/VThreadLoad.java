@@ -5,10 +5,11 @@
 package net.drgnome.virtualpack.thread;
 
 import java.util.*;
+import org.bukkit.scheduler.BukkitRunnable;
 import net.drgnome.virtualpack.*;
 import static net.drgnome.virtualpack.util.Global.*;
 
-public class VThreadLoad extends Thread
+public class VThreadLoad extends BukkitRunnable
 {
     public static boolean _debug;
     public static int _num;

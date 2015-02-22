@@ -114,6 +114,7 @@ public class ConfigProxy
         setDef("lazy-loading-hack", "false");
         setDef("load-multithreaded", "false");
         setDef("max-threads", "100");
+        setDef("bypass-thread-pool-on-load", "false");
         setDef("reload-on-failure", "0");
         setDef("import-world", "");
         setDef("check-update", "true");

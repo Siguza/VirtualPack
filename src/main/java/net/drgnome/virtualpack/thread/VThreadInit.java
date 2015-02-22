@@ -12,7 +12,7 @@ public class VThreadInit extends Thread
     {
         _plugin.loadUserData0();
     }
-    
+
     public boolean done()
     {
         return this.getState() == State.TERMINATED;

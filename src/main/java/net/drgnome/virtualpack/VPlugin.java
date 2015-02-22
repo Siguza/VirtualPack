@@ -141,25 +141,30 @@ public class VPlugin extends JavaPlugin implements Runnable
 
     public void registerThreads()
     {
-        _threadId[0] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadLoadManager(), 0L, 1L);
+        //_threadId[0] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadLoadManager(), 0L, 1L);
+        _threadId[0] = new VThreadLoadManager().runTaskTimer(this, 0L, 1L).getTaskId();
         long tmp = ((long)Config.getInt("save-interval")) * 20L;
         if(tmp > 0)
         {
-            _threadId[1] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadSaveManager(), tmp, tmp);
+            //_threadId[1] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadSaveManager(), tmp, tmp);
+            _threadId[1] = new VThreadSaveManager().runTaskTimer(this, tmp, tmp).getTaskId();
         }
         tmp = (long)Config.getInt("tick.interval");
         if(tmp > 0)
         {
+            // No need for thread pooling here
             _threadId[2] = getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, tmp);
         }
         tmp = (long)Config.getInt("send.notify-interval");
         if(tmp > 0)
         {
-            _threadId[3] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadAnnoy(), 0L, tmp);
+            //_threadId[3] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadAnnoy(), 0L, tmp);
+            _threadId[3] = new VThreadAnnoy().runTaskTimer(this, 0L, tmp).getTaskId();
         }
         if(Config.bool("check-update"))
         {
-            _threadId[4] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadUpdate(), 0L, 72000L);
+            //_threadId[4] = getServer().getScheduler().runTaskTimerAsynchronously(this, new VThreadUpdate(), 0L, 72000L).getTaskId();
+            _threadId[4] = new VThreadUpdate().runTaskTimerAsynchronously(this, 0L, 72000L).getTaskId();
         }
         _log.info(Lang.get(null, "vpack.enable", _version));
     }
@@ -242,7 +247,8 @@ public class VPlugin extends JavaPlugin implements Runnable
             }
             else
             {
-                _threadId[5] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadWait(m), 0L, 20L);
+                //_threadId[5] = getServer().getScheduler().scheduleSyncRepeatingTask(this, new VThreadWait(m), 0L, 20L);
+                _threadId[5] = new VThreadWait(m).runTaskTimer(this, 0L, 20L).getTaskId();
             }
         }
         catch(ClassNotFoundException e)
@@ -647,6 +653,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             _saveThread = new VThreadSave(new File(getDataFolder(), filename), _packs);
         }
         _saveThread.start();
+        //_saveThread.runTaskAsynchronously(this);
         _saveRequested = false;
     }
 
@@ -666,6 +673,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             _numLoadThreads = 1;
             _initThread = new VThreadInit();
             _initThread.start();
+            //_initThread.runTaskAsynchronously(this);
         }
         else
         {
@@ -797,6 +805,7 @@ public class VPlugin extends JavaPlugin implements Runnable
         boolean lazy = Config.bool("lazy-loading-hack");
         if(Config.bool("load-multithreaded"))
         {
+            boolean bypass = Config.bool("bypass-thread-pool-on-load");
             int max = Config.getInt("max-threads");
             _numLoadThreads = 0;
             _numActiveLoadThreads = 0;
@@ -822,9 +831,15 @@ public class VPlugin extends JavaPlugin implements Runnable
                 {
                     _loadThreads.add(loadThread);
                 }
-                loadThread.start();
+                if(bypass)
+                {
+                    new Thread(loadThread).start();
+                }
+                else
+                {
+                    loadThread.runTaskAsynchronously(this);
+                }
             }
-
         }
         else
         {

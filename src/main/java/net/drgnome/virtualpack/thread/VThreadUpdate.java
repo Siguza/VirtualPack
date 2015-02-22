@@ -4,9 +4,10 @@
 
 package net.drgnome.virtualpack.thread;
 
+import org.bukkit.scheduler.BukkitRunnable;
 import static net.drgnome.virtualpack.util.Global.*;
 
-public class VThreadUpdate extends Thread
+public class VThreadUpdate extends BukkitRunnable
 {
     public void run()
     {

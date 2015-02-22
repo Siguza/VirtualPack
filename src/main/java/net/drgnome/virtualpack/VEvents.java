@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 //import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import net.drgnome.virtualpack.util.*;
 
 import static net.drgnome.virtualpack.util.Global.*;
@@ -44,11 +45,10 @@ public class VEvents implements Listener
         final Player player = event.getPlayer();
         if(Perm.has(player, "vpack.use"))
         {
-            Thread thrd = new Thread()
+            /*Thread thrd = new Thread()
             {
                 public void run()
                 {
-                    
                     for(String world : Config.worlds())
                     {
                         if(_plugin.hasPack(world, player))
@@ -59,7 +59,20 @@ public class VEvents implements Listener
                 }
             };
             thrd.setPriority(Thread.MIN_PRIORITY);
-            thrd.start();
+            thrd.start();*/
+            new BukkitRunnable()
+            {
+                public void run()
+                {
+                    for(String world : Config.worlds())
+                    {
+                        if(_plugin.hasPack(world, player))
+                        {
+                            _plugin.getPack(world, player).processSent();
+                        }
+                    }
+                }
+            }.runTaskAsynchronously(_plugin);
         }
     }
 
