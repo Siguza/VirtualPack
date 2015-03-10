@@ -4,6 +4,7 @@
 
 package net.drgnome.virtualpack.inject;
 
+import java.lang.reflect.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v#MC_VERSION#.event.CraftEventFactory;
@@ -13,6 +14,20 @@ import net.drgnome.virtualpack.util.Util;
 public class BlockVAnvil extends BlockAnvil
 {
     public static final int _id = Material.ANVIL.getId();
+    public static Method _addBlock;
+
+    static
+    {
+        try
+        {
+            _addBlock = Block.class.getDeclaredMethod("#FIELD_BLOCK_6#", int.class, String.class, Block.class);
+            _addBlock.setAccessible(true);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public static void inject()
     {
@@ -26,12 +41,20 @@ public class BlockVAnvil extends BlockAnvil
         #FIELD_BLOCK_2#(Block.#FIELD_BLOCK_5#);
         #FIELD_BLOCK_3#(2000.0F);
         #FIELD_BLOCK_4#("anvil");
-        Block.REGISTRY.#FIELD_REGISTRYMATERIALS_1#(145, "anvil", this);
+        //Block.REGISTRY.#FIELD_REGISTRYMATERIALS_1#(145, "anvil", this);
+        try
+        {
+            _addBlock.invoke(null, 145, "anvil", this);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public boolean interact(World world, int x, int y, int z, EntityHuman human, int i1, float f1, float f2, float f3)
     {
-        if((human instanceof EntityPlayer) && !world.isStatic)
+        if((human instanceof EntityPlayer) && !world.isClientSide)
         {
             EntityPlayer player = (EntityPlayer)human;
             Container container = CraftEventFactory.callInventoryOpenEvent(player, new VAnvil(player, x, y, z));

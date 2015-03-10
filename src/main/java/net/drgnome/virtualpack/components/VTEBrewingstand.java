@@ -26,6 +26,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     private double brewSpeed;
     private int lastID;
     private long lastCheck;
+    private ItemStack[] items = new ItemStack[4];
 
     public VTEBrewingstand(VPack vpack)
     {

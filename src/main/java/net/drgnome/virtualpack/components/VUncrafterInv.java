@@ -13,11 +13,13 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class VUncrafterInv extends VInv implements VProcessing
 {
-    private static final List _recipes = CraftingManager.getInstance().getRecipes();
+    /*private static final List _recipes = CraftingManager.getInstance().getRecipes();*/
     private static final Field[] _fields = new Field[2];
+    private static VRecipe[] _recipes;
+    private static VRecipe _enchantedBook;
     private final EntityPlayer _player;
     private ArrayList<Integer> _slotUpdate = new ArrayList<Integer>();
-    
+
     static
     {
         try
@@ -39,13 +41,45 @@ public class VUncrafterInv extends VInv implements VProcessing
             e.printStackTrace();
         }
     }
-    
+
+    public static void init()
+    {
+        ArrayList<VRecipe> list = new ArrayList<VRecipe>();
+        List<IRecipe> mcList = (List<IRecipe>)CraftingManager.getInstance().getRecipes();
+        for(IRecipe recipe : mcList)
+        {
+            ItemStack result = recipe.#FIELD_IRECIPE_1#(); // Derpnote
+            if(result == null)
+            {
+                continue;
+            }
+            ItemStack[] ingredients;
+            if(recipe instanceof ShapelessRecipes)
+            {
+                ingredients = ((List<ItemStack>)access(0, recipe)).toArray(new ItemStack[0]);
+            }
+            else if(recipe instanceof ShapedRecipes)
+            {
+                ingredients = (ItemStack[])access(1, recipe);
+            }
+            else
+            {
+                _log.warning("[VirtualPack] Uncrafter: Skipping unknown recipe type: " + recipe.getClass().getName());
+                continue;
+            }
+            list.add(new VRecipe(ingredients, result));
+        }
+        _recipes = list.toArray(new VRecipe[0]);
+        Arrays.sort(_recipes);
+        _enchantedBook = new VRecipe(new ItemStack[]{new ItemStack(Item.#FIELD_ITEM_8#(Material.BOOK.getId()), 1, 0)}, new ItemStack(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()), 1, 0), false);
+    }
+
     public VUncrafterInv(EntityPlayer player)
     {
         super(2);
         _player = player;
     }
-    
+
     public void setItem(int slot, ItemStack item)
     {
         if((slot >= 0) && (slot < 9))
@@ -54,7 +88,7 @@ public class VUncrafterInv extends VInv implements VProcessing
         }
         super.setItem(slot, item);
     }
-    
+
     public void process()
     {
         for(Integer i : _slotUpdate)
@@ -63,145 +97,137 @@ public class VUncrafterInv extends VInv implements VProcessing
         }
         _slotUpdate.clear();
     }
-    
-    private void processSlot(int slot)
+
+    private VRecipe match(ItemStack result)
     {
-        ItemStack old;
-        ItemStack result;
-        Object tmp;
-        IRecipe recipe;
-        if(contents[slot] != null)
+        for(int i = 0; i < _recipes.length; i++)
         {
-            old = Util.copy_old(contents[slot]);
-            for(int i = -1; i < _recipes.size(); i++)
+            ItemStack re = _recipes[i].result;
+            if((Item.#FIELD_ITEM_7#(re.getItem()) != Item.#FIELD_ITEM_7#(result.getItem())) || (re.getData() != result.getData()))
             {
-                ItemStack[] back = null;
-                if(i == -1)
-                {
-                    if(Item.#FIELD_ITEM_7#(old.getItem()) == Material.ENCHANTED_BOOK.getId())
-                    {
-                        back = new ItemStack[]{new ItemStack(Item.#FIELD_ITEM_8#(Material.BOOK.getId()), old.count, old.getData())};
-                    }
-                    else
-                    {
-                        NBTTagList ench = old.getEnchantments();
-                        if((ench == null) || (ench.size() == 0))
-                        {
-                            continue;
-                        }
-                        else if((!old.getItem().#FIELD_ITEM_5#() && (old.getData() != 0)) || !Config.bool("uncraft-enchanted"))
-                        {
-                            break;
-                        }
-                        back = new ItemStack[ench.size() + 1];
-                        back[0] = Util.copy_old(old);
-                        back[0].getTag().remove("ench");
-                        for(int j = 0; j < ench.size(); j++)
-                        {
-                            back[j + 1] = new ItemStack(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()), 1, 0);
-                            NBTTagCompound tag = new NBTTagCompound();
-                            NBTTagList elist = new NBTTagList();
-                            elist.add(ench.get(j));
-                            tag.set("StoredEnchantments", elist);
-                            back[j + 1].setTag(tag);
-                        }
-                    }
-                    result = Util.copy_old(old);
-                }
-                else
-                {
-                    tmp = _recipes.get(i);
-                    if((tmp == null) || !(tmp instanceof IRecipe))
-                    {
-                        continue;
-                    }
-                    recipe = (IRecipe)tmp;
-                    result = Util.copy_old(recipe.#FIELD_IRECIPE_1#()); // Derpnote
-                    if((result == null) || (Item.#FIELD_ITEM_7#(result.getItem()) != Item.#FIELD_ITEM_7#(old.getItem())) || (result.getData() != old.getData()))
-                    {
-                        continue;
-                    }
-                    if(recipe instanceof ShapelessRecipes)
-                    {
-                        back = Util.copy_old(((List<ItemStack>)access(0, recipe)).toArray(new ItemStack[0]));
-                    }
-                    else if(recipe instanceof ShapedRecipes)
-                    {
-                        back = Util.copy_old((ItemStack[])access(1, recipe));
-                    }
-                    else
-                    {
-                        _log.warning("[VirtualPack] Uncrafter: Skipping unknown recipe type: " + recipe.getClass().getName());
-                        continue;
-                    }
-                }
-                for(int j = 0; j < back.length; j++)
-                {
-                    if((back[j] != null) && ((back[j].getData() < 0) || (back[j].getData() >= 0x7FFF)))
-                    {
-                        back[j].setData(0);
-                    }
-                }
-                ItemStack[] test = new ItemStack[9];
-                for(int j = 0; j < test.length; j++)
-                {
-                    test[j] = Util.copy_old(contents[j + 9]);
-                }
-                ItemStack[] test1 = Util.copy_old(test);
-                boolean success;
-                for(; old.count >= result.count; old.count -= result.count)
-                {
-                    success = true;
-                    outside:
-                    for(int j = 0; j < back.length; j++)
-                    {
-                        if((back[j] == null) || (back[j].getItem().#FIELD_ITEM_1#())) // Derpnote
-                        {
-                            continue;
-                        }
-                        for(int k = 0; k < test1.length; k++)
-                        {
-                            if(test1[k] == null)
-                            {
-                                test1[k] = Util.copy_old(back[j]);
-                                test1[k].count = 1;
-                                continue outside;
-                            }
-                            else if((Item.#FIELD_ITEM_7#(test1[k].getItem()) == Item.#FIELD_ITEM_7#(back[j].getItem())) && (test1[k].getData() == back[j].getData()) && (test1[k].count < test1[k].getItem().getMaxStackSize()))
-                            {
-                                test1[k].count += 1;
-                                continue outside;
-                            }
-                        }
-                        success = false;
-                        break;
-                    }
-                    if(success)
-                    {
-                        test = Util.copy_old(test1);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                for(int j = 0; j < test.length; j++)
-                {
-                    contents[j + 9] = test[j];
-                }
-                if(old.count == 0)
-                {
-                    contents[slot] = null;
-                }
-                else
-                {
-                    contents[slot].count = old.count;
-                }
-                break;
+                continue;
+            }
+            return _recipes[i];
+        }
+        return null;
+    }
+
+    private VRecipe exactMatch(ItemStack result)
+    {
+        for(int i = 0; i < _recipes.length; i++)
+        {
+            ItemStack re = _recipes[i].result;
+            if((Item.#FIELD_ITEM_7#(re.getItem()) != Item.#FIELD_ITEM_7#(result.getItem())) || (re.getData() != result.getData()))
+            {
+                continue;
+            }
+            NBTTagCompound tag1 = re.getTag();
+            NBTTagCompound tag2 = result.getTag();
+            if(tag1 == null || (tag2 != null && tag1.equals(tag2)))
+            {
+                return _recipes[i];
             }
         }
+        return null;
     }
-    
+
+    private VRecipe disEntchant(ItemStack result)
+    {
+        if(Item.#FIELD_ITEM_7#(result.getItem()) == Material.ENCHANTED_BOOK.getId())
+        {
+            return _enchantedBook;
+        }
+        else if(Config.bool("uncraft-enchanted"))
+        {
+            NBTTagList ench = result.getEnchantments();
+            if((ench == null) || (ench.size() == 0))
+            {
+                return null;
+            }
+            ItemStack re = Util.copy_old(result);
+            re.count = 1;
+            ItemStack[] back = new ItemStack[ench.size() + 1];
+            back[0] = Util.copy_old(re);
+            back[0].getTag().remove("ench");
+            for(int i = 0; i < ench.size(); i++)
+            {
+                back[i + 1] = new ItemStack(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()), 1, 0);
+                NBTTagCompound tag = new NBTTagCompound();
+                NBTTagList list = new NBTTagList();
+                list.add(ench.get(i));
+                tag.set("StoredEnchantments", list);
+                back[i + 1].setTag(tag);
+            }
+            return new VRecipe(back, re, false);
+        }
+        return null;
+    }
+
+    private void processSlot(int slot)
+    {
+        if(contents[slot] == null || (contents[slot].getItem().usesDurability() && (contents[slot].getData() != 0)))
+        {
+            return;
+        }
+        VRecipe re = exactMatch(contents[slot]);
+        if(re == null)
+        {
+            re = disEntchant(contents[slot]);
+            if(re == null)
+            {
+                NBTTagList ench = contents[slot].getEnchantments();
+                if((ench != null) && (ench.size() > 0))
+                {
+                    return;
+                }
+                re = match(contents[slot]);
+                if(re == null)
+                {
+                    return;
+                }
+            }
+        }
+        ItemStack[] copy = new ItemStack[9];
+        for(int i = 0; i < 9; i++)
+        {
+            copy[i] = Util.copy_old(contents[i + 9]);
+        }
+        int amount = re.result.count;
+        dance:
+        for(int count = contents[slot].count - amount; count >= 0; count -= amount)
+        {
+            ItemStack[] sandbox = Util.copy_old(copy);
+            derping:
+            for(int i = 0; i < re.ingredients.length; i++)
+            {
+                for(int j = 0; j < 9; j++)
+                {
+                    if(sandbox[j] == null)
+                    {
+                        sandbox[j] = Util.copy_old(re.ingredients[i]);
+                        continue derping;
+                    }
+                    else if(sandbox[j].doMaterialsMatch(re.ingredients[i]) && sandbox[j].count < sandbox[j].getMaxStackSize())
+                    {
+                        sandbox[j].count++;
+                        continue derping;
+                    }
+                }
+                break dance;
+            }
+            copy = sandbox;
+            contents[slot].count = count;
+        }
+        for(int i = 0; i < 9; i++)
+        {
+            contents[i + 9] = copy[i];
+        }
+        if(contents[slot].count == 0)
+        {
+            contents[slot] = null;
+        }
+    }
+
     private static Object access(int i, Object handle)
     {
         try
@@ -213,5 +239,139 @@ public class VUncrafterInv extends VInv implements VProcessing
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static class VRecipe implements Comparable<VRecipe>
+    {
+        public final ItemStack[] ingredients;
+        public final ItemStack result;
+
+        public VRecipe(ItemStack[] in, ItemStack re)
+        {
+            this(in, re, true);
+        }
+
+        public VRecipe(ItemStack[] in, ItemStack re, boolean copy)
+        {
+            if(copy)
+            {
+                in = Util.copy_old(in);
+                result = Util.copy_old(re);
+            }
+            else
+            {
+                result = re;
+            }
+            ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+            for(int i = 0; i < in.length; i++)
+            {
+                if(in[i] != null && in[i].getItem().#FIELD_ITEM_1#())
+                {
+                    list.add(in[i]);
+                }
+            }
+            ingredients = list.toArray(new ItemStack[0]);
+            for(int i = 0; i < ingredients.length; i++)
+            {
+                if((ingredients[i].getData() < 0) || (ingredients[i].getData() >= 0x7FFF))
+                {
+                    ingredients[i].count = 1;
+                    ingredients[i].setData(0);
+                }
+            }
+        }
+
+        // A recipe that can be guarateed to not be a superset of another recipe gets sorted to the back.
+        // This way, specific recipes are checked before generic ones.
+        // It should be fine to see non-comparable recipes as equal here.
+        public int compareTo(VRecipe vr)
+        {
+            Item it = this.result.getItem();
+            if((Item.#FIELD_ITEM_7#(it) != Item.#FIELD_ITEM_7#(vr.result.getItem())) || (it.#FIELD_ITEM_5#() && (this.result.getData() != vr.result.getData())))
+            {
+                return 0;
+            }
+            NBTTagCompound tag1 = this.result.getTag();
+            NBTTagCompound tag2 = vr.result.getTag();
+            if(tag1 == null && tag2 == null)
+            {
+                return 0;
+            }
+            if(tag1 == null && tag2 != null)
+            {
+                return 1;
+            }
+            if(tag1 != null && tag2 == null)
+            {
+                return -1;
+            }
+            return compareTags(tag1, tag2);
+        }
+
+        private static int compareTags(NBTBase nbt1, NBTBase nbt2)
+        {
+            int id = nbt1.getTypeId();
+            if(id != nbt2.getTypeId())
+            {
+                return 0;
+            }
+            if(id == 10) // Compound
+            {
+                NBTTagCompound tag1 = (NBTTagCompound)nbt1;
+                NBTTagCompound tag2 = (NBTTagCompound)nbt2;
+                boolean hasMore = false;
+                ArrayList key1 = new ArrayList(tag1.#FIELD_NBTTAGCOMPOUND_1#());
+                ArrayList key2 = new ArrayList(tag2.#FIELD_NBTTAGCOMPOUND_1#());
+                for(Object o : key1)
+                {
+                    if(!key2.remove(o))
+                    {
+                        hasMore = true;
+                    }
+                }
+                if(key2.size() > 0)
+                {
+                    return hasMore ? 0 : 1;
+                }
+                else if(hasMore)
+                {
+                    return -1;
+                }
+                // At this point, key1 and key2 are bound to be equal
+                for(Object o : key1)
+                {
+                    int ret = compareTags(tag1.get((String)o), tag2.get((String)o));
+                    if(ret != 0)
+                    {
+                        return ret;
+                    }
+                }
+            }
+            else if(id == 9) // List
+            {
+                NBTTagList list1 = (NBTTagList)nbt1;
+                NBTTagList list2 = (NBTTagList)nbt2;
+                int size1 = list1.size();
+                int size2 = list2.size();
+                if(size1 > size2)
+                {
+                    return -1;
+                }
+                if(size1 < size2)
+                {
+                    return 1;
+                }
+                for(int i = 0; i < size1; i++)
+                {
+                    int ret = compareTags(list1.#FIELD_NBTTAGLIST_1#(i), list2.#FIELD_NBTTAGLIST_1#(i));
+                    if(ret != 0)
+                    {
+                        return ret;
+                    }
+                }
+            }
+            // Plain values say nothing
+            return 0;
+        }
     }
 }

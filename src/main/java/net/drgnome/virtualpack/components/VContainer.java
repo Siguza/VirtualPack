@@ -25,9 +25,10 @@ public abstract class VContainer extends ContainerChest
         if(allowClick(slot, mouse, shift, human))
         {
             item = super.clickItem(slot, mouse, shift, human);
-            if(this.container instanceof VProcessing)
+            IInventory container = this.#FIELD_CONTAINERCHEST_1#();
+            if(container instanceof VProcessing)
             {
-                ((VProcessing)this.container).process();
+                ((VProcessing)container).process();
             }
         }
         else

@@ -25,15 +25,16 @@ public class VChest extends VContainer implements VGUI
         {
             return false;
         }
+        IInventory container = this.#FIELD_CONTAINERCHEST_1#();
         if(shift == 1)
         {
-            if(slot >= this.container.getSize())
+            if(slot >= container.getSize())
             {
-                return isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - this.container.getSize())));
+                return isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - container.getSize())));
             }
             return true;
         }
-        else if((slot >= 0) && (slot < this.container.getSize()))
+        else if((slot >= 0) && (slot < container.getSize()))
         {
             return isItemAllowed(human, human.inventory.getCarried());
         }

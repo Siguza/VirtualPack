@@ -41,7 +41,7 @@ public class VUncrafter extends VContainer
     {
         for(int i = 0; i < 18; i++)
         {
-            ItemStack itemstack = container.splitWithoutUpdate(i);
+            ItemStack itemstack = this.#FIELD_CONTAINERCHEST_1#().splitWithoutUpdate(i);
             if(itemstack != null)
             {
                 entityhuman.drop(itemstack, false); // Whatever "false" does
@@ -53,13 +53,14 @@ public class VUncrafter extends VContainer
     {
         if(shift == 1)
         {
-            if(slot >= this.container.getSize())
+            IInventory container = this.#FIELD_CONTAINERCHEST_1#();
+            if(slot >= container.getSize())
             {
                 for(int i = 0; i < 9; i++)
                 {
-                    if(this.container.getItem(i) == null)
+                    if(container.getItem(i) == null)
                     {
-                        return isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - this.container.getSize())));
+                        return isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - container.getSize())));
                     }
                 }
                 return false;

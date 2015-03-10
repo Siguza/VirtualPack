@@ -20,9 +20,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
 import com.sk89q.bukkit.util.*;
 import net.drgnome.virtualpack.components.VGUI;
+import net.drgnome.virtualpack.components.VUncrafterInv;
 import net.drgnome.virtualpack.data.*;
 import net.drgnome.virtualpack.util.*;
 import net.drgnome.virtualpack.thread.*;
@@ -51,7 +53,7 @@ public class VPlugin extends JavaPlugin implements Runnable
     private VThreadSave _saveThread;
     private CommandRegistration _reg;
     private boolean _starting = true;
-    int[] _threadId = new int[6];
+    int[] _threadId = new int[7];
     private boolean _uuids = true;
     private boolean _uuidsConvert = false;
 
@@ -166,6 +168,13 @@ public class VPlugin extends JavaPlugin implements Runnable
             //_threadId[4] = getServer().getScheduler().runTaskTimerAsynchronously(this, new VThreadUpdate(), 0L, 72000L).getTaskId();
             _threadId[4] = new VThreadUpdate().runTaskTimerAsynchronously(this, 0L, 72000L).getTaskId();
         }
+        _threadId[6] = new BukkitRunnable()
+        {
+            public void run()
+            {
+                VUncrafterInv.init();
+            }
+        }.runTask(this).getTaskId();
         _log.info(Lang.get(null, "vpack.enable", _version));
     }
 

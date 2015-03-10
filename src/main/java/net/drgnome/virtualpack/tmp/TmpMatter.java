@@ -17,7 +17,7 @@ public class TmpMatter extends VContainer implements VGUI
 {
     private TmpMatterInv _inv;
     private final boolean _readonly;
-    
+
     public TmpMatter(EntityPlayer player, TmpMatterInv inv, boolean canEdit)
     {
         super(player, inv);
@@ -28,7 +28,7 @@ public class TmpMatter extends VContainer implements VGUI
         {
             for(int j = 0; j < 9; j++)
             {
-                #FIELD_CONTAINER_4#(new Slot(container, j + 9 * i, 8 + j * 18, 18)); // Derpnote
+                #FIELD_CONTAINER_4#(new Slot(this.#FIELD_CONTAINERCHEST_1#(), j + 9 * i, 8 + j * 18, 18)); // Derpnote
             }
         }
         for(int i = 0; i < 3; i++)
@@ -44,19 +44,19 @@ public class TmpMatter extends VContainer implements VGUI
         }
         _readonly = !canEdit;
     }
-    
+
     public void #FIELD_CONTAINER_5#(EntityHuman entityhuman) // Derpnote
     {
         for(int i = 1; i < 9; i++)
         {
-            ItemStack itemstack = container.splitWithoutUpdate(i);
+            ItemStack itemstack = this.#FIELD_CONTAINERCHEST_1#().splitWithoutUpdate(i);
             if(itemstack != null)
             {
                 entityhuman.drop(itemstack, false); // Another "false"
             }
         }
     }
-    
+
     public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
     {
         update();
