@@ -435,6 +435,10 @@
                                     <value>h</value>
                                 </replacement>
                                 <replacement>
+                                    <token>#FIELD_TILEENTITYFURNACE_1#</token> <!-- (ItemStack)I [getBurnTime] -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
                                     <token>#FIELD_NBTREADLIMITER_1#</token> <!-- [NBTReadLimiter] -->
                                     <value>a</value>
                                 </replacement>

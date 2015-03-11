@@ -19,6 +19,7 @@ public class VTEFurnace extends TileEntityFurnace
 {
     // ticksForCurrentFuel is private in Spigot
     private static Field _tfcf;
+    private static Field _total;
     // To access the chests
     private VPack vpack;
     private ItemStack[] contents = new ItemStack[3];
@@ -39,6 +40,8 @@ public class VTEFurnace extends TileEntityFurnace
         {
             _tfcf = TileEntityFurnace.class.getDeclaredField("ticksForCurrentFuel");
             _tfcf.setAccessible(true);
+            _total = TileEntityFurnace.class.getDeclaredField("cookTimeTotal");
+            _total.setAccessible(true);
         }
         catch(Exception e)
         {
@@ -50,8 +53,9 @@ public class VTEFurnace extends TileEntityFurnace
     public VTEFurnace(VPack vpack)
     {
         this.vpack = vpack;
-        cookTime = 0;
         burnTime = 0;
+        cookTime = 0;
+        cookTimeTotal(0);
         //ticksForCurrentFuel = 0;
         setTFCF(0);
     }
@@ -86,7 +90,9 @@ public class VTEFurnace extends TileEntityFurnace
         catch(ArrayIndexOutOfBoundsException e)
         {
         }
-        meltSpeed = getMeltSpeed(contents[0]); // Note to self: No need to save this
+        // Note to self: No need to save this
+        meltSpeed = getMeltSpeed(contents[0]);
+        cookTimeTotal(#FIELD_TILEENTITYFURNACE_1#(contents[0]));
     }
 
     public String[] save()
@@ -130,6 +136,7 @@ public class VTEFurnace extends TileEntityFurnace
         {
             // I have no idea what "ticksForCurrentFuel" is good for, but it works fine like this
             burnTime = /*ticksForCurrentFuel =*/ getFuelTime(contents[1]);
+            cookTimeTotal(#FIELD_TILEENTITYFURNACE_1#(contents[0]));
             setTFCF(burnTime);
             // Before we remove the item: how fast does it burn?
             burnSpeed = getBurnSpeed(contents[1]);
@@ -158,9 +165,10 @@ public class VTEFurnace extends TileEntityFurnace
             // The faster this fuel burns and the faster the recipe melts, the faster we're done
             myCookTime += burnSpeed * meltSpeed * ((double)ticks);
             // Finished burning?
-            while(myCookTime >= 200.0D)
+            int time = #FIELD_TILEENTITYFURNACE_1#(contents[0]);
+            while(myCookTime >= time)
             {
-                myCookTime -= 200.0D;
+                myCookTime -= time;
                 burn();
             }
         }
@@ -169,7 +177,7 @@ public class VTEFurnace extends TileEntityFurnace
         {
             myCookTime = 0.0D;
         }
-        // And for the display (I'm using floor rather than round to not cause the client to do shit when we not really reached 200):
+        // And for the display (I'm using floor rather than round to not cause the client to do shit when we not really reached cookTimeTotal):
         cookTime = Util.floor(myCookTime);
     }
 
@@ -500,6 +508,31 @@ public class VTEFurnace extends TileEntityFurnace
         {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+    private int cookTimeTotal()
+    {
+        try
+        {
+            return _total.getInt(this);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    private void cookTimeTotal(int i)
+    {
+        try
+        {
+            _total.setInt(this, i);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
