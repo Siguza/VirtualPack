@@ -18,7 +18,7 @@ public class VUncrafterInv extends VInv implements VProcessing
     private static VRecipe[] _recipes;
     private static VRecipe _enchantedBook;
     private final EntityPlayer _player;
-    private ArrayList<Integer> _slotUpdate = new ArrayList<Integer>();
+    //private ArrayList<Integer> _slotUpdate = new ArrayList<Integer>();
 
     static
     {
@@ -80,22 +80,26 @@ public class VUncrafterInv extends VInv implements VProcessing
         _player = player;
     }
 
-    public void setItem(int slot, ItemStack item)
+    /*public void setItem(int slot, ItemStack item)
     {
         if((slot >= 0) && (slot < 9))
         {
             _slotUpdate.add(slot);
         }
         super.setItem(slot, item);
-    }
+    }*/
 
     public void process()
     {
-        for(Integer i : _slotUpdate)
+        /*for(Integer i : _slotUpdate)
         {
             processSlot(i);
         }
-        _slotUpdate.clear();
+        _slotUpdate.clear();*/
+        for(int i = 0; i < 9; i++)
+        {
+            processSlot(i);
+        }
     }
 
     private VRecipe match(ItemStack result)
@@ -123,7 +127,7 @@ public class VUncrafterInv extends VInv implements VProcessing
             }
             NBTTagCompound tag1 = re.getTag();
             NBTTagCompound tag2 = result.getTag();
-            if(tag1 == null || (tag2 != null && tag1.equals(tag2)))
+            if((tag1 == null && tag2 == null) || (tag1 != null && tag2 != null && tag1.equals(tag2)))
             {
                 return _recipes[i];
             }
@@ -265,7 +269,7 @@ public class VUncrafterInv extends VInv implements VProcessing
             ArrayList<ItemStack> list = new ArrayList<ItemStack>();
             for(int i = 0; i < in.length; i++)
             {
-                if(in[i] != null && in[i].getItem().#FIELD_ITEM_1#())
+                if(in[i] != null && !in[i].getItem().#FIELD_ITEM_1#())
                 {
                     list.add(in[i]);
                 }
