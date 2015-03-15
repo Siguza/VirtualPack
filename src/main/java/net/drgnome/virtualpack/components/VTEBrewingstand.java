@@ -4,6 +4,7 @@
 
 package net.drgnome.virtualpack.components;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import net.drgnome.virtualpack.util.*;
 
 public class VTEBrewingstand extends TileEntityBrewingStand
 {
+    private static Field _itemField;
     // To access the chests
     private VPack vpack;
     private CraftInventoryBrewer bukkitInv;
@@ -26,10 +28,32 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     private double brewSpeed;
     private int lastID;
     private long lastCheck;
-    private ItemStack[] items = new ItemStack[4];
+    private ItemStack[] items;
+
+    static
+    {
+        try
+        {
+            _itemField = TileEntityBrewingStand.class.getDeclaredField("items");
+            _itemField.setAccessible(true);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public VTEBrewingstand(VPack vpack)
     {
+        super();
+        try
+        {
+            items = (ItemStack[])_itemField.get(this);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         this.vpack = vpack;
         this.bukkitInv = new CraftInventoryBrewer(this);
         link = 0;
