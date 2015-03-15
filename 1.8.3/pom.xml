@@ -372,11 +372,11 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_5#</token> <!-- ()I -->
-                                    <value>j</value>
+                                    <value>h</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_6#</token> <!-- ()I -->
-                                    <value>l</value>
+                                    <value>j</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_9#</token> <!-- (String)ItemStack -->
@@ -384,7 +384,11 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_10#</token> <!-- ()Z -->
-                                    <value>g</value>
+                                    <value>e</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_11#</token> <!-- ()Z -->
+                                    <value>r</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#</token> <!-- static (byte[])NBTTagCompound -->
