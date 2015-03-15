@@ -13,12 +13,10 @@ import static net.drgnome.virtualpack.util.Global.*;
 
 public class VUncrafterInv extends VInv implements VProcessing
 {
-    /*private static final List _recipes = CraftingManager.getInstance().getRecipes();*/
     private static final Field[] _fields = new Field[2];
     private static VRecipe[] _recipes;
     private static VRecipe _enchantedBook;
     private final EntityPlayer _player;
-    //private ArrayList<Integer> _slotUpdate = new ArrayList<Integer>();
 
     static
     {
@@ -80,22 +78,8 @@ public class VUncrafterInv extends VInv implements VProcessing
         _player = player;
     }
 
-    /*public void setItem(int slot, ItemStack item)
-    {
-        if((slot >= 0) && (slot < 9))
-        {
-            _slotUpdate.add(slot);
-        }
-        super.setItem(slot, item);
-    }*/
-
     public void process()
     {
-        /*for(Integer i : _slotUpdate)
-        {
-            processSlot(i);
-        }
-        _slotUpdate.clear();*/
         for(int i = 0; i < 9; i++)
         {
             processSlot(i);
