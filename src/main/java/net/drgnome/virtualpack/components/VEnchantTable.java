@@ -17,14 +17,27 @@ import net.drgnome.virtualpack.util.*;
 
 public class VEnchantTable extends ContainerEnchantTable
 {
-    private Random rand = new Random();
-    private int bookshelves;
+    private final EntityPlayer mcPlayer;
+    private final Player player;
+    private final World world;
+    private final Random rand = new Random();
+    private final int bookshelves;
 
     public VEnchantTable(EntityPlayer player, int bookshelves)
     {
         super(player.inventory, player.world, new BlockPosition(0, 0, 0));
         this.checkReachable = false;
         this.bookshelves = bookshelves;
+        this.mcPlayer = player;
+        this.player = (Player)player.getBukkitEntity();
+        this.world = player.world;
+    }
+
+    public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
+    {
+        ItemStack stack = super.clickItem(slot, mouse, shift, human);
+        mcPlayer.updateInventory(mcPlayer.activeContainer);
+        return stack;
     }
 
     public void #FIELD_CONTAINER_6#(IInventory iinventory)
@@ -32,37 +45,55 @@ public class VEnchantTable extends ContainerEnchantTable
         if(iinventory == this.enchantSlots)
         {
             ItemStack itemstack = iinventory.getItem(0);
-            if(itemstack != null && itemstack.#FIELD_ITEMSTACK_2#())
+            int i;
+            if(itemstack != null)
             {
-                this.#FIELD_CONTAINERENCHANTTABLE_3# = this.rand.nextInt();
-                for(int i = 0; i < 3; ++i)
+                if(!this.world.isClientSide)
                 {
-                    this.costs[i] = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_1#(this.rand, i, this.bookshelves, itemstack);
-                }
-                if(Config.bool("events.use"))
-                {
-                    // CraftBukkit start
+                    int j;
+                    rand.setSeed((long)this.#FIELD_CONTAINERENCHANTTABLE_3#);
+                    for(j = 0; j < 3; ++j)
+                    {
+                        this.costs[j] = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_1#(rand, j, bookshelves, itemstack);
+                        this.h[j] = -1;
+                        if(this.costs[j] < j + 1)
+                        {
+                            this.costs[j] = 0;
+                        }
+                    }
                     CraftItemStack item = CraftItemStack.asCraftMirror(itemstack);
-                    Player player = getPlayer();
-                    PrepareItemEnchantEvent event = new PrepareItemEnchantEvent(player, this.getBukkitView(), player.getWorld().getBlockAt(0, 0, 0), item, this.costs, this.bookshelves);
-                    ((CraftServer)Bukkit.getServer()).getPluginManager().callEvent(event);
+                    PrepareItemEnchantEvent event = new PrepareItemEnchantEvent(player, this.getBukkitView(), this.world.getWorld().getBlockAt(0, 0, 0), item, this.costs, bookshelves);
+                    event.setCancelled(!itemstack.v());
+                    this.world.getServer().getPluginManager().callEvent(event);
                     if(event.isCancelled() && !Config.bool("events.ignorecancelled"))
                     {
-                        for(int i = 0; i < 3; ++i)
+                        for(i = 0; i < 3; ++i)
                         {
                             this.costs[i] = 0;
                         }
                         return;
                     }
-                    // CraftBukkit end
+                    for(j = 0; j < 3; ++j)
+                    {
+                        if(this.costs[j] > 0)
+                        {
+                            List list = getWeightedRandomEnchantList(itemstack, j, this.costs[j]);
+                            if(list != null && !list.isEmpty())
+                            {
+                                WeightedRandomEnchant weightedrandomenchant = (WeightedRandomEnchant) list.get(rand.nextInt(list.size()));
+                                this.h[j] = weightedrandomenchant.enchantment.id | weightedrandomenchant.level << 8;
+                            }
+                        }
+                    }
+                    this.#FIELD_CONTAINERENCHANTTABLE_4#();
                 }
-                this.#FIELD_CONTAINERENCHANTTABLE_4#();
             }
             else
             {
-                for(int i = 0; i < 3; ++i)
+                for(i = 0; i < 3; ++i)
                 {
                     this.costs[i] = 0;
+                    this.h[i] = -1;
                 }
             }
         }
@@ -71,77 +102,80 @@ public class VEnchantTable extends ContainerEnchantTable
     public boolean #FIELD_CONTAINERENCHANTTABLE_2#(EntityHuman entityhuman, int i)
     {
         ItemStack itemstack = this.enchantSlots.getItem(0);
-        if(this.costs[i] > 0 && itemstack != null && (entityhuman.expLevel >= this.costs[i] || entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), (Player)entityhuman.getBukkitEntity(), "vpack.use.enchanttable.free")))
+        ItemStack itemstack1 = this.enchantSlots.getItem(1);
+        int j = i + 1;
+        if((itemstack1 == null || itemstack1.count < j) && !playerFree(entityhuman))
         {
-            List list = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_2#(this.rand, itemstack, this.costs[i]);
-            boolean flag = Item.#FIELD_ITEM_7#(itemstack.getItem()) == Material.BOOK.getId();
-            if(list != null)
+            return false;
+        }
+        else if(this.costs[i] > 0 && itemstack != null && (entityhuman.expLevel >= j && entityhuman.expLevel >= this.costs[i] || playerFree(entityhuman)))
+        {
+            if(!this.world.isClientSide)
             {
-                // CraftBukkit start
-                Map<org.bukkit.enchantments.Enchantment, Integer> enchants = new HashMap<org.bukkit.enchantments.Enchantment, Integer>();
-                for(Object obj : list)
+                List list = getWeightedRandomEnchantList(itemstack, i, this.costs[i]);
+                if(list == null)
                 {
-                    WeightedRandomEnchant instance = (WeightedRandomEnchant)obj;
-                    enchants.put(org.bukkit.enchantments.Enchantment.getById(instance.enchantment.id), instance.level);
+                    list = new java.util.ArrayList<WeightedRandomEnchant>();
                 }
-                int level;
-                Map<org.bukkit.enchantments.Enchantment, Integer> map;
-                CraftItemStack item = CraftItemStack.asCraftMirror(itemstack);
-                if(Config.bool("events.use"))
+                boolean flag = itemstack.getItem() == Items.BOOK;
+                if(list != null)
                 {
-                    EnchantItemEvent event = new EnchantItemEvent(getPlayer(), this.getBukkitView(), getPlayer().getWorld().getBlockAt(0, 0, 0), item, this.costs[i], enchants, i);
-                    ((CraftServer)Bukkit.getServer()).getPluginManager().callEvent(event);
-                    level = event.getExpLevelCost();
-                    if(event.isCancelled() && !Config.bool("events.ignorecancelled"))
+                    Map<org.bukkit.enchantments.Enchantment, Integer> enchants = new java.util.HashMap<org.bukkit.enchantments.Enchantment, Integer>();
+                    for(Object obj : list)
+                    {
+                        WeightedRandomEnchant instance = (WeightedRandomEnchant)obj;
+                        enchants.put(org.bukkit.enchantments.Enchantment.getById(instance.enchantment.id), instance.level);
+                    }
+                    CraftItemStack item = CraftItemStack.asCraftMirror(itemstack);
+                    EnchantItemEvent event = new EnchantItemEvent((Player)entityhuman.getBukkitEntity(), this.getBukkitView(), this.world.getWorld().getBlockAt(0, 0, 0), item, this.costs[i], enchants, i);
+                    this.world.getServer().getPluginManager().callEvent(event);
+                    int level = event.getExpLevelCost();
+                    if((event.isCancelled() && !Config.bool("events.ignorecancelled")) || (level > entityhuman.expLevel && !playerFree(entityhuman)) || event.getEnchantsToAdd().isEmpty())
                     {
                         return false;
                     }
-                    map = event.getEnchantsToAdd();
-                }
-                else
-                {
-                    level = costs[i];
-                    map = enchants;
-                }
-                if((level > entityhuman.expLevel && !entityhuman.abilities.canInstantlyBuild && !Perm.has(entityhuman.world.getWorld().getName(), (Player)entityhuman.getBukkitEntity(), "vpack.use.enchanttable.free")) || enchants.isEmpty())
-                {
-                    return false;
-                }
-                boolean applied = !flag;
-                for(Map.Entry<org.bukkit.enchantments.Enchantment, Integer> entry : map.entrySet())
-                {
-                    try
+                    if(flag)
                     {
-                        if(flag)
+                        itemstack.setItem(Items.ENCHANTED_BOOK);
+                    }
+                    for(Map.Entry<org.bukkit.enchantments.Enchantment, Integer> entry : event.getEnchantsToAdd().entrySet())
+                    {
+                        try
                         {
-                            int enchantId = entry.getKey().getId();
-                            if(Enchantment.getById(enchantId) == null)
+                            if(flag)
                             {
-                                continue;
+                                int enchantId = entry.getKey().getId();
+                                if(Enchantment.getById(enchantId) == null)
+                                {
+                                    continue;
+                                }
+                                WeightedRandomEnchant enchantment = new WeightedRandomEnchant(Enchantment.getById(enchantId), entry.getValue());
+                                Items.ENCHANTED_BOOK.a(itemstack, enchantment);
                             }
-                            WeightedRandomEnchant enchantment = new WeightedRandomEnchant(Enchantment.getById(enchantId), entry.getValue());
-                            ((ItemEnchantedBook)Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId())).#FIELD_ITEMENCHANTEDBOOK_1#(itemstack, enchantment);
-                            applied = true;
-                            itemstack.setItem(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()));
-                            break;
+                            else
+                            {
+                                item.addUnsafeEnchantment(entry.getKey(), entry.getValue());
+                            }
                         }
-                        else
+                        catch(IllegalArgumentException e)
                         {
-                            item.addEnchantment(entry.getKey(), entry.getValue());
+                            /* Just swallow invalid enchantments */
                         }
                     }
-                    catch(IllegalArgumentException e)
+                    entityhuman.#FIELD_ENTITYHUMAN_1#(j);
+                    if(!playerFree(entityhuman))
                     {
-                        /* Just swallow invalid enchantments */
+                        itemstack1.count -= j;
+                        if(itemstack1.count <= 0)
+                        {
+                            this.enchantSlots.setItem(1, (ItemStack) null);
+                        }
                     }
+                    entityhuman.#FIELD_ENTITYHUMAN_2#(StatisticList.W);
+                    this.enchantSlots.update();
+                    this.#FIELD_CONTAINERENCHANTTABLE_3# = entityhuman.#FIELD_ENTITYHUMAN_3#();
+                    this.#FIELD_CONTAINER_6#(this.enchantSlots);
                 }
-                // Only down level if we've applied the enchantments
-                if(applied && !entityhuman.abilities.canInstantlyBuild && !Perm.has(entityhuman.world.getWorld().getName(), (Player)entityhuman.getBukkitEntity(), "vpack.use.enchanttable.free"))
-                {
-                    entityhuman.levelDown(-level);
-                }
-                // CraftBukkit end
-                this.#FIELD_CONTAINER_6#(this.enchantSlots);
             }
             return true;
         }
@@ -151,17 +185,19 @@ public class VEnchantTable extends ContainerEnchantTable
         }
     }
 
-    private Player getPlayer()
+    private List<WeightedRandomEnchant> getWeightedRandomEnchantList(ItemStack itemstack, int i, int j)
     {
-        try
+        rand.setSeed((long)(this.#FIELD_CONTAINERENCHANTTABLE_3# + i));
+        List list = EnchantmentManager.b(rand, itemstack, j);
+        if(itemstack.getItem() == Items.BOOK && list != null && list.size() > 1)
         {
-            Field f = ContainerEnchantTable.class.getDeclaredField("player");
-            f.setAccessible(true);
-            return (Player)f.get(this);
+            list.remove(rand.nextInt(list.size()));
         }
-        catch(Exception e)
-        {
-            return null;
-        }
+        return list;
+    }
+
+    public static boolean playerFree(EntityHuman entityhuman)
+    {
+        return entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), (Player)entityhuman.getBukkitEntity(), "vpack.use.enchanttable.free");
     }
 }

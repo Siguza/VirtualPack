@@ -263,7 +263,7 @@
                                     <value>a</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_CONTAINERENCHANTTABLE_3#</token> <!-- [long] -->
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_3#</token> <!-- [int] -->
                                     <value>f</value>
                                 </replacement>
                                 <replacement>
@@ -289,6 +289,18 @@
                                 <replacement>
                                     <token>#FIELD_ENCHANTMENTMANAGER_4#</token> <!-- static (Map, ItemStack)V -->
                                     <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENTITYHUMAN_1#</token> <!-- (I)V [levelDown] -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENTITYHUMAN_2#</token> <!-- (Statistic)V [increaseStatistic] -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENTITYHUMAN_3#</token> <!-- ()I [getEnchantingSeed] -->
+                                    <value>cj</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IINVENTORY_1#</token> <!-- (EntityHuman)B -->
