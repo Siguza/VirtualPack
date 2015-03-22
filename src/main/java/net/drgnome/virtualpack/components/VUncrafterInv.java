@@ -15,7 +15,7 @@ public class VUncrafterInv extends VInv implements VProcessing
 {
     private static final Field[] _fields = new Field[2];
     private static VRecipe[] _recipes;
-    private static VRecipe _enchantedBook;
+    private static VRecipe _enchantedBook = new VRecipe(new ItemStack[]{new ItemStack(Item.#FIELD_ITEM_8#(Material.BOOK.getId()), 1, 0)}, new ItemStack(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()), 1, 0), false);;
     private final EntityPlayer _player;
 
     static
@@ -47,7 +47,7 @@ public class VUncrafterInv extends VInv implements VProcessing
         for(IRecipe recipe : mcList)
         {
             ItemStack result = recipe.#FIELD_IRECIPE_1#(); // Derpnote
-            if(result == null)
+            if(result == null || result.count < 1)
             {
                 continue;
             }
@@ -69,7 +69,6 @@ public class VUncrafterInv extends VInv implements VProcessing
         }
         _recipes = list.toArray(new VRecipe[0]);
         Arrays.sort(_recipes);
-        _enchantedBook = new VRecipe(new ItemStack[]{new ItemStack(Item.#FIELD_ITEM_8#(Material.BOOK.getId()), 1, 0)}, new ItemStack(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()), 1, 0), false);
     }
 
     public VUncrafterInv(EntityPlayer player)
@@ -261,9 +260,10 @@ public class VUncrafterInv extends VInv implements VProcessing
             ingredients = list.toArray(new ItemStack[0]);
             for(int i = 0; i < ingredients.length; i++)
             {
-                if((ingredients[i].getData() < 0) || (ingredients[i].getData() >= 0x7FFF))
+                ingredients[i].count = 1;
+                int data = ingredients[i].getData();
+                if((data < 0) || (data >= 0x7FFF))
                 {
-                    ingredients[i].count = 1;
                     ingredients[i].setData(0);
                 }
             }
