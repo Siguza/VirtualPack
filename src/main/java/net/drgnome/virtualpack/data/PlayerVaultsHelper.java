@@ -97,6 +97,7 @@ public class PlayerVaultsHelper
                 }
             }
             vaults.renameTo(new File(vaults.getParentFile(), "uuidvaults_old"));
+            _log.info("[VirtualPack] PlayerVaults data loaded.");
         }
     }
 
@@ -104,7 +105,7 @@ public class PlayerVaultsHelper
     {
         String fileName = file.getName();
         String name = Bukkit.getOfflinePlayer(UUID.fromString(fileName.substring(0, fileName.length() - 4))).getName();
-        _log.info("[VirtualPack] Converting vault of player " + name + "...");
+        _log.info("[VirtualPack] (PlayerVaults) Converting " + name + "'s vault...");
         YamlConfiguration yaml = new YamlConfiguration();
         yaml.load(file);
         VPack pack = _plugin.getPack(world, name);
