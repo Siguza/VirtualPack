@@ -727,6 +727,7 @@ public class VPlugin extends JavaPlugin implements Runnable
             AlphaChestHelper.check();
             BackpackHelper.check();
             ChestKeeperHelper.check();
+            PlayerVaultsHelper.check();
             VirtualChestHelper.check();
         }
         catch(Exception e)

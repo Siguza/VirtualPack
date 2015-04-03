@@ -237,6 +237,7 @@ trash.name=V Trash
 worldedit=[VirtualPack] Could not find WorldEdit!
 alphachest=[VirtualPack] Could not find AlphaChest!
 chestkeeper=[VirtualPack] Could not find ChestKeeper!
+playervaults=[VirtualPack] Could not find PlayerVaults!
 virtualchest=[VirtualPack] Could not find VirtualChest!
 world.disabled=VirtualPack is not enabled on this world.
 command.error=Internal error while executing command. See the console.
