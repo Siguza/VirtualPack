@@ -116,32 +116,14 @@ public class PlayerVaultsHelper
             {
                 Map<String, Object> map = ((MemorySection)vaults[i]).getValues(false);
                 String[] keys = map.keySet().toArray(new String[0]);
-                //Set<Map.Entry<String, Object>> entries = map.entrySet();
                 ArrayList<String> list = new ArrayList<String>();
-                int size = Integer.parseInt(keys[keys.length - 1]) + 1;
+                int size = (int)(Math.ceil(((float)(Integer.parseInt(keys[keys.length - 1]) + 1)) / 9F) * 9);
                 for(int j = 0; j < size; j++)
                 {
                     Object o = map.get(((Integer)j).toString());
                     list.add(o == null ? "null" : (String)o);
                 }
                 pack.addInv((Inventory)_method.invoke(null, list, i, size));
-                //ItemStack[] items = new ItemStack[Integer.parseInt(keys[keys.length - 1]) + 1];
-                /*for(Map.Entry<String, Object> entry : entries)
-                {
-                    try
-                    {
-                        items[Integer.parseInt(entry.getKey())] = CraftItemStack.asNMSCopy((org.bukkit.inventory.ItemStack)entry.getValue());
-                    }
-                    catch(ClassCastException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    catch(NumberFormatException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }*/
-                //pack.addInv(new VInv((int)Math.ceil(((float)items.length) / 9F), items));
             }
             catch(Exception e)
             {
