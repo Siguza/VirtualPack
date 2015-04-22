@@ -33,16 +33,38 @@ public class Perm
 
     public static boolean has(CommandSender sender, String permission)
     {
+        return has(sender, permission, false);
+    }
+
+    public static boolean has(CommandSender sender, String permission, boolean debug)
+    {
         if(sender instanceof Player)
         {
+            if(debug)
+            {
+                _log.info("[VirtualPack] [Debug] CommandSender is a player, continuing");
+            }
             Player player = (Player)sender;
-            return has(player.getWorld().getName(), player, permission);
+            return has(player.getWorld().getName(), player, permission, debug);
+        }
+        if(debug)
+        {
+            _log.info("[VirtualPack] [Debug] CommandSender is not a player, returning true");
         }
         return true;
     }
 
     public static boolean has(String world, OfflinePlayer op, String permission)
     {
+        return has(world, op, permission, false);
+    }
+
+    public static boolean has(String world, OfflinePlayer op, String permission, boolean debug)
+    {
+        if(debug)
+        {
+            _log.info("[VirtualPack] [Debug] Looking for permission '" + permission + "' on player '" + op.getName() + "' in world '" + world + "'");
+        }
         while(true)
         {
             try
@@ -50,6 +72,10 @@ public class Perm
                 boolean has = false;
                 if(Config.bool("superperms"))
                 {
+                    if(debug)
+                    {
+                        _log.info("[VirtualPack] [Debug] SuperPerms mode...");
+                    }
                     Player player;
                     synchronized(Bukkit.getServer())
                     {
@@ -60,6 +86,17 @@ public class Perm
                         synchronized(player)
                         {
                             has = player.hasPermission(permission);
+                        }
+                        if(debug)
+                        {
+                            _log.info("[VirtualPack] [Debug] SuperPerms result: " + has);
+                        }
+                    }
+                    else
+                    {
+                        if(debug)
+                        {
+                            _log.info("[VirtualPack] [Debug] player == null");
                         }
                     }
                 }
@@ -74,17 +111,33 @@ public class Perm
                         String name = op.getName();
                         if(name == null)
                         {
+                            if(debug)
+                            {
+                                _log.info("[VirtualPack] [Debug] player.name == null");
+                            }
                             return false;
+                        }
+                        if(debug)
+                        {
+                            _log.info("[VirtualPack] [Debug] Invoking Vault...");
                         }
                         synchronized(_perm)
                         {
                             has = _perm.has(world, name, permission);
+                        }
+                        if(debug)
+                        {
+                            _log.info("[VirtualPack] [Debug] Local result: " + has);
                         }
                         if(!has && Config.bool("global-perms"))
                         {
                             synchronized(_perm)
                             {
                                 has = _perm.has((String)null, name, permission);
+                            }
+                            if(debug)
+                            {
+                                _log.info("[VirtualPack] [Debug] Global result: " + has);
                             }
                         }
                     }
@@ -93,10 +146,19 @@ public class Perm
             }
             catch(ConcurrentModificationException e)
             {
+                if(debug)
+                {
+                    _log.info("[VirtualPack] [Debug] ConcurrentModificationException, trying again...");
+                }
                 continue;
             }
             catch(RuntimeException e)
             {
+                if(debug)
+                {
+                    _log.info("[VirtualPack] [Debug] RuntimeException!");
+                    e.printStackTrace();
+                }
                 break;
             }
             catch(Exception e)
@@ -105,6 +167,10 @@ public class Perm
                 e.printStackTrace();
                 break;
             }
+        }
+        if(debug)
+        {
+            _log.info("[VirtualPack] [Debug] Loop broke, returning false");
         }
         return false;
     }

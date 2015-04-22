@@ -208,7 +208,12 @@ public class VCommands implements CommandExecutor
         }
         String command = longname(args[0]);
         args = Util.cut(args, 1);
-        if(command.equals("version"))
+        if(command.equals("debug"))
+        {
+            debug(sender, args);
+            return;
+        }
+        else if(command.equals("version"))
         {
             sendMessage(sender, Lang.get(sender, "version", VPlugin._version), ChatColor.BLUE);
             return;
@@ -274,6 +279,21 @@ public class VCommands implements CommandExecutor
         else
         {
             cmd(player, command, args);
+        }
+    }
+
+    private void debug(CommandSender sender, String[] args)
+    {
+        if(args.length < 2)
+        {
+            sendMessage(sender, Lang.get(sender, "argument.few"), ChatColor.RED);
+        }
+        else if(args[0].equals("perm"))
+        {
+            _log.info("[VirtualPack] [Debug] Checking permission '" + args[1] + "' for CommandSender '" + sender.getName() + "'");
+            _log.info("[VirtualPack] [Debug] Plain check returns: " + sender.hasPermission(args[1]));
+            boolean has = Perm.has(sender, args[1], true);
+            _log.info("[VirtualPack] [Debug] Result: " + has);
         }
     }
 
