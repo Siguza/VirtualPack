@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.8.4-R0.1-SNAPSHOT</version>
+            <version>1.8-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/spigot.jar</systemPath>
@@ -125,7 +125,7 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <phase>validate</phase>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -164,7 +164,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#MC_VERSION#</token>
-                                    <value>1_8_R3</value>
+                                    <value>1_8_R1</value>
                                 </replacement>
                                 <!-- Hello there -->
                                 <replacement>
@@ -301,7 +301,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ENTITYHUMAN_3#</token> <!-- ()I [getEnchantingSeed] -->
-                                    <value>cj</value>
+                                    <value>ci</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IINVENTORY_1#</token> <!-- (EntityHuman)B -->
@@ -448,10 +448,6 @@
                                     <value>a</value>
                                 </replacement>
                                 <replacement>
-                                    <token>#FIELD_STATISTICSLIST_1#</token> <!-- [Statistic] (itemEnchanted) -->
-                                    <value>W</value>
-                                </replacement>
-                                <replacement>
                                     <token>#FIELD_TILEENTITY_1#</token> <!-- () -->
                                     <value>h</value>
                                 </replacement>
@@ -465,16 +461,16 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_WORLD_1#</token> <!-- [boolean] -->
-                                    <value>isClientSide</value>
+                                    <value>isStatic</value>
                                 </replacement>
                                 <!-- block comment hacks -->
                                 <replacement>
                                     <token>---------- SINCE 1.8.3 START ----------</token>
-                                    <value> </value>
+                                    <value>/*</value>
                                 </replacement>
                                 <replacement>
                                     <token>---------- SINCE 1.8.3 END ----------</token>
-                                    <value> </value>
+                                    <value>*/</value>
                                 </replacement>
                             </replacements>
                         </configuration>

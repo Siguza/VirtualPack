@@ -48,7 +48,7 @@ public class VEnchantTable extends ContainerEnchantTable
             int i;
             if(itemstack != null)
             {
-                if(!this.world.isClientSide)
+                if(!this.world.#FIELD_WORLD_1#)
                 {
                     int j;
                     rand.setSeed((long)this.#FIELD_CONTAINERENCHANTTABLE_3#);
@@ -110,7 +110,7 @@ public class VEnchantTable extends ContainerEnchantTable
         }
         else if(this.costs[i] > 0 && itemstack != null && (entityhuman.expLevel >= j && entityhuman.expLevel >= this.costs[i] || playerFree(entityhuman)))
         {
-            if(!this.world.isClientSide)
+            if(!this.world.#FIELD_WORLD_1#)
             {
                 List list = getWeightedRandomEnchantList(itemstack, i, this.costs[i]);
                 if(list == null)
@@ -171,7 +171,9 @@ public class VEnchantTable extends ContainerEnchantTable
                             this.enchantSlots.setItem(1, (ItemStack) null);
                         }
                     }
-                    entityhuman.#FIELD_ENTITYHUMAN_2#(StatisticList.W);
+                    ---------- SINCE 1.8.3 START ----------
+                    entityhuman.#FIELD_ENTITYHUMAN_2#(StatisticList.#FIELD_STATISTICSLIST_1#);
+                    ---------- SINCE 1.8.3 END ----------
                     this.enchantSlots.update();
                     this.#FIELD_CONTAINERENCHANTTABLE_3# = entityhuman.#FIELD_ENTITYHUMAN_3#();
                     this.#FIELD_CONTAINER_6#(this.enchantSlots);

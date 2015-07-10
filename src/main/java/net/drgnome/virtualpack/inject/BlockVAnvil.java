@@ -54,7 +54,7 @@ public class BlockVAnvil extends BlockAnvil
 
     public boolean interact(World world, int x, int y, int z, EntityHuman human, int i1, float f1, float f2, float f3)
     {
-        if((human instanceof EntityPlayer) && !world.isClientSide)
+        if((human instanceof EntityPlayer) && !world.#FIELD_WORLD_1#)
         {
             EntityPlayer player = (EntityPlayer)human;
             Container container = CraftEventFactory.callInventoryOpenEvent(player, new VAnvil(player, x, y, z));
