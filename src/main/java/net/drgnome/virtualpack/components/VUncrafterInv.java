@@ -252,9 +252,13 @@ public class VUncrafterInv extends VInv implements VProcessing
             ArrayList<ItemStack> list = new ArrayList<ItemStack>();
             for(int i = 0; i < in.length; i++)
             {
-                if(in[i] != null && !in[i].getItem().#FIELD_ITEM_1#())
+                if(in[i] != null)
                 {
-                    list.add(in[i]);
+                    Item item = in[i].getItem();
+                    if(item != null && !item.#FIELD_ITEM_1#())
+                    {
+                        list.add(in[i]);
+                    }
                 }
             }
             ingredients = list.toArray(new ItemStack[0]);
