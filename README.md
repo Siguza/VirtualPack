@@ -11,7 +11,7 @@ Because VirtualPack (still) builds against CraftBukkit code (and I haven't manag
 
 Steps to build:
 
-0.&#32;Have `mvn` all set up.
+0.&#32;Have `mvn` all set up.  
 1.&#32;`git clone https://github.com/Siguza/VirtualPack`  
 2.&#32;Determine which version folder to use. The folders are named after the **first** supported version,  
 &nbsp; &nbsp; &nbsp;so if you want to compile for 1.8.6 and there are only folders for 1.8.8 and 1.8.4, use the 1.8.4 one.  
