@@ -7,7 +7,9 @@ package net.drgnome.virtualpack.components;
 import java.util.*;
 import java.lang.reflect.*;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
 import static net.drgnome.virtualpack.util.Global.*;
 
@@ -152,7 +154,7 @@ public class VUncrafterInv extends VInv implements VProcessing
 
     private void processSlot(int slot)
     {
-        if(contents[slot] == null || (contents[slot].getItem().usesDurability() && (contents[slot].getData() != 0)))
+        if(contents[slot] == null || (contents[slot].getItem().usesDurability() && (contents[slot].getData() != 0)) || Config.isBlacklisted(_player.world.getWorld().getName(), (Player)_player.getBukkitEntity(), "uncrafter", CraftItemStack.asBukkitCopy(contents[slot])))
         {
             return;
         }
