@@ -146,7 +146,7 @@ permissions:
 
   vpack.keep.uncrafter:
     description: "Keep the uncrafter on death"
-    
+
   vpack.keep.enderchest:
     description: "Keep the uncrafter on death"
 
@@ -231,6 +231,7 @@ permissions:
       vpack.admin.take: true
       vpack.admin.forceopen: true
       vpack.admin.delete: true
+      vpack.admin.stray: true
       vpack.stats: true
       vpack.update: true
       vpack.bypass.all: true
@@ -259,7 +260,7 @@ permissions:
     description: "Allows you to open any users VirtualPack, but not to edit"
     children:
       vpack.admin: true
-      
+
   vpack.admin.use.edit:
     description: "Allows you to open and edit any users VirtualPack"
     children:
@@ -282,6 +283,11 @@ permissions:
 
   vpack.admin.delete:
     description: "Allows you to completely delete a users VirtualPack-account"
+    children:
+      vpack.admin: true
+
+  vpack.admin.stray:
+    description: "Allows you to deal with stray packs"
     children:
       vpack.admin: true
 

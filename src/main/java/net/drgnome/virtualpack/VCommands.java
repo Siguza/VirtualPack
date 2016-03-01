@@ -507,6 +507,17 @@ public class VCommands implements CommandExecutor
                 sendMessage(sender, Lang.get(sender, "admin.help.delete", cmd), ChatColor.AQUA);
                 sendMessage(sender, "/" + cmd + " ad erase - REMOVE EVERYTHING", ChatColor.RED);
             }
+            // TODO
+            /*if(Perm.has(sender, "vpack.admin.orphan"))
+            {
+                sendMessage(sender, Lang.get(sender, "admin.help.orphan", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.orphanopen", cmd), ChatColor.AQUA);
+                sendMessage(sender, Lang.get(sender, "admin.help.orphanassign", cmd), ChatColor.AQUA);
+                if(Perm.has(sender, "vpack.admin.take") || Perm.has(sender, "vpack.admin.delete"))
+                {
+                    sendMessage(sender, Lang.get(sender, "admin.help.orphandelete", cmd), ChatColor.AQUA);
+                }
+            }*/
             sendMessage(sender, Lang.get(sender, "admin.help.restore", cmd), ChatColor.YELLOW);
             return;
         }
@@ -590,6 +601,12 @@ public class VCommands implements CommandExecutor
             cut(sender, Util.cut(args, 1));
             return;
         }
+        // TODO
+        /*else if(args[0].equals("orphan"))
+        {
+            orphan(sender, Util.cut(args, 1));
+            return;
+        }*/
         else if(args[0].equals("erase"))
         {
             if(!Perm.has(sender, "vpack.admin.delete"))
@@ -791,6 +808,45 @@ public class VCommands implements CommandExecutor
         }
         sendMessage(sender, Lang.get(sender, "admin.cut"), ChatColor.GREEN);
     }
+
+    // TODO
+    /*private void orphan(CommandSender sender, String[] args)
+    {
+        if(!Perm.has(sender, "vpack.admin.orphan"))
+        {
+            sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
+            return;
+        }
+        if(args.length == 0)
+        {
+            VPack packs = _plugin.getAllPacks();
+            if(packs.length == 0)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+        else if(args[0].equalsIgnoreCase("open"))
+        {
+
+        }
+        else if(args[0].equalsIgnoreCase("assign"))
+        {
+
+        }
+        else if(args[0].equalsIgnoreCase("delete"))
+        {
+            if(!Perm.has(sender, "vpack.admin.take") && !Perm.has(sender, "vpack.admin.delete"))
+            {
+                sendMessage(sender, Lang.get(sender, "admin.perm"), ChatColor.RED);
+                return;
+            }
+
+        }
+    }*/
 
     private void clean(CommandSender sender, String[] args)
     {
