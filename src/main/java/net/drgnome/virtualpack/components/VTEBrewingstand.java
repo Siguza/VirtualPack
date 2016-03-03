@@ -4,7 +4,6 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Bukkit;
@@ -19,7 +18,6 @@ import net.drgnome.virtualpack.util.*;
 
 public class VTEBrewingstand extends TileEntityBrewingStand
 {
-    private static Field _itemField;
     // To access the chests
     private VPack vpack;
     private CraftInventoryBrewer bukkitInv;
@@ -30,35 +28,15 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     private long lastCheck;
     private ItemStack[] items;
 
-    static
-    {
-        try
-        {
-            _itemField = TileEntityBrewingStand.class.getDeclaredField("items");
-            _itemField.setAccessible(true);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public VTEBrewingstand(VPack vpack)
     {
         super();
-        try
-        {
-            items = (ItemStack[])_itemField.get(this);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        items = getContents();
         this.vpack = vpack;
         this.bukkitInv = new CraftInventoryBrewer(this);
         link = 0;
         myBrewTime = 0.0D;
-        brewTime = 0;
+        brewTime(0);
         brewSpeed = 1.0D;
         lastCheck = 0;
     }
@@ -68,15 +46,19 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     {
         this(vpack);
         // Get our items
-        for(int i = 0; i < Util.min(data.length, items.length); i++)
+        for(int i = 0; i < Util.min(data.length, 4); i++)
         {
             items[i] = Util.stringToItemStack(data[i]);
         }
         // And the times
         myBrewTime = Util.tryParse(data[4], myBrewTime);
-        brewTime = Util.floor(myBrewTime);
+        brewTime(Util.floor(myBrewTime));
         link = Util.tryParse(data[5], link);
         brewSpeed = getBrewSpeed(items[3]);
+        if(items.length >= 5 && data.length >= 7)
+        {
+            items[4] = Util.stringToItemStack(data[6]);
+        }
     }
 
     public String[] save()
@@ -88,13 +70,11 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         }
         list.add(Double.toString(myBrewTime));
         list.add(Integer.toString(link));
+        if(items.length >= 5)
+        {
+            list.add(Util.itemStackToString(items[4]));
+        }
         return list.toArray(new String[0]);
-    }
-
-    // For compatibility
-    public void #FIELD_TILEENTITY_1#() // Derpnote
-    {
-        tick(1);
     }
 
     public void tick(int ticks)
@@ -111,7 +91,8 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             brewSpeed = getBrewSpeed(items[3]);
         }
         // Are we brewing?
-        if(canBrew() && (myBrewTime > 0.0D))
+        boolean brewable = canBrew();
+        if(brewable && (myBrewTime > 0.0D))
         {
             myBrewTime -= brewSpeed * ((double)ticks);
             // Are we done?
@@ -122,7 +103,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             }
         }
         // Nothing going on, but we could still brew?
-        if(canBrew())
+        if(brewable)
         {
             // I'm using two if-clauses here because of the following else-clause.
             if(myBrewTime <= 0.0D)
@@ -136,13 +117,14 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             myBrewTime = 0.0D;
         }
         // And here we set the display variable.
-        brewTime = Util.floor(myBrewTime);
+        brewTime(Util.floor(myBrewTime));
     }
 
     protected void checkLink()
     {
+        boolean brewable = canBrew();
         // If there's a link, check what's to do
-        if(canBrew() || (link == 0) || (vpack == null) && (vpack.getInv(link) == null) || (lastCheck >= vpack.getInv(link).getLastUpdate()))
+        if(brewable || (link == 0) || (vpack == null) && (vpack.getInv(link) == null) || (lastCheck >= vpack.getInv(link).getLastUpdate()))
         {
             return;
         }
@@ -153,14 +135,14 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             for(int i = 0; i < 3; i++)
             {
                 // If one of them is not brewable, we might find one that is
-                if(!isBrewable(items[i], items[3]))
+                if(!matchesResult(items[i], items[3]))
                 {
                     ItemStack item;
                     for(int j = 0; j < inv.getSize(); j++)
                     {
                         item = inv.getItem(j);
                         // Did we find something brewable?
-                        if(isBrewable(item, items[3]))
+                        if(matchesResult(item, items[3]))
                         {
                             // Then exchange the items
                             item = Util.copy_old(item);
@@ -193,7 +175,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                 // Now, is it compatible with our potions?
                 for(int j = 0; j < 3; j++)
                 {
-                    match[i] += isBrewable(items[j], item) ? 1 : 0;
+                    match[i] += matchesResult(items[j], item) ? 1 : 0;
                 }
                 // If all potions match, we don't need to go further
                 if(match[i] >= 3)
@@ -236,7 +218,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                             continue;
                         }
                         // Is it brewable?
-                        if(isBrewable(inv.getItem(j), item))
+                        if(matchesResult(inv.getItem(j), item))
                         {
                             // Count one up
                             matching[i][0]++;
@@ -283,7 +265,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             }
         }
         // If we couldn't do anything, don't check again until the chest contents are changed
-        if(canBrew())
+        if(brewable)
         {
             lastCheck = 0;
         }
@@ -308,33 +290,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         // As long as we find a potion we can put our ingredient in, we'll be fine.
         for(int i = 0; i < 3; i++)
         {
-            // If we don't have an item or it's equal to it's result... NEXT!
-            if(!isBrewable(items[i], items[3]))
-            {
-                continue;
-            }
-            // So then, is it a potion?
-            if(Item.#FIELD_ITEM_7#(items[i].getItem()) == Material.POTION.getId())
-            {
-                // Make sure we don't get negative data values
-                int meta = items[i].getData();
-                int result = getPotionMeta(meta, items[3]);
-                // I have no idea what this does
-                if((!ItemPotion.#FIELD_ITEMPOTION_1#(meta)) && (ItemPotion.#FIELD_ITEMPOTION_1#(result))) // Derpnote
-                {
-                    return true;
-                }
-                // Lists of effects
-                List list = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(meta); // Derpnote
-                List list1 = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(result); // Derpnote
-                // Just copied this part from TileEntityBrewingStand.o()
-                if(((meta <= 0) || (list != list1)) && ((list == null) || ((!list.equals(list1)) && (list1 != null))) && (meta != result))
-                {
-                    return true;
-                }
-            }
-            // If it's not a potion (we already checked if it even can brew), then go ahead!
-            else
+            if(isBrewable(items[i], items[3]))
             {
                 return true;
             }
@@ -365,36 +321,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
                     return;
                 }
             }
-            // No potion or equal to the result... NEXT!
-            if(!isBrewable(items[i], ingredient))
-            {
-                continue;
-            }
-            // Is it a potion then?
-            if(Item.#FIELD_ITEM_7#(items[i].getItem()) == Material.POTION.getId())
-            {
-                int meta = items[i].getData() < 0 ? 0 : items[i].getData();
-                int result = getPotionMeta(meta, ingredient) & 0xffffffff;
-                // Dafuq is this good for?
-                if((!ItemPotion.#FIELD_ITEMPOTION_1#(meta)) && (ItemPotion.#FIELD_ITEMPOTION_1#(result))) // Derpnote
-                {
-                    items[i].setData(result);
-                    continue;
-                }
-                // Lists of effects
-                List list = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(meta); // Derpnote
-                List list1 = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(result); // Derpnote
-                if(((meta <= 0) || (list != list1)) && ((list == null) || ((!list.equals(list1)) && (list1 != null))) && (meta != result))
-                {
-                    items[i].setData(result);
-                    continue;
-                }
-            }
-            // Much easier if it's not a potion
-            else
-            {
-                items[i] = getBrewResult(items[i], ingredient);
-            }
+            items[i] = processItem(items[i], ingredient);
         }
         // Is the ingredient a container?
         if(ingredient.getItem().#FIELD_ITEM_1#()) // Derpnote
@@ -420,12 +347,49 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             return false;
         }
         // CUSTOM INGREDIENTS HERE
-        return item.getItem().#FIELD_ITEM_3#(item); // Derpnote
+        return checkWhatever(item);
+    }
+
+    private boolean matchesResult(ItemStack item, ItemStack ingredient)
+    {
+        return (item != null) && !Util.areEqual(item, processItem(item, ingredient));
     }
 
     private boolean isBrewable(ItemStack item, ItemStack ingredient)
     {
-        return (item != null) && !Util.areEqual(item, getBrewResult(item, ingredient)); // Derpnote
+        ---------- PRE 1.9 START ----------
+        // If we don't have an item or it's equal to it's result... NEXT!
+        if(!matchesResult(item, ingredient))
+        {
+            return false;
+        }
+        // So then, is it a potion?
+        if(Item.#FIELD_ITEM_7#(item.getItem()) == Material.POTION.getId())
+        {
+            // Make sure we don't get negative data values
+            int meta = item.getData();
+            int result = getPotionMeta(meta, ingredient);
+            // I have no idea what this does
+            if((!ItemPotion.#FIELD_ITEMPOTION_1#(meta)) && (ItemPotion.#FIELD_ITEMPOTION_1#(result))) // Derpnote
+            {
+                return true;
+            }
+            // Lists of effects
+            List list = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(meta); // Derpnote
+            List list1 = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(result); // Derpnote
+            // Just copied this part from TileEntityBrewingStand.o()
+            if(((meta <= 0) || (list != list1)) && ((list == null) || ((!list.equals(list1)) && (list1 != null))) && (meta != result))
+            {
+                return true;
+            }
+            return false;
+        }
+        // If it's not a potion (we already checked if it even can brew), then go ahead!
+        return true;
+        ---------- PRE 1.9 END ----------
+        ---------- SINCE 1.9 START ----------
+        return item == null ? false : PotionBrewer.#FIELD_POTIONBREWER_3#(item, ingredient);
+        ---------- SINCE 1.9 END ----------
     }
 
     private double getBrewSpeed(ItemStack item)
@@ -438,6 +402,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         return 1.0D;
     }
 
+    ---------- PRE 1.9 START ----------
     private ItemStack getBrewResult(ItemStack potion, ItemStack ingredient)
     {
         if((potion == null) || (ingredient == null))
@@ -445,27 +410,69 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             return potion;
         }
         // CUSTOM RESULTS HERE
-        Item type = ingredient.getItem();
-        if(type.#FIELD_ITEM_3#(ingredient) && (Item.#FIELD_ITEM_7#(potion.getItem()) == Material.POTION.getId())) // Derpnote
+        if(checkWhatever(ingredient) && (Item.#FIELD_ITEM_7#(potion.getItem()) == Material.POTION.getId())) // Derpnote
         {
-            return new ItemStack(potion.getItem(), potion.count, PotionBrewer.#FIELD_POTIONBREWER_1#(potion.getData(), type.#FIELD_ITEM_4#(ingredient))); // Derpnote
+            return new ItemStack(potion.getItem(), potion.count,
+            PotionBrewer.#FIELD_POTIONBREWER_1#(potion.getData(), ingredient.getItem().#FIELD_ITEM_4#(ingredient))); // Derpnote
         }
         return potion;
     }
+    ---------- PRE 1.9 END ----------
 
+    private ItemStack processItem(ItemStack potion, ItemStack ingredient)
+    {
+        ---------- PRE 1.9 START ----------
+        // No potion or equal to the result... NEXT!
+        if(!matchesResult(potion, ingredient))
+        {
+            return potion;
+        }
+        // Is it a potion then?
+        if(Item.#FIELD_ITEM_7#(potion.getItem()) == Material.POTION.getId())
+        {
+            int meta = potion.getData() < 0 ? 0 : potion.getData();
+            int result = getPotionMeta(meta, ingredient) & 0xffffffff;
+            // Dafuq is this good for?
+            if((!ItemPotion.#FIELD_ITEMPOTION_1#(meta)) && (ItemPotion.#FIELD_ITEMPOTION_1#(result))) // Derpnote
+            {
+                potion.setData(result);
+                return potion;
+            }
+            // Lists of effects
+            List list = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(meta); // Derpnote
+            List list1 = ((ItemPotion)Item.#FIELD_ITEM_8#(Material.POTION.getId())).#FIELD_ITEMPOTION_2#(result); // Derpnote
+            if(((meta <= 0) || (list != list1)) && ((list == null) || ((!list.equals(list1)) && (list1 != null))) && (meta != result))
+            {
+                potion.setData(result);
+            }
+            return potion;
+        }
+        // Much easier if it's not a potion
+        return getBrewResult(potion, ingredient);
+        ---------- PRE 1.9 END ----------
+        ---------- SINCE 1.9 START ----------
+        return PotionBrewer.#FIELD_POTIONBREWER_4#(ingredient, potion);
+        ---------- SINCE 1.9 END ----------
+    }
+
+    ---------- PRE 1.9 START ----------
     private int getPotionMeta(int i, ItemStack item)
     {
         if(item == null)
         {
             return i;
         }
-        // Cryptic names, Y U NO MAKE SENSE?
-        Item type = item.getItem();
-        if(type.#FIELD_ITEM_3#(item)) // Derpnote
+        if(checkWhatever(item))
         {
-            return PotionBrewer.a(i, type.#FIELD_ITEM_4#(item)); // Derpnote
+            return PotionBrewer.#FIELD_POTIONBREWER_1#(i, item.getItem().#FIELD_ITEM_4#(item)); // Derpnote
         }
         return i;
+    }
+    ---------- PRE 1.9 END ----------
+
+    private void brewTime(int i)
+    {
+        #F_SETPROPERTY#(0, i);
     }
 
     // Compatibility
@@ -492,4 +499,13 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         return new ArrayList<HumanEntity>();
     }
 
+    private boolean checkWhatever(ItemStack item)
+    {
+        ---------- PRE 1.9 START ----------
+        return item.getItem().#FIELD_ITEM_3#(item);
+        ---------- PRE 1.9 END ----------
+        ---------- SINCE 1.9 START ----------
+        return PotionBrewer.#FIELD_POTIONBREWER_2#(item);
+        ---------- SINCE 1.9 END ----------
+    }
 }

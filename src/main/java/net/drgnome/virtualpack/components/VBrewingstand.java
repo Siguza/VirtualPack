@@ -24,12 +24,12 @@ public class VBrewingstand extends ContainerBrewingStand implements VGUI
         this._readonly = !canEdit;
     }
 
-    public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
+    public final ItemStack #FIELD_CONTAINER_11#(int slot, int mouse, #F_INVCLICK_META# meta, EntityHuman human)
     {
         ItemStack item;
-        if(allowClick(slot, mouse, shift, human))
+        if(allowClick(slot, mouse, meta, human))
         {
-            item = super.clickItem(slot, mouse, shift, human);
+            item = super.#FIELD_CONTAINER_11#(slot, mouse, meta, human);
         }
         else
         {
@@ -39,13 +39,13 @@ public class VBrewingstand extends ContainerBrewingStand implements VGUI
         return item;
     }
 
-    public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
+    public boolean allowClick(int slot, int mouse, #F_INVCLICK_META# meta, EntityHuman human)
     {
         if(_readonly)
         {
             return false;
         }
-        if(shift == 1)
+        if(meta == #F_INVCLICK_QUICK_MOVE#)
         {
             if(slot >= _data.getSize())
             {

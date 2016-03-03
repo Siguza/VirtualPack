@@ -33,9 +33,9 @@ public class VEnchantTable extends ContainerEnchantTable
         this.world = player.world;
     }
 
-    public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
+    public final ItemStack #FIELD_CONTAINER_11#(int slot, int mouse, #F_INVCLICK_META# meta, EntityHuman human)
     {
-        ItemStack stack = super.clickItem(slot, mouse, shift, human);
+        ItemStack stack = super.#FIELD_CONTAINER_11#(slot, mouse, meta, human);
         mcPlayer.updateInventory(mcPlayer.activeContainer);
         return stack;
     }
@@ -55,7 +55,10 @@ public class VEnchantTable extends ContainerEnchantTable
                     for(j = 0; j < 3; ++j)
                     {
                         this.costs[j] = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_1#(rand, j, bookshelves, itemstack);
-                        this.h[j] = -1;
+                        this.#FIELD_CONTAINERENCHANTTABLE_IDS#[j] = -1;
+                        ---------- SINCE 1.9 START ----------
+                        this.#FIELD_CONTAINERENCHANTTABLE_LEVELS#[j] = -1;
+                        ---------- SINCE 1.9 END ----------
                         if(this.costs[j] < j + 1)
                         {
                             this.costs[j] = 0;
@@ -63,7 +66,7 @@ public class VEnchantTable extends ContainerEnchantTable
                     }
                     CraftItemStack item = CraftItemStack.asCraftMirror(itemstack);
                     PrepareItemEnchantEvent event = new PrepareItemEnchantEvent(player, this.getBukkitView(), this.world.getWorld().getBlockAt(0, 0, 0), item, this.costs, bookshelves);
-                    event.setCancelled(!itemstack.v());
+                    event.setCancelled(!itemstack.#FIELD_ITEMSTACK_12#());
                     this.world.getServer().getPluginManager().callEvent(event);
                     if(event.isCancelled() && !Config.bool("events.ignorecancelled"))
                     {
@@ -81,7 +84,13 @@ public class VEnchantTable extends ContainerEnchantTable
                             if(list != null && !list.isEmpty())
                             {
                                 WeightedRandomEnchant weightedrandomenchant = (WeightedRandomEnchant) list.get(rand.nextInt(list.size()));
-                                this.h[j] = weightedrandomenchant.enchantment.id | weightedrandomenchant.level << 8;
+                                ---------- PRE 1.9 START ----------
+                                this.#FIELD_CONTAINERENCHANTTABLE_IDS#[j] = weightedrandomenchant.enchantment.id | weightedrandomenchant.level << 8;
+                                ---------- PRE 1.9 END ----------
+                                ---------- SINCE 1.9 START ----------
+                                this.#FIELD_CONTAINERENCHANTTABLE_IDS#[j] = Enchantment.getId(weightedrandomenchant.enchantment);
+                                this.#FIELD_CONTAINERENCHANTTABLE_LEVELS#[j] = weightedrandomenchant.level;
+                                ---------- SINCE 1.9 END ----------
                             }
                         }
                     }
@@ -93,7 +102,10 @@ public class VEnchantTable extends ContainerEnchantTable
                 for(i = 0; i < 3; ++i)
                 {
                     this.costs[i] = 0;
-                    this.h[i] = -1;
+                    this.#FIELD_CONTAINERENCHANTTABLE_IDS#[i] = -1;
+                    ---------- SINCE 1.9 START ----------
+                    this.#FIELD_CONTAINERENCHANTTABLE_LEVELS#[i] = -1;
+                    ---------- SINCE 1.9 END ----------
                 }
             }
         }
@@ -124,7 +136,14 @@ public class VEnchantTable extends ContainerEnchantTable
                     for(Object obj : list)
                     {
                         WeightedRandomEnchant instance = (WeightedRandomEnchant)obj;
-                        enchants.put(org.bukkit.enchantments.Enchantment.getById(instance.enchantment.id), instance.level);
+                        enchants.put(org.bukkit.enchantments.Enchantment.getById(
+                            ---------- PRE 1.9 START ----------
+                            instance.enchantment.id
+                            ---------- PRE 1.9 END ----------
+                            ---------- SINCE 1.9 START ----------
+                            Enchantment.getId(instance.enchantment)
+                            ---------- SINCE 1.9 END ----------
+                        ), instance.level);
                     }
                     CraftItemStack item = CraftItemStack.asCraftMirror(itemstack);
                     EnchantItemEvent event = new EnchantItemEvent((Player)entityhuman.getBukkitEntity(), this.getBukkitView(), this.world.getWorld().getBlockAt(0, 0, 0), item, this.costs[i], enchants, i);
@@ -145,12 +164,12 @@ public class VEnchantTable extends ContainerEnchantTable
                             if(flag)
                             {
                                 int enchantId = entry.getKey().getId();
-                                if(Enchantment.getById(enchantId) == null)
+                                Enchantment ench = Enchantment.#FIELD_ENCHANTMENT_GETBYID#(enchantId);
+                                if(ench == null)
                                 {
                                     continue;
                                 }
-                                WeightedRandomEnchant enchantment = new WeightedRandomEnchant(Enchantment.getById(enchantId), entry.getValue());
-                                Items.ENCHANTED_BOOK.a(itemstack, enchantment);
+                                Items.ENCHANTED_BOOK.#FIELD_ITEMENCHANTEDBOOK_3#(itemstack, new WeightedRandomEnchant(ench, entry.getValue()));
                             }
                             else
                             {
@@ -190,7 +209,11 @@ public class VEnchantTable extends ContainerEnchantTable
     private List<WeightedRandomEnchant> getWeightedRandomEnchantList(ItemStack itemstack, int i, int j)
     {
         rand.setSeed((long)(this.#FIELD_CONTAINERENCHANTTABLE_3# + i));
-        List list = EnchantmentManager.b(rand, itemstack, j);
+        List list = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_ENCHANT#(rand, itemstack, j
+            ---------- SINCE 1.9 START ----------
+            , false
+            ---------- SINCE 1.9 END ----------
+        );
         if(itemstack.getItem() == Items.BOOK && list != null && list.size() > 1)
         {
             list.remove(rand.nextInt(list.size()));

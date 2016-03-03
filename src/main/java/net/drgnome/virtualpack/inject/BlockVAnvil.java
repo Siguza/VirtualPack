@@ -38,7 +38,7 @@ public class BlockVAnvil extends BlockAnvil
     {
         super();
         #FIELD_BLOCK_1#(5.0F);
-        #FIELD_BLOCK_2#(Block.#FIELD_BLOCK_5#);
+        #FIELD_BLOCK_2#(#F_ANVIL_STEPSOUND#);
         #FIELD_BLOCK_3#(2000.0F);
         #FIELD_BLOCK_4#("anvil");
         //Block.REGISTRY.#FIELD_REGISTRYMATERIALS_1#(145, "anvil", this);

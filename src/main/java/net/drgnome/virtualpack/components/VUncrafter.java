@@ -29,9 +29,9 @@ public class VUncrafter extends VContainer
         }
     }
 
-    public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
+    public boolean allowClick(int slot, int mouse, #F_INVCLICK_META# meta, EntityHuman human)
     {
-        if(shift == 1)
+        if(meta == #F_INVCLICK_QUICK_MOVE#)
         {
             IInventory container = this.#FIELD_CONTAINERCHEST_1#();
             if(slot >= container.getSize())
@@ -55,7 +55,7 @@ public class VUncrafter extends VContainer
         {
             return human.inventory.getCarried() == null;
         }
-        return super.allowClick(slot, mouse, shift, human);
+        return super.allowClick(slot, mouse, meta, human);
     }
 
     private boolean isItemAllowed(EntityHuman human, ItemStack item)

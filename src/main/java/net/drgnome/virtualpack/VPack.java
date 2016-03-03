@@ -1588,7 +1588,7 @@ public class VPack
             sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "money.toofew"), ChatColor.RED);
             return;
         }
-        Util.openWindow(player, new VBrewingstand(player, brew, canEdit), Lang.get(bukkitPlayer, "brewingstand.name", "" + nr), "minecraft:brewing_stand", 4);
+        Util.openWindow(player, new VBrewingstand(player, brew, canEdit), Lang.get(bukkitPlayer, "brewingstand.name", "" + nr), "minecraft:brewing_stand", #F_BREW_NUMSLOTS#);
         if(!admin)
         {
             _cooldown[7] = System.currentTimeMillis();

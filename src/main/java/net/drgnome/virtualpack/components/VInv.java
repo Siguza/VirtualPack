@@ -5,6 +5,7 @@
 package net.drgnome.virtualpack.components;
 
 import java.util.*;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
@@ -163,6 +164,11 @@ public class VInv implements IInventory
     }
 
     public InventoryHolder getOwner()
+    {
+        return null;
+    }
+
+    public Location getLocation()
     {
         return null;
     }

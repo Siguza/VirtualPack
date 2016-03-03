@@ -42,9 +42,9 @@ public class VAnvil extends ContainerAnvil
         }
     }
 
-    public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
+    public final ItemStack #FIELD_CONTAINER_11#(int slot, int mouse, #F_INVCLICK_META# meta, EntityHuman human)
     {
-        ItemStack stack = super.clickItem(slot, mouse, shift, human);
+        ItemStack stack = super.#FIELD_CONTAINER_11#(slot, mouse, meta, human);
         updatePlayerInventory();
         return stack;
     }
@@ -68,7 +68,7 @@ public class VAnvil extends ContainerAnvil
         byte b1 = 0;
         if(itemstack == null)
         {
-            invG.setItem(0, (ItemStack) null);
+            invG.setItem(0, (ItemStack)null);
             #FIELD_CONTAINERANVIL_5# = 0;
         }
         else
@@ -134,7 +134,7 @@ public class VAnvil extends ContainerAnvil
                     while(iterator.hasNext())
                     {
                         i1 = ((Integer)iterator.next()).intValue();
-                        Enchantment enchantment = Enchantment.getById(i1);
+                        Enchantment enchantment = Enchantment.#FIELD_ENCHANTMENT_GETBYID#(i1);
                         if(enchantment != null)
                         {
                             j1 = map.containsKey(Integer.valueOf(i1)) ? ((Integer)map.get(Integer.valueOf(i1))).intValue() : 0;
@@ -159,7 +159,7 @@ public class VAnvil extends ContainerAnvil
                             while(iterator1.hasNext())
                             {
                                 int j2 = ((Integer)iterator1.next()).intValue();
-                                if(j2 != i1 && !enchantment.#FIELD_ENCHANTMENT_1#(Enchantment.getById(j2)))
+                                if(j2 != i1 && !enchantment.#FIELD_ENCHANTMENT_1#(Enchantment.#FIELD_ENCHANTMENT_GETBYID#(j2)))
                                 {
                                     flag8 = false;
                                     ++i;
@@ -173,6 +173,7 @@ public class VAnvil extends ContainerAnvil
                                 }
                                 map.put(Integer.valueOf(i1), Integer.valueOf(l1));
                                 int k2 = 0;
+                                ---------- PRE 1.9 START ----------
                                 switch(enchantment.getRandomWeight())
                                 {
                                     case 1:
@@ -188,6 +189,24 @@ public class VAnvil extends ContainerAnvil
                                         k2 = 1;
                                         break;
                                 }
+                                ---------- PRE 1.9 END ----------
+                                ---------- SINCE 1.9 START ----------
+                                switch(enchantment.#FIELD_ENCHANTMENT_GETRARITY#())
+                                {
+                                    case COMMON:
+                                        k2 = 1;
+                                        break;
+                                    case UNCOMMON:
+                                        k2 = 2;
+                                        break;
+                                    case RARE:
+                                        k2 = 4;
+                                        break;
+                                    case VERY_RARE:
+                                        k2 = 8;
+                                        break;
+                                }
+                                ---------- SINCE 1.9 END ----------
                                 if(flag7)
                                 {
                                     k2 = Math.max(1, k2 / 2);

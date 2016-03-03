@@ -4,7 +4,6 @@
 
 package net.drgnome.virtualpack.components;
 
-import java.lang.reflect.*;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Material;
@@ -17,9 +16,6 @@ import net.drgnome.virtualpack.util.*;
 // VirtualTileEntityFurnace is way too long, therefore VTE
 public class VTEFurnace extends TileEntityFurnace
 {
-    // ticksForCurrentFuel is private in Spigot
-    private static Field _tfcf;
-    private static Field _total;
     // To access the chests
     private VPack vpack;
     private ItemStack[] contents = new ItemStack[3];
@@ -34,30 +30,14 @@ public class VTEFurnace extends TileEntityFurnace
     // Increases performance (or should at least)
     private long lastCheck = 0L;
 
-    static
-    {
-        try
-        {
-            _tfcf = TileEntityFurnace.class.getDeclaredField("ticksForCurrentFuel");
-            _tfcf.setAccessible(true);
-            _total = TileEntityFurnace.class.getDeclaredField("cookTimeTotal");
-            _total.setAccessible(true);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     // New VTE
     public VTEFurnace(VPack vpack)
     {
         this.vpack = vpack;
-        burnTime = 0;
-        cookTime = 0;
+        bTime(0);
+        cTime(0);
         cookTimeTotal(0);
-        //ticksForCurrentFuel = 0;
-        setTFCF(0);
+        tfcf(0);
     }
 
     // Read from save
@@ -73,17 +53,16 @@ public class VTEFurnace extends TileEntityFurnace
         // If the data array is long enough, we try to parse its entry, and if it's too short or the parsing fails, we'll leave it as it is.
         try
         {
-            burnTime = Util.tryParse(data[3], burnTime);
-            //ticksForCurrentFuel = Util.tryParse(data[4], ticksForCurrentFuel);
+            bTime(Util.tryParse(data[3], bTime()));
             try
             {
-                setTFCF(Integer.parseInt(data[4]));
+                tfcf(Integer.parseInt(data[4]));
             }
             catch(NumberFormatException e)
             {
             }
             myCookTime = Util.tryParse(data[5], myCookTime);
-            cookTime = Util.round(myCookTime);
+            cTime(Util.round(myCookTime));
             link = Util.tryParse(data[6], link);
             burnSpeed = Util.tryParse(data[7], getBurnSpeed(contents[1]));
         }
@@ -102,20 +81,13 @@ public class VTEFurnace extends TileEntityFurnace
         {
             list.add(Util.itemStackToString(contents[i]));
         }
-        list.add(Integer.toString(burnTime));
-        //list.add(Integer.toString(ticksForCurrentFuel));
-        list.add(Integer.toString(getTFCF()));
+        list.add(Integer.toString(bTime()));
+        list.add(Integer.toString(tfcf()));
         list.add(Double.toString(myCookTime));
         list.add(Integer.toString(link));
         // I save this now, because you could lose burn speed if it's the last fuel item and the server gets restarted
         list.add(Double.toString(burnSpeed));
         return list.toArray(new String[0]);
-    }
-
-    // For compatibility
-    public void #FIELD_TILEENTITY_1#() // Derpnote
-    {
-        tick(1);
     }
 
     public void tick(int ticks)
@@ -134,10 +106,9 @@ public class VTEFurnace extends TileEntityFurnace
         // So, can we now finally burn?
         if(canHasBURN() && !isBurning() && (getFuelTime(contents[1]) > 0))
         {
-            // I have no idea what "ticksForCurrentFuel" is good for, but it works fine like this
-            burnTime = /*ticksForCurrentFuel =*/ getFuelTime(contents[1]);
+            bTime(getFuelTime(contents[1]));
             cookTimeTotal(#FIELD_TILEENTITYFURNACE_1#(contents[0]));
-            setTFCF(burnTime);
+            tfcf(bTime());
             // Before we remove the item: how fast does it burn?
             burnSpeed = getBurnSpeed(contents[1]);
             // If it's a container item (lava bucket), we only consume its contents (not like evil Notch!)
@@ -160,7 +131,7 @@ public class VTEFurnace extends TileEntityFurnace
         if(isBurning())
         {
             // Then move on
-            burnTime -= ticks;
+            bTime(bTime() - ticks);
             // I'm using a double here because of the custom recipes.
             // The faster this fuel burns and the faster the recipe melts, the faster we're done
             myCookTime += burnSpeed * meltSpeed * ((double)ticks);
@@ -178,7 +149,7 @@ public class VTEFurnace extends TileEntityFurnace
             myCookTime = 0.0D;
         }
         // And for the display (I'm using floor rather than round to not cause the client to do shit when we not really reached cookTimeTotal):
-        cookTime = Util.floor(myCookTime);
+        cTime(Util.floor(myCookTime));
     }
 
     protected void checkLink()
@@ -301,7 +272,7 @@ public class VTEFurnace extends TileEntityFurnace
     // This needs a little addition
     public boolean isBurning()
     {
-        return (burnTime > 0) && (burnSpeed > 0.0D) && canHasBURN();
+        return (bTime() > 0) && (burnSpeed > 0.0D) && canHasBURN();
     }
 
     private ItemStack getBurnResult(ItemStack item)
@@ -486,55 +457,17 @@ public class VTEFurnace extends TileEntityFurnace
         }
     }
 
-    private void setTFCF(int value)
-    {
-        try
-        {
-            _tfcf.setInt(this, value);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+    private int bTime() { return getProperty(0); }
+    private void bTime(int i) { #F_SETPROPERTY#(0, i); }
 
-    private int getTFCF()
-    {
-        try
-        {
-            return _tfcf.getInt(this);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return 0;
-        }
-    }
+    private int tfcf() { return getProperty(1); }
+    private void tfcf(int i) { #F_SETPROPERTY#(1, i); }
 
-    private int cookTimeTotal()
-    {
-        try
-        {
-            return _total.getInt(this);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return 0;
-        }
-    }
+    private int cTime() { return getProperty(2); }
+    private void cTime(int i) { #F_SETPROPERTY#(2, i); }
 
-    private void cookTimeTotal(int i)
-    {
-        try
-        {
-            _total.setInt(this, i);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+    private int cookTimeTotal() { return getProperty(3); }
+    private void cookTimeTotal(int i) { #F_SETPROPERTY#(3, i); }
 
     // Compatibility
     public InventoryHolder getOwner()

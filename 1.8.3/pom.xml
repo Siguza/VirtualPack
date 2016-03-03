@@ -166,7 +166,28 @@
                                     <token>#MC_VERSION#</token>
                                     <value>1_8_R2</value>
                                 </replacement>
-                                <!-- Hello there -->
+                                <!-- One -->
+                                <replacement>
+                                    <token>#F_ANVIL_STEPSOUND#</token> <!-- [StepSound] -->
+                                    <value>Block.p</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_INVCLICK_META#</token> <!--  -->
+                                    <value>int</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_INVCLICK_QUICK_MOVE#</token> <!--  -->
+                                    <value>1</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_BREW_NUMSLOTS#</token> <!--  -->
+                                    <value>4</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_SETPROPERTY#</token> <!--  -->
+                                    <value>b</value>
+                                </replacement>
+                                <!-- Two -->
                                 <replacement>
                                     <token>#FIELD_BLOCK_1#</token> <!-- (float)Block -->
                                     <value>c</value>
@@ -182,10 +203,6 @@
                                 <replacement>
                                     <token>#FIELD_BLOCK_4#</token> <!-- (String)Block -->
                                     <value>c</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_BLOCK_5#</token> <!-- [StepSound] -->
-                                    <value>p</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_BLOCK_6#</token> <!-- (I, String, Block)V -->
@@ -226,6 +243,10 @@
                                 <replacement>
                                     <token>#FIELD_CONTAINER_10#</token> <!-- (EntityHuman, int)ItemStack -->
                                     <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_11#</token> <!-- (int, int, InventoryClickType, EntityHuman)ItemStack [clickItem] -->
+                                    <value>clickItem</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_CONTAINERANVIL_1#</token> <!-- static (ContainerAnvil)IInventory -->
@@ -272,8 +293,16 @@
                                     <value>b</value>
                                 </replacement>
                                 <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_IDS#</token> <!-- [int[]] -->
+                                    <value>h</value>
+                                </replacement>
+                                <replacement>
                                     <token>#FIELD_ENCHANTMENT_1#</token> <!-- (Enchantment)B -->
                                     <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENT_GETBYID#</token> <!-- (int)Enchantment -->
+                                    <value>getById</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ENCHANTMENTMANAGER_1#</token> <!-- static (Random, int, int, ItemStack)I -->
@@ -290,6 +319,10 @@
                                 <replacement>
                                     <token>#FIELD_ENCHANTMENTMANAGER_4#</token> <!-- static (Map, ItemStack)V -->
                                     <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENTMANAGER_ENCHANT#</token> <!-- static (Random, ItemStack, int)List<WeightedRandomEnchant> -->
+                                    <value>b</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ENTITYHUMAN_1#</token> <!-- (I)V [levelDown] -->
@@ -368,6 +401,10 @@
                                     <value>h</value>
                                 </replacement>
                                 <replacement>
+                                    <token>#FIELD_ITEMENCHANTEDBOOK_3#</token> <!-- (ItemStack, WeightedRandomEnchant)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
                                     <token>#FIELD_ITEMPOTION_1#</token> <!-- static (int)Z -->
                                     <value>f</value>
                                 </replacement>
@@ -402,6 +439,10 @@
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_11#</token> <!-- ()Z -->
                                     <value>r</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_12#</token> <!-- ()Z -->
+                                    <value>v</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#</token> <!-- static (byte[])NBTTagCompound -->
@@ -475,6 +516,22 @@
                                 <replacement>
                                     <token>---------- SINCE 1.8.3 END ----------</token>
                                     <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.9 START ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.9 END ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.9 START ----------</token>
+                                    <value>/*</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.9 END ----------</token>
+                                    <value>*/</value>
                                 </replacement>
                             </replacements>
                         </configuration>

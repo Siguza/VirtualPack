@@ -19,12 +19,12 @@ public abstract class VContainer extends ContainerChest
         this.player = player;
     }
 
-    public final ItemStack clickItem(int slot, int mouse, int shift, EntityHuman human)
+    public final ItemStack #FIELD_CONTAINER_11#(int slot, int mouse, #F_INVCLICK_META# meta, EntityHuman human)
     {
         ItemStack item;
-        if(allowClick(slot, mouse, shift, human))
+        if(allowClick(slot, mouse, meta, human))
         {
-            item = super.clickItem(slot, mouse, shift, human);
+            item = super.#FIELD_CONTAINER_11#(slot, mouse, meta, human);
             IInventory container = this.#FIELD_CONTAINERCHEST_1#();
             if(container instanceof VProcessing)
             {
@@ -39,7 +39,7 @@ public abstract class VContainer extends ContainerChest
         return item;
     }
 
-    public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
+    public boolean allowClick(int slot, int mouse, #F_INVCLICK_META# meta, EntityHuman human)
     {
         return true;
     }
