@@ -133,12 +133,18 @@ public class VAnvil extends ContainerAnvil
                     Iterator iterator = map1.keySet().iterator();
                     while(iterator.hasNext())
                     {
-                        i1 = ((Integer)iterator.next()).intValue();
-                        Enchantment enchantment = Enchantment.#FIELD_ENCHANTMENT_GETBYID#(i1);
+                        ---------- PRE 1.9 START ----------
+                        int key = (Integer)iterator.next();
+                        Enchantment enchantment = Enchantment.#FIELD_ENCHANTMENT_GETBYID#(key);
+                        ---------- PRE 1.9 END ----------
+                        ---------- SINCE 1.9 START ----------
+                        Enchantment key = (Enchantment)iterator.next();
+                        Enchantment enchantment = key;
+                        ---------- SINCE 1.9 END ----------
                         if(enchantment != null)
                         {
-                            j1 = map.containsKey(Integer.valueOf(i1)) ? ((Integer)map.get(Integer.valueOf(i1))).intValue() : 0;
-                            int l1 = ((Integer)map1.get(Integer.valueOf(i1))).intValue();
+                            j1 = map.containsKey(key) ? (Integer)map.get(key) : 0;
+                            int l1 = (Integer)map1.get(key);
                             int i2;
                             if(j1 == l1)
                             {
@@ -158,8 +164,15 @@ public class VAnvil extends ContainerAnvil
                             Iterator iterator1 = map.keySet().iterator();
                             while(iterator1.hasNext())
                             {
-                                int j2 = ((Integer)iterator1.next()).intValue();
-                                if(j2 != i1 && !enchantment.#FIELD_ENCHANTMENT_1#(Enchantment.#FIELD_ENCHANTMENT_GETBYID#(j2)))
+                                ---------- PRE 1.9 START ----------
+                                int key2 = (Integer)iterator.next();
+                                Enchantment ench2 = Enchantment.#FIELD_ENCHANTMENT_GETBYID#(key2);
+                                ---------- PRE 1.9 END ----------
+                                ---------- SINCE 1.9 START ----------
+                                Enchantment key2 = (Enchantment)iterator.next();
+                                Enchantment ench2 = key;
+                                ---------- SINCE 1.9 END ----------
+                                if(key != key2 && !enchantment.#FIELD_ENCHANTMENT_1#(ench2))
                                 {
                                     flag8 = false;
                                     ++i;
@@ -171,7 +184,7 @@ public class VAnvil extends ContainerAnvil
                                 {
                                     l1 = enchantment.getMaxLevel();
                                 }
-                                map.put(Integer.valueOf(i1), Integer.valueOf(l1));
+                                map.put(key, Integer.valueOf(l1));
                                 int k2 = 0;
                                 ---------- PRE 1.9 START ----------
                                 switch(enchantment.getRandomWeight())
@@ -366,4 +379,11 @@ public class VAnvil extends ContainerAnvil
     {
         return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), (Player)entityhuman.getBukkitEntity(), "vpack.use.anvil.free"));
     }
+
+    ---------- SINCE 1.9 START ----------
+    public CraftInventoryView getBukkitView()
+    {
+        return new CraftInventoryView(_player.getBukkitEntity(), new CraftInventoryAnvil(null, VAnvil.#FIELD_CONTAINERANVIL_1#(this), getInv("#FIELD_CONTAINERANVIL_2#")), this);
+    }
+    ---------- SINCE 1.9 END ----------
 }
