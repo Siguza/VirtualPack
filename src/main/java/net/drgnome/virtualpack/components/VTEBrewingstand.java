@@ -24,6 +24,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     public int link;
     private double myBrewTime;
     private double brewSpeed;
+    private int blazeTime;
     private int lastID;
     private long lastCheck;
     private ItemStack[] items;
@@ -38,6 +39,10 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         myBrewTime = 0.0D;
         brewTime(0);
         brewSpeed = 1.0D;
+        blazeTime = 0;
+        ---------- SINCE 1.9 START ----------
+        blazeTime(blazeTime);
+        ---------- SINCE 1.9 END ----------
         lastCheck = 0;
     }
 
@@ -59,6 +64,13 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         {
             items[4] = Util.stringToItemStack(data[6]);
         }
+        if(data.length >= 8)
+        {
+            blazeTime = Util.tryParse(data[7], blazeTime);
+            ---------- SINCE 1.9 START ----------
+            blazeTime(blazeTime);
+            ---------- SINCE 1.9 END ----------
+        }
     }
 
     public String[] save()
@@ -73,6 +85,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         if(items.length >= 5)
         {
             list.add(Util.itemStackToString(items[4]));
+            list.add(Integer.toString(blazeTime));
         }
         return list.toArray(new String[0]);
     }
@@ -92,24 +105,36 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         }
         // Are we brewing?
         boolean brewable = canBrew();
-        if(brewable && (myBrewTime > 0.0D))
-        {
-            myBrewTime -= brewSpeed * ((double)ticks);
-            // Are we done?
-            if(myBrewTime <= 0.0D)
-            {
-                // Then brew!
-                brew();
-            }
-        }
-        // Nothing going on, but we could still brew?
         if(brewable)
         {
-            // I'm using two if-clauses here because of the following else-clause.
-            if(myBrewTime <= 0.0D)
+            if(myBrewTime > 0.0D)
+            {
+                myBrewTime -= brewSpeed * ((double)ticks);
+                // Are we done?
+                if(myBrewTime <= 0.0D)
+                {
+                    // Then brew!
+                    brew();
+                }
+            }
+            // If we can brew but brewTime is <= 0, start a new cycle
+            else
             {
                 myBrewTime = 400.0D;
             }
+            ---------- SINCE 1.9 START ----------
+            // Consume fuel if necessary
+            if(blazeTime <= 0)
+            {
+                blazeTime(blazeTime + 20);
+                items[4].count--;
+                // Let 0 be null
+                if(items[4].count <= 0)
+                {
+                    items[4] = null;
+                }
+            }
+            ---------- SINCE 1.9 END ----------
         }
         // If we can't brew, we should reset the brewing time
         else
@@ -277,16 +302,16 @@ public class VTEBrewingstand extends TileEntityBrewingStand
 
     private boolean canBrew()
     {
-        // If there is no ingredient, what are we gonna brew?
-        if((items[3] == null) || (items[3].count <= 0))
+        if((items[3] == null) || (items[3].count <= 0) || !isIngredient(items[3]))
         {
             return false;
         }
-        // Can one drink this?
-        if(!isIngredient(items[3]))
+        ---------- SINCE 1.9 START ----------
+        if(!isBlazing())
         {
             return false;
         }
+        ---------- SINCE 1.9 END ----------
         // As long as we find a potion we can put our ingredient in, we'll be fine.
         for(int i = 0; i < 3; i++)
         {
@@ -298,6 +323,18 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         // Didn't find anything matching
         return false;
     }
+
+    ---------- SINCE 1.9 START ----------
+    private boolean isBlazing()
+    {
+        return blazeTime > 0 || canBlaze();
+    }
+
+    private boolean canBlaze()
+    {
+        return items[4] != null && items[4].getItem() == Items.BLAZE_POWDER;
+    }
+    ---------- SINCE 1.9 END ----------
 
     private void brew()
     {
@@ -323,6 +360,9 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             }
             items[i] = processItem(items[i], ingredient);
         }
+        ---------- SINCE 1.9 START ----------
+        blazeTime(blazeTime - 1);
+        ---------- SINCE 1.9 END ----------
         // Is the ingredient a container?
         if(ingredient.getItem().#FIELD_ITEM_1#()) // Derpnote
         {
@@ -474,6 +514,14 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     {
         #F_SETPROPERTY#(0, i);
     }
+
+    ---------- SINCE 1.9 START ----------
+    private void blazeTime(int i)
+    {
+        blazeTime = i;
+        #F_SETPROPERTY#(1, i);
+    }
+    ---------- SINCE 1.9 END ----------
 
     // Compatibility
     public InventoryHolder getOwner()
