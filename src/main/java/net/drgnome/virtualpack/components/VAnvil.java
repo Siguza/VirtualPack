@@ -165,11 +165,11 @@ public class VAnvil extends ContainerAnvil
                             while(iterator1.hasNext())
                             {
                                 ---------- PRE 1.9 START ----------
-                                int key2 = (Integer)iterator.next();
+                                int key2 = (Integer)iterator1.next();
                                 Enchantment ench2 = Enchantment.#FIELD_ENCHANTMENT_GETBYID#(key2);
                                 ---------- PRE 1.9 END ----------
                                 ---------- SINCE 1.9 START ----------
-                                Enchantment key2 = (Enchantment)iterator.next();
+                                Enchantment key2 = (Enchantment)iterator1.next();
                                 Enchantment ench2 = key;
                                 ---------- SINCE 1.9 END ----------
                                 if(key != key2 && !enchantment.#FIELD_ENCHANTMENT_1#(ench2))
