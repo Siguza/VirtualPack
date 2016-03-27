@@ -15,7 +15,7 @@ import net.drgnome.virtualpack.util.*;
 
 public class VAnvil extends ContainerAnvil
 {
-    private int _exp = 0;
+    private int _whatever = 0;
     private String _itemName;
     private final EntityPlayer _player;
 
@@ -78,7 +78,7 @@ public class VAnvil extends ContainerAnvil
             Map map = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_3#(itemstack1);
             boolean flag7 = false;
             int j = b0 + itemstack.getRepairCost() + (itemstack2 == null ? 0 : itemstack2.getRepairCost());
-            _exp = 0;
+            _whatever = 0;
             int k;
             if(itemstack2 != null)
             {
@@ -101,7 +101,7 @@ public class VAnvil extends ContainerAnvil
                         ++i;
                         k = Math.min(itemstack1.#FIELD_ITEMSTACK_5#(), itemstack1.#FIELD_ITEMSTACK_6#() / 4);
                     }
-                    _exp = l;
+                    _whatever = l;
                 }
                 else
                 {
@@ -145,17 +145,7 @@ public class VAnvil extends ContainerAnvil
                         {
                             j1 = map.containsKey(key) ? (Integer)map.get(key) : 0;
                             int l1 = (Integer)map1.get(key);
-                            int i2;
-                            if(j1 == l1)
-                            {
-                                ++l1;
-                                i2 = l1;
-                            }
-                            else
-                            {
-                                i2 = Math.max(l1, j1);
-                            }
-                            l1 = i2;
+                            l1 = (j1 == l1) ? (l1 + 1) : Math.max(l1, j1);
                             boolean flag8 = enchantment.canEnchant(itemstack);
                             if(playerFree(_player) || itemstack.getItem() == Items.ENCHANTED_BOOK)
                             {
@@ -170,7 +160,7 @@ public class VAnvil extends ContainerAnvil
                                 ---------- PRE 1.9 END ----------
                                 ---------- SINCE 1.9 START ----------
                                 Enchantment key2 = (Enchantment)iterator1.next();
-                                Enchantment ench2 = key;
+                                Enchantment ench2 = key2;
                                 ---------- SINCE 1.9 END ----------
                                 if(key != key2 && !enchantment.#FIELD_ENCHANTMENT_1#(ench2))
                                 {
@@ -184,7 +174,7 @@ public class VAnvil extends ContainerAnvil
                                 {
                                     l1 = enchantment.getMaxLevel();
                                 }
-                                map.put(key, Integer.valueOf(l1));
+                                map.put(key, l1);
                                 int k2 = 0;
                                 ---------- PRE 1.9 START ----------
                                 switch(enchantment.getRandomWeight())
@@ -265,7 +255,15 @@ public class VAnvil extends ContainerAnvil
                 {
                     k = itemstack2.getRepairCost();
                 }
+                ---------- PRE 1.9 START ----------
                 k = k * 2 + 1;
+                ---------- PRE 1.9 END ----------
+                ---------- SINCE 1.9 START ----------
+                if(b1 != i || b1 == 0)
+                {
+                    k = k * 2 + 1;
+                }
+                ---------- SINCE 1.9 END ----------
                 itemstack1.setRepairCost(k);
                 EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_4#(map, itemstack1);
             }
@@ -281,7 +279,7 @@ public class VAnvil extends ContainerAnvil
             ItemStack itemstack = VAnvil.#FIELD_CONTAINERANVIL_1#(this).splitWithoutUpdate(i);
             if(itemstack != null)
             {
-                entityhuman.drop(itemstack, false); // What does this "false" do? - Who am I even asking?
+                entityhuman.drop(itemstack, false); // Let's just put some random trues and falses here and there...
             }
         }
     }
@@ -345,9 +343,14 @@ public class VAnvil extends ContainerAnvil
         return getInv(anvil, "#FIELD_CONTAINERANVIL_3#");
     }
 
+    public int getWhatever()
+    {
+        return _whatever;
+    }
+
     public static int #FIELD_CONTAINERANVIL_7#(VAnvil anvil)
     {
-        return anvil._exp;
+        return anvil.getWhatever();
     }
 
     public IInventory getInv(String name)

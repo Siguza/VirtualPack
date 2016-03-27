@@ -31,12 +31,13 @@ public class VAnvilSlot extends Slot
     {
         entityhuman.levelDown(VAnvil.playerFree(entityhuman) ? 0 : (-_anvil.#FIELD_CONTAINERANVIL_5#));
         VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(0, null);
-        if(VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil) > 0)
+        int whatever = _anvil.getWhatever();
+        if(whatever > 0)
         {
             ItemStack itemstack1 = VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).getItem(1);
-            if(itemstack1 != null && itemstack1.count > VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil))
+            if(itemstack1 != null && itemstack1.count > whatever)
             {
-                itemstack1.count -= VAnvil.#FIELD_CONTAINERANVIL_7#(_anvil);
+                itemstack1.count -= whatever;
                 VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, itemstack1);
             }
             else
