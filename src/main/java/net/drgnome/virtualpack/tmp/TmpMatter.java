@@ -57,7 +57,7 @@ public class TmpMatter extends VContainer implements VGUI
         }
     }
 
-    public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
+    public boolean allowClick(int slot, int mouse, #F_INVCLICK_META# meta, EntityHuman human)
     {
         update();
         if(_readonly || (slot == 0))
@@ -66,7 +66,7 @@ public class TmpMatter extends VContainer implements VGUI
         }
         else if((slot >= 9) && (slot < 54))
         {
-            if((_inv.getItem(slot) == null) || ((human.inventory.getCarried() != null) && ((shift > 0) || !human.inventory.getCarried().doMaterialsMatch(_inv.getItem(slot)))))
+            if((_inv.getItem(slot) == null) || ((human.inventory.getCarried() != null) && ((meta != #F_INVCLICK_PICKUP#) || !human.inventory.getCarried().doMaterialsMatch(_inv.getItem(slot)))))
             {
                 return false;
             }
@@ -75,7 +75,7 @@ public class TmpMatter extends VContainer implements VGUI
             {
                 return false;
             }
-            if(shift > 0)
+            if(meta != #F_INVCLICK_PICKUP#)
             {
                 int max = Util.min(Util.floor(_inv._value / value), _inv.getItem(slot).getMaxStackSize());
                 org.bukkit.inventory.ItemStack stack = CraftItemStack.asBukkitCopy(_inv.getItem(slot)).clone();
@@ -106,7 +106,7 @@ public class TmpMatter extends VContainer implements VGUI
             _inv.updateInv();
             return false;
         }
-        else if((shift > 0) && (slot >= 54))
+        else if((meta != #F_INVCLICK_PICKUP#) && (slot >= 54))
         {
             for(int i = 1; i < 8; i++)
             {

@@ -53,6 +53,10 @@ public class VBrewingstand extends ContainerBrewingStand implements VGUI
             }
             return true;
         }
+        else if(meta == #F_INVCLICK_SWAP#)
+        {
+            return slot >= _data.getSize() || isItemAllowed(human, human.inventory.getItem(toInventorySlot(27 + mouse))); // "mouse"
+        }
         else if((slot >= 0) && (slot < _data.getSize()))
         {
             return isItemAllowed(human, human.inventory.getCarried());

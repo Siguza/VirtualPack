@@ -19,20 +19,20 @@ public class VChest extends VContainer implements VGUI
         _readonly = !canEdit;
     }
 
-    public boolean allowClick(int slot, int mouse, int shift, EntityHuman human)
+    public boolean allowClick(int slot, int mouse, #F_INVCLICK_META# meta, EntityHuman human)
     {
         if(_readonly)
         {
             return false;
         }
         IInventory container = this.#FIELD_CONTAINERCHEST_1#();
-        if(shift == 1)
+        if(meta == #F_INVCLICK_QUICK_MOVE#)
         {
-            if(slot >= container.getSize())
-            {
-                return isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - container.getSize())));
-            }
-            return true;
+            return slot < container.getSize() || isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - container.getSize())));
+        }
+        else if(meta == #F_INVCLICK_SWAP#)
+        {
+            return slot >= container.getSize() || isItemAllowed(human, human.inventory.getItem(toInventorySlot(27 + mouse))); // "mouse"
         }
         else if((slot >= 0) && (slot < container.getSize()))
         {
