@@ -462,12 +462,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     private ItemStack processItem(ItemStack potion, ItemStack ingredient)
     {
         ---------- PRE 1.9 START ----------
-        // No potion or equal to the result... NEXT!
-        if(!matchesResult(potion, ingredient))
-        {
-            return potion;
-        }
-        // Is it a potion then?
+        // Is it a potion?
         if(Item.#FIELD_ITEM_7#(potion.getItem()) == Material.POTION.getId())
         {
             int meta = potion.getData() < 0 ? 0 : potion.getData();
