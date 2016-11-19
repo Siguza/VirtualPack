@@ -14,7 +14,7 @@ import net.drgnome.virtualpack.VPack;
 import net.drgnome.virtualpack.util.*;
 
 // VirtualTileEntityFurnace is way too long, therefore VTE
-public class VTEFurnace extends TileEntityFurnace
+public class VTEFurnace extends TileEntityFurnace implements VIInventory
 {
     // To access the chests
     private VPack vpack;
@@ -29,6 +29,9 @@ public class VTEFurnace extends TileEntityFurnace
     private int lastID = 0;
     // Increases performance (or should at least)
     private long lastCheck = 0L;
+    ---------- SINCE 1.11 START ----------
+    private ProxyList<ItemStack> proxy;
+    ---------- SINCE 1.11 END ----------
 
     // New VTE
     public VTEFurnace(VPack vpack)
@@ -38,6 +41,9 @@ public class VTEFurnace extends TileEntityFurnace
         cTime(0);
         cookTimeTotal(0);
         tfcf(0);
+        ---------- SINCE 1.11 START ----------
+        proxy = new ProxyList<ItemStack>(contents, #F_ITEMSTACK_NULL#);
+        ---------- SINCE 1.11 END ----------
     }
 
     // Read from save
@@ -119,9 +125,16 @@ public class VTEFurnace extends TileEntityFurnace
             // If it's not a container, consume it! Om nom nom nom!
             else
             {
+                ---------- PRE 1.11 START ----------
                 contents[1].count--;
-                // Let 0 be null
                 if(contents[1].count <= 0)
+                ---------- PRE 1.11 END ----------
+                ---------- SINCE 1.11 START ----------
+                int count = contents[1].getCount() - 1;
+                contents[1].setCount(count);
+                if(count <= 0)
+                ---------- SINCE 1.11 END ----------
+                // Let 0 be null
                 {
                     contents[1] = null;
                 }
@@ -207,7 +220,7 @@ public class VTEFurnace extends TileEntityFurnace
                 {
                     item = inv.getItem(i);
                     // If there's no item: Lol, too easy ^^
-                    if(item == null)
+                    if(item == #F_ITEMSTACK_NULL#)
                     {
                         inv.setItem(i, Util.copy_old(contents[2]));
                         contents[2] = null;
@@ -218,11 +231,22 @@ public class VTEFurnace extends TileEntityFurnace
                     else if(contents[2].doMaterialsMatch(item))
                     {
                         // Put away as much as possible
+                        ---------- PRE 1.11 START ----------
                         int max = Util.min(contents[2].count, Util.min(item.getItem().getMaxStackSize(), getMaxStackSize()) - item.count);
                         item.count += max;
                         contents[2].count -= max;
-                        // If we've put everything away
                         if(contents[2].count <= 0)
+                        ---------- PRE 1.11 END ----------
+                        ---------- SINCE 1.11 START ----------
+                        int icount = item.getCount();
+                        int ccount = contents[2].getCount();
+                        int max = Util.min(ccount, Util.min(item.getItem().getMaxStackSize(), getMaxStackSize()) - icount);
+                        item.setCount(icount + max);
+                        ccount -= max;
+                        contents[2].setCount(ccount);
+                        if(ccount <= 0)
+                        ---------- SINCE 1.11 END ----------
+                        // If we've put everything away
                         {
                             contents[2] = null;
                             // Then let's go away from here
@@ -277,7 +301,7 @@ public class VTEFurnace extends TileEntityFurnace
 
     private ItemStack getBurnResult(ItemStack item)
     {
-        if(item == null)
+        if(item == null || item == #F_ITEMSTACK_NULL#)
         {
             return null;
         }
@@ -287,7 +311,7 @@ public class VTEFurnace extends TileEntityFurnace
 
     private double getMeltSpeed(ItemStack item)
     {
-        if(item == null)
+        if(item == null || item == #F_ITEMSTACK_NULL#)
         {
             return 0.0D;
         }
@@ -297,7 +321,7 @@ public class VTEFurnace extends TileEntityFurnace
 
     private int getFuelTime(ItemStack item)
     {
-        if(item == null)
+        if(item == null || item == #F_ITEMSTACK_NULL#)
         {
             return 0;
         }
@@ -316,7 +340,7 @@ public class VTEFurnace extends TileEntityFurnace
 
     private double getBurnSpeed(ItemStack item)
     {
-        if(item == null)
+        if(item == null || item == #F_ITEMSTACK_NULL#)
         {
             return 0.0D;
         }
@@ -348,7 +372,12 @@ public class VTEFurnace extends TileEntityFurnace
             return false;
         }
         // As long as there is space, we can burn
+        ---------- PRE 1.11 START ----------
         else if((contents[2].count + itemstack.count <= getMaxStackSize()) && (contents[2].count + itemstack.count <= contents[2].getMaxStackSize()))
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        else if((contents[2].getCount() + itemstack.getCount() <= getMaxStackSize()) && (contents[2].getCount() + itemstack.getCount() <= contents[2].getMaxStackSize()))
+        ---------- SINCE 1.11 END ----------
         {
             return true;
         }
@@ -371,7 +400,12 @@ public class VTEFurnace extends TileEntityFurnace
         // Burn ahead
         else if(contents[2].doMaterialsMatch(itemstack))
         {
+            ---------- PRE 1.11 START ----------
             contents[2].count += itemstack.count;
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            contents[2].setCount(contents[2].getCount() + itemstack.getCount());
+            ---------- SINCE 1.11 END ----------
         }
         // And consume the ingredient item
         // Goddamn, you have container functions, use them! Notch!
@@ -381,9 +415,16 @@ public class VTEFurnace extends TileEntityFurnace
         }
         else
         {
+            ---------- PRE 1.11 START ----------
             contents[0].count--;
-            // Let 0 be null
             if(contents[0].count <= 0)
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            int count = contents[0].getCount() - 1;
+            contents[0].setCount(count);
+            if(count <= 0)
+            ---------- SINCE 1.11 END ----------
+            // Let 0 be null
             {
                 contents[0] = null;
             }
@@ -392,10 +433,17 @@ public class VTEFurnace extends TileEntityFurnace
 
     /***** The following methods are only here because they interact with the contents array, which is private *****/
 
-    public ItemStack[] getContents()
+    public ItemStack[] #F_GET_RAW_CONTENTS#()
     {
         return contents;
     }
+
+    ---------- SINCE 1.11 START ----------
+    public List<ItemStack> getContents()
+    {
+        return proxy;
+    }
+    ---------- SINCE 1.11 END ----------
 
     public int getSize()
     {
@@ -404,7 +452,7 @@ public class VTEFurnace extends TileEntityFurnace
 
     public ItemStack getItem(int i)
     {
-        return contents[i];
+        return contents[i] == null ? #F_ITEMSTACK_NULL# : contents[i];
     }
 
     public ItemStack splitStack(int i, int j)
@@ -412,7 +460,12 @@ public class VTEFurnace extends TileEntityFurnace
         if(contents[i] != null)
         {
             ItemStack itemstack;
+            ---------- PRE 1.11 START ----------
             if(contents[i].count <= j)
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            if(contents[i].getCount() <= j)
+            ---------- SINCE 1.11 END ----------
             {
                 itemstack = contents[i];
                 contents[i] = null;
@@ -421,7 +474,12 @@ public class VTEFurnace extends TileEntityFurnace
             else
             {
                 itemstack = contents[i].#FIELD_ITEMSTACK_3#(j); // Derpnote
+                ---------- PRE 1.11 START ----------
                 if(contents[i].count == 0)
+                ---------- PRE 1.11 END ----------
+                ---------- SINCE 1.11 START ----------
+                if(contents[i].getCount() == 0)
+                ---------- SINCE 1.11 END ----------
                 {
                     contents[i] = null;
                 }
@@ -450,11 +508,20 @@ public class VTEFurnace extends TileEntityFurnace
 
     public void setItem(int i, ItemStack itemstack)
     {
-        contents[i] = itemstack;
-        if(itemstack != null && itemstack.count > getMaxStackSize())
+        if(itemstack == #F_ITEMSTACK_NULL#)
         {
-            itemstack.count = getMaxStackSize();
+            itemstack = null;
         }
+        contents[i] = itemstack;
+        int max = getMaxStackSize();
+        ---------- PRE 1.11 START ----------
+        if(itemstack != null && itemstack.count > max)
+            itemstack.count = max;
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        if(itemstack != null && itemstack.getCount() > max)
+            itemstack.setCount(max);
+        ---------- SINCE 1.11 END ----------
     }
 
     private int bTime() { return getProperty(0); }

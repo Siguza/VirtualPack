@@ -41,14 +41,14 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.5.6</version>
+            <version>1.6.6</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>6.1.1-SNAPSHOT</version>
+            <version>6.1.4-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -142,7 +142,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#MC_VERSION#</token>
-                                    <value>1_9_R1</value>
+                                    <value>1_11_R1</value>
                                 </replacement>
                                 <!-- One -->
                                 <replacement>
@@ -175,15 +175,23 @@
                                 </replacement>
                                 <replacement>
                                     <token>#F_ITEMSTACK_NULL#</token> <!--  -->
-                                    <value>null</value>
+                                    <value>ItemStack.a</value>
                                 </replacement>
                                 <replacement>
                                     <token>#F_GET_RAW_CONTENTS#</token> <!--  -->
-                                    <value>getContents</value>
+                                    <value>getRawContents</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_NEW_NONNULLLIST#</token> <!--  -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_INV_IS_EMPTY#</token> <!--  -->
+                                    <value>w_</value>
                                 </replacement>
                                 <replacement>
                                     <token>#F_SLOT_RETURN#</token> <!--  -->
-                                    <value>void</value>
+                                    <value>ItemStack</value>
                                 </replacement>
                                 <!-- Two -->
                                 <replacement>
@@ -308,7 +316,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ENCHANTMENT_GETRARITY#</token> <!-- ()Rarity -->
-                                    <value>c</value>
+                                    <value>e</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ENCHANTMENTMANAGER_1#</token> <!-- static (Random, int, int, ItemStack)I -->
@@ -336,7 +344,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ENTITYHUMAN_3#</token> <!-- ()I [getEnchantingSeed] -->
-                                    <value>cQ</value>
+                                    <value>cY</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IINVENTORY_1#</token> <!-- (EntityHuman)Z -->
@@ -352,11 +360,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IINVENTORY_6#</token> <!-- ()I -->
-                                    <value>g</value>
-                                </replacement>
-                                <replacement>
-                                    <token>#FIELD_IINVENTORY_7#</token> <!-- ()V -->
-                                    <value>l</value>
+                                    <value>h</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_IRECIPE_1#</token> <!-- ()ItemStack -->
@@ -364,15 +368,15 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_1#</token> <!-- ()Z -->
-                                    <value>r</value>
+                                    <value>s</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_2#</token> <!-- ()Item -->
-                                    <value>q</value>
+                                    <value>r</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_5#</token> <!-- ()Z [hasSubTypes]-->
-                                    <value>k</value>
+                                    <value>l</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEM_6#</token> <!-- (ItemStack, ItemStack)Z -->
@@ -396,7 +400,7 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_2#</token> <!-- ()Z -->
-                                    <value>x</value>
+                                    <value>y</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_3#</token> <!-- (int)ItemStack -->
@@ -404,31 +408,31 @@
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_5#</token> <!-- ()I -->
-                                    <value>h</value>
+                                    <value>i</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_6#</token> <!-- ()I -->
-                                    <value>j</value>
+                                    <value>k</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_9#</token> <!-- (String)ItemStack -->
-                                    <value>c</value>
+                                    <value>g</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_10#</token> <!-- ()Z -->
-                                    <value>e</value>
+                                    <value>f</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_11#</token> <!-- ()V -->
-                                    <value>r</value>
+                                    <value>s</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_12#</token> <!-- ()Z -->
-                                    <value>v</value>
+                                    <value>canEnchant</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_ITEMSTACK_GETDAMAGE#</token> <!-- ()I -->
-                                    <value>h</value>
+                                    <value>i</value>
                                 </replacement>
                                 <replacement>
                                     <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#</token> <!-- static (InputStream)NBTTagCompound -->
@@ -525,19 +529,19 @@
                                 </replacement>
                                 <replacement>
                                     <token>---------- PRE 1.11 START ----------</token>
-                                    <value> </value>
-                                </replacement>
-                                <replacement>
-                                    <token>---------- PRE 1.11 END ----------</token>
-                                    <value> </value>
-                                </replacement>
-                                <replacement>
-                                    <token>---------- SINCE 1.11 START ----------</token>
                                     <value>/*</value>
                                 </replacement>
                                 <replacement>
-                                    <token>---------- SINCE 1.11 END ----------</token>
+                                    <token>---------- PRE 1.11 END ----------</token>
                                     <value>*/</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.11 START ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.11 END ----------</token>
+                                    <value> </value>
                                 </replacement>
                             </replacements>
                         </configuration>

@@ -49,7 +49,12 @@ public class VUncrafterInv extends VInv implements VProcessing
         for(IRecipe recipe : mcList)
         {
             ItemStack result = recipe.#FIELD_IRECIPE_1#(); // Derpnote
+            ---------- PRE 1.11 START ----------
             if(result == null || result.count < 1)
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            if(result == null || result.getCount() < 1)
+            ---------- SINCE 1.11 END ----------
             {
                 continue;
             }
@@ -134,7 +139,12 @@ public class VUncrafterInv extends VInv implements VProcessing
                 return null;
             }
             ItemStack re = Util.copy_old(result);
+            ---------- PRE 1.11 START ----------
             re.count = 1;
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            re.setCount(1);
+            ---------- SINCE 1.11 END ----------
             ItemStack[] back = new ItemStack[ench.size() + 1];
             back[0] = Util.copy_old(re);
             back[0].getTag().remove("ench");
@@ -181,9 +191,16 @@ public class VUncrafterInv extends VInv implements VProcessing
         {
             copy[i] = Util.copy_old(contents[i + 9]);
         }
+        ---------- PRE 1.11 START ----------
         int amount = re.result.count;
         dance:
         for(int count = contents[slot].count - amount; count >= 0; count -= amount)
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        int amount = re.result.getCount();
+        dance:
+        for(int count = contents[slot].getCount() - amount; count >= 0; count -= amount)
+        ---------- SINCE 1.11 END ----------
         {
             ItemStack[] sandbox = Util.copy_old(copy);
             derping:
@@ -191,27 +208,51 @@ public class VUncrafterInv extends VInv implements VProcessing
             {
                 for(int j = 0; j < 9; j++)
                 {
-                    if(sandbox[j] == null)
+                    if(sandbox[j] == null || sandbox[j] == #F_ITEMSTACK_NULL#)
                     {
                         sandbox[j] = Util.copy_old(re.ingredients[i]);
                         continue derping;
                     }
-                    else if(sandbox[j].doMaterialsMatch(re.ingredients[i]) && sandbox[j].count < sandbox[j].getMaxStackSize())
+                    else
                     {
-                        sandbox[j].count++;
-                        continue derping;
+                        ---------- PRE 1.11 START ----------
+                        if(sandbox[j].doMaterialsMatch(re.ingredients[i]) && sandbox[j].count < sandbox[j].getMaxStackSize())
+                        ---------- PRE 1.11 END ----------
+                        ---------- SINCE 1.11 START ----------
+                        int c = sandbox[j].getCount();
+                        if(sandbox[j].doMaterialsMatch(re.ingredients[i]) && c < sandbox[j].getMaxStackSize())
+                        ---------- SINCE 1.11 END ----------
+                        {
+                            ---------- PRE 1.11 START ----------
+                            sandbox[j].count++;
+                            ---------- PRE 1.11 END ----------
+                            ---------- SINCE 1.11 START ----------
+                            sandbox[j].setCount(c + 1);
+                            ---------- SINCE 1.11 END ----------
+                            continue derping;
+                        }
                     }
                 }
                 break dance;
             }
             copy = sandbox;
+            ---------- PRE 1.11 START ----------
             contents[slot].count = count;
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            contents[slot].setCount(count);
+            ---------- SINCE 1.11 END ----------
         }
         for(int i = 0; i < 9; i++)
         {
             contents[i + 9] = copy[i];
         }
+        ---------- PRE 1.11 START ----------
         if(contents[slot].count == 0)
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        if(contents[slot].getCount() == 0)
+        ---------- SINCE 1.11 END ----------
         {
             contents[slot] = null;
         }
@@ -266,7 +307,12 @@ public class VUncrafterInv extends VInv implements VProcessing
             ingredients = list.toArray(new ItemStack[0]);
             for(int i = 0; i < ingredients.length; i++)
             {
+                ---------- PRE 1.11 START ----------
                 ingredients[i].count = 1;
+                ---------- PRE 1.11 END ----------
+                ---------- SINCE 1.11 START ----------
+                ingredients[i].setCount(1);
+                ---------- SINCE 1.11 END ----------
                 int data = ingredients[i].getData();
                 if((data < 0) || (data >= 0x7FFF))
                 {

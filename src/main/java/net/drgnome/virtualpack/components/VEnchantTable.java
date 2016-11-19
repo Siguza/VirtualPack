@@ -46,7 +46,7 @@ public class VEnchantTable extends ContainerEnchantTable
         {
             ItemStack itemstack = iinventory.getItem(0);
             int i;
-            if(itemstack != null)
+            if(itemstack != null && itemstack != #F_ITEMSTACK_NULL#)
             {
                 if(!this.world.#FIELD_WORLD_1#)
                 {
@@ -116,7 +116,12 @@ public class VEnchantTable extends ContainerEnchantTable
         ItemStack itemstack = this.enchantSlots.getItem(0);
         ItemStack itemstack1 = this.enchantSlots.getItem(1);
         int j = i + 1;
+        ---------- PRE 1.11 START ----------
         if((itemstack1 == null || itemstack1.count < j) && !playerFree(entityhuman))
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        if((itemstack1 == null || itemstack1.getCount() < j) && !playerFree(entityhuman))
+        ---------- SINCE 1.11 END ----------
         {
             return false;
         }
@@ -184,10 +189,17 @@ public class VEnchantTable extends ContainerEnchantTable
                     entityhuman.#FIELD_ENTITYHUMAN_1#(j);
                     if(!playerFree(entityhuman))
                     {
+                        ---------- PRE 1.11 START ----------
                         itemstack1.count -= j;
                         if(itemstack1.count <= 0)
+                        ---------- PRE 1.11 END ----------
+                        ---------- SINCE 1.11 START ----------
+                        int count = itemstack1.getCount() - j;
+                        itemstack1.setCount(count);
+                        if(count <= 0)
+                        ---------- SINCE 1.11 END ----------
                         {
-                            this.enchantSlots.setItem(1, (ItemStack) null);
+                            this.enchantSlots.setItem(1, (ItemStack)#F_ITEMSTACK_NULL#);
                         }
                     }
                     ---------- SINCE 1.8.3 START ----------

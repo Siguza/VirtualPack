@@ -27,29 +27,42 @@ public class VAnvilSlot extends Slot
         return (VAnvil.playerFree(entityhuman) || entityhuman.expLevel >= _anvil.#FIELD_CONTAINERANVIL_5#) && (_anvil.#FIELD_CONTAINERANVIL_5# > 0) && #FIELD_SLOT_1#();
     }
 
-    public void #FIELD_SLOT_5#(EntityHuman entityhuman, ItemStack itemstack)
+    public #F_SLOT_RETURN# #FIELD_SLOT_5#(EntityHuman entityhuman, ItemStack itemstack)
     {
         entityhuman.levelDown(VAnvil.playerFree(entityhuman) ? 0 : (-_anvil.#FIELD_CONTAINERANVIL_5#));
-        VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(0, null);
+        VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(0, #F_ITEMSTACK_NULL#);
         int whatever = _anvil.getWhatever();
         if(whatever > 0)
         {
             ItemStack itemstack1 = VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).getItem(1);
+            ---------- PRE 1.11 START ----------
             if(itemstack1 != null && itemstack1.count > whatever)
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            if(itemstack1 != null && itemstack1.getCount() > whatever)
+            ---------- SINCE 1.11 END ----------
             {
+                ---------- PRE 1.11 START ----------
                 itemstack1.count -= whatever;
+                ---------- PRE 1.11 END ----------
+                ---------- SINCE 1.11 START ----------
+                itemstack1.setCount(itemstack1.getCount() - whatever);
+                ---------- SINCE 1.11 END ----------
                 VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, itemstack1);
             }
             else
             {
-                VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, null);
+                VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, #F_ITEMSTACK_NULL#);
             }
         }
         else
         {
-            VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, null);
+            VAnvil.#FIELD_CONTAINERANVIL_1#(_anvil).setItem(1, #F_ITEMSTACK_NULL#);
         }
         _anvil.#FIELD_CONTAINERANVIL_5# = 0;
         _anvil.updatePlayerInventory();
+        ---------- SINCE 1.11 START ----------
+        return itemstack;
+        ---------- SINCE 1.11 END ----------
     }
 }

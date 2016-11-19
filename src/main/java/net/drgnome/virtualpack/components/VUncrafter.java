@@ -22,7 +22,7 @@ public class VUncrafter extends VContainer
         for(int i = 0; i < 18; i++)
         {
             ItemStack itemstack = this.#FIELD_CONTAINERCHEST_1#().splitWithoutUpdate(i);
-            if(itemstack != null)
+            if(itemstack != null && itemstack != #F_ITEMSTACK_NULL#)
             {
                 entityhuman.drop(itemstack, false); // Whatever "false" does
             }
@@ -38,7 +38,7 @@ public class VUncrafter extends VContainer
             {
                 for(int i = 0; i < 9; i++)
                 {
-                    if(container.getItem(i) == null)
+                    if(container.getItem(i) == #F_ITEMSTACK_NULL#)
                     {
                         return isItemAllowed(human, human.inventory.getItem(toInventorySlot(slot - container.getSize())));
                     }
@@ -57,14 +57,14 @@ public class VUncrafter extends VContainer
         }
         else if((slot >= 9) && (slot < 18))
         {
-            return human.inventory.getCarried() == null;
+            return human.inventory.getCarried() == #F_ITEMSTACK_NULL#;
         }
         return super.allowClick(slot, mouse, meta, human);
     }
 
     private boolean isItemAllowed(EntityHuman human, ItemStack item)
     {
-        if(item == null)
+        if(item == null || item == #F_ITEMSTACK_NULL#)
         {
             return true;
         }

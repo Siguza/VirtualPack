@@ -12,17 +12,23 @@ import org.bukkit.inventory.InventoryHolder;
 import net.minecraft.server.v#MC_VERSION#.*;
 import net.drgnome.virtualpack.util.*;
 
-public class VInv implements IInventory
+public class VInv implements VIInventory
 {
-    protected ItemStack[] contents = new ItemStack[0];
+    protected ItemStack[] contents;
     private long lastUpdate;
     private int _maxStack = 64;
     private String _name = "";
+    ---------- SINCE 1.11 START ----------
+    private ProxyList<ItemStack> proxy;
+    ---------- SINCE 1.11 END ----------
 
     public VInv(int rows)
     {
         contents = new ItemStack[rows * 9];
         lastUpdate = System.currentTimeMillis();
+        ---------- SINCE 1.11 START ----------
+        proxy = new ProxyList<ItemStack>(contents, #F_ITEMSTACK_NULL#);
+        ---------- SINCE 1.11 END ----------
     }
 
     public VInv(int rows, String data[])
@@ -57,6 +63,9 @@ public class VInv implements IInventory
     public void clear()
     {
         contents = new ItemStack[contents.length];
+        ---------- SINCE 1.11 START ----------
+        proxy = new ProxyList<ItemStack>(contents, #F_ITEMSTACK_NULL#);
+        ---------- SINCE 1.11 END ----------
     }
 
     public void resize(int size)
@@ -64,6 +73,9 @@ public class VInv implements IInventory
         if(contents.length != size)
         {
             contents = Arrays.copyOf(contents, size);
+            ---------- SINCE 1.11 START ----------
+            proxy = new ProxyList<ItemStack>(contents, #F_ITEMSTACK_NULL#);
+            ---------- SINCE 1.11 END ----------
         }
     }
 
@@ -74,23 +86,34 @@ public class VInv implements IInventory
 
     public ItemStack getItem(int slot)
     {
-        return (slot < contents.length) && (slot >= 0) ? contents[slot] : null;
+        ItemStack item = (slot < contents.length) && (slot >= 0) ? contents[slot] : null;
+        return item == null ? #F_ITEMSTACK_NULL# : item;
     }
 
     public ItemStack splitStack(int slot, int size)
     {
         if((slot < contents.length) && (contents[slot] != null))
         {
+            ---------- PRE 1.11 START ----------
             if(contents[slot].count <= size)
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            if(contents[slot].getCount() <= size)
+            ---------- SINCE 1.11 END ----------
             {
                 ItemStack item = Util.copy_old(contents[slot]);
-                setItem(slot, null);
+                setItem(slot, #F_ITEMSTACK_NULL#);
                 return item;
             }
             ItemStack item = contents[slot].#FIELD_ITEMSTACK_3#(size); // Derpnote
+            ---------- PRE 1.11 START ----------
             if(contents[slot].count <= 0)
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            if(contents[slot].getCount() <= 0)
+            ---------- SINCE 1.11 END ----------
             {
-                setItem(slot, null);
+                setItem(slot, #F_ITEMSTACK_NULL#);
             }
             return item;
         }
@@ -110,12 +133,33 @@ public class VInv implements IInventory
 
     public void setItem(int slot, ItemStack item)
     {
-        contents[slot] = item;
-        if((item != null) && (item.count > getMaxStackSize()))
+        if(item == #F_ITEMSTACK_NULL#)
         {
-            item.count = getMaxStackSize();
+            item = null;
         }
+        contents[slot] = item;
+        int max = getMaxStackSize();
+        ---------- PRE 1.11 START ----------
+        if((item != null) && (item.count > max))
+            item.count = max;
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        if((item != null) && (item.getCount() > max))
+            item.setCount(max);
+        ---------- SINCE 1.11 END ----------
         lastUpdate = System.currentTimeMillis();
+    }
+
+    public boolean isEmpty()
+    {
+        for(ItemStack i : contents)
+        {
+            if(i != null)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public long getLastUpdate()
@@ -173,10 +217,17 @@ public class VInv implements IInventory
         return null;
     }
 
-    public ItemStack[] getContents()
+    public ItemStack[] #F_GET_RAW_CONTENTS#()
     {
         return contents;
     }
+
+    ---------- SINCE 1.11 START ----------
+    public List<ItemStack> getContents()
+    {
+        return proxy;
+    }
+    ---------- SINCE 1.11 END ----------
 
     public boolean #FIELD_IINVENTORY_3#(int slot, ItemStack item)
     {
@@ -197,10 +248,12 @@ public class VInv implements IInventory
         return 0;
     }
 
+    ---------- PRE 1.11 START ----------
     public void #FIELD_IINVENTORY_7#()
     {
         clear();
     }
+    ---------- PRE 1.11 END ----------
 
     public void update()
     {
@@ -221,4 +274,11 @@ public class VInv implements IInventory
     public void onClose(CraftHumanEntity paramCraftHumanEntity)
     {
     }
+
+    ---------- SINCE 1.11 START ----------
+    public boolean #F_INV_IS_EMPTY#()
+    {
+        return isEmpty();
+    }
+    ---------- SINCE 1.11 END ----------
 }

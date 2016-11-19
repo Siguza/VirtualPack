@@ -66,9 +66,9 @@ public class VAnvil extends ContainerAnvil
         int i = 0;
         byte b0 = 0;
         byte b1 = 0;
-        if(itemstack == null)
+        if(itemstack == null || itemstack == #F_ITEMSTACK_NULL#)
         {
-            invG.setItem(0, (ItemStack)null);
+            invG.setItem(0, (ItemStack)#F_ITEMSTACK_NULL#);
             #FIELD_CONTAINERANVIL_5# = 0;
         }
         else
@@ -77,10 +77,10 @@ public class VAnvil extends ContainerAnvil
             ItemStack itemstack2 = invH.getItem(1);
             Map map = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_3#(itemstack1);
             boolean flag7 = false;
-            int j = b0 + itemstack.getRepairCost() + (itemstack2 == null ? 0 : itemstack2.getRepairCost());
+            int j = b0 + itemstack.getRepairCost() + ((itemstack2 == null || itemstack2 == #F_ITEMSTACK_NULL#) ? 0 : itemstack2.getRepairCost());
             _whatever = 0;
             int k;
-            if(itemstack2 != null)
+            if(itemstack2 != null && itemstack2 != #F_ITEMSTACK_NULL#)
             {
                 flag7 = itemstack2.getItem() == Items.ENCHANTED_BOOK && Items.ENCHANTED_BOOK.#FIELD_ITEMENCHANTEDBOOK_2#(itemstack2).size() > 0;
                 int l;
@@ -90,13 +90,18 @@ public class VAnvil extends ContainerAnvil
                     k = Math.min(itemstack1.#FIELD_ITEMSTACK_5#(), itemstack1.#FIELD_ITEMSTACK_6#() / 4);
                     if(k <= 0)
                     {
-                        invG.setItem(0, (ItemStack)null);
+                        invG.setItem(0, (ItemStack)#F_ITEMSTACK_NULL#);
                         #FIELD_CONTAINERANVIL_5# = 0;
                         return;
                     }
+                    ---------- PRE 1.11 START ----------
                     for(l = 0; k > 0 && l < itemstack2.count; ++l)
+                    ---------- PRE 1.11 END ----------
+                    ---------- SINCE 1.11 START ----------
+                    for(l = 0; k > 0 && l < itemstack2.getCount(); ++l)
+                    ---------- SINCE 1.11 END ----------
                     {
-                        i1 = itemstack1.h() - k;
+                        i1 = itemstack1.#FIELD_ITEMSTACK_GETDAMAGE#() - k;
                         itemstack1.setData(i1);
                         ++i;
                         k = Math.min(itemstack1.#FIELD_ITEMSTACK_5#(), itemstack1.#FIELD_ITEMSTACK_6#() / 4);
@@ -107,7 +112,7 @@ public class VAnvil extends ContainerAnvil
                 {
                     if(!flag7 && (itemstack1.getItem() != itemstack2.getItem() || !itemstack1.#FIELD_ITEMSTACK_10#()))
                     {
-                        invG.setItem(0, (ItemStack)null);
+                        invG.setItem(0, (ItemStack)#F_ITEMSTACK_NULL#);
                         #FIELD_CONTAINERANVIL_5# = 0;
                         return;
                     }
@@ -248,10 +253,10 @@ public class VAnvil extends ContainerAnvil
             {
                 itemstack1 = null;
             }
-            if(itemstack1 != null)
+            if(itemstack1 != null && itemstack1 == #F_ITEMSTACK_NULL#)
             {
                 k = itemstack1.getRepairCost();
-                if(itemstack2 != null && k < itemstack2.getRepairCost())
+                if((itemstack2 != null && itemstack2 != #F_ITEMSTACK_NULL#) && k < itemstack2.getRepairCost())
                 {
                     k = itemstack2.getRepairCost();
                 }
@@ -267,7 +272,7 @@ public class VAnvil extends ContainerAnvil
                 itemstack1.setRepairCost(k);
                 EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_4#(map, itemstack1);
             }
-            invG.setItem(0, itemstack1);
+            invG.setItem(0, itemstack1 == null ? #F_ITEMSTACK_NULL# : itemstack1);
             this.#FIELD_CONTAINER_9#();
         }
     }
@@ -277,7 +282,7 @@ public class VAnvil extends ContainerAnvil
         for(int i = 0; i < VAnvil.#FIELD_CONTAINERANVIL_1#(this).getSize(); ++i)
         {
             ItemStack itemstack = VAnvil.#FIELD_CONTAINERANVIL_1#(this).splitWithoutUpdate(i);
-            if(itemstack != null)
+            if(itemstack != null && itemstack == #F_ITEMSTACK_NULL#)
             {
                 entityhuman.drop(itemstack, false); // Let's just put some random trues and falses here and there...
             }
@@ -311,7 +316,12 @@ public class VAnvil extends ContainerAnvil
             {
                 return null;
             }
+            ---------- PRE 1.11 START ----------
             if(itemstack1.count == 0)
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            if(itemstack1.getCount() == 0)
+            ---------- SINCE 1.11 END ----------
             {
                 slot.set((ItemStack) null);
             }
@@ -319,7 +329,12 @@ public class VAnvil extends ContainerAnvil
             {
                 slot.#FIELD_SLOT_3#();
             }
+            ---------- PRE 1.11 START ----------
             if(itemstack1.count == itemstack.count)
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            if(itemstack1.getCount() == itemstack.getCount())
+            ---------- SINCE 1.11 END ----------
             {
                 return null;
             }

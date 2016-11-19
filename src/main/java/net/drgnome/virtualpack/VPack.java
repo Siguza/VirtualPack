@@ -347,7 +347,7 @@ public class VPack
         int max = Perm.has(_world, _player, "vpack.use.chest") ? Config.getInt(_world, groups, "tools", "chest", "max", Config.MODE_INFINITE) : 0;
         while((max != - 1) && (_chests.size() > max))
         {
-            for(ItemStack item : _chests.get(_chests.size()).getContents())
+            for(ItemStack item : _chests.get(_chests.size()).#F_GET_RAW_CONTENTS#())
             {
                 _left.add(item);
             }
@@ -356,7 +356,7 @@ public class VPack
         max = Perm.has(_world, _player, "vpack.use.furnace") ? Config.getInt(_world, groups, "tools", "furnace", "max", Config.MODE_INFINITE) : 0;
         while((max != - 1) && (_furnaces.size() > max))
         {
-            for(ItemStack item : _furnaces.get(_furnaces.size()).getContents())
+            for(ItemStack item : _furnaces.get(_furnaces.size()).#F_GET_RAW_CONTENTS#())
             {
                 _left.add(item);
             }
@@ -365,7 +365,7 @@ public class VPack
         max = Perm.has(_world, _player, "vpack.use.brewingstand") ? Config.getInt(_world, groups, "tools", "brewingstand", "max", Config.MODE_INFINITE) : 0;
         while((max != - 1) && (_brews.size() > max))
         {
-            for(ItemStack item : _brews.get(_brews.size()).getContents())
+            for(ItemStack item : _brews.get(_brews.size()).#F_GET_RAW_CONTENTS#())
             {
                 _left.add(item);
             }
@@ -378,7 +378,7 @@ public class VPack
     {
         init();
         EntityPlayer p = ((CraftPlayer)player).getHandle();
-        ArrayList<IInventory> list = new ArrayList<IInventory>();
+        ArrayList<VIInventory> list = new ArrayList<VIInventory>();
         if(!Perm.has(_world, _player, "vpack.keep.chest"))
         {
             list.addAll(_chests.values());
@@ -391,9 +391,9 @@ public class VPack
         {
             list.addAll(_brews.values());
         }
-        for(IInventory inv : list.toArray(new IInventory[0]))
+        for(VIInventory inv : list.toArray(new VIInventory[0]))
         {
-            for(ItemStack i : inv.getContents())
+            for(ItemStack i : inv.#F_GET_RAW_CONTENTS#())
             {
                 p.drop(i, false); // I have no idea what the "false" does here
             }
@@ -1417,10 +1417,10 @@ public class VPack
         for(int i = 0; i < inv.getSize(); i++)
         {
             ItemStack item = inv.getItem(i);
-            if(item != null)
+            if(item != #F_ITEMSTACK_NULL#)
             {
                 player.drop(Util.copy_old(item), false); // I have no idea what the "false" does here
-                inv.setItem(i, null);
+                inv.setItem(i, #F_ITEMSTACK_NULL#);
             }
         }
     }
@@ -1670,7 +1670,7 @@ public class VPack
         {
             EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
             ItemStack hand = player.inventory.getItemInHand();
-            if(hand == null)
+            if(hand == null || hand == #F_ITEMSTACK_NULL#)
             {
                 sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "send.empty"), ChatColor.RED);
                 return;
@@ -1678,7 +1678,7 @@ public class VPack
             items = new ItemStack[]{Util.copy_old(hand)};
             if(!copy)
             {
-                player.inventory.setItem(player.inventory.itemInHandIndex, null);
+                player.inventory.setItem(player.inventory.itemInHandIndex, #F_ITEMSTACK_NULL#);
             }
         }
         else
@@ -1689,11 +1689,11 @@ public class VPack
                 sendMessage(bukkitPlayer, Lang.get(bukkitPlayer, "chest.none"), ChatColor.RED);
                 return;
             }
-            items = Util.copy_old(inv.getContents());
+            items = Util.copy_old(inv.#F_GET_RAW_CONTENTS#());
             boolean found = false;
             for(ItemStack item : items)
             {
-                if(item != null)
+                if(item != null && item != #F_ITEMSTACK_NULL#)
                 {
                     found = true;
                     break;

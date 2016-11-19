@@ -22,7 +22,13 @@ public class TmpMatter extends VContainer implements VGUI
     {
         super(player, inv);
         _inv = inv;
+
+        ---------- PRE 1.11 START ----------
         #FIELD_CONTAINER_2# = new ArrayList(); // Derpnote
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        #FIELD_CONTAINER_2# = NonNullList.<ItemStack>#F_NEW_NONNULLLIST#();
+        ---------- SINCE 1.11 END ----------
         #FIELD_CONTAINER_3# = new ArrayList(); // Derpnote
         for(int i = 0; i < 6; i++)
         {
@@ -50,7 +56,7 @@ public class TmpMatter extends VContainer implements VGUI
         for(int i = 1; i < 9; i++)
         {
             ItemStack itemstack = this.#FIELD_CONTAINERCHEST_1#().splitWithoutUpdate(i);
-            if(itemstack != null)
+            if(itemstack != null && itemstack != #F_ITEMSTACK_NULL#)
             {
                 entityhuman.drop(itemstack, false); // Another "false"
             }
@@ -66,7 +72,8 @@ public class TmpMatter extends VContainer implements VGUI
         }
         else if((slot >= 9) && (slot < 54))
         {
-            if((_inv.getItem(slot) == null) || ((human.inventory.getCarried() != null) && ((meta != #F_INVCLICK_PICKUP#) || !human.inventory.getCarried().doMaterialsMatch(_inv.getItem(slot)))))
+            ItemStack carried = human.inventory.getCarried();
+            if((_inv.getItem(slot) == #F_ITEMSTACK_NULL#) || ((carried != null && carried != #F_ITEMSTACK_NULL#) && ((meta != #F_INVCLICK_PICKUP#) || !carried.doMaterialsMatch(_inv.getItem(slot)))))
             {
                 return false;
             }
@@ -89,16 +96,32 @@ public class TmpMatter extends VContainer implements VGUI
             }
             else
             {
-                int max = (mouse > 0) ? Util.min(Util.floor(_inv._value / value), human.inventory.getCarried() == null ? _inv.getItem(slot).getMaxStackSize() : (human.inventory.getCarried().getMaxStackSize() - human.inventory.getCarried().count)) : 1;
-                if(human.inventory.getCarried() == null)
+                int max = (mouse > 0) ? Util.min(Util.floor(_inv._value / value), (carried == null || carried == #F_ITEMSTACK_NULL#) ? _inv.getItem(slot).getMaxStackSize() :
+                ---------- PRE 1.11 START ----------
+                (carried.getMaxStackSize() - carried.count)) : 1;
+                ---------- PRE 1.11 END ----------
+                ---------- SINCE 1.11 START ----------
+                (carried.getMaxStackSize() - carried.getCount())) : 1;
+                ---------- SINCE 1.11 END ----------
+                if(carried == null || carried == #F_ITEMSTACK_NULL#)
                 {
-                    ItemStack stack = Util.copy_old(_inv.getItem(slot));
-                    stack.count = max;
-                    human.inventory.setCarried(stack);
+                    carried = Util.copy_old(_inv.getItem(slot));
+                    ---------- PRE 1.11 START ----------
+                    carried.count = max;
+                    ---------- PRE 1.11 END ----------
+                    ---------- SINCE 1.11 START ----------
+                    carried.setCount(max);
+                    ---------- SINCE 1.11 END ----------
+                    human.inventory.setCarried(carried);
                 }
                 else
                 {
-                    human.inventory.getCarried().count += max;
+                    ---------- PRE 1.11 START ----------
+                    carried.count += max;
+                    ---------- PRE 1.11 END ----------
+                    ---------- SINCE 1.11 START ----------
+                    carried.setCount(carried.getCount() + max);
+                    ---------- SINCE 1.11 END ----------
                 }
                 _inv._value -= (value * (double)max);
             }
@@ -110,10 +133,10 @@ public class TmpMatter extends VContainer implements VGUI
         {
             for(int i = 1; i < 8; i++)
             {
-                if(_inv.getItem(i) == null)
+                if(_inv.getItem(i) == #F_ITEMSTACK_NULL#)
                 {
                     _inv.setItem(i, human.inventory.getItem(toInventorySlot(slot - 54)));
-                    human.inventory.setItem(toInventorySlot(slot - 54), null);
+                    human.inventory.setItem(toInventorySlot(slot - 54), #F_ITEMSTACK_NULL#);
                     break;
                 }
             }

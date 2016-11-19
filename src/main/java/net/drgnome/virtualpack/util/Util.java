@@ -20,6 +20,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.craftbukkit.v#MC_VERSION#.CraftServer;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftPlayer;
+import net.drgnome.virtualpack.components.VIInventory;
 import static net.drgnome.virtualpack.util.Global.*;
 
 public class Util
@@ -168,7 +169,7 @@ public class Util
 
     public static net.minecraft.server.v#MC_VERSION#.ItemStack copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item)
     {
-        return item == null ? null : item.cloneItemStack();
+        return (item == null || item == #F_ITEMSTACK_NULL#) ? null : item.cloneItemStack();
     }
 
     public static net.minecraft.server.v#MC_VERSION#.ItemStack[] copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item[])
@@ -227,7 +228,14 @@ public class Util
 
     public static boolean areEqual(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
     {
-        return (Item.#FIELD_ITEM_7#(item1.getItem()) == Item.#FIELD_ITEM_7#(item2.getItem())) && (item1.count == item2.count) && (item1.getData() == item2.getData());
+        return (Item.#FIELD_ITEM_7#(item1.getItem()) == Item.#FIELD_ITEM_7#(item2.getItem())) &&
+        ---------- PRE 1.11 START ----------
+        (item1.count == item2.count)
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        (item1.getCount() == item2.getCount())
+        ---------- SINCE 1.11 END ----------
+        && (item1.getData() == item2.getData());
     }
 
     public static int tryParse(String s, int i)
@@ -353,7 +361,14 @@ public class Util
         }
         try
         {
-            return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(string))));
+            net.minecraft.server.v#MC_VERSION#.NBTTagCompound nbt = NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(string)));
+            ---------- PRE 1.11 START ----------
+            return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(nbt);
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            net.minecraft.server.v#MC_VERSION#.ItemStack stack = new net.minecraft.server.v#MC_VERSION#.ItemStack(nbt);
+            return (stack.getItem() != null && stack != #F_ITEMSTACK_NULL#) ? stack : null;
+            ---------- SINCE 1.11 END ----------
         }
         catch(Exception e)
         {
@@ -364,7 +379,7 @@ public class Util
 
     public static String itemStackToString(net.minecraft.server.v#MC_VERSION#.ItemStack item)
     {
-        if(item == null)
+        if(item == null || item == #F_ITEMSTACK_NULL#)
         {
             return "";
         }
@@ -384,11 +399,11 @@ public class Util
     public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
     {
         _lastStack = false;
-        if(item2 == null)
+        if(item2 == null || item2 == #F_ITEMSTACK_NULL#)
         {
             return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, null};
         }
-        if(item1 == null)
+        if(item1 == null || item1 == #F_ITEMSTACK_NULL#)
         {
             _lastStack = true;
             return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item2, null};
@@ -397,18 +412,30 @@ public class Util
         {
             return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, item2};
         }
+        ---------- PRE 1.11 START ----------
         int max = (item2.count > (item1.getMaxStackSize() - item1.count)) ? (item1.getMaxStackSize() - item1.count) : item2.count;
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        int max = (item2.getCount() > (item1.getMaxStackSize() - item1.getCount())) ? (item1.getMaxStackSize() - item1.getCount()) : item2.getCount();
+        ---------- SINCE 1.11 END ----------
         if(max <= 0)
         {
             return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, item2};
         }
         _lastStack = true;
+        ---------- PRE 1.11 START ----------
         item1.count += max;
         item2.count -= max;
         return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, (item2.count <= 0) ? null : item2};
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        item1.setCount(item1.getCount() + max);
+        item2.setCount(item2.getCount() - max);
+        return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, (item2.getCount() <= 0) ? null : item2};
+        ---------- SINCE 1.11 END ----------
     }
 
-    public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(IInventory[] invs, net.minecraft.server.v#MC_VERSION#.ItemStack... items)
+    public static net.minecraft.server.v#MC_VERSION#.ItemStack[] stack(VIInventory[] invs, net.minecraft.server.v#MC_VERSION#.ItemStack... items)
     {
         boolean[] stacked = new boolean[invs.length];
         ArrayList<net.minecraft.server.v#MC_VERSION#.ItemStack> left = new ArrayList<net.minecraft.server.v#MC_VERSION#.ItemStack>();
@@ -416,8 +443,8 @@ public class Util
         {
             for(int j = 0; j < invs.length; j++)
             {
-                IInventory inv = invs[j];
-                net.minecraft.server.v#MC_VERSION#.ItemStack[] contents = inv.getContents();
+                VIInventory inv = invs[j];
+                net.minecraft.server.v#MC_VERSION#.ItemStack[] contents = inv.#F_GET_RAW_CONTENTS#();
                 stacked[j] = false;
                 for(int i = 0; i < contents.length; i++)
                 {
@@ -425,17 +452,17 @@ public class Util
                     inv.setItem(i, tmp[0]);
                     item = tmp[1];
                     stacked[j] = stacked[j] || _lastStack;
-                    if(item == null)
+                    if(item == null || item == #F_ITEMSTACK_NULL#)
                     {
                         break;
                     }
                 }
-                if(item == null)
+                if(item == null || item == #F_ITEMSTACK_NULL#)
                 {
                     break;
                 }
             }
-            if(item != null)
+            if(item != null && item != #F_ITEMSTACK_NULL#)
             {
                 left.add(item);
             }

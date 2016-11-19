@@ -111,7 +111,12 @@ public class TmpMatterInv extends VInv implements VProcessing
         {
             if(unlock(contents[slot]))
             {
+                ---------- PRE 1.11 START ----------
                 _value += value * (double)contents[slot].count;
+                ---------- PRE 1.11 END ----------
+                ---------- SINCE 1.11 START ----------
+                _value += value * (double)contents[slot].getCount();
+                ---------- SINCE 1.11 END ----------
             }
             contents[slot] = null;
             updateInfo();
@@ -132,7 +137,7 @@ public class TmpMatterInv extends VInv implements VProcessing
     {
         ValuedItemStack[] items = _allUnlocked ? TransmutationHelper.getAllFiltered(_worldname, _op) : TransmutationHelper.getAllFiltered(_worldname, _op, _unlocked.toArray(new ComparativeItemStack[0]));
         int off = 0;
-        if(super.getItem(8) != null)
+        if(super.getItem(8) != #F_ITEMSTACK_NULL#)
         {
             ComparativeItemStack lock = new ComparativeItemStack(CraftItemStack.asBukkitCopy(super.getItem(8)));
             for(; off < items.length; off++)
@@ -147,13 +152,13 @@ public class TmpMatterInv extends VInv implements VProcessing
         {
             if((i + off - 9) >= items.length)
             {
-                super.setItem(i, null);
+                super.setItem(i, #F_ITEMSTACK_NULL#);
                 continue;
             }
             double value = TransmutationHelper.getValue(items[i + off - 9]);
             if(value <= 0)
             {
-                super.setItem(i, null);
+                super.setItem(i, #F_ITEMSTACK_NULL#);
                 continue;
             }
             super.setItem(i, CraftItemStack.asNMSCopy(items[i + off - 9].createStack(1)));

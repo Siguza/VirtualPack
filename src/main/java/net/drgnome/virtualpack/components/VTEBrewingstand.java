@@ -4,6 +4,7 @@
 
 package net.drgnome.virtualpack.components;
 
+import java.lang.reflect.*;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Bukkit;
@@ -16,7 +17,7 @@ import org.bukkit.entity.HumanEntity;
 import net.drgnome.virtualpack.VPack;
 import net.drgnome.virtualpack.util.*;
 
-public class VTEBrewingstand extends TileEntityBrewingStand
+public class VTEBrewingstand extends TileEntityBrewingStand implements VIInventory
 {
     // To access the chests
     private VPack vpack;
@@ -29,10 +30,40 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     private long lastCheck;
     private ItemStack[] items;
 
+    // Ugh, reflection...
+    ---------- SINCE 1.11 START ----------
+    private static Field itemField;
+    static
+    {
+        try
+        {
+            itemField = net.minecraft.server.v#MC_VERSION#.TileEntityBrewingStand.class.getDeclaredField("items");
+            itemField.setAccessible(true);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    ---------- SINCE 1.11 END ----------
+
     public VTEBrewingstand(VPack vpack)
     {
         super();
+        ---------- PRE 1.11 START ----------
         items = getContents();
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        items = new ItemStack[5];
+        try
+        {
+            itemField.set(this, new ProxyList<ItemStack>(items, #F_ITEMSTACK_NULL#));
+        }
+        catch(Exception e)
+        {
+            throw new UndeclaredThrowableException(e);
+        }
+        ---------- SINCE 1.11 END ----------
         this.vpack = vpack;
         this.bukkitInv = new CraftInventoryBrewer(this);
         link = 0;
@@ -122,19 +153,36 @@ public class VTEBrewingstand extends TileEntityBrewingStand
             {
                 myBrewTime = 400.0D;
             }
-            ---------- SINCE 1.9 START ----------
             // Consume fuel if necessary
+            ---------- SINCE 1.9 START ----------
+            ---------- PRE 1.11 START ----------
             if(blazeTime <= 0)
             {
                 blazeTime(blazeTime + 20);
                 items[4].count--;
-                // Let 0 be null
                 if(items[4].count <= 0)
+                // Let 0 be null
                 {
                     items[4] = null;
                 }
             }
+            // Nesting is just ugly
+            ---------- PRE 1.11 END ----------
             ---------- SINCE 1.9 END ----------
+
+            ---------- SINCE 1.11 START ----------
+            if(blazeTime <= 0)
+            {
+                blazeTime(blazeTime + 20);
+                int count = items[4].getCount() - 1;
+                items[4].setCount(count);
+                // Let 0 be null
+                if(count <= 0)
+                {
+                    items[4] = null;
+                }
+            }
+            ---------- SINCE 1.11 END ----------
         }
         // If we can't brew, we should reset the brewing time
         else
@@ -302,7 +350,12 @@ public class VTEBrewingstand extends TileEntityBrewingStand
 
     private boolean canBrew()
     {
+        ---------- PRE 1.11 START ----------
         if((items[3] == null) || (items[3].count <= 0) || !isIngredient(items[3]))
+        ---------- PRE 1.11 END ----------
+        ---------- SINCE 1.11 START ----------
+        if((items[3] == null) || (items[3].getCount() <= 0) || !isIngredient(items[3]))
+        ---------- SINCE 1.11 END ----------
         {
             return false;
         }
@@ -371,9 +424,16 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         // Or not?
         else
         {
+            ---------- PRE 1.11 START ----------
             items[3].count--;
-            // Let 0 be null
             if(items[3].count <= 0)
+            ---------- PRE 1.11 END ----------
+            ---------- SINCE 1.11 START ----------
+            int count = items[3].getCount() - 1;
+            items[3].setCount(count);
+            if(count <= 0)
+            ---------- SINCE 1.11 END ----------
+            // Let 0 be null
             {
                 items[3] = null;
             }
@@ -382,7 +442,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
 
     private boolean isIngredient(ItemStack item)
     {
-        if(item == null)
+        if(item == null || item == #F_ITEMSTACK_NULL#)
         {
             return false;
         }
@@ -392,7 +452,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand
 
     private boolean matchesResult(ItemStack item, ItemStack ingredient)
     {
-        return (item != null) && !Util.areEqual(item, processItem(item, ingredient));
+        return item != null && item != #F_ITEMSTACK_NULL# && !Util.areEqual(item, processItem(item, ingredient));
     }
 
     private boolean isBrewable(ItemStack item, ItemStack ingredient)
@@ -428,13 +488,13 @@ public class VTEBrewingstand extends TileEntityBrewingStand
         return true;
         ---------- PRE 1.9 END ----------
         ---------- SINCE 1.9 START ----------
-        return item == null ? false : PotionBrewer.#FIELD_POTIONBREWER_3#(item, ingredient);
+        return (item == null || item == #F_ITEMSTACK_NULL#) ? false : PotionBrewer.#FIELD_POTIONBREWER_3#(item, ingredient);
         ---------- SINCE 1.9 END ----------
     }
 
     private double getBrewSpeed(ItemStack item)
     {
-        if(item == null)
+        if(item == null || item == #F_ITEMSTACK_NULL#)
         {
             return 0.0D;
         }
@@ -519,6 +579,11 @@ public class VTEBrewingstand extends TileEntityBrewingStand
     ---------- SINCE 1.9 END ----------
 
     // Compatibility
+    public ItemStack[] #F_GET_RAW_CONTENTS#()
+    {
+        return items;
+    }
+
     public InventoryHolder getOwner()
     {
         return null;
