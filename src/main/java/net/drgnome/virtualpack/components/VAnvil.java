@@ -323,7 +323,7 @@ public class VAnvil extends ContainerAnvil
             if(itemstack1.getCount() == 0)
             ---------- SINCE 1.11 END ----------
             {
-                slot.set((ItemStack) null);
+                slot.set((ItemStack)#F_ITEMSTACK_NULL#);
             }
             else
             {
