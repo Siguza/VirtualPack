@@ -401,7 +401,11 @@ public class VAnvil extends ContainerAnvil
     ---------- SINCE 1.9 START ----------
     public CraftInventoryView getBukkitView()
     {
-        return new CraftInventoryView(_player.getBukkitEntity(), new CraftInventoryAnvil(null, VAnvil.#FIELD_CONTAINERANVIL_1#(this), getInv("#FIELD_CONTAINERANVIL_2#")), this);
+        return new CraftInventoryView(_player.getBukkitEntity(), new CraftInventoryAnvil(null, VAnvil.#FIELD_CONTAINERANVIL_1#(this), getInv("#FIELD_CONTAINERANVIL_2#")
+            ---------- SINCE 1.11 START ----------
+            , this
+            ---------- SINCE 1.11 END ----------
+        ), this);
     }
     ---------- SINCE 1.9 END ----------
 }

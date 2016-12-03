@@ -404,7 +404,11 @@ public class VTEBrewingstand extends TileEntityBrewingStand implements VIInvento
             int mode = Config.getInt("brewevent.mode");
             if(mode > 0)
             {
-                BrewEvent event = new BrewEvent(mode > 1 ? world.getWorld().getBlockAt(0, 0, 0) : null, this.bukkitInv);
+                BrewEvent event = new BrewEvent(mode > 1 ? world.getWorld().getBlockAt(0, 0, 0) : null, this.bukkitInv
+                    ---------- SINCE 1.11 START ----------
+                    , blazeTime
+                    ---------- SINCE 1.11 END ----------
+                );
                 Bukkit.getPluginManager().callEvent(event);
                 if(event.isCancelled() && !Config.bool("brewevent.ignorecancelled"))
                 {
