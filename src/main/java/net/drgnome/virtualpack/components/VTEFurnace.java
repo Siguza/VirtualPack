@@ -469,7 +469,7 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
             {
                 itemstack = contents[i];
                 contents[i] = null;
-                return itemstack;
+                return itemstack == null ? #F_ITEMSTACK_NULL# : itemstack;
             }
             else
             {
@@ -483,7 +483,7 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
                 {
                     contents[i] = null;
                 }
-                return itemstack;
+                return itemstack == null ? #F_ITEMSTACK_NULL# : itemstack;
             }
         }
         else
@@ -498,7 +498,7 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
         {
             ItemStack itemstack = contents[i];
             contents[i] = null;
-            return itemstack;
+            return itemstack == null ? #F_ITEMSTACK_NULL# : itemstack;
         }
         else
         {

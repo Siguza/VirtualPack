@@ -550,7 +550,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand implements VIInvento
         return getBrewResult(potion, ingredient);
         ---------- PRE 1.9 END ----------
         ---------- SINCE 1.9 START ----------
-        return PotionBrewer.#FIELD_POTIONBREWER_4#(ingredient, potion);
+        return PotionBrewer.#FIELD_POTIONBREWER_4#(ingredient == null ? #F_ITEMSTACK_NULL# : ingredient, potion == null ? #F_ITEMSTACK_NULL# : potion);
         ---------- SINCE 1.9 END ----------
     }
 
@@ -617,7 +617,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand implements VIInvento
         return item.getItem().#FIELD_ITEM_3#(item);
         ---------- PRE 1.9 END ----------
         ---------- SINCE 1.9 START ----------
-        return PotionBrewer.#FIELD_POTIONBREWER_2#(item);
+        return PotionBrewer.#FIELD_POTIONBREWER_2#(item == null ? #F_ITEMSTACK_NULL# : item);
         ---------- SINCE 1.9 END ----------
     }
 }

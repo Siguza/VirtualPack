@@ -253,7 +253,7 @@ public class VAnvil extends ContainerAnvil
             {
                 itemstack1 = null;
             }
-            if(itemstack1 != null && itemstack1 == #F_ITEMSTACK_NULL#)
+            if(itemstack1 != null && itemstack1 != #F_ITEMSTACK_NULL#)
             {
                 k = itemstack1.getRepairCost();
                 if((itemstack2 != null && itemstack2 != #F_ITEMSTACK_NULL#) && k < itemstack2.getRepairCost())
@@ -282,7 +282,7 @@ public class VAnvil extends ContainerAnvil
         for(int i = 0; i < VAnvil.#FIELD_CONTAINERANVIL_1#(this).getSize(); ++i)
         {
             ItemStack itemstack = VAnvil.#FIELD_CONTAINERANVIL_1#(this).splitWithoutUpdate(i);
-            if(itemstack != null && itemstack == #F_ITEMSTACK_NULL#)
+            if(itemstack != null && itemstack != #F_ITEMSTACK_NULL#)
             {
                 entityhuman.drop(itemstack, false); // Let's just put some random trues and falses here and there...
             }
