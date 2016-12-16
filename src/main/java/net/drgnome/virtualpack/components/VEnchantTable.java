@@ -10,7 +10,7 @@ import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.enchantment.*;
+//import org.bukkit.event.enchantment.*;
 import org.bukkit.craftbukkit.v#MC_VERSION#.CraftServer;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
 import net.drgnome.virtualpack.util.*;
@@ -64,7 +64,7 @@ public class VEnchantTable extends ContainerEnchantTable
                             this.costs[j] = 0;
                         }
                     }
-                    CraftItemStack item = CraftItemStack.asCraftMirror(itemstack);
+                    /*CraftItemStack item = CraftItemStack.asCraftMirror(itemstack);
                     PrepareItemEnchantEvent event = new PrepareItemEnchantEvent(player, this.getBukkitView(), this.world.getWorld().getBlockAt(0, 0, 0), item, this.costs, bookshelves);
                     event.setCancelled(!itemstack.#FIELD_ITEMSTACK_12#());
                     this.world.getServer().getPluginManager().callEvent(event);
@@ -75,7 +75,7 @@ public class VEnchantTable extends ContainerEnchantTable
                             this.costs[i] = 0;
                         }
                         return;
-                    }
+                    }*/
                     for(j = 0; j < 3; ++j)
                     {
                         if(this.costs[j] > 0)
@@ -151,18 +151,18 @@ public class VEnchantTable extends ContainerEnchantTable
                         ), instance.level);
                     }
                     CraftItemStack item = CraftItemStack.asCraftMirror(itemstack);
-                    EnchantItemEvent event = new EnchantItemEvent((Player)entityhuman.getBukkitEntity(), this.getBukkitView(), this.world.getWorld().getBlockAt(0, 0, 0), item, this.costs[i], enchants, i);
+                    /*EnchantItemEvent event = new EnchantItemEvent((Player)entityhuman.getBukkitEntity(), this.getBukkitView(), this.world.getWorld().getBlockAt(0, 0, 0), item, this.costs[i], enchants, i);
                     this.world.getServer().getPluginManager().callEvent(event);
                     int level = event.getExpLevelCost();
                     if((event.isCancelled() && !Config.bool("events.ignorecancelled")) || (level > entityhuman.expLevel && !playerFree(entityhuman)) || event.getEnchantsToAdd().isEmpty())
                     {
                         return false;
-                    }
+                    }*/
                     if(flag)
                     {
                         itemstack.setItem(Items.ENCHANTED_BOOK);
                     }
-                    for(Map.Entry<org.bukkit.enchantments.Enchantment, Integer> entry : event.getEnchantsToAdd().entrySet())
+                    for(Map.Entry<org.bukkit.enchantments.Enchantment, Integer> entry : /*event.getEnchantsToAdd().entrySet()*/ enchants.entrySet())
                     {
                         try
                         {
@@ -183,7 +183,7 @@ public class VEnchantTable extends ContainerEnchantTable
                         }
                         catch(IllegalArgumentException e)
                         {
-                            /* Just swallow invalid enchantments */
+                            // Just swallow invalid enchantments
                         }
                     }
                     entityhuman.#FIELD_ENTITYHUMAN_1#(j);

@@ -10,7 +10,7 @@ import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.event.inventory.BrewEvent;
+//import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftInventoryBrewer;
 import org.bukkit.entity.HumanEntity;
@@ -401,7 +401,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand implements VIInvento
         for(int i = 0; i < 3; i++)
         {
             // CraftBukkit events :D
-            int mode = Config.getInt("brewevent.mode");
+            /*int mode = Config.getInt("brewevent.mode");
             if(mode > 0)
             {
                 BrewEvent event = new BrewEvent(mode > 1 ? world.getWorld().getBlockAt(0, 0, 0) : null, this.bukkitInv
@@ -414,7 +414,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand implements VIInvento
                 {
                     return;
                 }
-            }
+            }*/
             items[i] = processItem(items[i], ingredient);
         }
         ---------- SINCE 1.9 START ----------
