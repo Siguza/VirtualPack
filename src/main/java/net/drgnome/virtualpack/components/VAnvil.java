@@ -51,6 +51,7 @@ public class VAnvil extends ContainerAnvil
 
     public void #FIELD_CONTAINERANVIL_4#()
     {
+        boolean free = VAnvil.playerFree(_player);
         final int maxLevel = Config.getInt(_player.getBukkitEntity(), "tools", "anvil", "maxlevel", Config.MODE_MAX);
         IInventory invG = getInv("#FIELD_CONTAINERANVIL_2#");
         IInventory invH = VAnvil.#FIELD_CONTAINERANVIL_1#(this);
@@ -74,6 +75,14 @@ public class VAnvil extends ContainerAnvil
         else
         {
             ItemStack itemstack1 = itemstack.cloneItemStack();
+
+            ---------- SINCE 1.11.2 START ----------
+            if(itemstack1.getCount() > 1 && !free && !(itemstack1.getItem() instanceof ItemNameTag))
+            {
+               itemstack1.setCount(1);
+            }
+            ---------- SINCE 1.11.2 END ----------
+
             ItemStack itemstack2 = invH.getItem(1);
             Map map = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_3#(itemstack1);
             boolean flag7 = false;
@@ -136,6 +145,10 @@ public class VAnvil extends ContainerAnvil
                     }
                     Map map1 = EnchantmentManager.#FIELD_ENCHANTMENTMANAGER_3#(itemstack2);
                     Iterator iterator = map1.keySet().iterator();
+                    ---------- SINCE 1.11.2 START ----------
+                    boolean flagx2 = false;
+                    boolean flagx3 = false;
+                    ---------- SINCE 1.11.2 END ----------
                     while(iterator.hasNext())
                     {
                         ---------- PRE 1.9 START ----------
@@ -152,7 +165,7 @@ public class VAnvil extends ContainerAnvil
                             int l1 = (Integer)map1.get(key);
                             l1 = (j1 == l1) ? (l1 + 1) : Math.max(l1, j1);
                             boolean flag8 = enchantment.canEnchant(itemstack);
-                            if(playerFree(_player) || itemstack.getItem() == Items.ENCHANTED_BOOK)
+                            if(free || itemstack.getItem() == Items.ENCHANTED_BOOK)
                             {
                                 flag8 = true;
                             }
@@ -175,6 +188,9 @@ public class VAnvil extends ContainerAnvil
                             }
                             if(flag8)
                             {
+                                ---------- SINCE 1.11.2 START ----------
+                                flagx2 = true;
+                                ---------- SINCE 1.11.2 END ----------
                                 if(l1 > enchantment.getMaxLevel())
                                 {
                                     l1 = enchantment.getMaxLevel();
@@ -221,8 +237,22 @@ public class VAnvil extends ContainerAnvil
                                 }
                                 i += k2 * l1;
                             }
+                            ---------- SINCE 1.11.2 START ----------
+                            else
+                            {
+                                flagx3 = true;
+                            }
+                            ---------- SINCE 1.11.2 END ----------
                         }
                     }
+                    ---------- SINCE 1.11.2 START ----------
+                    if(flag3 && !flag2)
+                    {
+                        invG.setItem(0, #F_ITEMSTACK_NULL#);
+                        #FIELD_CONTAINERANVIL_5# = 0;
+                        return;
+                    }
+                    ---------- SINCE 1.11.2 END ----------
                 }
             }
             if(StringUtils.isBlank(_itemName))
@@ -249,7 +279,7 @@ public class VAnvil extends ContainerAnvil
             {
                 #FIELD_CONTAINERANVIL_5# = maxLevel - 1;
             }
-            if(#FIELD_CONTAINERANVIL_5# >= maxLevel && !playerFree(_player))
+            if(#FIELD_CONTAINERANVIL_5# >= maxLevel && !free)
             {
                 itemstack1 = null;
             }
@@ -398,14 +428,24 @@ public class VAnvil extends ContainerAnvil
         return (entityhuman.abilities.canInstantlyBuild || Perm.has(entityhuman.world.getWorld().getName(), (Player)entityhuman.getBukkitEntity(), "vpack.use.anvil.free"));
     }
 
+    ---------- SINCE 1.11 START ----------
+    private CraftInventory getCraftInventory()
+    {
+        return new CraftInventoryAnvil(null, VAnvil.#FIELD_CONTAINERANVIL_1#(this), getInv("#FIELD_CONTAINERANVIL_2#"), this);
+    }
+    ---------- SINCE 1.11 END ----------
+
     ---------- SINCE 1.9 START ----------
+    ---------- PRE 1.11 START ----------
+    private CraftInventory getCraftInventory()
+    {
+        return new CraftInventoryAnvil(null, VAnvil.#FIELD_CONTAINERANVIL_1#(this), getInv("#FIELD_CONTAINERANVIL_2#"));
+    }
+    ---------- PRE 1.11 END ----------
+
     public CraftInventoryView getBukkitView()
     {
-        return new CraftInventoryView(_player.getBukkitEntity(), new CraftInventoryAnvil(null, VAnvil.#FIELD_CONTAINERANVIL_1#(this), getInv("#FIELD_CONTAINERANVIL_2#")
-            ---------- SINCE 1.11 START ----------
-            , this
-            ---------- SINCE 1.11 END ----------
-        ), this);
+        return new CraftInventoryView(_player.getBukkitEntity(), getCraftInventory(), this);
     }
     ---------- SINCE 1.9 END ----------
 }
