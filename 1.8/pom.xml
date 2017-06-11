@@ -185,6 +185,10 @@
                                     <token>#F_SLOT_RETURN#</token> <!--  -->
                                     <value>void</value>
                                 </replacement>
+                                <replacement>
+                                    <token>#F_ENCHANTEDBOOK_OBJ#</token> <!-- object on which method are invoked -->
+                                    <value>Items.ENCHANTED_BOOK</value>
+                                </replacement>
                                 <!-- Two -->
                                 <replacement>
                                     <token>#FIELD_BLOCK_1#</token> <!-- (float)Block -->
@@ -553,6 +557,22 @@
                                 </replacement>
                                 <replacement>
                                     <token>---------- SINCE 1.11.2 END ----------</token>
+                                    <value>*/</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.12 START ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.12 END ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.12 START ----------</token>
+                                    <value>/*</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.12 END ----------</token>
                                     <value>*/</value>
                                 </replacement>
                             </replacements>

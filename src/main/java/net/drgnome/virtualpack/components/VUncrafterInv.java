@@ -45,8 +45,15 @@ public class VUncrafterInv extends VInv implements VProcessing
     public static void init()
     {
         ArrayList<VRecipe> list = new ArrayList<VRecipe>();
-        List<IRecipe> mcList = (List<IRecipe>)CraftingManager.getInstance().getRecipes();
-        for(IRecipe recipe : mcList)
+        outer:
+        for(IRecipe recipe :
+            ---------- PRE 1.12 START ----------
+            (List<IRecipe>)CraftingManager.getInstance().getRecipes()
+            ---------- PRE 1.12 END ----------
+            ---------- SINCE 1.12 START ----------
+            (RegistryMaterials<MinecraftKey, IRecipe>)CraftingManager.recipes
+            ---------- SINCE 1.12 END ----------
+        )
         {
             ItemStack result = recipe.#FIELD_IRECIPE_1#(); // Derpnote
             ---------- PRE 1.11 START ----------
@@ -58,21 +65,57 @@ public class VUncrafterInv extends VInv implements VProcessing
             {
                 continue;
             }
-            ItemStack[] ingredients;
+            Object ingredients;
             if(recipe instanceof ShapelessRecipes)
             {
-                ingredients = ((List<ItemStack>)access(0, recipe)).toArray(new ItemStack[0]);
+                ingredients = access(0, recipe);
             }
             else if(recipe instanceof ShapedRecipes)
             {
-                ingredients = (ItemStack[])access(1, recipe);
+                ingredients = access(1, recipe);
             }
             else
             {
                 _log.warning("[VirtualPack] Uncrafter: Skipping unknown recipe type: " + recipe.getClass().getName());
                 continue;
             }
-            list.add(new VRecipe(ingredients, result));
+            ItemStack[] arr;
+            if(ingredients instanceof ItemStack[])
+            {
+                arr = (ItemStack[])ingredients;
+            }
+            else if(ingredients instanceof List)
+            {
+                ArrayList<ItemStack> ing = new ArrayList<ItemStack>();
+                for(Object stack : (List)ingredients)
+                {
+                    if(stack instanceof ItemStack)
+                    {
+                        ing.add((ItemStack)stack);
+                    }
+                    ---------- SINCE 1.12 START ----------
+                    else if(stack instanceof RecipeItemStack)
+                    {
+                        if(((RecipeItemStack)stack).choices.length > 0)
+                        {
+                            ing.add(((RecipeItemStack)stack).choices[0]);
+                        }
+                    }
+                    ---------- SINCE 1.12 END ----------
+                    else
+                    {
+                        _log.warning("[VirtualPack] Uncrafter: Skipping recipe with unknown ingredient: " + stack.getClass().getName());
+                        continue outer;
+                    }
+                }
+                arr = ing.toArray(new ItemStack[0]);
+            }
+            else
+            {
+                _log.warning("[VirtualPack] Uncrafter: Skipping recipe with unknown ingredients type: " + ingredients.getClass().getName());
+                continue;
+            }
+            list.add(new VRecipe(arr, result));
         }
         _recipes = list.toArray(new VRecipe[0]);
         Arrays.sort(_recipes);

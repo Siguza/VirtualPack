@@ -91,7 +91,7 @@ public class VAnvil extends ContainerAnvil
             int k;
             if(itemstack2 != null && itemstack2 != #F_ITEMSTACK_NULL#)
             {
-                flag7 = itemstack2.getItem() == Items.ENCHANTED_BOOK && Items.ENCHANTED_BOOK.#FIELD_ITEMENCHANTEDBOOK_2#(itemstack2).size() > 0;
+                flag7 = itemstack2.getItem() == Items.ENCHANTED_BOOK && #F_ENCHANTEDBOOK_OBJ#.#FIELD_ITEMENCHANTEDBOOK_2#(itemstack2).size() > 0;
                 int l;
                 int i1;
                 if(itemstack1.#FIELD_ITEMSTACK_10#() && itemstack1.getItem().#FIELD_ITEM_6#(itemstack, itemstack2))

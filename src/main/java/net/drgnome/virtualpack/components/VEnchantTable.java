@@ -174,7 +174,7 @@ public class VEnchantTable extends ContainerEnchantTable
                                 {
                                     continue;
                                 }
-                                Items.ENCHANTED_BOOK.#FIELD_ITEMENCHANTEDBOOK_3#(itemstack, new WeightedRandomEnchant(ench, entry.getValue()));
+                                #F_ENCHANTEDBOOK_OBJ#.#FIELD_ITEMENCHANTEDBOOK_3#(itemstack, new WeightedRandomEnchant(ench, entry.getValue()));
                             }
                             else
                             {
@@ -186,7 +186,12 @@ public class VEnchantTable extends ContainerEnchantTable
                             // Just swallow invalid enchantments
                         }
                     }
+                    ---------- PRE 1.12 START ----------
                     entityhuman.#FIELD_ENTITYHUMAN_1#(j);
+                    ---------- PRE 1.12 END ----------
+                    ---------- SINCE 1.12 START ----------
+                    entityhuman.#FIELD_ENTITYHUMAN_1#(itemstack, j);
+                    ---------- SINCE 1.12 END ----------
                     if(!playerFree(entityhuman))
                     {
                         ---------- PRE 1.11 START ----------
