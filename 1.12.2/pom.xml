@@ -1,0 +1,618 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.drgnome.virtualpack</groupId>
+    <artifactId>VirtualPack</artifactId>
+    <version>2.8.14</version>
+    <name>VirtualPack</name>
+    <description>Bukkit Plugin "VirtualPack".</description>
+    <url>http://dev.bukkit.org/server-mods/virtualpack/</url>
+    <scm>
+        <url>https://github.com/Siguza/VirtualPack</url>
+        <connection>scm:git:git://github.com:Siguza/VirtualPack.git</connection>
+        <developerConnection>scm:git:git@github.com:Siguza/VirtualPack.git</developerConnection>
+    </scm>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <repositories>
+        <!-- actual repos -->
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
+        <repository>
+            <id>sk89q-repo</id>
+            <url>http://maven.sk89q.com/repo/</url>
+        </repository>
+        <repository>
+            <id>comphenix-repo</id>
+            <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+        </repository>
+        <!-- this prevents us from connecting to the bukkit repo (which is down) -->
+        <repository>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/content/groups/public</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.12-R1.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/spigot.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>Vault</artifactId>
+            <version>1.6.6</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>6.1.4-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib-Spigot</artifactId>
+            <version>3.6.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <defaultGoal>clean package</defaultGoal>
+        <finalName>${project.artifactId}</finalName>
+        <sourceDirectory>${project.basedir}/src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                                        <artifactId>replacer</artifactId>
+                                        <versionRange>1.5.1</versionRange>
+                                        <goals>
+                                            <goal>replace</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute></execute>
+                                    </action>
+                                    <comment>source: </comment>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                  </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/src</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../src</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.1</version>
+                <executions>
+                    <execution>
+                        <id>derp</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <basedir>${project.basedir}</basedir>
+                            <includes>
+                                <include>src/**/*.*</include>
+                            </includes>
+                            <replacements>
+                                <replacement>
+                                    <token>#VERSION#</token>
+                                    <value>${project.version}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#MC_VERSION#</token>
+                                    <value>1_12_R1</value>
+                                </replacement>
+                                <!-- One -->
+                                <replacement>
+                                    <token>#F_ANVIL_STEPSOUND#</token> <!-- [StepSound] -->
+                                    <value>SoundEffectType.k</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_INVCLICK_META#</token> <!--  -->
+                                    <value>InventoryClickType</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_INVCLICK_PICKUP#</token> <!--  -->
+                                    <value>InventoryClickType.PICKUP</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_INVCLICK_QUICK_MOVE#</token> <!--  -->
+                                    <value>InventoryClickType.QUICK_MOVE</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_INVCLICK_SWAP#</token> <!--  -->
+                                    <value>InventoryClickType.SWAP</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_BREW_NUMSLOTS#</token> <!--  -->
+                                    <value>5</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_SETPROPERTY#</token> <!--  -->
+                                    <value>setProperty</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_ITEMSTACK_NULL#</token> <!--  -->
+                                    <value>ItemStack.a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_GET_RAW_CONTENTS#</token> <!--  -->
+                                    <value>getRawContents</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_NEW_NONNULLLIST#</token> <!--  -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_INV_IS_EMPTY#</token> <!--  -->
+                                    <value>x_</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_SLOT_RETURN#</token> <!--  -->
+                                    <value>ItemStack</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#F_ENCHANTEDBOOK_OBJ#</token> <!-- object on which method are invoked -->
+                                    <value>ItemEnchantedBook</value>
+                                </replacement>
+                                <!-- Two -->
+                                <replacement>
+                                    <token>#FIELD_BLOCK_1#</token> <!-- (float)Block -->
+                                    <value>c</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_BLOCK_2#</token> <!-- (SoundEffectType)Block -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_BLOCK_3#</token> <!-- (float)Block -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_BLOCK_4#</token> <!-- (String)Block -->
+                                    <value>c</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_BLOCK_6#</token> <!-- (I, String, Block)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_1#</token> <!-- ()List -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_2#</token> <!-- [List] -->
+                                    <value>items</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_3#</token> <!-- [List] -->
+                                    <value>slots</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_4#</token> <!-- (Slot)Slot -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_5#</token> <!-- (EntityHuman)V -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_6#</token> <!-- (IInventory)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_8#</token> <!-- (ItemStack, int, int, bool)Z -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_9#</token> <!-- ()V -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_10#</token> <!-- (EntityHuman, int)ItemStack -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINER_11#</token> <!-- (int, int, InventoryClickType, EntityHuman)ItemStack [clickItem] -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_1#</token> <!-- static (ContainerAnvil)IInventory -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_2#</token> <!-- [IInventory] -->
+                                    <value>g</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_3#</token> <!-- [IInventory] -->
+                                    <value>h</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_4#</token> <!-- ()V -->
+                                    <value>e</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_5#</token> <!-- [int] -->
+                                    <value>levelCost</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_6#</token> <!-- (String)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERANVIL_7#</token> <!-- static (ContainerAnvil)I -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERCHEST_1#</token> <!-- ()IInventory -->
+                                    <value>e</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_2#</token> <!-- (EntityHuman, int)Z -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_3#</token> <!-- [int] -->
+                                    <value>f</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_4#</token> <!-- ()V -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_IDS#</token> <!-- [int[]] -->
+                                    <value>h</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_CONTAINERENCHANTTABLE_LEVELS#</token> <!-- [int[]] -->
+                                    <value>i</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENT_1#</token> <!-- (Enchantment)Z -->
+                                    <value>c</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENT_GETBYID#</token> <!-- (int)Enchantment -->
+                                    <value>c</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENT_GETRARITY#</token> <!-- ()Rarity -->
+                                    <value>e</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENTMANAGER_1#</token> <!-- static (Random, int, int, ItemStack)I -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENTMANAGER_3#</token> <!-- static (ItemStack)Map -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENTMANAGER_4#</token> <!-- static (Map, ItemStack)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENCHANTMENTMANAGER_ENCHANT#</token> <!-- static (Random, ItemStack, int, bool)List<WeightedRandomEnchant> -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENTITYHUMAN_1#</token> <!-- (I)V [levelDown] -->
+                                    <value>enchantDone</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENTITYHUMAN_2#</token> <!-- (Statistic)V [increaseStatistic] -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ENTITYHUMAN_3#</token> <!-- ()I [getEnchantingSeed] -->
+                                    <value>dg</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_1#</token> <!-- (EntityHuman)Z -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_3#</token> <!-- (int, ItemStack)Z -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_5#</token> <!-- (int, int)V -->
+                                    <value>setProperty</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IINVENTORY_6#</token> <!-- ()I -->
+                                    <value>h</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_IRECIPE_1#</token> <!-- ()ItemStack -->
+                                    <value>b</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_1#</token> <!-- ()Z -->
+                                    <value>s</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_2#</token> <!-- ()Item -->
+                                    <value>q</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_5#</token> <!-- ()Z [hasSubTypes]-->
+                                    <value>k</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_6#</token> <!-- (ItemStack, ItemStack)Z -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_7#</token> <!-- static (Item)I -->
+                                    <value>getId</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEM_8#</token> <!-- static (int)Item -->
+                                    <value>getById</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMENCHANTEDBOOK_2#</token> <!-- static (ItemStack)NBTTagList -->
+                                    <value>h</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMENCHANTEDBOOK_3#</token> <!-- (ItemStack, WeightedRandomEnchant)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_2#</token> <!-- ()Z -->
+                                    <value>y</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_3#</token> <!-- (int)ItemStack -->
+                                    <value>cloneAndSubtract</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_5#</token> <!-- ()I -->
+                                    <value>i</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_6#</token> <!-- ()I -->
+                                    <value>k</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_9#</token> <!-- (String)ItemStack -->
+                                    <value>g</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_10#</token> <!-- ()Z -->
+                                    <value>f</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_11#</token> <!-- ()V -->
+                                    <value>s</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_12#</token> <!-- ()Z -->
+                                    <value>canEnchant</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_ITEMSTACK_GETDAMAGE#</token> <!-- ()I -->
+                                    <value>i</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#</token> <!-- static (InputStream)NBTTagCompound -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#</token> <!-- static (NBTTagCompound, OutputStream)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NBTTAGCOMPOUND_1#</token> <!-- ()Set [keySet] -->
+                                    <value>c</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NBTTAGLIST_1#</token> <!-- (I)NBTBase [get] -->
+                                    <value>i</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_POTIONBREWER_2#</token> <!-- static (ItemStack)Z -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_POTIONBREWER_3#</token> <!-- static (ItemStack, ItemStack)Z -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_POTIONBREWER_4#</token> <!-- static (ItemStack, ItemStack)ItemStack -->
+                                    <value>d</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_REGISTRYMATERIALS_1#</token> <!-- (int, String, Object)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_1#</token> <!-- ()Z -->
+                                    <value>hasItem</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_2#</token> <!-- (ItemStack, ItemStack)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_3#</token> <!-- ()V -->
+                                    <value>f</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_4#</token> <!-- (EntityHuman)Z -->
+                                    <value>isAllowed</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_SLOT_5#</token> <!-- (EntityHuman, ItemStack)V -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_STATISTICSLIST_1#</token> <!-- [Statistic] (itemEnchanted) -->
+                                    <value>Y</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_TILEENTITYFURNACE_1#</token> <!-- (ItemStack)I [getBurnTime] -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_NBTREADLIMITER_1#</token> <!-- [NBTReadLimiter] -->
+                                    <value>a</value>
+                                </replacement>
+                                <replacement>
+                                    <token>#FIELD_WORLD_1#</token> <!-- [boolean] -->
+                                    <value>isClientSide</value>
+                                </replacement>
+                                <!-- block comment hacks -->
+                                <replacement>
+                                    <token>---------- SINCE 1.8.3 START ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.8.3 END ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.9 START ----------</token>
+                                    <value>/*</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.9 END ----------</token>
+                                    <value>*/</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.9 START ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.9 END ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.11 START ----------</token>
+                                    <value>/*</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.11 END ----------</token>
+                                    <value>*/</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.11 START ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.11 END ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.11.2 START ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.11.2 END ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.12 START ----------</token>
+                                    <value>/*</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.12 END ----------</token>
+                                    <value>*/</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.12 START ----------</token>
+                                    <value> </value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.12 END ----------</token>
+                                    <value> </value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>clean</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="${project.basedir}/src"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
