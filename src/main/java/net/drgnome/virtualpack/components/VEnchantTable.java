@@ -76,6 +76,18 @@ public class VEnchantTable extends ContainerEnchantTable
                         }
                         return;
                     }*/
+                    if(!itemstack.#FIELD_ITEMSTACK_12#())
+                    {
+                        for(i = 0; i < 3; ++i)
+                        {
+                            this.costs[i] = 0;
+                            this.#FIELD_CONTAINERENCHANTTABLE_IDS#[i] = -1;
+                            ---------- SINCE 1.9 START ----------
+                            this.#FIELD_CONTAINERENCHANTTABLE_LEVELS#[i] = -1;
+                            ---------- SINCE 1.9 END ----------
+                        }
+                        return;
+                    }
                     for(j = 0; j < 3; ++j)
                     {
                         if(this.costs[j] > 0)
