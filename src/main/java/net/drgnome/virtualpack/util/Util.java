@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.zip.*;
 import java.math.BigDecimal;
 import java.lang.reflect.*;
-import javax.xml.bind.DatatypeConverter;
 import org.json.simple.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Bukkit;
@@ -361,7 +360,7 @@ public class Util
         }
         try
         {
-            net.minecraft.server.v#MC_VERSION#.NBTTagCompound nbt = NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(string)));
+            net.minecraft.server.v#MC_VERSION#.NBTTagCompound nbt = NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(new ByteArrayInputStream(b64de(string)));
             ---------- PRE 1.11 START ----------
             return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(nbt);
             ---------- PRE 1.11 END ----------
@@ -387,7 +386,7 @@ public class Util
         {
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_2#(item.save(new NBTTagCompound()), b);
-            return DatatypeConverter.printBase64Binary(b.toByteArray());
+            return b64en(b.toByteArray());
         }
         catch(Exception e)
         {
@@ -538,14 +537,26 @@ public class Util
         return true;
     }
 
+    public static String b64en(byte[] b)
+    {
+        //return javax.xml.bind.DatatypeConverter.printBase64Binary(b);
+        return java.util.Base64.getEncoder().encodeToString(b);
+    }
+
+    public static byte[] b64de(String s)
+    {
+        //return javax.xml.bind.DatatypeConverter.parseBase64Binary(s);
+        return java.util.Base64.getDecoder().decode(s);
+    }
+
     public static String base64en(String string)
     {
-        return DatatypeConverter.printBase64Binary(string.getBytes());
+        return b64en(string.getBytes());
     }
 
     public static String base64de(String string)
     {
-        return new String(DatatypeConverter.parseBase64Binary(string));
+        return new String(b64de(string));
     }
 
     public static String[][] readIni(File file) throws FileNotFoundException, IOException
