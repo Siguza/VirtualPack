@@ -303,13 +303,16 @@ public class VPlugin extends JavaPlugin implements Runnable
         {
             saveUserData();
         }
-        try
+        if(_saveThread != null)
         {
-            _saveThread.join();
-        }
-        catch(InterruptedException e)
-        {
-            _log.log(Level.WARNING, "[VirtualPack] Waiting for ThreadSave interrupted: " + e.getMessage());
+            try
+            {
+                _saveThread.join();
+            }
+            catch(InterruptedException e)
+            {
+                _log.log(Level.WARNING, "[VirtualPack] Waiting for ThreadSave interrupted: " + e.getMessage());
+            }
         }
     }
 
