@@ -205,9 +205,16 @@ public class VUncrafterInv extends VInv implements VProcessing
         return null;
     }
 
+    private boolean disallowDecorated(ItemStack item)
+    {
+        NBTTagCompound tag = item.getTag();
+        return tag != null && tag.hasKey("display") && !Config.bool("uncraft-decorated");
+    }
+
     private void processSlot(int slot)
     {
-        if(contents[slot] == null || (contents[slot].getItem().usesDurability() && (contents[slot].getData() != 0)) || Config.isBlacklisted(_player.world.getWorld().getName(), (Player)_player.getBukkitEntity(), "uncrafter", CraftItemStack.asBukkitCopy(contents[slot])))
+        if(contents[slot] == null || (contents[slot].getItem().usesDurability() && (contents[slot].getData() != 0)) || disallowDecorated(contents[slot]) || Config.isBlacklisted(_player.world.getWorld().getName(), (Player)_player.getBukkitEntity(), "uncrafter", CraftItemStack.asBukkitCopy(contents[slot]))
+        )
         {
             return;
         }

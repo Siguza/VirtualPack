@@ -128,6 +128,7 @@ public class ConfigProxy
         setDef("brewevent.mode", "1");
         setDef("brewevent.ignorecancelled", "false");
         setDef("allow-creative", "false");
+        setDef("uncraft-decorated", "true");
         setDef("uncraft-enchanted", "true");
         setDef("events.use", "true");
         setDef("events.ignorecancelled", "false");
