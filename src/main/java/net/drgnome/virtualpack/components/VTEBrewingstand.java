@@ -26,7 +26,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand implements VIInvento
     private double myBrewTime;
     private double brewSpeed;
     private int blazeTime;
-    private int lastID;
+    private Item lastID;
     private long lastCheck;
     private ItemStack[] items;
 
@@ -51,7 +51,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand implements VIInvento
     {
         super();
         ---------- PRE 1.11 START ----------
-        items = getContents();
+        items = super.getContents();
         ---------- PRE 1.11 END ----------
         ---------- SINCE 1.11 START ----------
         items = new ItemStack[5];
@@ -124,7 +124,7 @@ public class VTEBrewingstand extends TileEntityBrewingStand implements VIInvento
     public void tick(int ticks)
     {
         checkLink();
-        int newID = items[3] == null ? 0 : Item.#FIELD_ITEM_7#(items[3].getItem());
+        Item newID = (items[3] == null || items[3] == #F_ITEMSTACK_NULL#) ? null : items[3].getItem();
         // Item changed?
         if(newID != lastID)
         {

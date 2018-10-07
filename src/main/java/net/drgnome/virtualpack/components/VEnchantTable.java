@@ -23,6 +23,32 @@ public class VEnchantTable extends ContainerEnchantTable
     private final Random rand = new Random();
     private final int bookshelves;
 
+    ---------- SINCE 1.9 START ----------
+    ---------- PRE 1.13 START ----------
+    private static int getEnchId(Enchantment ench)
+    {
+        return Enchantment.getId(ench);
+    }
+    ---------- PRE 1.13 END ----------
+    ---------- SINCE 1.9 END ----------
+
+    ---------- SINCE 1.13 START ----------
+    private static int getEnchId(Enchantment ench)
+    {
+        return Enchantment.enchantments.#F_ENCH_GETID#(ench);
+    }
+    ---------- SINCE 1.13 END ----------
+
+    private static org.bukkit.enchantments.Enchantment getBukkitEnch(int id)
+    {
+        ---------- PRE 1.13 START ----------
+        return org.bukkit.enchantments.Enchantment.getById(id);
+        ---------- PRE 1.13 END ----------
+        ---------- SINCE 1.13 START ----------
+        return org.bukkit.enchantments.Enchantment.getByKey(org.bukkit.craftbukkit.v#MC_VERSION#.util.CraftNamespacedKey.fromMinecraft(Enchantment.getId(Enchantment.enchantments.getId(id))));
+        ---------- SINCE 1.13 END ----------
+    }
+
     public VEnchantTable(EntityPlayer player, int bookshelves)
     {
         super(player.inventory, player.world, new BlockPosition(0, 0, 0));
@@ -100,7 +126,7 @@ public class VEnchantTable extends ContainerEnchantTable
                                 this.#FIELD_CONTAINERENCHANTTABLE_IDS#[j] = weightedrandomenchant.enchantment.id | weightedrandomenchant.level << 8;
                                 ---------- PRE 1.9 END ----------
                                 ---------- SINCE 1.9 START ----------
-                                this.#FIELD_CONTAINERENCHANTTABLE_IDS#[j] = Enchantment.getId(weightedrandomenchant.enchantment);
+                                this.#FIELD_CONTAINERENCHANTTABLE_IDS#[j] = getEnchId(weightedrandomenchant.enchantment);
                                 this.#FIELD_CONTAINERENCHANTTABLE_LEVELS#[j] = weightedrandomenchant.level;
                                 ---------- SINCE 1.9 END ----------
                             }
@@ -153,12 +179,13 @@ public class VEnchantTable extends ContainerEnchantTable
                     for(Object obj : list)
                     {
                         WeightedRandomEnchant instance = (WeightedRandomEnchant)obj;
-                        enchants.put(org.bukkit.enchantments.Enchantment.getById(
+
+                        enchants.put(getBukkitEnch(
                             ---------- PRE 1.9 START ----------
                             instance.enchantment.id
                             ---------- PRE 1.9 END ----------
                             ---------- SINCE 1.9 START ----------
-                            Enchantment.getId(instance.enchantment)
+                            getEnchId(instance.enchantment)
                             ---------- SINCE 1.9 END ----------
                         ), instance.level);
                     }
@@ -180,7 +207,12 @@ public class VEnchantTable extends ContainerEnchantTable
                         {
                             if(flag)
                             {
+                                ---------- PRE 1.13 START ----------
                                 int enchantId = entry.getKey().getId();
+                                ---------- PRE 1.13 END ----------
+                                ---------- SINCE 1.13 START ----------
+                                MinecraftKey enchantId = org.bukkit.craftbukkit.v#MC_VERSION#.util.CraftNamespacedKey.toMinecraft(entry.getKey().getKey());
+                                ---------- SINCE 1.13 END ----------
                                 Enchantment ench = Enchantment.#FIELD_ENCHANTMENT_GETBYID#(enchantId);
                                 if(ench == null)
                                 {

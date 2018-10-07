@@ -16,9 +16,15 @@ import static net.drgnome.virtualpack.util.Global.*;
 public class VUncrafterInv extends VInv implements VProcessing
 {
     private static final Field[] _fields = new Field[2];
-    private static VRecipe[] _recipes;
-    private static VRecipe _enchantedBook = new VRecipe(new ItemStack[]{new ItemStack(Item.#FIELD_ITEM_8#(Material.BOOK.getId()), 1, 0)}, new ItemStack(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()), 1, 0), false);;
+    private static VRecipe _enchantedBook = new VRecipe(new ItemStack[]{new ItemStack(Items.BOOK, 1)}, new ItemStack(Items.ENCHANTED_BOOK, 1), false);;
     private final EntityPlayer _player;
+
+    ---------- PRE 1.13 START ----------
+    private static VRecipe[] _recipes;
+    ---------- PRE 1.13 END ----------
+    ---------- SINCE 1.13 START ----------
+    private static HashMap<World, VRecipe[]> _recipeMap = new HashMap<World, VRecipe[]>();
+    ---------- SINCE 1.13 END ----------
 
     static
     {
@@ -44,15 +50,51 @@ public class VUncrafterInv extends VInv implements VProcessing
 
     public static void init()
     {
+        ---------- PRE 1.13 START ----------
+        _recipes = compileRecipes();
+        ---------- PRE 1.13 END ----------
+    }
+
+    private VRecipe[] getRecipes()
+    {
+        ---------- PRE 1.13 START ----------
+        return _recipes;
+        ---------- PRE 1.13 END ----------
+        ---------- SINCE 1.13 START ----------
+        World world = _player.world;
+        VRecipe[] rs = _recipeMap.get(world);
+        if(rs == null)
+        {
+            rs = compileRecipes(world);
+            _recipeMap.put(world, rs);
+        }
+        return rs;
+        ---------- SINCE 1.13 END ----------
+    }
+
+    private static VRecipe[] compileRecipes
+    (
+    ---------- SINCE 1.13 START ----------
+    World world
+    ---------- SINCE 1.13 END ----------
+    )
+    {
         ArrayList<VRecipe> list = new ArrayList<VRecipe>();
         outer:
         for(IRecipe recipe :
             ---------- PRE 1.12 START ----------
             (List<IRecipe>)CraftingManager.getInstance().getRecipes()
             ---------- PRE 1.12 END ----------
+
             ---------- SINCE 1.12 START ----------
+            ---------- PRE 1.13 START ----------
             (RegistryMaterials<MinecraftKey, IRecipe>)CraftingManager.recipes
+            ---------- PRE 1.13 END ----------
             ---------- SINCE 1.12 END ----------
+
+            ---------- SINCE 1.13 START ----------
+            world.#F_WORLD_GETCRAFTINGMANAGER#().recipes.values()
+            ---------- SINCE 1.13 END ----------
         )
         {
             ItemStack result = recipe.#FIELD_IRECIPE_1#(); // Derpnote
@@ -74,6 +116,13 @@ public class VUncrafterInv extends VInv implements VProcessing
             {
                 ingredients = access(1, recipe);
             }
+            ---------- SINCE 1.13 START ----------
+            else if(recipe instanceof FurnaceRecipe)
+            {
+                // Ignore, at least for now
+                continue;
+            }
+            ---------- SINCE 1.13 END ----------
             else
             {
                 _log.warning("[VirtualPack] Uncrafter: Skipping unknown recipe type: " + recipe.getClass().getName());
@@ -117,8 +166,9 @@ public class VUncrafterInv extends VInv implements VProcessing
             }
             list.add(new VRecipe(arr, result));
         }
-        _recipes = list.toArray(new VRecipe[0]);
-        Arrays.sort(_recipes);
+        VRecipe[] recipes = list.toArray(new VRecipe[0]);
+        Arrays.sort(recipes);
+        return recipes;
     }
 
     public VUncrafterInv(EntityPlayer player)
@@ -135,26 +185,37 @@ public class VUncrafterInv extends VInv implements VProcessing
         }
     }
 
+    private static boolean stackMaterialsMatch(ItemStack a, ItemStack b)
+    {
+        return (a.getItem() == b.getItem())
+        ---------- PRE 1.13 START ----------
+        && (a.getData() == b.getData())
+        ---------- PRE 1.13 END ----------
+        ;
+    }
+
     private VRecipe match(ItemStack result)
     {
-        for(int i = 0; i < _recipes.length; i++)
+        VRecipe[] recipes = getRecipes();
+        for(int i = 0; i < recipes.length; i++)
         {
-            ItemStack re = _recipes[i].result;
-            if((Item.#FIELD_ITEM_7#(re.getItem()) != Item.#FIELD_ITEM_7#(result.getItem())) || (re.getData() != result.getData()))
+            ItemStack re = recipes[i].result;
+            if(!stackMaterialsMatch(re, result))
             {
                 continue;
             }
-            return _recipes[i];
+            return recipes[i];
         }
         return null;
     }
 
     private VRecipe exactMatch(ItemStack result)
     {
-        for(int i = 0; i < _recipes.length; i++)
+        VRecipe[] recipes = getRecipes();
+        for(int i = 0; i < recipes.length; i++)
         {
-            ItemStack re = _recipes[i].result;
-            if((Item.#FIELD_ITEM_7#(re.getItem()) != Item.#FIELD_ITEM_7#(result.getItem())) || (re.getData() != result.getData()))
+            ItemStack re = recipes[i].result;
+            if(!stackMaterialsMatch(re, result))
             {
                 continue;
             }
@@ -162,7 +223,7 @@ public class VUncrafterInv extends VInv implements VProcessing
             NBTTagCompound tag2 = result.getTag();
             if((tag1 == null && tag2 == null) || (tag1 != null && tag2 != null && tag1.equals(tag2)))
             {
-                return _recipes[i];
+                return recipes[i];
             }
         }
         return null;
@@ -170,7 +231,7 @@ public class VUncrafterInv extends VInv implements VProcessing
 
     private VRecipe disEntchant(ItemStack result)
     {
-        if(Item.#FIELD_ITEM_7#(result.getItem()) == Material.ENCHANTED_BOOK.getId())
+        if(result.getItem() == Items.ENCHANTED_BOOK)
         {
             return _enchantedBook;
         }
@@ -193,7 +254,7 @@ public class VUncrafterInv extends VInv implements VProcessing
             back[0].getTag().remove("ench");
             for(int i = 0; i < ench.size(); i++)
             {
-                back[i + 1] = new ItemStack(Item.#FIELD_ITEM_8#(Material.ENCHANTED_BOOK.getId()), 1, 0);
+                back[i + 1] = new ItemStack(Items.ENCHANTED_BOOK, 1);
                 NBTTagCompound tag = new NBTTagCompound();
                 NBTTagList list = new NBTTagList();
                 list.add(ench.get(i));
@@ -213,7 +274,7 @@ public class VUncrafterInv extends VInv implements VProcessing
 
     private void processSlot(int slot)
     {
-        if(contents[slot] == null || (contents[slot].getItem().usesDurability() && (contents[slot].getData() != 0)) || disallowDecorated(contents[slot]) || Config.isBlacklisted(_player.world.getWorld().getName(), (Player)_player.getBukkitEntity(), "uncrafter", CraftItemStack.asBukkitCopy(contents[slot]))
+        if(contents[slot] == null || (contents[slot].getItem().usesDurability() && (contents[slot].#F_ITEMSTACK_GETDAMAGE#() != 0)) || disallowDecorated(contents[slot]) || Config.isBlacklisted(_player.world.getWorld().getName(), (Player)_player.getBukkitEntity(), "uncrafter", CraftItemStack.asBukkitCopy(contents[slot]))
         )
         {
             return;
@@ -363,10 +424,10 @@ public class VUncrafterInv extends VInv implements VProcessing
                 ---------- SINCE 1.11 START ----------
                 ingredients[i].setCount(1);
                 ---------- SINCE 1.11 END ----------
-                int data = ingredients[i].getData();
+                int data = ingredients[i].#F_ITEMSTACK_GETDAMAGE#();
                 if((data < 0) || (data >= 0x7FFF))
                 {
-                    ingredients[i].setData(0);
+                    ingredients[i].#F_ITEMSTACK_SETDAMAGE#(0);
                 }
             }
         }
@@ -377,7 +438,11 @@ public class VUncrafterInv extends VInv implements VProcessing
         public int compareTo(VRecipe vr)
         {
             Item it = this.result.getItem();
-            if((Item.#FIELD_ITEM_7#(it) != Item.#FIELD_ITEM_7#(vr.result.getItem())) || (it.#FIELD_ITEM_5#() && (this.result.getData() != vr.result.getData())))
+            if((it != vr.result.getItem())
+            ---------- PRE 1.13 START ----------
+            || (it.#FIELD_ITEM_5#() && (this.result.getData() != vr.result.getData()))
+            ---------- PRE 1.13 END ----------
+            )
             {
                 return 0;
             }

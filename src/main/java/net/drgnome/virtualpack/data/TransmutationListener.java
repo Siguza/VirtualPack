@@ -23,6 +23,7 @@ public class TransmutationListener extends PacketAdapter
 
     public static void register()
     {
+        ---------- PRE 1.13 START ----------
         HashSet<Integer> set = new HashSet<Integer>();
         try
         {
@@ -35,6 +36,10 @@ public class TransmutationListener extends PacketAdapter
             set.addAll(Packets.getClientRegistry().values());
         }
         ProtocolLibrary.getProtocolManager().addPacketListener(new TransmutationListener(set));
+        ---------- PRE 1.13 END ----------
+        ---------- SINCE 1.13 START ----------
+        ProtocolLibrary.getProtocolManager().addPacketListener(new TransmutationListener(com.comphenix.protocol.PacketType.values()));
+        ---------- SINCE 1.13 END ----------
     }
 
     public static void unregister()
@@ -42,10 +47,19 @@ public class TransmutationListener extends PacketAdapter
         ProtocolLibrary.getProtocolManager().removePacketListeners(_plugin);
     }
 
+    ---------- PRE 1.13 START ----------
     public TransmutationListener(Set<Integer> set)
     {
         super(_plugin, ConnectionSide.BOTH, ListenerPriority.HIGHEST, set);
     }
+    ---------- PRE 1.13 END ----------
+
+    ---------- SINCE 1.13 START ----------
+    public TransmutationListener(Iterable<com.comphenix.protocol.PacketType> set)
+    {
+        super(_plugin, ListenerPriority.HIGHEST, set);
+    }
+    ---------- SINCE 1.13 END ----------
 
     public void onPacketReceiving(PacketEvent event)
     {

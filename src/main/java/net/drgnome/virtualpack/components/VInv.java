@@ -281,4 +281,16 @@ public class VInv implements VIInventory
         return isEmpty();
     }
     ---------- SINCE 1.11 END ----------
+
+    ---------- SINCE 1.13 START ----------
+    public IChatBaseComponent getDisplayName()
+    {
+        return getScoreboardDisplayName();
+    }
+
+    public IChatBaseComponent getCustomName()
+    {
+        return getScoreboardDisplayName();
+    }
+    ---------- SINCE 1.13 END ----------
 }

@@ -4,6 +4,7 @@
 
 package net.drgnome.virtualpack.components;
 
+import java.lang.reflect.*;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Material;
@@ -26,12 +27,28 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
     // I'm internally using "myCookTime" to not lose any precision, but for displaying the progress I still have to use "cookTime"
     private double myCookTime = 0D;
     // Call me paranoid, but this has to be checked
-    private int lastID = 0;
+    private Item lastID;
     // Increases performance (or should at least)
     private long lastCheck = 0L;
     ---------- SINCE 1.11 START ----------
     private ProxyList<ItemStack> proxy;
     ---------- SINCE 1.11 END ----------
+
+    ---------- SINCE 1.13 START ----------
+    private static Method fuelTimeMeth;
+    static
+    {
+        try
+        {
+            fuelTimeMeth = TileEntityFurnace.class.getDeclaredMethod("fuelTime", ItemStack.class);
+            fuelTimeMeth.setAccessible(true);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    ---------- SINCE 1.13 END ----------
 
     // New VTE
     public VTEFurnace(VPack vpack)
@@ -55,7 +72,7 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
         {
             contents[i] = Util.stringToItemStack(data[i]);
         }
-        lastID = contents[0] == null ? 0 : Item.#FIELD_ITEM_7#(contents[0].getItem());
+        lastID = (contents[0] == null || contents[0] == #F_ITEMSTACK_NULL#) ? null : contents[0].getItem();
         // If the data array is long enough, we try to parse its entry, and if it's too short or the parsing fails, we'll leave it as it is.
         try
         {
@@ -99,7 +116,7 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
     public void tick(int ticks)
     {
         checkLink();
-        int newID = contents[0] == null ? 0 : Item.#FIELD_ITEM_7#(contents[0].getItem());
+        Item newID = (contents[0] == null || contents[0] == #F_ITEMSTACK_NULL#) ? null : contents[0].getItem();
         // Has the item been changed?
         if(newID != lastID)
         {
@@ -299,14 +316,20 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
         return (bTime() > 0) && (burnSpeed > 0.0D) && canHasBURN();
     }
 
-    private ItemStack getBurnResult(ItemStack item)
+    private ItemStack getBurnResult(ItemStack stack)
     {
-        if(item == null || item == #F_ITEMSTACK_NULL#)
+        if(stack == null || stack == #F_ITEMSTACK_NULL#)
         {
             return null;
         }
         // CUSTOM RECIPE HERE
-        return RecipesFurnace.getInstance().getResult(item); // Derpnote
+        ---------- PRE 1.13 START ----------
+        return RecipesFurnace.getInstance().getResult(stack); // Derpnote
+        ---------- PRE 1.13 END ----------
+        ---------- SINCE 1.13 START ----------
+        FurnaceRecipe recipe = getRecipe(stack);
+        return recipe != null ? recipe.#FIELD_IRECIPE_1#() : #F_ITEMSTACK_NULL#;
+        ---------- SINCE 1.13 END ----------
     }
 
     private double getMeltSpeed(ItemStack item)
@@ -325,10 +348,10 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
         {
             return 0;
         }
-        int i = Item.#FIELD_ITEM_7#(item.getItem());
+        Item type = item.getItem();
         // CUSTOM FUEL HERE
         // Lava should melt 128 items, not 100
-        if(i == Material.LAVA_BUCKET.getId())
+        if(type == Items.LAVA_BUCKET)
         {
             return 25600;
         }
@@ -535,6 +558,48 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
 
     private int cookTimeTotal() { return getProperty(3); }
     private void cookTimeTotal(int i) { #F_SETPROPERTY#(3, i); }
+
+    ---------- SINCE 1.13 START ----------
+    // used by FIELD_TILEENTITYFURNACE_1
+    private int proxyGetBurnTime(ItemStack stack)
+    {
+        FurnaceRecipe recipe = getRecipe(stack);
+        return (recipe != null) ? recipe.#F_FURNACERECIPE_COOKINGTIME#() : 200;
+    }
+
+    private FurnaceRecipe getRecipe(ItemStack stack)
+    {
+        return (FurnaceRecipe)this.world.#F_WORLD_GETCRAFTINGMANAGER#().#F_CMNGR_RECIPE_FOR_INV#(new ProxyInv(stack), this.world);
+    }
+
+    private static class ProxyInv extends TileEntityFurnace
+    {
+        private final ItemStack _stack;
+
+        private ProxyInv(ItemStack stack)
+        {
+            _stack = stack;
+        }
+
+        public ItemStack getItem(int i)
+        {
+            return i == 0 ? _stack : #F_ITEMSTACK_NULL#;
+        }
+    }
+
+    public static int fuelTime(ItemStack stack)
+    {
+        try
+        {
+            return (Integer)fuelTimeMeth.invoke(null, stack);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    ---------- SINCE 1.13 END ----------
 
     // Compatibility
     public InventoryHolder getOwner()

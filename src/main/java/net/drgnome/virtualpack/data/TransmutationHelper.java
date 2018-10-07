@@ -7,6 +7,7 @@ package net.drgnome.virtualpack.data;
 import java.io.*;
 import java.util.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.*;
 import net.drgnome.virtualpack.item.*;
@@ -67,7 +68,7 @@ public class TransmutationHelper
                     if((val1 != val2) && (val1 > 0) && (val2 > 0))
                     {
                         short meta = recipe.getResult().getDurability();
-                        _log.warning(Lang.get(null, "matter.mismatch", recipe.getResult().getTypeId() + (meta > 0 ? ":" + meta : ""), Util.printDouble(val1), Util.printDouble(val2)));
+                        _log.warning(Lang.get(null, "matter.mismatch", recipe.getResult().getType().toString() + (meta > 0 ? ":" + meta : ""), Util.printDouble(val1), Util.printDouble(val2)));
                     }
                 }
             }
@@ -122,7 +123,7 @@ public class TransmutationHelper
             else
             {
                 short meta = recipe.getResult().getDurability();
-                _log.info(Lang.get(null, "matter.customIngredient", recipe.getResult().getTypeId() + (meta > 0 ? ":" + meta : ""), recipe.getClass().getName()));
+                _log.info(Lang.get(null, "matter.customIngredient", recipe.getResult().getType().toString() + (meta > 0 ? ":" + meta : ""), recipe.getClass().getName()));
                 continue;
             }
             recipes.add(new QuantitativeRecipe(recipe.getResult(), ingredients));
@@ -173,6 +174,7 @@ public class TransmutationHelper
 
     private static double calculateValue(HashMap<ComparativeItemStack, Integer> map)
     {
+        ComparativeItemStack cis = new ComparativeItemStack(Material.BUCKET, (short)0);
         double value = 0D;
         for(Map.Entry<ComparativeItemStack, Integer> entry : map.entrySet())
         {
@@ -180,9 +182,9 @@ public class TransmutationHelper
             {
                 return -1D;
             }
-            if(isMapped(new ComparativeItemStack(325, (short)0)) && ((entry.getKey().getId() == 326) || (entry.getKey().getId() == 327) || (entry.getKey().getId() == 335))) // I hate buckets -.-
+            if(isMapped(cis) && ((entry.getKey().getType() == Material.WATER_BUCKET) || (entry.getKey().getType() == Material.LAVA_BUCKET) || (entry.getKey().getType() == Material.MILK_BUCKET))) // I hate buckets -.-
             {
-                value += (getValue(entry.getKey()) - getValue(new ComparativeItemStack(325, (short)0))) * entry.getValue().doubleValue();
+                value += (getValue(entry.getKey()) - getValue(cis)) * entry.getValue().doubleValue();
             }
             else
             {

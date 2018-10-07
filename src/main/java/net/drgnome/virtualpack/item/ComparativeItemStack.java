@@ -11,13 +11,8 @@ import net.drgnome.virtualpack.util.Util;
 public class ComparativeItemStack
 {
     protected static short _defaultMeta = 0;
-    protected int _id;
+    protected Material _type;
     protected short _meta;
-
-    public static boolean hasSubtypes(int id)
-    {
-        return hasSubtypes(Material.getMaterial(id));
-    }
 
     public static boolean hasSubtypes(Material m)
     {
@@ -40,25 +35,17 @@ public class ComparativeItemStack
             }
             data = split[0];
         }
-        try
-        {
-            _id = Integer.parseInt(data);
-        }
-        catch(Exception e)
-        {
-            Material m = Material.getMaterial(data.toUpperCase());
-            _id = (m == null) ? 0 : m.getId();
-        }
+        _type = Material.getMaterial(data.toUpperCase());
     }
 
     public ComparativeItemStack(ItemStack item)
     {
-        this(item == null ? 0 : item.getTypeId(), item == null ? _defaultMeta : item.getDurability());
+        this(item == null ? Material.AIR : item.getType(), item == null ? _defaultMeta : item.getDurability());
     }
 
-    public ComparativeItemStack(int id, short meta)
+    public ComparativeItemStack(Material type, short meta)
     {
-        _id = id;
+        _type = type;
         _meta = meta;
     }
 
@@ -66,23 +53,23 @@ public class ComparativeItemStack
     {
         if(item == null)
         {
-            return _id == 0;
+            return _type == Material.AIR;
         }
-        return (item.getTypeId() == _id) && ((_meta == -1) || (item.getDurability() == -1) || (!hasSubtypes(_id)) || (_meta == item.getDurability()));
+        return (item.getType() == _type) && ((_meta == -1) || (item.getDurability() == -1) || (!hasSubtypes(_type)) || (_meta == item.getDurability()));
     }
 
     public boolean matches(ComparativeItemStack stack)
     {
         if(stack == null)
         {
-            return _id == 0;
+            return _type == Material.AIR;
         }
-        return (stack._id == _id) && ((_meta == -1) || (stack._meta == -1) || (!hasSubtypes(_id)) || (_meta == stack._meta));
+        return (stack._type == _type) && ((_meta == -1) || (stack._meta == -1) || (!hasSubtypes(_type)) || (_meta == stack._meta));
     }
 
-    public int getId()
+    public Material getType()
     {
-        return _id;
+        return _type;
     }
 
     public ItemStack createStack(int stackSize)
@@ -91,12 +78,12 @@ public class ComparativeItemStack
         {
             return null;
         }
-        int maxStack = Material.getMaterial(_id).getMaxStackSize();
-        return new ItemStack(_id, stackSize > maxStack ? maxStack : stackSize, _meta < 0 ? 0 : _meta);
+        int maxStack = _type.getMaxStackSize();
+        return new ItemStack(_type, stackSize > maxStack ? maxStack : stackSize, _meta < 0 ? 0 : _meta);
     }
 
     public String serialize()
     {
-        return (_id + ":" + (_meta == -1 ? "*" : _meta));
+        return _type.name() + ":" + (_meta == -1 ? "*" : _meta);
     }
 }

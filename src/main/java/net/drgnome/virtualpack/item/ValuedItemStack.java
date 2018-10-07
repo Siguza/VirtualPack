@@ -11,32 +11,32 @@ import net.drgnome.virtualpack.util.Util;
 public class ValuedItemStack extends ComparativeItemStack
 {
     private double _value;
-    
+
     public ValuedItemStack(String data, double value)
     {
         super(data);
         _value = value;
     }
-    
+
     public ValuedItemStack(ItemStack item, double value)
     {
         super(item);
         _value = value;
     }
-    
-    public ValuedItemStack(int id, short meta, double value)
+
+    public ValuedItemStack(Material type, short meta, double value)
     {
-        super(id, meta);
+        super(type, meta);
         _value = value;
     }
-    
+
     public double getValue()
     {
         return _value;
     }
-    
+
     public String toString()
     {
-        return Material.getMaterial(_id).name() + (_meta > 0 ? ":" + _meta : "");
+        return _type.name() + (_meta > 0 ? ":" + _meta : "");
     }
 }

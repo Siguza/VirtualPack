@@ -7,6 +7,7 @@ package net.drgnome.virtualpack.tmp;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.craftbukkit.v#MC_VERSION#.inventory.CraftItemStack;
@@ -125,7 +126,7 @@ public class TmpMatterInv extends VInv implements VProcessing
 
     public void updateInfo()
     {
-        org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(399, 1);
+        org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(Material.NETHER_STAR, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(_prefix + Util.parseColors(Config.string("transmutation.color.stored-name")) + Lang.getDirect(_op.getName(), "matter.stored"));
         meta.setLore(Util.createList(Util.parseColors(Config.string("transmutation.color.stored-value")) + Util.formatDouble(_value)));

@@ -111,7 +111,7 @@ public class VAnvil extends ContainerAnvil
                     ---------- SINCE 1.11 END ----------
                     {
                         i1 = itemstack1.#FIELD_ITEMSTACK_GETDAMAGE#() - k;
-                        itemstack1.setData(i1);
+                        itemstack1.#F_ITEMSTACK_SETDAMAGE#(i1);
                         ++i;
                         k = Math.min(itemstack1.#FIELD_ITEMSTACK_5#(), itemstack1.#FIELD_ITEMSTACK_6#() / 4);
                     }
@@ -137,9 +137,9 @@ public class VAnvil extends ContainerAnvil
                         {
                             j1 = 0;
                         }
-                        if(j1 < itemstack1.getData())
+                        if(j1 < itemstack1.#F_ITEMSTACK_GETDAMAGE#())
                         {
-                            itemstack1.setData(j1);
+                            itemstack1.#F_ITEMSTACK_SETDAMAGE#(j1);
                             i += 2;
                         }
                     }
@@ -264,11 +264,11 @@ public class VAnvil extends ContainerAnvil
                     itemstack1.#FIELD_ITEMSTACK_11#();
                 }
             }
-            else if(!_itemName.equals(itemstack.getName()))
+            else if(!_itemName.equals(itemstack.getName()#F_ITEMNAME_TO_STR#))
             {
                 b1 = 1;
                 i += b1;
-                itemstack1.#FIELD_ITEMSTACK_9#(_itemName);
+                itemstack1.#FIELD_ITEMSTACK_9#(#F_STR_TO_ITEMNAME#(_itemName));
             }
             #FIELD_CONTAINERANVIL_5# = j + i;
             if(i <= 0)
@@ -378,7 +378,15 @@ public class VAnvil extends ContainerAnvil
         _itemName = s;
         if(this.getSlot(2).#FIELD_SLOT_1#())
         {
-            this.getSlot(2).getItem().#FIELD_ITEMSTACK_9#(_itemName);
+            ItemStack itemstack = this.getSlot(2).getItem();
+            if(StringUtils.isBlank(_itemName))
+            {
+                itemstack.#FIELD_ITEMSTACK_11#();
+            }
+            else
+            {
+                itemstack.#FIELD_ITEMSTACK_9#(#F_STR_TO_ITEMNAME#(_itemName));
+            }
         }
         #FIELD_CONTAINERANVIL_4#();
     }

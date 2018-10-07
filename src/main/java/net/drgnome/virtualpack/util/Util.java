@@ -227,14 +227,17 @@ public class Util
 
     public static boolean areEqual(net.minecraft.server.v#MC_VERSION#.ItemStack item1, net.minecraft.server.v#MC_VERSION#.ItemStack item2)
     {
-        return (Item.#FIELD_ITEM_7#(item1.getItem()) == Item.#FIELD_ITEM_7#(item2.getItem())) &&
+        return (item1.getItem() == item2.getItem()) &&
         ---------- PRE 1.11 START ----------
         (item1.count == item2.count)
         ---------- PRE 1.11 END ----------
         ---------- SINCE 1.11 START ----------
         (item1.getCount() == item2.getCount())
         ---------- SINCE 1.11 END ----------
-        && (item1.getData() == item2.getData());
+        ---------- PRE 1.13 START ----------
+        && (item1.getData() == item2.getData())
+        ---------- PRE 1.13 END ----------
+        ;
     }
 
     public static int tryParse(String s, int i)
@@ -352,6 +355,23 @@ public class Util
         return tmp;
     }
 
+    private static net.minecraft.server.v#MC_VERSION#.ItemStack newItemStack(net.minecraft.server.v#MC_VERSION#.NBTTagCompound nbt)
+    {
+        ---------- PRE 1.11 START ----------
+        return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(nbt);
+        ---------- PRE 1.11 END ----------
+
+        ---------- SINCE 1.11 START ----------
+        ---------- PRE 1.13 START ----------
+        return new net.minecraft.server.v#MC_VERSION#.ItemStack(nbt);
+        ---------- PRE 1.13 END ----------
+        ---------- SINCE 1.11 END ----------
+
+        ---------- SINCE 1.13 START ----------
+        return net.minecraft.server.v#MC_VERSION#.ItemStack.#F_ITEMSTACK_CREATEFROMNBT#(nbt);
+        ---------- SINCE 1.13 END ----------
+    }
+
     public static net.minecraft.server.v#MC_VERSION#.ItemStack stringToItemStack(String string)
     {
         if((string == null) || (string.length() == 0))
@@ -361,13 +381,14 @@ public class Util
         try
         {
             net.minecraft.server.v#MC_VERSION#.NBTTagCompound nbt = NBTCompressedStreamTools.#FIELD_NBTCOMPRESSEDSTREAMTOOLS_1#(new ByteArrayInputStream(b64de(string)));
-            ---------- PRE 1.11 START ----------
-            return net.minecraft.server.v#MC_VERSION#.ItemStack.createStack(nbt);
-            ---------- PRE 1.11 END ----------
+            net.minecraft.server.v#MC_VERSION#.ItemStack stack = newItemStack(nbt);
             ---------- SINCE 1.11 START ----------
-            net.minecraft.server.v#MC_VERSION#.ItemStack stack = new net.minecraft.server.v#MC_VERSION#.ItemStack(nbt);
-            return (stack.getItem() != null && stack != #F_ITEMSTACK_NULL#) ? stack : null;
+            if(stack.getItem() == null || stack == #F_ITEMSTACK_NULL#)
+            {
+                stack = null;
+            }
             ---------- SINCE 1.11 END ----------
+            return stack;
         }
         catch(Exception e)
         {
