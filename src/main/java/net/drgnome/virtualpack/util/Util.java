@@ -168,7 +168,7 @@ public class Util
 
     public static net.minecraft.server.v#MC_VERSION#.ItemStack copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item)
     {
-        return (item == null || item == #F_ITEMSTACK_NULL#) ? null : item.cloneItemStack();
+        return (item == null || item == #F_ITEMSTACK_NULL#) ? #F_ITEMSTACK_NULL# : item.cloneItemStack();
     }
 
     public static net.minecraft.server.v#MC_VERSION#.ItemStack[] copy_old(net.minecraft.server.v#MC_VERSION#.ItemStack item[])
@@ -421,12 +421,12 @@ public class Util
         _lastStack = false;
         if(item2 == null || item2 == #F_ITEMSTACK_NULL#)
         {
-            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, null};
+            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, #F_ITEMSTACK_NULL#};
         }
         if(item1 == null || item1 == #F_ITEMSTACK_NULL#)
         {
             _lastStack = true;
-            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item2, null};
+            return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item2, #F_ITEMSTACK_NULL#};
         }
         if(!areEqual(item1, item2))
         {
@@ -446,12 +446,12 @@ public class Util
         ---------- PRE 1.11 START ----------
         item1.count += max;
         item2.count -= max;
-        return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, (item2.count <= 0) ? null : item2};
+        return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, (item2.count <= 0) ? #F_ITEMSTACK_NULL# : item2};
         ---------- PRE 1.11 END ----------
         ---------- SINCE 1.11 START ----------
         item1.setCount(item1.getCount() + max);
         item2.setCount(item2.getCount() - max);
-        return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, (item2.getCount() <= 0) ? null : item2};
+        return new net.minecraft.server.v#MC_VERSION#.ItemStack[]{item1, (item2.getCount() <= 0) ? #F_ITEMSTACK_NULL# : item2};
         ---------- SINCE 1.11 END ----------
     }
 
@@ -624,5 +624,16 @@ public class Util
             op = ((CraftServer)Bukkit.getServer()).getOfflinePlayer(((CraftPlayer)op).getProfile());
         }
         return op;
+    }
+
+    public static WorldServer getDefaultWorldServer(MinecraftServer server)
+    {
+        ---------- PRE 1.13.1 START ----------
+        return server.getWorldServer(0);
+        ---------- PRE 1.13.1 END ----------
+
+        ---------- SINCE 1.13.1 START ----------
+        return server.getWorldServer(DimensionManager.OVERWORLD);
+        ---------- SINCE 1.13.1 END ----------
     }
 }

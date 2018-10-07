@@ -607,6 +607,22 @@
                                     <token>---------- SINCE 1.13 END ----------</token>
                                     <value>*/</value>
                                 </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.13.1 START ----------</token>
+                                    <value></value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- PRE 1.13.1 END ----------</token>
+                                    <value></value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.13.1 START ----------</token>
+                                    <value>/*</value>
+                                </replacement>
+                                <replacement>
+                                    <token>---------- SINCE 1.13.1 END ----------</token>
+                                    <value>*/</value>
+                                </replacement>
                             </replacements>
                         </configuration>
                     </execution>

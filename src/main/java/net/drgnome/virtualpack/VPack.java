@@ -1160,7 +1160,8 @@ public class VPack
                 }
                 MinecraftServer server = ((CraftServer)Bukkit.getServer()).getServer();
                 GameProfile profile = new GameProfile(null, name);
-                mcp = new EntityPlayer(server, server.getWorldServer(0), profile, new PlayerInteractManager(server.getWorldServer(0)));
+                WorldServer ws = Util.getDefaultWorldServer(server);
+                mcp = new EntityPlayer(server, ws, profile, new PlayerInteractManager(ws));
                 if(mcp == null)
                 {
                     throw new Exception();

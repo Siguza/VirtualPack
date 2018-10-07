@@ -143,14 +143,31 @@ public class VUncrafterInv extends VInv implements VProcessing
                         ing.add((ItemStack)stack);
                     }
                     ---------- SINCE 1.12 START ----------
+                    ---------- PRE 1.13 START ----------
                     else if(stack instanceof RecipeItemStack)
                     {
-                        if(((RecipeItemStack)stack).choices.length > 0)
+                        RecipeItemStack ris = (RecipeItemStack)stack;
+                        if(ris.choices.length > 0)
                         {
-                            ing.add(((RecipeItemStack)stack).choices[0]);
+                            ing.add(ris.choices[0]);
                         }
                     }
+                    ---------- PRE 1.13 END ----------
                     ---------- SINCE 1.12 END ----------
+                    ---------- SINCE 1.13 START ----------
+                    else if(stack instanceof RecipeItemStack)
+                    {
+                        RecipeItemStack ris = (RecipeItemStack)stack;
+                        if(ris.choices == null)
+                        {
+                            ris.buildChoices();
+                        }
+                        if(ris.choices.length > 0)
+                        {
+                            ing.add(ris.choices[0]);
+                        }
+                    }
+                    ---------- SINCE 1.13 END ----------
                     else
                     {
                         _log.warning("[VirtualPack] Uncrafter: Skipping recipe with unknown ingredient: " + stack.getClass().getName());
@@ -252,6 +269,7 @@ public class VUncrafterInv extends VInv implements VProcessing
             ItemStack[] back = new ItemStack[ench.size() + 1];
             back[0] = Util.copy_old(re);
             back[0].getTag().remove("ench");
+            back[0].getTag().remove("Enchantments");
             for(int i = 0; i < ench.size(); i++)
             {
                 back[i + 1] = new ItemStack(Items.ENCHANTED_BOOK, 1);

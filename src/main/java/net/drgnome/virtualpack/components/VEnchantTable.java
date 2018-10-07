@@ -33,20 +33,36 @@ public class VEnchantTable extends ContainerEnchantTable
     ---------- SINCE 1.9 END ----------
 
     ---------- SINCE 1.13 START ----------
+    ---------- PRE 1.13.1 START ----------
     private static int getEnchId(Enchantment ench)
     {
         return Enchantment.enchantments.#F_ENCH_GETID#(ench);
     }
+    ---------- PRE 1.13.1 END ----------
     ---------- SINCE 1.13 END ----------
+
+    ---------- SINCE 1.13.1 START ----------
+    private static int getEnchId(Enchantment ench)
+    {
+        return IRegistry.ENCHANTMENT.#F_ENCH_GETID#(ench);
+    }
+    ---------- SINCE 1.13.1 END ----------
 
     private static org.bukkit.enchantments.Enchantment getBukkitEnch(int id)
     {
         ---------- PRE 1.13 START ----------
         return org.bukkit.enchantments.Enchantment.getById(id);
         ---------- PRE 1.13 END ----------
+
         ---------- SINCE 1.13 START ----------
+        ---------- PRE 1.13.1 START ----------
         return org.bukkit.enchantments.Enchantment.getByKey(org.bukkit.craftbukkit.v#MC_VERSION#.util.CraftNamespacedKey.fromMinecraft(Enchantment.getId(Enchantment.enchantments.getId(id))));
+        ---------- PRE 1.13.1 END ----------
         ---------- SINCE 1.13 END ----------
+        
+        ---------- SINCE 1.13.1 START ----------
+        return org.bukkit.enchantments.Enchantment.getByKey(org.bukkit.craftbukkit.v#MC_VERSION#.util.CraftNamespacedKey.fromMinecraft(IRegistry.ENCHANTMENT.getKey(IRegistry.ENCHANTMENT.fromId(id))));
+        ---------- SINCE 1.13.1 END ----------
     }
 
     public VEnchantTable(EntityPlayer player, int bookshelves)
@@ -213,7 +229,12 @@ public class VEnchantTable extends ContainerEnchantTable
                                 ---------- SINCE 1.13 START ----------
                                 MinecraftKey enchantId = org.bukkit.craftbukkit.v#MC_VERSION#.util.CraftNamespacedKey.toMinecraft(entry.getKey().getKey());
                                 ---------- SINCE 1.13 END ----------
+                                ---------- PRE 1.13.1 START ----------
                                 Enchantment ench = Enchantment.#FIELD_ENCHANTMENT_GETBYID#(enchantId);
+                                ---------- PRE 1.13.1 END ----------
+                                ---------- SINCE 1.13.1 START ----------
+                                Enchantment ench = IRegistry.ENCHANTMENT.get(enchantId);
+                                ---------- SINCE 1.13.1 END ----------
                                 if(ench == null)
                                 {
                                     continue;

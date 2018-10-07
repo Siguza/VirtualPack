@@ -7,8 +7,10 @@ package net.drgnome.virtualpack.components;
 import java.lang.reflect.*;
 import java.util.*;
 import net.minecraft.server.v#MC_VERSION#.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.craftbukkit.v#MC_VERSION#.CraftServer;
 import org.bukkit.craftbukkit.v#MC_VERSION#.entity.CraftHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import net.drgnome.virtualpack.VPack;
@@ -35,6 +37,7 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
     ---------- SINCE 1.11 END ----------
 
     ---------- SINCE 1.13 START ----------
+    private static World mainWorld;
     private static Method fuelTimeMeth;
     static
     {
@@ -61,6 +64,9 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
         ---------- SINCE 1.11 START ----------
         proxy = new ProxyList<ItemStack>(contents, #F_ITEMSTACK_NULL#);
         ---------- SINCE 1.11 END ----------
+        ---------- SINCE 1.13 START ----------
+        mainWorld = this.world = Util.getDefaultWorldServer(((CraftServer)Bukkit.getServer()).getServer());
+        ---------- SINCE 1.13 END ----------
     }
 
     // Read from save
@@ -569,7 +575,7 @@ public class VTEFurnace extends TileEntityFurnace implements VIInventory
 
     private FurnaceRecipe getRecipe(ItemStack stack)
     {
-        return (FurnaceRecipe)this.world.#F_WORLD_GETCRAFTINGMANAGER#().#F_CMNGR_RECIPE_FOR_INV#(new ProxyInv(stack), this.world);
+        return (FurnaceRecipe)mainWorld.#F_WORLD_GETCRAFTINGMANAGER#().#F_CMNGR_RECIPE_FOR_INV#(new ProxyInv(stack), mainWorld);
     }
 
     private static class ProxyInv extends TileEntityFurnace
